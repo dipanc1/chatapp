@@ -46,8 +46,8 @@
             }
             .registerBoxFormButton {
                 button {
-                    width: 46%;
-                    margin: 0 70px;
+                    width: 60%;
+                    margin: 0 54px;
                     height: 40px;
                     border: none;
                     border-radius: 10px;
@@ -71,6 +71,21 @@
                     color: #004CFB;
                     text-decoration: none;
                 }
+            }
+        }
+        .otp {
+            width: 46%;
+            margin: 26px 70px;
+            height: 40px;
+            border: none;
+            border-radius: 10px;
+            background-color: #004CFB;
+            font-size: 14px;
+            font-weight: bold;
+            color: #FFFFFF;
+            cursor: pointer;
+            &:focus {
+                outline: none;
             }
         }
     }
