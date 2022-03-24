@@ -1,15 +1,17 @@
-import Login from "./pages/Login/Login";
+import Login from "./pages/login/Login";
 import './App.scss';
-import Register from "./pages/Register/Register";
+import Register from "./pages/register/Register";
 import { Routes, Route } from "react-router-dom";
+import Chat from "./pages/chat/Chat"
 
 function App() {
   return (
     <div className="app">
-      <Routes>
+      {/* <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="regsiter" element={<Register />} />
-      </Routes>
+        <Route path="register" element={<Register />} />
+      </Routes> */}
+      <Chat/>
     </div>
   );
 }

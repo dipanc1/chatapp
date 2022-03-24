@@ -26,7 +26,7 @@ const Login = () => {
                 </div>
                 <div className="loginBoxLink">
                     <p>
-                        New User? <Link to="/regsiter">Register</Link>
+                        New User? <Link to="/register">Register</Link>
                         {/* <a href='/register'>Register</a> */}
                     </p>
                 </div>
