@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import './login.scss'
 
 const Login = () => {
@@ -25,7 +26,8 @@ const Login = () => {
                 </div>
                 <div className="loginBoxLink">
                     <p>
-                        New User? <a href='/register'>Register</a>
+                        New User? <Link to="/regsiter">Register</Link>
+                        {/* <a href='/register'>Register</a> */}
                     </p>
                 </div>
             </div>

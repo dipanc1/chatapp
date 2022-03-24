@@ -11,15 +11,15 @@ router.post("/mobile", (req, res) => {
             channel: "sms",
         })
         .then((resp) => {
-            // console.log("response", resp);
+            console.log("response", resp);
             res.status(200).json(resp);
         });
 });
 
 router.post("/otp", (req, res) => {
     const { OTP, number1 } = req.body;
-    console.log("otp ", "'" + OTP + "'");
-    console.log("number ", "'" + `+91${number1.number}` + "'");
+    console.log("otp", "'" + OTP + "'");
+    console.log("number", "'" + `+91${number1.number}` + "'");
     client.verify.services(serviceSID)
         .verificationChecks
         .create({

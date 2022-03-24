@@ -4,16 +4,17 @@ import OTPInput, { ResendOTP } from "otp-input-react";
 import validator from 'validator'
 import axios from 'axios';
 import { PhoneNumberContext } from '../../context/phoneNumberContext';
+import { Link } from 'react-router-dom';
 
 const Register = () => {
-    const {dispatch} = React.useContext(PhoneNumberContext);
+    const { dispatch } = React.useContext(PhoneNumberContext);
     const [verify, setVerify] = React.useState(true);
     const [otp, setOtp] = React.useState(true);
     const [OTP, setOTP] = React.useState("");
     const [number, setNumber] = React.useState("");
-    
+
     const number1 = React.useContext(PhoneNumberContext)
-    
+
     const apiUrl = "http://localhost:8000/mobile";
 
     const handleNumber = (e) => {
@@ -21,7 +22,7 @@ const Register = () => {
     }
 
     const handleVerify = () => {
-        dispatch({type: "SET_NUMBER", payload: number});
+        dispatch({ type: "SET_NUMBER", payload: number });
         const isValidPhoneNumber = validator.isMobilePhone(number)
         if (isValidPhoneNumber) {
             setVerify(false);
@@ -94,7 +95,7 @@ const Register = () => {
                         {(!verify && otp) &&
                             <div className="registerBoxFormInput">
                                 <OTPInput value={OTP} onChange={handleOtp} autoFocus OTPLength={5} otpType="number" disabled={false} />
-                                <ResendOTP renderButton={renderButton} renderTime={renderTime} maxTime={10} />
+                                <ResendOTP renderButton={renderButton} renderTime={renderTime} maxTime={10} onClick={handleOtp} />
                             </div>
                         }
                         <div className="registerBoxFormButton">
@@ -105,7 +106,8 @@ const Register = () => {
                 </div>
                 <div className="registerBoxLink">
                     <p>
-                        Already Have an Account? <a href='/login'>Login</a>
+                        Already Have an Account? <Link to="/">Login</Link>
+                        {/* <a href='/login'>Login</a> */}
                     </p>
                 </div>
             </div>
