@@ -13,53 +13,93 @@ const Conversations = () => {
             <div className="conversations-list">
                 <div className="conversation-title">
                     <h5>Conversations</h5>
-                    <p>\/</p>
+                    <img src="/images/down-arrow.png" alt="down arrow" className='down-arrow' />
                 </div>
+                <hr style={{ 'color': "#f3f7fc" }} />
                 <div className="conversation-avatar-name">
-                    <img src="https://via.placeholder.com/150" alt="avatar" className='avatar'/>
-                    <p className='name'>John Doe</p>
+                    <div className="name">
+                        <img src="https://via.placeholder.com/150" alt="avatar" className='avatar' />
+                        <p>John Doe</p>
+                    </div>
+                    <span className="dot">
+                        <p className="dotN">
+                            2
+                        </p>
+                    </span>
                 </div>
-                <div className="conversation-avatar-name">
-                    <img src="https://via.placeholder.com/50" alt="avatar" className='avatar'/>
-                    <p className='name'>John Doe</p>
+                <div className="conversation-avatar-name disabled">
+                    <div className="name">
+                        <img src="https://via.placeholder.com/150" alt="avatar" className='avatar' />
+                        <p>John Doe</p>
+                    </div>
+                    <span className="dot disabled"></span>
                 </div>
-                <div className="conversation-avatar-name">
-                    <img src="https://via.placeholder.com/150" alt="avatar" className='avatar'/>
-                    <p className='name'>John Doe</p>
+                <div className="conversation-avatar-name disabled">
+                    <div className="name">
+                        <img src="https://via.placeholder.com/150" alt="avatar" className='avatar' />
+                        <p>John Doe</p>
+                    </div>
+                    <span className="dot disabled"></span>
                 </div>
-                <div className="conversation-avatar-name">
-                    <img src="https://via.placeholder.com/150" alt="avatar" className='avatar'/>
-                    <p className='name'>John Doe</p>
+                <div className="conversation-avatar-name disabled">
+                    <div className="name">
+                        <img src="https://via.placeholder.com/150" alt="avatar" className='avatar' />
+                        <p>John Doe</p>
+                    </div>
+                    <span className="dot disabled"></span>
                 </div>
-                <div className="conversation-avatar-name">
-                    <img src="https://via.placeholder.com/150" alt="avatar" className='avatar'/>
-                    <p className='name'>John Doe</p>
+                <div className="conversation-avatar-name disabled">
+                    <div className="name">
+                        <img src="https://via.placeholder.com/150" alt="avatar" className='avatar' />
+                        <p>John Doe</p>
+                    </div>
+                    <span className="dot disabled"></span>
                 </div>
             </div>
             <div className="groups-list">
                 <div className="group-title">
                     <h5>Groups</h5>
-                    <p>\/</p>
+                    <img src="/images/down-arrow.png" alt="down arrow" className='down-arrow' />
+                </div>
+                <hr style={{ 'color': "#f3f7fc" }} />
+                <div className="group-icon-name disabled">
+                    <div className="group-name">
+                        <img src="https://via.placeholder.com/150" alt="avatar" className='icon' />
+                        <p>John Doe</p>
+                    </div>
+                    <span className="dot-group disabled"></span>
+                </div>
+                <div className="group-icon-name disabled">
+                    <div className="group-name">
+                        <img src="https://via.placeholder.com/150" alt="avatar" className='icon' />
+                        <p>John Doe</p>
+                    </div>
+                    <span className="dot-group disabled"></span>
+                </div>
+                <div className="group-icon-name disabled">
+                    <div className="group-name">
+                        <img src="https://via.placeholder.com/150" alt="avatar" className='icon' />
+                        <p>John Doe</p>
+                    </div>
+                    <span className="dot-group disabled"></span>
                 </div>
                 <div className="group-icon-name">
-                    <img src="https://via.placeholder.com/150" alt="icon" className='icon'/>
-                    <p className='name'>John Doe</p>
+                    <div className="group-name">
+                        <img src="https://via.placeholder.com/150" alt="avatar" className='icon' />
+                        <p>John Doe</p>
+                    </div>
+                    <span className="dot-group">
+                        <div className="dot-groupN">
+                            9
+                        </div>
+                    </span>
                 </div>
-                <div className="group-icon-name">
-                    <img src="https://via.placeholder.com/150" alt="icon" className='icon'/>
-                    <p className='name'>John Doe</p>
-                </div>
-                <div className="group-icon-name">
-                    <img src="https://via.placeholder.com/150" alt="icon" className='icon'/>
-                    <p className='name'>John Doe</p>
-                </div>
-                <div className="group-icon-name">
-                    <img src="https://via.placeholder.com/150" alt="icon" className='icon'/>
-                    <p className='name'>John Doe</p>
-                </div>
-                <div className="group-icon-name">
-                    <img src="https://via.placeholder.com/150" alt="icon" className='icon'/>
-                    <p className='name'>John Doe</p>
+                <div className="group-icon-name disabled">
+                    <div className="group-name">
+                        <img src="https://via.placeholder.com/150" alt="avatar" className='icon' />
+                        <p>John Doe</p>
+                    </div>
+                    <span className="dot-group disabled"></span>
                 </div>
             </div>
         </div>

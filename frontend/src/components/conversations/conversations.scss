@@ -25,18 +25,68 @@
             flex-direction: row;
             margin: 15px 0;
         }
+        .down-arrow {
+            width: 15px;
+        }
         .conversation-avatar-name {
+            margin: 0 21px;
+            width: 85%;
             display: flex;
             justify-content: space-around;
             align-items: center;
             flex-direction: row;
-            margin: 5px 0;
-            .avatar {
-                width: 3rem;
-                height: 3rem;
-                border-radius: 50%;
-                margin-right: 1rem;
+            background-color: #f3f7fc;
+            border: 1px solid white;
+            border-radius: 10px;
+            padding: 5px 0;
+            .name {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                .avatar {
+                    width: 3rem;
+                    height: 3rem;
+                    border-radius: 50%;
+                    margin-right: 1rem;
+                }
             }
+            .dot {
+                height: 25px;
+                width: 25px;
+                background-color: #fe5654;
+                border-radius: 50%;
+                display: inline-block;
+                position: relative;
+                .dotN {
+                    height: 10px;
+                    width: 10px;
+                    color: #fff;
+                    border-radius: 50%;
+                    position: absolute;
+                    top: 4px;
+                    left: 7px;
+                }
+            }
+            .dot.disabled {
+                height: 25px;
+                width: 25px;
+                background-color: #fcfcfc;
+                border-radius: 50%;
+                display: inline-block;
+                position: relative;
+            }
+        }
+        .conversation-avatar-name.disabled {
+            margin: 0 21px;
+            width: 85%;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-direction: row;
+            background-color: #ffffff;
+            border: 1px solid white;
+            border-radius: 10px;
+            padding: 5px 0;
         }
     }
     .groups-list {
@@ -48,18 +98,68 @@
             flex-direction: row;
             margin: 15px 0;
         }
+        .down-arrow {
+            width: 15px;
+        }
         .group-icon-name {
+            margin: 0 21px;
+            width: 85%;
             display: flex;
             justify-content: space-around;
             align-items: center;
             flex-direction: row;
-            margin: 5px 0;
-            .icon {
-                width: 2rem;
-                height: 2rem;
-                border-radius: 50%;
-                margin-right: 1rem;
+            background-color: #f3f7fc;
+            border: 1px solid white;
+            border-radius: 10px;
+            padding: 5px 0;
+            .group-name {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                .icon {
+                    width: 1.8rem;
+                    height: 1.8rem;
+                    border-radius: 50%;
+                    margin-right: 1rem;
+                }
             }
+            .dot-group {
+                height: 25px;
+                width: 25px;
+                background-color: #fe5654;
+                border-radius: 50%;
+                display: inline-block;
+                position: relative;
+                .dot-groupN {
+                    height: 10px;
+                    width: 10px;
+                    color: #fff;
+                    border-radius: 50%;
+                    position: absolute;
+                    top: 4px;
+                    left: 7px;
+                }
+            }
+            .dot-group.disabled {
+                height: 25px;
+                width: 25px;
+                background-color: #fcfcfc;
+                border-radius: 50%;
+                display: inline-block;
+                position: relative;
+            }
+        }
+        .group-icon-name.disabled {
+            margin: 0 21px;
+            width: 85%;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-direction: row;
+            background-color: #ffffff;
+            border: 1px solid white;
+            border-radius: 10px;
+            padding: 5px 0;
         }
     }
 }

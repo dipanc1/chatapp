@@ -3,7 +3,15 @@ import "./chatbox.scss"
 
 const Chatbox = () => {
   return (
-    <div className='chatbox'>Chatbox</div>
+    <div className='chatbox'>
+      <div className="top">
+        <div className="chatbox-group-name">
+          
+        </div>
+      </div>
+      <div className="middle"></div>
+      <div className="bottom"></div>
+    </div>
   )
 }
 
