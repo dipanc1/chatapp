@@ -7,11 +7,11 @@ import Chat from "./pages/chat/Chat"
 function App() {
   return (
     <div className="app">
-      <Routes>
+      {/* <Routes>
         <Route path="/" element={<Login />} />
         <Route path="register" element={<Register />} />
-      </Routes>
-      {/* <Chat/> */}
+      </Routes> */}
+      <Chat/>
     </div>
   );
 }

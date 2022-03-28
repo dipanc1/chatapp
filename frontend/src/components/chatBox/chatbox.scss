@@ -1,10 +1,11 @@
 .chatbox {
     width: 56vw;
-    height: 40vh;
+    height: 89vh;
     background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 10px rgb(0 0 0 / 20%);
     padding: 10px;
-    margin: 0 0 0 273px;
+    margin: 6px 0 0 306px;
+    border-radius: 15px;
     .top {
         margin: 10px 20px;
         .chatbox-group-name {
@@ -21,11 +22,15 @@
             p {
                 font-size: small;
                 margin-left: 25px;
+                color: #004dfa;
             }
         }
     }
     .middle {
-        .chatbox-message {
+        float: none;
+        position: fixed;
+        width: 56vw;
+        .chatbox-messagesending {
             display: flex;
             flex-direction: row;
             align-items: center;
@@ -41,7 +46,55 @@
                 height: 100%;
                 padding: 10px;
                 border-radius: 10px;
-                background-color: #fafafa;
+                background-color: #b5cbfe;
+            }
+        }
+        .chatbox-messageincoming {
+            display: flex;
+            flex-direction: row-reverse;
+            align-items: center;
+            .chatbox-message-avatar {
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                background-color: #f00;
+                margin-left: 10px;
+            }
+            .chatbox-message-content {
+                width: 23vw;
+                height: 100%;
+                padding: 10px;
+                border-radius: 10px;
+                background-color: #f3f7fc;
+            }
+        }
+    }
+    .bottom {
+        margin-top: 70vh;
+        .chatbox-message-input {
+            display: flex;
+            align-items: self-start;
+            textarea {
+                width: 85%;
+                height: 30px;
+                border: none;
+                border-radius: 10px;
+                background-color: #f3f7fc;
+                padding: 10px;
+                margin-bottom: 10px;
+                resize: none;
+                &:focus {
+                    outline: none;
+                }
+            }
+            button {
+                border: none;
+                width: 12%;
+                height: 49px;
+                border-radius: 10px;
+                background-color: #f3f7fc;
+                font-size: x-large;
+                cursor: pointer;
             }
         }
     }
