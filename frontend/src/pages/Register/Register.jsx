@@ -12,6 +12,8 @@ const Register = () => {
     const [otp, setOtp] = React.useState(true);
     const [OTP, setOTP] = React.useState("");
     const [number, setNumber] = React.useState("");
+    const [password, setPassword] = React.useState('');
+    const [confirmPassword, setConfirmPassword] = React.useState('');
 
     const number1 = React.useContext(PhoneNumberContext)
 
@@ -19,6 +21,14 @@ const Register = () => {
 
     const handleNumber = (e) => {
         setNumber(e.target.value);
+    }
+
+    const handlePassword = (e) => {
+        setPassword(e.target.value);
+    }
+
+    const handleConfirmPassword = (e) => {
+        setConfirmPassword(e.target.value);
     }
 
     const handleVerify = () => {
@@ -45,14 +55,16 @@ const Register = () => {
         setOTP(OTP);
         console.log(OTP);
         if (OTP.length === 5) {
-            axios.post(`http://localhost:8000/otp`, { OTP, number1 }).then((res) => {
-                console.log(res)
-                if (res.data.resp.valid) {
-                    setOtp(false)
-                } else {
-                    setOtp(true);
-                }
-            });
+            setTimeout(() => {
+                axios.post(`http://localhost:8000/otp`, { OTP, number1 }).then((res) => {
+                    console.log(res)
+                    if (res.data.resp.valid) {
+                        setOtp(false)
+                    } else {
+                        setOtp(true);
+                    }
+                });
+            }, 1000);
         }
     }
 
@@ -80,27 +92,27 @@ const Register = () => {
                             <>
                                 <div className="registerBoxFormInput">
                                     <label htmlFor="userName">User Name</label>
-                                    <input type="text" id="username" name='username' placeholder='Enter User Name' required />
+                                    <input type="text" id="username" name='username' placeholder='Enter User Name' required maxLength={20} minLength={2} />
                                 </div>
                                 <div className="registerBoxFormInput">
                                     <label htmlFor="password">Password</label>
-                                    <input type="password" id="password" name='password' placeholder='Enter Password' required />
+                                    <input type="password" id="password" name='password' placeholder='Enter Password' value={password} required minLength={8} onChange={handlePassword} />
                                 </div>
                                 <div className="registerBoxFormInput">
                                     <label htmlFor="confirmpassword">Confirm Password</label>
-                                    <input type="password" id="confirmpassword" name='confirmpassword' placeholder='Confirm Password' required />
+                                    <input type="password" id="confirmpassword" name='confirmpassword' placeholder='Confirm Password' required value={confirmPassword} onChange={handleConfirmPassword} />
                                 </div>
                             </>
                         }
-                        {(!verify && otp) &&
+                        {/* {(!verify && otp) &&
                             <div className="registerBoxFormInput">
                                 <OTPInput value={OTP} onChange={handleOtp} autoFocus OTPLength={5} otpType="number" disabled={false} />
                                 <ResendOTP renderButton={renderButton} renderTime={renderTime} maxTime={10} onClick={handleOtp} />
                             </div>
-                        }
+                        } */}
                         <div className="registerBoxFormButton">
                             {verify ? <button type="submit" onClick={handleVerify}>Verify Phone Number</button> : null}
-                            {!otp ? <button type="submit">Register</button> : null}
+                            {!otp && password=== confirmPassword ? <button type="submit" >Register</button> : null}
                         </div>
                     </form>
                 </div>

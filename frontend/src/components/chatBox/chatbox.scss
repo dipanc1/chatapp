@@ -1,0 +1,48 @@
+.chatbox {
+    width: 56vw;
+    height: 40vh;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    margin: 0 0 0 273px;
+    .top {
+        margin: 10px 20px;
+        .chatbox-group-name {
+            font-size: 1rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            .group-icon-chat {
+                width: 25px;
+                height: 25px;
+                border-radius: 50%;
+                background-color: #f00;
+                margin-right: 10px;
+            }
+            p {
+                font-size: small;
+                margin-left: 25px;
+            }
+        }
+    }
+    .middle {
+        .chatbox-message {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            .chatbox-message-avatar {
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                background-color: #f00;
+                margin-right: 10px;
+            }
+            .chatbox-message-content {
+                width: 23vw;
+                height: 100%;
+                padding: 10px;
+                border-radius: 10px;
+                background-color: #fafafa;
+            }
+        }
+    }
+}

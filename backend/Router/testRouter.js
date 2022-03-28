@@ -18,16 +18,16 @@ router.post("/mobile", (req, res) => {
 
 router.post("/otp", (req, res) => {
     const { OTP, number1 } = req.body;
-    console.log("otp", "'" + OTP + "'");
-    console.log("number", "'" + `+91${number1.number}` + "'");
+    console.log("otp", OTP);
+    console.log("number", `+91${number1.number}`);
     client.verify.services(serviceSID)
         .verificationChecks
         .create({
-            to: "'" + `+91${number1.number}` + "'",
-            code: "'" + OTP + "'",
+            to: `+91${number1.number}`,
+            code: OTP,
         })
         .then((resp) => {
-            console.log("otp res", resp.status);
+            console.log("otp res", resp);
             if (resp.valid) {
                 res.json({ resp, message: "Welcome" });
             }
