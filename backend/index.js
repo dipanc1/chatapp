@@ -15,10 +15,13 @@ app.use(
 );
 
 mongoose.connect(
-    mongo_url, { useNewUrlParser: true, useUnifiedTopology: true },
+    mongo_url, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    },
     () => {
         console.log("Connected to MongoDB");
-    }
+    }, 600000
 );
 
 app.use(bodyParser.json());

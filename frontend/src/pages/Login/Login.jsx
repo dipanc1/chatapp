@@ -1,8 +1,39 @@
+import axios from 'axios'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import './login.scss'
 
 const Login = () => {
+    const [username, setUsername] = React.useState('')
+    const [password, setPassword] = React.useState('')
+
+    const handleName = (e) => {
+        setUsername(e.target.value)
+    }
+
+    const handlePassword = (e) => {
+        setPassword(e.target.value)
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        const user = {
+            username: username,
+            password: password
+        }
+        try {
+            const res = await axios.post("http://localhost:8000/users/login", user);
+            // myStorage.setItem("user", res.data.username)
+            // setError(false)
+            console.log("working!!", res)
+        } catch (err) {
+            // setError(true)
+            console.log(err)
+        }
+
+    }
+
+
     return (
         <div className='login'>
             <div className="loginBox">
@@ -12,15 +43,15 @@ const Login = () => {
                 <div className="loginBoxForm">
                     <form>
                         <div className="loginBoxFormInput">
-                            <label htmlFor="phone">Phone Number</label>
-                            <input type="tel" id="phone" name='phone' placeholder='Enter Phone Number' required />
+                            <label htmlFor="username">Username</label>
+                            <input type="text" id="username" name='username' placeholder='Enter Your Username' required onChange={handleName} />
                         </div>
                         <div className="loginBoxFormInput">
                             <label htmlFor="password">Password</label>
-                            <input type="password" id="password" name='password' placeholder='Enter Password' required />
+                            <input type="password" id="password" name='password' placeholder='Enter Password' required onChange={handlePassword} />
                         </div>
                         <div className="loginBoxFormButton">
-                            <button type="submit">Login</button>
+                            <button type="submit" onClick={handleSubmit}>Login</button>
                         </div>
                     </form>
                 </div>

@@ -15,18 +15,19 @@ router.post("/register", async(req, res) => {
         //create new user
         const newUser = new User({
             username: req.body.username,
-            phonenumber: req.body.phonenumber,
+            number: req.body.number1.number,
             password: hashedPassword,
         })
-
+        console.log(newUser)
 
         //save user and send response
         const user = await newUser.save();
+        console.log(user)
         res.status(200).json(user._id)
 
     } catch (err) {
         res.status(500).json(err)
-            // console.log(err)
+        console.log(err)
     }
 })
 
@@ -36,12 +37,14 @@ router.post("/login", async(req, res) => {
     try {
 
         // find the user
-        const user = await User.findOne({ username: req.body.username, phonenumber: req.body.phonenumber })
+        const user = await User.findOne({ username: req.body.username })
+            // console.log(user)
 
         !user && res.status(400).json("Wrong Username or Password")
 
         // validate password
         const validPassword = await bcrypt.compare(req.body.password, user.password);
+
         !validPassword && res.status(400).json("Wrong Username and Password");
 
         // send res
@@ -50,7 +53,7 @@ router.post("/login", async(req, res) => {
 
     } catch (err) {
         res.status(500).json(err)
-            // console.log(err)
+        console.log(err)
     }
 })
 
