@@ -5,7 +5,7 @@ import validator from 'validator'
 import axios from 'axios';
 import { PhoneNumberContext } from '../../context/phoneNumberContext';
 import { Link } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
+import { useHistory } from "react-router-dom";
 
 const Register = () => {
     const { dispatch } = React.useContext(PhoneNumberContext);
@@ -18,8 +18,8 @@ const Register = () => {
     const [confirmPassword, setConfirmPassword] = React.useState('');
     const [error, setError] = React.useState(false)
 
-    let history = createBrowserHistory();
     const number1 = React.useContext(PhoneNumberContext)
+    let history = useHistory();
 
     const apiUrlMobile = "http://localhost:8000/mobile";
     const apiUrlOtp = "http://localhost:8000/otp";
