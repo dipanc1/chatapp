@@ -14,7 +14,7 @@ const Chat = () => {
           <Conversations />
         </div>
         <div className="middle">
-          {/* <Chatbox /> */}
+          <Chatbox />
         </div>
         <div className="right">
           <Members />

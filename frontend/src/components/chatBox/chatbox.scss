@@ -4,7 +4,7 @@
     background-color: #fff;
     box-shadow: 0 0 10px rgb(0 0 0 / 20%);
     padding: 10px;
-    margin: 6px 0 0 306px;
+    margin: 8px 0;
     border-radius: 15px;
     .top {
         margin: 10px 20px;
@@ -27,75 +27,36 @@
         }
     }
     .middle {
-        float: none;
-        position: fixed;
-        width: 56vw;
-        .chatbox-messagesending {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            .chatbox-message-avatar {
-                width: 30px;
-                height: 30px;
-                border-radius: 50%;
-                background-color: #f00;
-                margin-right: 10px;
-            }
-            .chatbox-message-content {
-                width: 23vw;
-                height: 100%;
-                padding: 10px;
-                border-radius: 10px;
-                background-color: #b5cbfe;
-            }
-        }
-        .chatbox-messageincoming {
-            display: flex;
-            flex-direction: row-reverse;
-            align-items: center;
-            .chatbox-message-avatar {
-                width: 30px;
-                height: 30px;
-                border-radius: 50%;
-                background-color: #f00;
-                margin-left: 10px;
-            }
-            .chatbox-message-content {
-                width: 23vw;
-                height: 100%;
-                padding: 10px;
-                border-radius: 10px;
-                background-color: #f3f7fc;
-            }
-        }
+        overflow-y: scroll;
+        height: 64vh;
     }
-    .bottom {
-        margin-top: 70vh;
-        .chatbox-message-input {
-            display: flex;
-            align-items: self-start;
-            textarea {
-                width: 85%;
-                height: 30px;
-                border: none;
-                border-radius: 10px;
-                background-color: #f3f7fc;
-                padding: 10px;
-                margin-bottom: 10px;
-                resize: none;
-                &:focus {
-                    outline: none;
-                }
+    .chatBottom {
+        margin-top: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        textarea {
+            width: 85%;
+            height: 66px;
+            border: none;
+            border-radius: 10px;
+            background-color: #f3f7fc;
+            padding: 10px;
+            margin-bottom: 10px;
+            resize: none;
+            &:focus {
+                outline: none;
             }
-            button {
-                border: none;
-                width: 12%;
-                height: 49px;
-                border-radius: 10px;
-                background-color: #f3f7fc;
-                font-size: x-large;
-                cursor: pointer;
-            }
+        }
+        button {
+            border: none;
+            width: 12%;
+            height: 40px;
+            border-radius: 10px;
+            background-color: #b5cbfe;
+            font-size: x-large;
+            cursor: pointer;
+            color: white;
         }
     }
 }

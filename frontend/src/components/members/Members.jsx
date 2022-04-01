@@ -1,4 +1,5 @@
 import React from 'react'
+import ChatOnline from '../chatOnline/ChatOnline'
 import "./members.scss"
 
 const Members = () => {
@@ -11,28 +12,16 @@ const Members = () => {
       <div className='members-container'>
         <hr style={{ 'color': "#f3f7fc" }} />
         <div className="member-avatar-name">
-          <div className="name">
-            <img src="https://via.placeholder.com/150" alt="avatar" className='avatar' />
-            <p>John Doe</p>
-          </div>
+          <ChatOnline/>
         </div>
         <div className="member-avatar-name">
-          <div className="name">
-            <img src="https://via.placeholder.com/150" alt="avatar" className='avatar' />
-            <p>John Doe</p>
-          </div>
+          <ChatOnline />
         </div>
         <div className="member-avatar-name">
-          <div className="name">
-            <img src="https://via.placeholder.com/150" alt="avatar" className='avatar' />
-            <p>John Doe</p>
-          </div>
+          <ChatOnline/>
         </div>
         <div className="member-avatar-name">
-          <div className="name">
-            <img src="https://via.placeholder.com/150" alt="avatar" className='avatar' />
-            <p>John Doe</p>
-          </div>
+          <ChatOnline/>
         </div>
         <div className="member-avatar-name-member">
           <div className="member-name">

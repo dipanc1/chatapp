@@ -1,7 +1,9 @@
 import React from 'react'
+import Message from '../message/Message'
 import "./chatbox.scss"
 
 const Chatbox = () => {
+  const {user} = React.useContext()
   return (
     <div className='chatbox'>
       <div className="top">
@@ -16,43 +18,15 @@ const Chatbox = () => {
         marginBottom: '15px'
       }} />
       <div className="middle">
-        <div className="chatbox-messagesending">
-          <img src="https://via.placeholder.com/150" alt="avatar" className='chatbox-message-avatar' />
-          <div className="chatbox-message-content">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit, vulputate eu pharetra nec, mattis ac neque. Duis vulputate commodo lectus, ac blandit elit tincidunt id. </p>
-          </div>
-        </div>
-        <div className="chatbox-messageincoming">
-          <img src="https://via.placeholder.com/150" alt="avatar" className='chatbox-message-avatar' />
-          <div className="chatbox-message-content">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit, vulputate eu pharetra nec, mattis ac neque. Duis vulputate commodo lectus, ac blandit elit tincidunt id. </p>
-          </div>
-        </div>
-        <div className="chatbox-messagesending">
-          <img src="https://via.placeholder.com/150" alt="avatar" className='chatbox-message-avatar' />
-          <div className="chatbox-message-content">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit, vulputate eu pharetra nec, mattis ac neque. Duis vulputate commodo lectus, ac blandit elit tincidunt id. </p>
-          </div>
-        </div>
-        <div className="chatbox-messageincoming">
-          <img src="https://via.placeholder.com/150" alt="avatar" className='chatbox-message-avatar' />
-          <div className="chatbox-message-content">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit, vulputate eu pharetra nec, mattis ac neque. Duis vulputate commodo lectus, ac blandit elit tincidunt id. </p>
-          </div>
-        </div>
-        <div className="chatbox-messagesending">
-          <img src="https://via.placeholder.com/150" alt="avatar" className='chatbox-message-avatar' />
-          <div className="chatbox-message-content">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit, vulputate eu pharetra nec, mattis ac neque. Duis vulputate commodo lectus, ac blandit elit tincidunt id. </p>
-          </div>
-        </div>
+        <Message own={true} />
+        <Message own={false}/>
+        <Message own={true}/>
+        <Message own={false}/>
+        <Message own={true}/>
       </div>
-      <div className="bottom">
-        <div className="chatbox-message-input">
-          {/* <input type="text" placeholder="Type a message" /> */}
+      <div className="chatBottom">
           <textarea name="message" id="message" placeholder='Type Your Message...' />
-          <button>→</button>
-        </div>
+          <button className='chatSubmit'>→</button>
       </div>
     </div>
   )

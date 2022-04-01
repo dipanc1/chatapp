@@ -1,15 +1,18 @@
 .chat {
     background-color: #B4CBFF;
     height: 42rem;
+    display: flex;
     .left {
-        float: left;
+        flex: 2.5;
     }
     .middle {
-        float: none;
-        position: absolute;
-        width: 56vw;
+        flex: 7.5;
+        // float: none;
+        // position: absolute;
+        // width: 56vw;
     }
     .right {
-        float: right;
+        flex: 2;
+        // float: right;
     }
 }

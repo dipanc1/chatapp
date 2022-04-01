@@ -1,4 +1,5 @@
 import React from 'react'
+import Conversation from '../conversation/Conversation'
 import "./conversations.scss"
 
 const Conversations = () => {
@@ -17,10 +18,7 @@ const Conversations = () => {
                 </div>
                 <hr style={{ 'color': "#f3f7fc" }} />
                 <div className="conversation-avatar-name">
-                    <div className="name">
-                        <img src="https://via.placeholder.com/150" alt="avatar" className='avatar' />
-                        <p>John Doe</p>
-                    </div>
+                    <Conversation />
                     <span className="dot">
                         <p className="dotN">
                             2
@@ -28,31 +26,19 @@ const Conversations = () => {
                     </span>
                 </div>
                 <div className="conversation-avatar-name disabled">
-                    <div className="name">
-                        <img src="https://via.placeholder.com/150" alt="avatar" className='avatar' />
-                        <p>John Doe</p>
-                    </div>
+                    <Conversation />
                     <span className="dot disabled"></span>
                 </div>
                 <div className="conversation-avatar-name disabled">
-                    <div className="name">
-                        <img src="https://via.placeholder.com/150" alt="avatar" className='avatar' />
-                        <p>John Doe</p>
-                    </div>
+                    <Conversation />
                     <span className="dot disabled"></span>
                 </div>
                 <div className="conversation-avatar-name disabled">
-                    <div className="name">
-                        <img src="https://via.placeholder.com/150" alt="avatar" className='avatar' />
-                        <p>John Doe</p>
-                    </div>
+                    <Conversation />
                     <span className="dot disabled"></span>
                 </div>
                 <div className="conversation-avatar-name disabled">
-                    <div className="name">
-                        <img src="https://via.placeholder.com/150" alt="avatar" className='avatar' />
-                        <p>John Doe</p>
-                    </div>
+                    <Conversation />
                     <span className="dot disabled"></span>
                 </div>
             </div>
