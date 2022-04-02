@@ -23,8 +23,7 @@ const Login = () => {
         }
         try {
             const res = await axios.post("http://localhost:8000/users/login", user);
-            // myStorage.setItem("user", res.data.username)
-            // setError(false)
+            localStorage.setItem("user", JSON.stringify(username));
             console.log("working!!", res)
         } catch (err) {
             // setError(true)

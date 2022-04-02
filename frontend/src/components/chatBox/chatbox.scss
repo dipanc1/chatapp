@@ -59,4 +59,15 @@
             color: white;
         }
     }
+    .noConvo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        font-size: xx-large;
+        font-weight: bold;
+        color: #004dfa;
+        font-family: 'Roboto', sans-serif;
+        cursor: default;
+    }
 }

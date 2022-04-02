@@ -5,6 +5,11 @@ const PhoneNumberReducer = (state, action) => {
                 ...state,
                 number: action.payload
             };
+        case "SET_CURRENT_CHAT":
+            return {
+                ...state,
+                currentChat: action.payload
+            };
         default:
             return state;
     }

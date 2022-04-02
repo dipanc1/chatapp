@@ -1,10 +1,47 @@
+import axios from 'axios'
 import React from 'react'
+import { PhoneNumberContext } from '../../context/phoneNumberContext'
 import Conversation from '../conversation/Conversation'
 import "./conversations.scss"
 
 const Conversations = () => {
-    return (
-        <div className='conversations'>
+    const { dispatch } = React.useContext(PhoneNumberContext);
+    const [conversations, setConversations] = React.useState([])
+    const user = JSON.parse(localStorage.getItem('user'))
+
+    const convo = React.useContext(PhoneNumberContext);
+    console.log(convo)
+
+    React.useEffect(() => {
+        const getConversations = async () => {
+            try {
+                const res = await axios.get(`http://localhost:8000/conversation/${user._id}`)
+                // console.log(res);
+                setConversations(res.data);
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        getConversations();
+    }, [user._id]);
+    
+    
+    // React.useEffect(() => {
+    //     const getMessages = async () => {
+    //         try {
+        //             const res = await axios.get(`http://localhost:8000/messages/${currentChat._id}`)
+    //             // console.log(res);
+    //             setConversations(res.data);
+    //         } catch (err) {
+        //             console.log(err)
+        //         }
+        //     }
+        //     getMessages();
+        // }, [user._id]);
+        
+        
+        return (
+            <div className='conversations'>
             <input
                 type="text"
                 id="search"
@@ -17,30 +54,11 @@ const Conversations = () => {
                     <img src="/images/down-arrow.png" alt="down arrow" className='down-arrow' />
                 </div>
                 <hr style={{ 'color': "#f3f7fc" }} />
-                <div className="conversation-avatar-name">
-                    <Conversation />
-                    <span className="dot">
-                        <p className="dotN">
-                            2
-                        </p>
-                    </span>
-                </div>
-                <div className="conversation-avatar-name disabled">
-                    <Conversation />
-                    <span className="dot disabled"></span>
-                </div>
-                <div className="conversation-avatar-name disabled">
-                    <Conversation />
-                    <span className="dot disabled"></span>
-                </div>
-                <div className="conversation-avatar-name disabled">
-                    <Conversation />
-                    <span className="dot disabled"></span>
-                </div>
-                <div className="conversation-avatar-name disabled">
-                    <Conversation />
-                    <span className="dot disabled"></span>
-                </div>
+                {conversations.map((c) => (
+                    <div className="conversation-avatar-name" key={c._id} onClick={()=> dispatch({type:"SET_CURRENT_CHAT", payload: c})}>
+                        <Conversation conversation={c} currentUser={user} />
+                    </div>
+                ))}
             </div>
             <div className="groups-list">
                 <div className="group-title">

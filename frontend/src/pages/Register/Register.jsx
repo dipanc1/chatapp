@@ -20,11 +20,11 @@ const Register = () => {
 
     const number1 = React.useContext(PhoneNumberContext)
     let history = useHistory();
-
+    
     const apiUrlMobile = "http://localhost:8000/mobile";
     const apiUrlOtp = "http://localhost:8000/otp";
     const apiUrlRegister = "http://localhost:8000/users/register";
-
+    
     const handleNumber = (e) => {
         setNumber(e.target.value);
     }
@@ -32,15 +32,15 @@ const Register = () => {
     const handleUsername = (e) => {
         setUsername(e.target.value);
     }
-
+    
     const handlePassword = (e) => {
         setPassword(e.target.value);
     }
-
+    
     const handleConfirmPassword = (e) => {
         setConfirmPassword(e.target.value);
     }
-
+    
     const handleRegister = (e) => {
         e.preventDefault();
         if (password !== confirmPassword) {
@@ -51,20 +51,17 @@ const Register = () => {
                 username: username,
                 password: password
             })
-                .then(res => {
-                    console.log(res.data);
-                    // dispatch({ type: "SET_PHONE_NUMBER", payload: number });
-                    // setVerify(false);
-                    // setOtp(false);
-                    // setError(false);
-                    history.push('/');
-                })
-                .catch(err => {
-                    console.log(err);
-                })
+            .then(res => {
+                console.log(res.data);
+                localStorage.setItem("user", JSON.stringify(res.data));
+                history.push('/');
+            })
+            .catch(err => {
+                console.log(err);
+            })
         }
     }
-
+    
     const handleVerify = () => {
         dispatch({ type: "SET_NUMBER", payload: number });
         const isValidPhoneNumber = validator.isMobilePhone(number)
