@@ -24,21 +24,7 @@ const Conversations = () => {
         }
         getConversations();
     }, [user._id]);
-    
-    
-    // React.useEffect(() => {
-    //     const getMessages = async () => {
-    //         try {
-        //             const res = await axios.get(`http://localhost:8000/messages/${currentChat._id}`)
-    //             // console.log(res);
-    //             setConversations(res.data);
-    //         } catch (err) {
-        //             console.log(err)
-        //         }
-        //     }
-        //     getMessages();
-        // }, [user._id]);
-        
+          
         
         return (
             <div className='conversations'>

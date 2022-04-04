@@ -1,14 +1,15 @@
 import './message.scss'
+import {format} from 'timeago.js'
 
-const Message = ({ own }) => {
+const Message = ({ message, own }) => {
     return (
         <div className={own ? 'message own' : 'message'}>
             <div className="messageTop">
                 <img src="https://via.placeholder.com/150" alt="avatar" className='chatbox-message-avatar' />
-                <p className='messageText'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit, vulputate eu pharetra nec, mattis ac neque. Duis vulputate commodo lectus, ac blandit elit tincidunt id. </p>
+                <p className='messageText'>{message.text}</p>
             </div>
             <div className="messageBottom">
-                1 hour ago
+                {format(message.createdAt)}
             </div>
         </div>
     )

@@ -1,11 +1,64 @@
+import axios from 'axios'
 import React from 'react'
+import { io } from 'socket.io-client'
 import { PhoneNumberContext } from '../../context/phoneNumberContext'
 import Message from '../message/Message'
 import "./chatbox.scss"
 
 const Chatbox = () => {
-  const {currentChat} = React.useContext(PhoneNumberContext)
+  const { currentChat } = React.useContext(PhoneNumberContext)
+  const user = JSON.parse(localStorage.getItem('user'));
+  // console.log(currentChat);
   const [messages, setMessages] = React.useState([]);
+  const [newMessage, setNewMessage] = React.useState('');
+  const socket = React.useRef(io('ws://localhost:8900'));
+  const scrollRef = React.useRef();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const message = {
+      text: newMessage,
+      sender: user._id,
+      conversationId: currentChat._id
+    }
+    try {
+      const res = await axios.post(`http://localhost:8000/message`, message)
+      setMessages([...messages, res.data])
+      console.log(res);
+      setNewMessage('')
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  React.useEffect(() => {
+    const getMessages = async () => {
+      try {
+        const res = await axios.get(`http://localhost:8000/message/${currentChat?._id}`)
+        console.log(res);
+        setMessages(res.data);
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    getMessages();
+  }, [currentChat?._id]);
+
+  // console.log(messages);
+
+  React.useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+
+
+  React.useEffect(() => {
+    socket.current.emit('addUser', user._id);
+    socket.current.on('getUsers', users => {
+      console.log(users);
+    });
+  }, [socket, user._id]);
+
 
   return (
     <div className='chatbox'>
@@ -24,15 +77,18 @@ const Chatbox = () => {
               marginBottom: '15px'
             }} />
             <div className="middle">
-              <Message own={true} />
-              <Message own={false} />
-              <Message own={true} />
-              <Message own={false} />
-              <Message own={true} />
+              {messages.map((m) => (
+                <div ref={scrollRef}>
+                  <Message key={m._id} message={m} own={m.sender === user._id} />
+                </div>
+              ))}
             </div>
             <div className="chatBottom">
-              <textarea name="message" id="message" placeholder='Type Your Message...' />
-              <button className='chatSubmit'>→</button>
+              <textarea name="message" id="message" placeholder='Type Your Message...'
+                onChange={(e) => setNewMessage(e.target.value)}
+                value={newMessage}
+              />
+              <button className='chatSubmit' onClick={newMessage !== "" ? handleSubmit : null}>→</button>
             </div>
           </>) : (<span className='noConvo'>Open a conversation to start a chat.</span>)
       }

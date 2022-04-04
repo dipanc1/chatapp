@@ -5,18 +5,21 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Chat from "./pages/chat/Chat"
 
 function App() {
+
+  const user = JSON.parse(localStorage.getItem('user'));
+
   return (
     <Router>
       <div className="app">
-        {/* <Switch>
+        <Switch>
           <Route exact path="/">
-            <Login />
+            {/* {user ? <Chat /> : <Login />} */}
+            <Chat />
           </Route >
           <Route exact path="/register"  >
             <Register />
           </Route>
-        </Switch> */}
-        <Chat/>
+        </Switch>
       </div>
     </Router>
   );
