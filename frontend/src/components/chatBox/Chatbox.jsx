@@ -11,7 +11,8 @@ const Chatbox = () => {
   // console.log(currentChat);
   const [messages, setMessages] = React.useState([]);
   const [newMessage, setNewMessage] = React.useState('');
-  const socket = React.useRef(io('ws://localhost:8900'));
+  const [arrivalMessage, setArrivalMessage] = React.useState(null);
+  const socket = React.useRef();
   const scrollRef = React.useRef();
 
   const handleSubmit = async (e) => {
@@ -20,7 +21,17 @@ const Chatbox = () => {
       text: newMessage,
       sender: user._id,
       conversationId: currentChat._id
-    }
+    };
+
+    const receiverId = currentChat.members.find(member => member !== user._id);
+
+    socket.current.emit('sendMessage',
+      {
+        senderId: user._id,
+        receiverId,
+        text: newMessage
+      });
+
     try {
       const res = await axios.post(`http://localhost:8000/message`, message)
       setMessages([...messages, res.data])
@@ -50,7 +61,20 @@ const Chatbox = () => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  React.useEffect(() => {
+    arrivalMessage && currentChat?.members.includes(arrivalMessage.sender) && setMessages(prev=>[...prev, arrivalMessage]);
+  }, [arrivalMessage, currentChat?.members]);
 
+  React.useEffect(() => {
+    socket.current = io('ws://localhost:8900');
+    socket.current.on('getMessage', (data) => {
+      setArrivalMessage({
+        sender: data.senderId,
+        text: data.text,
+        createdAt: Date.now()
+      });
+    });
+  }, []);
 
   React.useEffect(() => {
     socket.current.emit('addUser', user._id);
