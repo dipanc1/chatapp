@@ -6,8 +6,6 @@ import Chat from "./pages/chat/Chat"
 
 function App() {
 
-  const user = JSON.parse(localStorage.getItem('user'));
-
   return (
     <Router>
       <div className="app">
