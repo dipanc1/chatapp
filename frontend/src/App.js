@@ -13,11 +13,13 @@ function App() {
       <div className="app">
         <Switch>
           <Route exact path="/">
-            {/* {user ? <Chat /> : <Login />} */}
-            <Chat />
+            <Login />
           </Route >
           <Route exact path="/register"  >
             <Register />
+          </Route>
+          <Route exact path="/chat"  >
+            <Chat />
           </Route>
         </Switch>
       </div>

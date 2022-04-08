@@ -3,21 +3,33 @@ const mongoose = require("mongoose");
 const UserSchema = new mongoose.Schema({
     username: {
         type: String,
-        require: true,
+        required: true,
         min: 2,
         max: 20,
         // unique: true
     },
     number: {
         type: Number,
-        require: true,
+        // required: true,
         // unique: true
     },
     password: {
         type: String,
-        require: true,
+        required: true,
         min: 8
+    },
+    pic: {
+        type: String,
+        required: true,
+        default: "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"
+    },
+    isAdmin: {
+        type: Boolean,
+        required: true,
+        default: false,
     },
 }, { timestamps: true });
 
-module.exports = mongoose.model("User", UserSchema)
+const User = mongoose.model("User", UserSchema);
+
+module.exports = User;

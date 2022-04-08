@@ -6,7 +6,8 @@ const userRoute = require("./Router/users")
 const testRouter = require("./Router/testRouter")
 const conversationRoute = require("./Router/conversation")
 const messageRoute = require("./Router/messages")
-const { mongo_url } = require("./config/mongo_auth")
+const { mongo_url } = require("./config/mongo_auth");
+const { protect } = require("./middleware/authMiddleware");
 
 const app = express();
 
@@ -28,8 +29,8 @@ mongoose.connect(
 
 app.use(bodyParser.json());
 app.use("/", testRouter)
-app.use("/users", userRoute);
-app.use("/conversation", conversationRoute);
+app.use("/users", protect, userRoute);
+app.use("/conversation", protect, conversationRoute);
 app.use("/message", messageRoute);
 
 const PORT = "8000";
