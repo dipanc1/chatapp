@@ -16,19 +16,19 @@ const Chat = () => {
     }
   }, [history, user]);
 
-  
+
   return (
     <>
-      <Navbar />
+      {user && <Navbar />}
       <div className='chat'>
         <div className="left">
-          <Conversations />
+          {user && <Conversations />}
         </div>
         <div className="middle">
-          <Chatbox />
+          {user && <Chatbox />}
         </div>
         <div className="right">
-          <Members />
+          {user && <Members />}
         </div>
       </div>
     </>
