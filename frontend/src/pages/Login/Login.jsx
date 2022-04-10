@@ -59,7 +59,7 @@ const Login = () => {
                         </div>
                         <div className="loginBoxFormInput">
                             <label htmlFor="password">Password</label>
-                            <input type="password" id="password" name='password' placeholder='Enter Password' required onChange={handlePassword} />
+                            <input type={show ? "text" : "password"} id="password" name='password' placeholder='Enter Password' required onChange={handlePassword} />
                             {
                                 !show ?
                                     <img src="/images/show-pass.png" alt="show" width={22} onClick={handleShow} style={{ cursor: "pointer" }} /> :

@@ -4,19 +4,20 @@ import './conversation.scss'
 
 const Conversation = ({ conversation, currentUser }) => {
 
-    // const friendId = conversation.members.find(member => member !== currentUser._id);
-    // console.log(friendId)
-
-    // console.log(currentUser._id)
-
+    const friendId = conversation.users._id;
+    console.log(friendId)
+    
+    console.log(currentUser._id)
+    
     const [user, setUser] = useState(null);
-
+    
     useEffect(() => {
-        const friendId = conversation.members.find(member => member !== currentUser._id);
-        // console.log(friendId)
+        const friendId = conversation.users._id;
+        // const friendId = conversation.user.find(member => member !== currentUser._id);
+        console.log(friendId)
         const getUser = async () => {
             try {
-                const res = await axios.get(`http://localhost:8000/users?userId=${friendId}`)
+                const res = await axios.get(`http://localhost:8000/users/find?userId=${friendId}`)
                 console.log(res.data);
                 setUser(res.data);
             } catch (err) {
@@ -24,7 +25,7 @@ const Conversation = ({ conversation, currentUser }) => {
             }
         }
         getUser();
-    }, [conversation.members, currentUser._id])
+    }, [conversation.users._id])
 
 
     return (

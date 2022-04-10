@@ -65,23 +65,23 @@ const Chatbox = () => {
     arrivalMessage && currentChat?.members.includes(arrivalMessage.sender) && setMessages(prev=>[...prev, arrivalMessage]);
   }, [arrivalMessage, currentChat?.members]);
 
-  React.useEffect(() => {
-    socket.current = io('ws://localhost:8900');
-    socket.current.on('getMessage', (data) => {
-      setArrivalMessage({
-        sender: data.senderId,
-        text: data.text,
-        createdAt: Date.now()
-      });
-    });
-  }, []);
+  // React.useEffect(() => {
+  //   socket.current = io('ws://localhost:8900');
+  //   socket.current.on('getMessage', (data) => {
+  //     setArrivalMessage({
+  //       sender: data.senderId,
+  //       text: data.text,
+  //       createdAt: Date.now()
+  //     });
+  //   });
+  // }, []);
 
-  React.useEffect(() => {
-    socket.current.emit('addUser', user._id);
-    socket.current.on('getUsers', users => {
-      console.log(users);
-    });
-  }, [socket, user._id]);
+  // React.useEffect(() => {
+  //   socket.current.emit('addUser', user._id);
+  //   socket.current.on('getUsers', users => {
+  //     console.log(users);
+  //   });
+  // }, [socket, user._id]);
 
 
   return (
