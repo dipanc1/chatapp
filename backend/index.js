@@ -29,7 +29,7 @@ mongoose.connect(
 
 app.use(bodyParser.json());
 app.use("/", testRouter)
-app.use("/users", protect, userRoute);
+app.use("/users", userRoute);
 app.use("/conversation", protect, conversationRoute);
 app.use("/message", messageRoute);
 

@@ -3,6 +3,7 @@ const generateToken = require("../config/generateToken");
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const asyncHandler = require("express-async-handler");
+const { protect } = require("../middleware/authMiddleware");
 
 
 // register
@@ -78,23 +79,23 @@ router.post("/login", async(req, res) => {
 })
 
 //get user which we want to update
-router.get("/find", async(req, res) => {
-    const userId = req.query.userId;
-    const username = req.query.username;
-    try {
-        const user = userId ?
-            await User.findById(userId) :
-            await User.findOne({ username: username });
-        const { password, updatedAt, ...other } = user._doc;
-        res.status(200).json(other);
-    } catch (err) {
-        res.status(500).json(err);
-    }
-});
+// router.get("/find", async(req, res) => {
+//     const userId = req.query.userId;
+//     const username = req.query.username;
+//     try {
+//         const user = userId ?
+//             await User.findById(userId) :
+//             await User.findOne({ username: username });
+//         const { password, updatedAt, ...other } = user._doc;
+//         res.status(200).json(other);
+//     } catch (err) {
+//         res.status(500).json(err);
+//     }
+// });
 
 //get users to get users with out current user, search bar api
 
-router.get("/", asyncHandler(async(req, res) => {
+router.get("/", protect, asyncHandler(async(req, res) => {
     const keyword = req.query.search
     console.log(keyword) ? {
         $or: [

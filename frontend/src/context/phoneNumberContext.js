@@ -3,7 +3,8 @@ import PhoneNumberReducer from "./phoneNumberReducer";
 
 const INITIAL_STATE = {
   number: "",
-  currentChat: null,
+  selectedChat: null,
+  chats: [],
 };
 
 export const PhoneNumberContext = createContext(INITIAL_STATE);
@@ -12,8 +13,8 @@ export const PhoneNumberContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(PhoneNumberReducer, INITIAL_STATE);
 
   return (
-    <PhoneNumberContext.Provider value={{ number: state.number,currentChat: state.currentChat, dispatch }}>
+    <PhoneNumberContext.Provider value={{ number: state.number, selectedChat: state.selectedChat, chats: state.chats, dispatch }}>
       {children}
     </PhoneNumberContext.Provider>
   );
-};
+}; 
