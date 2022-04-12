@@ -19,7 +19,8 @@
     .conversations-list {
         display: flex;
         flex-direction: column;
-        max-height: 40vh;
+        // max-height: 40vh;
+        // overflow: scroll;
         .conversation-title {
             display: flex;
             justify-content: space-around;
@@ -100,31 +101,36 @@
             align-items: center;
             .down-arrow {
                 width: 15px;
-                height: 20px;
+                height: 18px;
+                cursor: pointer;
             }
             .groupChatButton {
                 border: 1px solid white;
                 border-radius: 10px;
-                background-color: #004dfa;
+                background-color: #b5cbfe;
                 font-size: 25px;
                 width: 30px;
                 cursor: pointer;
                 &:hover {
-                    background-color: #0033cc;
+                    background-color: #004dfa;
+                    text-transform: capitalize;
                 }
             }
         }
         .group-icon-name {
-            margin: 0 21px;
+            margin: 8px 21px;
             width: 85%;
             display: flex;
             justify-content: space-around;
             align-items: center;
             flex-direction: row;
-            background-color: #f3f7fc;
             border: 1px solid white;
-            border-radius: 10px;
             padding: 5px 0;
+            cursor: pointer;
+            border-radius: 10px;
+            &:hover {
+                background-color: #b5cbfe;
+            }
             .group-name {
                 display: flex;
                 flex-direction: row;

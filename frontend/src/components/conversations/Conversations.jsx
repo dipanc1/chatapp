@@ -2,19 +2,23 @@ import axios from 'axios'
 import React from 'react'
 import { PhoneNumberContext } from '../../context/phoneNumberContext'
 import Conversation from '../conversation/Conversation'
-import GroupChatModal from '../GroupChatModal/GroupChatModal'
+import GroupChat from '../groupchat/GroupChat'
+import GroupChatModal from '../groupchatmodal/GroupChatModal'
 import Loading from '../Loading'
+import GroupListItem from '../UserAvatar/GroupListItem'
 import UserListItem from '../UserAvatar/UserListItem'
 import "./conversations.scss"
 
 const Conversations = () => {
-    const { dispatch } = React.useContext(PhoneNumberContext);
+    const { dispatch, selectedChat, chats } = React.useContext(PhoneNumberContext);
     const [loggedUser, setLoggedUser] = React.useState();
-    const [dropdown, setDropdown] = React.useState(false);
-    const selectedChat = React.useContext(PhoneNumberContext);
+    const [dropdown, setDropdown] = React.useState(true);
+    const [dropdownGroup, setDropdownGroup] = React.useState(true);
     const [conversations, setConversations] = React.useState([])
+    const [groupConversations, setGroupConversations] = React.useState([])
     const [search, setSearch] = React.useState('')
-    const [searchResults, setSearchResults] = React.useState([])
+    const [searchResultsUsers, setSearchResultsUsers] = React.useState([])
+    const [searchResultsGroups, setSearchResultsGroups] = React.useState([])
     const [loading, setLoading] = React.useState(false)
     const user = JSON.parse(localStorage.getItem('user'))
 
@@ -31,9 +35,10 @@ const Conversations = () => {
                 }
             }
             const { data } = await axios.get(`http://localhost:8000/users?search=${search}`, config)
-            // console.log(data);
+            console.log(data);
             setLoading(false);
-            setSearchResults(data);
+            setSearchResultsUsers(data.users);
+            setSearchResultsGroups(data.groupName);
         } catch (error) {
             console.log(error)
         }
@@ -51,10 +56,6 @@ const Conversations = () => {
             }
             const { data } = await axios.post(`http://localhost:8000/conversation`, { userId }, config)
             console.log(data);
-            // if(!chats.find(chat => chat._id === data._id)) {
-            //     dispatch({ type: 'SET_CHATS', payload: data })
-            // }
-            // dispatch({ type: 'SET_SELECTED_CHAT', payload: data })
             setLoading(false);
             setSearch('');
         } catch (error) {
@@ -76,8 +77,13 @@ const Conversations = () => {
             console.log(data);
 
             setConversations((data.map(friend => friend.isGroupChat ? null : friend.users.find(member => member._id !== user._id))).filter(friend => friend !== null).map(friend => friend))
+            setGroupConversations(data.filter(friend => friend.isGroupChat && friend.chatName))
+            if (!chats.find(chat => chat._id === data._id)) {
+                dispatch({ type: 'SET_CHATS', payload: data })
+            }
+            // dispatch({ type: 'SET_SELECTED_CHAT', payload: data })
 
-            console.log(conversations);
+            console.log(groupConversations);
             //make similar function for group chat
         } catch (error) {
             console.log(error)
@@ -92,7 +98,6 @@ const Conversations = () => {
     return (
         <div className='conversations'>
             <div className="search">
-
                 <input
                     type="text"
                     id="search"
@@ -115,7 +120,7 @@ const Conversations = () => {
                         </div>
                         :
                         search.length > 0 ?
-                            searchResults?.map(user => (
+                            searchResultsUsers?.map(user => (
                                 <div className="conversation-avatar-name" key={user._id}
                                     onClick={() => accessChat(user._id)}
                                 >
@@ -125,7 +130,6 @@ const Conversations = () => {
                             ))
                             : !dropdown ?
                                 null :
-
                                 conversations.map((c) => (
                                     <div className={selectedChat ? "conversation-avatar-name" : "conversation-avatar-name.disabled"} key={c._id}
                                         onClick={() => dispatch({ type: "SET_SELECTED_CHAT", payload: c })}
@@ -138,52 +142,41 @@ const Conversations = () => {
 
             <div className="groups-list">
                 <div className="group-title">
+                    <img src="/images/down-arrow.png" alt="down arrow" className='down-arrow' onClick={() => setDropdownGroup(!dropdownGroup)}/>
                     <h5>Groups</h5>
-                    <img src="/images/down-arrow.png" alt="down arrow" className='down-arrow' />
-                    <GroupChatModal> 
+                    <GroupChatModal user={user}>
                         <button className='groupChatButton'>+</button>
                     </GroupChatModal>
                 </div>
                 <hr style={{ 'color': "#f3f7fc" }} />
-                <div className="group-icon-name disabled">
-                    <div className="group-name">
-                        <img src="https://via.placeholder.com/150" alt="avatar" className='icon' />
-                        <p>John Doe</p>
-                    </div>
-                    <span className="dot-group disabled"></span>
-                </div>
-                <div className="group-icon-name disabled">
-                    <div className="group-name">
-                        <img src="https://via.placeholder.com/150" alt="avatar" className='icon' />
-                        <p>John Doe</p>
-                    </div>
-                    <span className="dot-group disabled"></span>
-                </div>
-                <div className="group-icon-name disabled">
-                    <div className="group-name">
-                        <img src="https://via.placeholder.com/150" alt="avatar" className='icon' />
-                        <p>John Doe</p>
-                    </div>
-                    <span className="dot-group disabled"></span>
-                </div>
-                <div className="group-icon-name">
-                    <div className="group-name">
-                        <img src="https://via.placeholder.com/150" alt="avatar" className='icon' />
-                        <p>John Doe</p>
-                    </div>
-                    <span className="dot-group">
-                        <div className="dot-groupN">
-                            9
+                {
+                    loading ?
+                        <div className="loading">
+                            <Loading />
                         </div>
-                    </span>
-                </div>
-                <div className="group-icon-name disabled">
-                    <div className="group-name">
-                        <img src="https://via.placeholder.com/150" alt="avatar" className='icon' />
-                        <p>John Doe</p>
-                    </div>
-                    <span className="dot-group disabled"></span>
-                </div>
+                        :
+                        search.length > 0 ?
+                            searchResultsGroups?.map(group => (
+                                <div className="group-icon-name" key={group._id}
+                                    onClick={() => accessChat(group._id)}
+                                >
+                                    <GroupListItem group={group}
+                                    />
+                                </div>
+                            ))
+                            :
+                            !dropdownGroup
+                                ?
+                                null
+                                :
+                                groupConversations.map((c) => (
+                                    <div className="group-icon-name" key={c._id}
+                                        onClick={() => dispatch({ type: "SET_SELECTED_CHAT", payload: c })}
+                                    >
+                                        <GroupChat chat={c} />
+                                    </div>
+                                ))
+                }
             </div>
         </div>
     )

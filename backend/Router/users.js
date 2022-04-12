@@ -4,6 +4,7 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const asyncHandler = require("express-async-handler");
 const { protect } = require("../middleware/authMiddleware");
+const Chat = require("../models/Conversation");
 
 
 // register
@@ -101,11 +102,18 @@ router.get("/", protect, asyncHandler(async(req, res) => {
         $or: [
             { username: { $regex: keyword, $options: "i" } },
             { number: { $regex: keyword, $options: "i" } },
+            { chatName: { $regex: keyword, $options: "i" } },
         ],
     } : {}
 
     const users = await User.find({ keyword }).find({ _id: { $ne: req.user._id } })
-    res.send(users);
+        // added this 
+    const groupName = await Chat.find({ keyword }).find({ isGroupChat: { $ne: false } })
+    const body = {
+        users,
+        groupName
+    }
+    res.send(body);
 }));
 
 module.exports = router;
