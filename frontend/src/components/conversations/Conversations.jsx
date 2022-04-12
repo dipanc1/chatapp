@@ -2,6 +2,7 @@ import axios from 'axios'
 import React from 'react'
 import { PhoneNumberContext } from '../../context/phoneNumberContext'
 import Conversation from '../conversation/Conversation'
+import GroupChatModal from '../GroupChatModal/GroupChatModal'
 import Loading from '../Loading'
 import UserListItem from '../UserAvatar/UserListItem'
 import "./conversations.scss"
@@ -9,7 +10,8 @@ import "./conversations.scss"
 const Conversations = () => {
     const { dispatch } = React.useContext(PhoneNumberContext);
     const [loggedUser, setLoggedUser] = React.useState();
-    const chats = React.useContext(PhoneNumberContext);
+    const [dropdown, setDropdown] = React.useState(false);
+    const selectedChat = React.useContext(PhoneNumberContext);
     const [conversations, setConversations] = React.useState([])
     const [search, setSearch] = React.useState('')
     const [searchResults, setSearchResults] = React.useState([])
@@ -69,11 +71,14 @@ const Conversations = () => {
                     'Authorization': `Bearer ${user.token}`
                 }
             }
-            const { data } = await axios.get(`http://localhost:8000/conversation`, config)
+            const { data } = await axios.get(`http://localhost:8000/conversation`, config);
+
             console.log(data);
+
             setConversations((data.map(friend => friend.isGroupChat ? null : friend.users.find(member => member._id !== user._id))).filter(friend => friend !== null).map(friend => friend))
-            console.log(conversations)
-            //change it form here
+
+            console.log(conversations);
+            //make similar function for group chat
         } catch (error) {
             console.log(error)
         }
@@ -100,7 +105,7 @@ const Conversations = () => {
             <div className="conversations-list">
                 <div className="conversation-title">
                     <h5>Conversations</h5>
-                    <img src="/images/down-arrow.png" alt="down arrow" className='down-arrow' />
+                    <img src="/images/down-arrow.png" alt="down arrow" className='down-arrow' onClick={() => setDropdown(!dropdown)} />
                 </div>
                 <hr style={{ 'color': "#f3f7fc" }} />
                 {
@@ -118,22 +123,26 @@ const Conversations = () => {
                                     />
                                 </div>
                             ))
+                            : !dropdown ?
+                                null :
 
-                            : conversations.map((c) => (
-                                <div className="conversation-avatar-name" key={c._id}
-                                onClick={() => dispatch({ type: "SET_SELECTED_CHAT", payload: c })}
-                                >
-                                    <Conversation chat={c}/>
-                                </div>
-                            ))
+                                conversations.map((c) => (
+                                    <div className={selectedChat ? "conversation-avatar-name" : "conversation-avatar-name.disabled"} key={c._id}
+                                        onClick={() => dispatch({ type: "SET_SELECTED_CHAT", payload: c })}
+                                    >
+                                        <Conversation chat={c} />
+                                    </div>
+                                ))
                 }
-
-
             </div>
+
             <div className="groups-list">
                 <div className="group-title">
                     <h5>Groups</h5>
                     <img src="/images/down-arrow.png" alt="down arrow" className='down-arrow' />
+                    <GroupChatModal> 
+                        <button className='groupChatButton'>+</button>
+                    </GroupChatModal>
                 </div>
                 <hr style={{ 'color': "#f3f7fc" }} />
                 <div className="group-icon-name disabled">

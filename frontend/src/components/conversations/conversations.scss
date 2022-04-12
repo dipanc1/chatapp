@@ -19,6 +19,7 @@
     .conversations-list {
         display: flex;
         flex-direction: column;
+        max-height: 40vh;
         .conversation-title {
             display: flex;
             justify-content: space-around;
@@ -27,6 +28,7 @@
         }
         .down-arrow {
             width: 15px;
+            cursor: pointer;
         }
         .loading {
             display: flex;
@@ -95,9 +97,22 @@
             justify-content: space-around;
             flex-direction: row;
             margin: 15px 0;
-        }
-        .down-arrow {
-            width: 15px;
+            align-items: center;
+            .down-arrow {
+                width: 15px;
+                height: 20px;
+            }
+            .groupChatButton {
+                border: 1px solid white;
+                border-radius: 10px;
+                background-color: #004dfa;
+                font-size: 25px;
+                width: 30px;
+                cursor: pointer;
+                &:hover {
+                    background-color: #0033cc;
+                }
+            }
         }
         .group-icon-name {
             margin: 0 21px;
