@@ -8,13 +8,10 @@ import './groupchatmodal.scss'
 
 const GroupChatModal = ({ children }) => {
     const user = JSON.parse(localStorage.getItem('user'))
-    const chats = useContext(PhoneNumberContext);
-    const { dispatch } = useContext(PhoneNumberContext);
+    const { dispatch, chats } = useContext(PhoneNumberContext);
     const [show, setShow] = useState(false);
     const [groupChatName, setGroupChatName] = useState();
     const [selectedUsers, setSelectedUsers] = useState([]);
-    console.log(chats);
-
     const [search, setSearch] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -33,9 +30,9 @@ const GroupChatModal = ({ children }) => {
                 }
             }
             const { data } = await axios.get(`http://localhost:8000/users?search=${search}`, config)
-            console.log(data);
+            // console.log(data.users);
             setLoading(false);
-            setSearchResults(data);
+            setSearchResults(data.users);
         } catch (error) {
             console.log(error)
         }
@@ -56,11 +53,10 @@ const GroupChatModal = ({ children }) => {
                 }
             }
             const { data } = await axios.post(`http://localhost:8000/conversation/group`, { name: groupChatName, users: JSON.stringify(selectedUsers.map(u => u._id)) }, config)
-            console.log(data);
+            // console.log(chats);
             if (!chats.find(chat => chat._id === data._id)) {
                 dispatch({ type: 'SET_CHATS', payload: data })
             }
-            // dispatch({ type: 'SET_SELECTED_CHAT', payload: data })
             setLoading(false);
             setSearch('');
             setGroupChatName('');

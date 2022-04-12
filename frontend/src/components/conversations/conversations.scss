@@ -117,6 +117,12 @@
                 }
             }
         }
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 2vh 0;
+        }
         .group-icon-name {
             margin: 8px 21px;
             width: 85%;
