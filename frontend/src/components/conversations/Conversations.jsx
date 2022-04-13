@@ -76,7 +76,8 @@ const Conversations = () => {
 
             console.log(data);
 
-            setConversations((data.map(friend => friend.isGroupChat ? null : friend.users.find(member => member._id !== user._id))).filter(friend => friend !== null).map(friend => friend))
+            setConversations((data.map(friend => friend.isGroupChat ? null : friend.users.find(member => member._id !== user._id))).filter(friend => friend !== null).map(friend => friend));
+
             setGroupConversations(data.filter(friend => friend.isGroupChat && friend.chatName))
             if (!chats.find(chat => chat._id === data._id)) {
                 dispatch({ type: 'SET_CHATS', payload: data })
@@ -84,7 +85,6 @@ const Conversations = () => {
             // dispatch({ type: 'SET_SELECTED_CHAT', payload: data })
 
             console.log(groupConversations);
-            //make similar function for group chat
         } catch (error) {
             console.log(error)
         }

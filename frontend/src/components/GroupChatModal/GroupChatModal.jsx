@@ -62,6 +62,7 @@ const GroupChatModal = ({ children }) => {
             setGroupChatName('');
             setSelectedUsers([]);
             setShow(false);
+            setSearchResults([]);
             console.log("Group chat created successfully");
         } catch (error) {
             console.log(error)
