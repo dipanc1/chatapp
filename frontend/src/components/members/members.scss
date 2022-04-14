@@ -4,6 +4,17 @@
     background-color: #fff;
     border-radius: 15px;
     margin-right: 12px;
+    .noConvo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        font-size: xx-large;
+        font-weight: bold;
+        color: #004dfa;
+        font-family: 'Roboto', sans-serif;
+        cursor: default;
+    }
     .member-title {
         display: flex;
         justify-content: space-around;
@@ -28,6 +39,9 @@
             border: 1px solid white;
             border-radius: 10px;
             padding: 5px 0;
+            &:hover {
+                background-color: #b5cbfe;
+            }
         }
         .member-avatar-name-member {
             margin: 0 21px;
@@ -46,12 +60,102 @@
                 color: #b5cbfe;
                 font-size: medium;
                 cursor: pointer;
+                justify-content: space-between;
+                .loading {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    margin: 2vh 0;
+                }
+                .conversation-avatar-name {
+                    margin: 0 21px;
+                    width: 85%;
+                    display: flex;
+                    justify-content: space-around;
+                    align-items: center;
+                    flex-direction: row;
+                    border: 1px solid white;
+                    padding: 5px 0;
+                    cursor: pointer;
+                    border-radius: 10px;
+                    &:hover {
+                        background-color: #b5cbfe;
+                    }
+                }
                 .member-avatar {
                     width: 3rem;
                     height: 3rem;
                     margin-right: 1rem;
                     filter: invert(75%) sepia(20%) saturate(681%) hue-rotate(189deg) brightness(103%) contrast(99%);
                 }
+                input {
+                    width: 65%;
+                    border: none;
+                    border-radius: 10px;
+                    padding: 5px;
+                    background-color: #b5cbfe;
+                    font-size: medium;
+                    outline: none;
+                }
+                button {
+                    width: 25%;
+                    border: none;
+                    border-radius: 10px;
+                    padding: 5px 0;
+                    background-color: #b5cbfe;
+                    font-size: small;
+                    cursor: pointer;
+                    &:hover {
+                        background-color: #004dfa;
+                    }
+                }
+            }
+        }
+        .groupChatName {
+            margin: 0 21px;
+            width: 85%;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-direction: row;
+            border: 1px solid white;
+            border-radius: 10px;
+            padding: 5px 0;
+            input {
+                width: 65%;
+                border: none;
+                border-radius: 10px;
+                padding: 5px;
+                background-color: #b5cbfe;
+                font-size: medium;
+                outline: none;
+            }
+            button {
+                width: 25%;
+                border: none;
+                border-radius: 10px;
+                padding: 5px 0;
+                background-color: #b5cbfe;
+                font-size: medium;
+                cursor: pointer;
+                &:hover {
+                    background-color: #004dfa;
+                }
+            }
+        }
+        .member-remove {
+            margin: 0 100px;
+            width: 30%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: row;
+            border: 1px solid white;
+            border-radius: 10px;
+            padding: 5px 0;
+            cursor: pointer;
+            &:hover {
+                background-color: #fa0000;
             }
         }
     }

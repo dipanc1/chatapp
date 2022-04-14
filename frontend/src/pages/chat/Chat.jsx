@@ -16,19 +16,21 @@ const Chat = () => {
     }
   }, [history, user]);
 
+  const [fetchAgain, setFetchAgain] = React.useState(false)
+
 
   return (
     <>
       {user && <Navbar />}
       <div className='chat'>
         <div className="left">
-          {user && <Conversations />}
+          {user && <Conversations fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}/>}
         </div>
         <div className="middle">
-          {user && <Chatbox />}
+          {user && <Chatbox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}/>}
         </div>
         <div className="right">
-          {user && <Members />}
+          {user && <Members fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}/>}
         </div>
       </div>
     </>

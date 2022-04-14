@@ -3,13 +3,13 @@ import React from 'react'
 import { PhoneNumberContext } from '../../context/phoneNumberContext'
 import Conversation from '../conversation/Conversation'
 import GroupChat from '../groupchat/GroupChat'
-import GroupChatModal from '../groupchatmodal/GroupChatModal'
+import GroupChatModal from '../groupchatModal/GroupChatModal'
 import Loading from '../Loading'
 import GroupListItem from '../UserAvatar/GroupListItem'
 import UserListItem from '../UserAvatar/UserListItem'
 import "./conversations.scss"
 
-const Conversations = () => {
+const Conversations = ({ fetchAgain }) => {
     const { dispatch, selectedChat, chats } = React.useContext(PhoneNumberContext);
     const [loggedUser, setLoggedUser] = React.useState();
     const [dropdown, setDropdown] = React.useState(true);
@@ -92,7 +92,7 @@ const Conversations = () => {
     React.useEffect(() => {
         setLoggedUser(user);
         fetchChats();
-    }, [])
+    }, [fetchAgain])
 
 
     return (
@@ -142,7 +142,7 @@ const Conversations = () => {
 
             <div className="groups-list">
                 <div className="group-title">
-                    <img src="/images/down-arrow.png" alt="down arrow" className='down-arrow' onClick={() => setDropdownGroup(!dropdownGroup)}/>
+                    <img src="/images/down-arrow.png" alt="down arrow" className='down-arrow' onClick={() => setDropdownGroup(!dropdownGroup)} />
                     <h5>Groups</h5>
                     <GroupChatModal user={user}>
                         <button className='groupChatButton'>+</button>
