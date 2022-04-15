@@ -19,7 +19,7 @@
     .conversations-list {
         display: flex;
         flex-direction: column;
-        // max-height: 40vh;
+        max-height: 40vh;
         // overflow: scroll;
         .conversation-title {
             display: flex;
@@ -93,6 +93,7 @@
     .groups-list {
         display: flex;
         flex-direction: column;
+        max-height: 10vh;
         .group-title {
             display: flex;
             justify-content: space-around;

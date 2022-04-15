@@ -18,14 +18,32 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
   const user = JSON.parse(localStorage.getItem('user'));
 
 
-  const handleRemove = async () => {
-    // try {
-    //   setRenameLoading(true);
-    //   const config = {
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //       'Authorization': `Bearer ${user.token}`
-    //     }
+  const handleRemove = async (user1) => {
+    if(selectedChat.groupAdmin._id !== user._id && user1._id !== user._id) {
+      return alert('You are not the admin of this group chat')
+    }
+    try {
+      setLoading(true);
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.put(
+        `http://localhost:8000/conversation/groupremove`,
+        {
+          chatId: selectedChat._id,
+          userId: user1._id,
+        },
+        config
+      );
+      
+      user1._id === user._id ? dispatch({ type: 'SET_SELECTED_CHAT', payload: '' }) : dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
+      setFetchAgain(!fetchAgain);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   const handleAddUser = async (user1) => {
@@ -43,17 +61,21 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
         },
       };
       const { data } = await axios.put(
-        `http://localhost:8000/conversation/${selectedChat._id}`,
+        `http://localhost:8000/conversation/groupadd`,
         {
           chatId: selectedChat._id,
           userId: user1._id,
         },
         config
       );
+      console.log(data);
+      dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
+      setFetchAgain(!fetchAgain);
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
-    
+    setSearch('');
 
   }
 
@@ -78,14 +100,15 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
       dispatch({ type: 'SET_SELECTED_CHAT', payload: data })
       setFetchAgain(!fetchAgain);
       setRenameLoading(false);
+      setGroupChatName('');
     } catch (err) {
       console.log(err)
       setRenameLoading(false);
     }
-    setGroupChatName('');
   }
 
-  const handleSearch = async () => {
+  const handleSearch = async (e) => {
+    setSearch(e.target.value);
     setLoading(true);
     try {
 
@@ -121,7 +144,7 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
             {selectedChat.isGroupChat && selectedChat?.users.map(u =>
               <div className="member-avatar-name" key={u._id}>
                 <ChatOnline
-                  user={u}
+                  user1={u}
                   handleFunction={() => handleRemove(u)} />
               </div>
             )}
@@ -140,7 +163,7 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
                       <img src="./images/add-user.png" alt="avatar" className='member-avatar' onClick={() => setShow(false)} />
                       <p>Add Member</p>
                     </> */}
-                    <input type="text" placeholder="Search Member" onChange={(e) => handleSearch(e.target.value)} />
+                    <input value={search} type="text" placeholder="Search Member" onChange={handleSearch} />
                     {loading
                       ?
                       <div className="loading">
@@ -160,7 +183,7 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
                 </div>
                 <form action="">
                   <div className="groupChatName">
-                    <input type="text" placeholder="New Group Name" onChange={(e) => setGroupChatName(e.target.value)} />
+                    <input value={groupChatName} type="text" placeholder="New Group Name" onChange={(e) => setGroupChatName(e.target.value)} />
                     <button
                       type="button"
                       onClick={handleRename}>
