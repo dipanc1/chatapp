@@ -18,9 +18,11 @@ router.post("/", async(req, res) => {
         chat: chatId
     };
 
+    // console.log(newMessage);
+
     try {
         var message = await Message.create(newMessage);
-        message = await message.populate("sender", "name pic");
+        message = await message.populate("sender", "username pic");
         message = await message.populate("chat");
         message = await User.populate(message, {
             path: "chat.users",

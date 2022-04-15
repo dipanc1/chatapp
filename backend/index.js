@@ -8,7 +8,6 @@ const conversationRoute = require("./Router/conversation")
 const messageRoute = require("./Router/messages")
 const { mongo_url } = require("./config/mongo_auth");
 const { protect } = require("./middleware/authMiddleware");
-
 const app = express();
 
 app.use(
@@ -34,14 +33,20 @@ app.use("/conversation", protect, conversationRoute);
 app.use("/message", protect, messageRoute);
 
 const PORT = "8000";
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Port running on http://localhost:${PORT} `);
 });
 
+const io = require("socket.io")(server, {
+    pingTimeout: 60000,
+    cors: {
+        origin: "*",
+    },
+});
 
-
-
-
-// QCf5ToBxMtYSEemiccAk4HJNZwVXvwsvM6uNiNOV
-
-// twilio secret key delete
+io.on("connection", (socket) => {
+    console.log("New user connected");
+    // socket.on("disconnect", () => {
+    //     console.log("User disconnected");
+    // });
+});

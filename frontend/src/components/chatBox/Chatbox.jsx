@@ -40,7 +40,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
   }, [messages]);
 
   React.useEffect(() => {
-    setProfile(selectedChat.users.find(member => member._id !== user._id));
+    setProfile(selectedChat?.users.find(member => member._id !== user._id));
     fetchMessages();
 
   }, [selectedChat])
@@ -86,15 +86,15 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
             <div className="top">
               <div className="chatbox-group-name">
                 <h5>
-                  {selectedChat.isGroupChat ?
+                  {selectedChat?.isGroupChat ?
                     null :
                     <img src={profile.pic} alt="group-icon" className='group-icon-chat' />
                   }
-                  {selectedChat.isGroupChat ? selectedChat.chatName.toUpperCase() : profile.username}
+                  {selectedChat?.isGroupChat ? selectedChat?.chatName.toUpperCase() : profile?.username}
                 </h5>
                 <p>{
-                  selectedChat.isGroupChat ?
-                    `${selectedChat.users.length} members` :
+                  selectedChat?.isGroupChat ?
+                    `${selectedChat?.users.length} members` :
                     null
                 }</p>
               </div>
@@ -124,9 +124,9 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
               <textarea name="message" id="message" placeholder='Type Your Message...'
                 onChange={typingHandler}
                 value={newMessage}
-                onKeyDown={newMessage !== "" ? sendMessage : null}
+
               />
-              <button className='chatSubmit' onClick={newMessage !== "" ? sendMessage : null}>→</button>
+              <button className='chatSubmit' onKeyDown={newMessage !== "" ? sendMessage : null} onClick={newMessage !== "" ? sendMessage : null}>→</button>
             </div>
           </>) : (<span className='noConvo'>Open a conversation to start a chat.</span>)
       }
