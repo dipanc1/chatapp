@@ -33,6 +33,13 @@
     .middle {
         overflow-y: scroll;
         height: 64vh;
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+        }
     }
     .chatBottom {
         margin-top: 5px;

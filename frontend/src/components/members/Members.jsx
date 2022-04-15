@@ -13,6 +13,7 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
   const [searchResults, setSearchResults] = React.useState([]);
   const [renameLoading, setRenameLoading] = React.useState(false);
   const [loading, setLoading] = React.useState(false)
+  const [profile, setProfile] = React.useState(null);
 
   const { selectedChat, dispatch } = React.useContext(PhoneNumberContext);
   const user = JSON.parse(localStorage.getItem('user'));
@@ -135,7 +136,7 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
             {selectedChat.isGroupChat ?
               <h3> Group Info: <i>{selectedChat?.chatName}</i></h3>
               :
-              <h3>Personal Info: <i>{selectedChat?.username}</i></h3>}
+              <h3>Personal Info: <i>{selectedChat?.users.find(member => member._id !== user._id).username}</i></h3>}
           </div>
 
           <div className='members-container'>
@@ -151,8 +152,8 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
 
             {!selectedChat.isGroupChat && (
               <>
-                <img src={selectedChat?.pic} alt="user_image" className='modalUserImage' />
-                <p className='modalUserText'>Phone Number: {selectedChat?.number}</p>
+                <img src={selectedChat?.users.find(member => member._id !== user._id).pic} alt="user_image" className='modalUserImage' />
+                <p className='modalUserText'>Phone Number: {selectedChat?.users.find(member => member._id !== user._id).number}</p>
               </>
             )}
             {selectedChat.isGroupChat &&

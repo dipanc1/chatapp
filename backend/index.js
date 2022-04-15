@@ -31,7 +31,7 @@ app.use(bodyParser.json());
 app.use("/", testRouter)
 app.use("/users", userRoute);
 app.use("/conversation", protect, conversationRoute);
-app.use("/message", messageRoute);
+app.use("/message", protect, messageRoute);
 
 const PORT = "8000";
 app.listen(PORT, () => {
