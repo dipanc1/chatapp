@@ -20,7 +20,7 @@ const Conversation = ({ chat }) => {
 
     return (
         <div className='conversation'>
-            <img src={chat && friends.pic} alt="avatar" className='conversationImg' />
+            <img src={chat && friends?.pic} alt="avatar" className='conversationImg' />
             <span className='conversationName'>{chat && friends?.username}</span>
         </div>
     )
