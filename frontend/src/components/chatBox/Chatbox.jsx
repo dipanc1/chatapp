@@ -5,6 +5,8 @@ import { PhoneNumberContext } from '../../context/phoneNumberContext'
 import Message from '../message/Message'
 import "./chatbox.scss"
 import Loading from '../Loading'
+import Lottie from "lottie-react";
+import animationData from '../../animations/typing.json'
 
 const ENDPOINT = 'http://localhost:8000';
 var socket, selectedChatCompare;
@@ -163,14 +165,20 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
                   </div>
                 ))
               )}
-            </div>
-
             {isTyping ? (
-                <div>
-                 typing
+                <div className='typing'>
+                 <Lottie
+                 loop={true}
+                 style={{
+                    width: '7vw',
+                  }}
+                  animationData={animationData} 
+                  />
                 </div>
               ) : (
                 <></>)}
+            </div>
+
 
             <div className="chatBottom">
               <input name="message" id="message" placeholder='Type Your Message...'
