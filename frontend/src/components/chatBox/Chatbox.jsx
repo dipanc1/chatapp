@@ -12,8 +12,7 @@ const ENDPOINT = 'http://localhost:8000';
 var socket, selectedChatCompare;
 
 const Chatbox = ({ fetchAgain, setFetchAgain }) => {
-  const { selectedChat } = React.useContext(PhoneNumberContext);
-  console.log(selectedChat);
+  const { selectedChat, notification, dispatch } = React.useContext(PhoneNumberContext);
   const [profile, setProfile] = React.useState(null);
   const [messages, setMessages] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
@@ -70,7 +69,11 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
   React.useEffect(() => {
     socket.on("message received", (newMessageReceived) => {
       if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
-        // notification 
+        if (!notification.includes(newMessageReceived)) {
+          dispatch({ type: "SET_NOTIFICATION", payload: [newMessageReceived] });
+          setFetchAgain(!fetchAgain);
+          console.log(notification);
+        }
       } else {
         setMessages([...messages, newMessageReceived]);
       }
@@ -165,14 +168,14 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
                   </div>
                 ))
               )}
-            {isTyping ? (
+              {isTyping ? (
                 <div className='typing'>
-                 <Lottie
-                 loop={true}
-                 style={{
-                    width: '7vw',
-                  }}
-                  animationData={animationData} 
+                  <Lottie
+                    loop={true}
+                    style={{
+                      width: '7vw',
+                    }}
+                    animationData={animationData}
                   />
                 </div>
               ) : (

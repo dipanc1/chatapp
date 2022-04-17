@@ -15,7 +15,11 @@ const PhoneNumberReducer = (state, action) => {
                 ...state,
                 chats: action.payload
             };
-
+        case "SET_NOTIFICATION":
+            return {
+                notification: action.payload,
+                ...state
+            };
         default:
             return state;
     }

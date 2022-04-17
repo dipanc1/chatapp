@@ -10,6 +10,7 @@ const Login = () => {
     const [error, setError] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState('')
     const [show, setShow] = React.useState(false)
+    const user = JSON.parse(localStorage.getItem('user'))
 
     let history = useHistory();
 
@@ -43,6 +44,12 @@ const Login = () => {
         }
 
     }
+
+    React.useEffect(() => {
+        if (user) {  
+            history.push("/chat")
+        }
+    }, [history, user])
 
 
     return (

@@ -5,6 +5,7 @@ const INITIAL_STATE = {
   number: "",
   selectedChat: null,
   chats: [],
+  notification: []
 };
 
 export const PhoneNumberContext = createContext(INITIAL_STATE);
@@ -13,7 +14,14 @@ export const PhoneNumberContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(PhoneNumberReducer, INITIAL_STATE);
 
   return (
-    <PhoneNumberContext.Provider value={{ number: state.number, selectedChat: state.selectedChat, chats: state.chats, dispatch }}>
+    <PhoneNumberContext.Provider
+      value={{
+        number: state.number,
+        selectedChat: state.selectedChat,
+        chats: state.chats,
+        notification: state.notification,
+        dispatch
+      }}>
       {children}
     </PhoneNumberContext.Provider>
   );
