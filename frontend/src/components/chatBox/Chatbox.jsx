@@ -42,7 +42,6 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
       };
       setLoading(true);
       const { data } = await axios.get(`http://localhost:8000/message/${selectedChat._id}`, config);
-      console.log(data);
       setMessages(data);
       setLoading(false);
 
@@ -70,9 +69,9 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
     socket.on("message received", (newMessageReceived) => {
       if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
         if (!notification.includes(newMessageReceived)) {
-          dispatch({ type: "SET_NOTIFICATION", payload: [newMessageReceived] });
+          dispatch({ type: 'SET_NOTIFICATION', payload: [newMessageReceived] });
+          // console.log(newMessageReceived);
           setFetchAgain(!fetchAgain);
-          console.log(notification);
         }
       } else {
         setMessages([...messages, newMessageReceived]);

@@ -84,7 +84,7 @@ const Conversations = ({ fetchAgain }) => {
                 dispatch({ type: 'SET_CHATS', payload: data })
             }
             // dispatch({ type: 'SET_SELECTED_CHAT', payload: data })
-            // console.log(conversations);
+            // console.log(data);
 
             // console.log(groupConversations);
         } catch (error) {

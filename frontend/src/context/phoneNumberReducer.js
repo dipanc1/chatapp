@@ -17,8 +17,8 @@ const PhoneNumberReducer = (state, action) => {
             };
         case "SET_NOTIFICATION":
             return {
-                notification: action.payload,
-                ...state
+                ...state,
+                notification: action.payload
             };
         default:
             return state;
