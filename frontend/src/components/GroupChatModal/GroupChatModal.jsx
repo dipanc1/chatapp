@@ -6,7 +6,7 @@ import UserBadgeItem from '../UserAvatar/UserBadgeItem';
 import UserListItem from '../UserAvatar/UserListItem';
 import './groupchatmodal.scss'
 
-const GroupChatModal = ({ children }) => {
+const GroupChatModal = ({ children, fetchAgain }) => {
     const user = JSON.parse(localStorage.getItem('user'))
     const { dispatch, chats } = useContext(PhoneNumberContext);
     const [show, setShow] = useState(false);
@@ -63,6 +63,7 @@ const GroupChatModal = ({ children }) => {
             setSelectedUsers([]);
             setShow(false);
             setSearchResults([]);
+            fetchAgain();
             console.log("Group chat created successfully");
         } catch (error) {
             console.log(error)

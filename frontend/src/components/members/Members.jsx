@@ -20,7 +20,7 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
 
 
   const handleRemove = async (user1) => {
-    if(selectedChat.groupAdmin._id !== user._id && user1._id !== user._id) {
+    if (selectedChat.groupAdmin._id !== user._id && user1._id !== user._id) {
       return alert('You are not the admin of this group chat')
     }
     try {
@@ -38,7 +38,7 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
         },
         config
       );
-      
+
       user1._id === user._id ? dispatch({ type: 'SET_SELECTED_CHAT', payload: '' }) : dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
       setFetchAgain(!fetchAgain);
       setLoading(false);
@@ -134,9 +134,9 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
         <>
           <div className="member-title">
             {selectedChat.isGroupChat ?
-              <h3> Group Info: <i>{selectedChat?.chatName}</i></h3>
+              <h3> Group Info: <i style={{color:'#004dfa'}}>{selectedChat?.chatName}</i></h3>
               :
-              <h3>Personal Info: <i>{selectedChat?.users.find(member => member._id !== user._id).username}</i></h3>}
+              <h3>Personal Info: <i style={{color:'#004dfa'}}>{selectedChat?.users.find(member => member._id !== user._id).username}</i></h3>}
           </div>
 
           <div className='members-container'>
@@ -160,11 +160,14 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
               <>
                 <div className="member-avatar-name-member">
                   <div className="member-name">
-                    {/* {show ? (<>
-                      <img src="./images/add-user.png" alt="avatar" className='member-avatar' onClick={() => setShow(false)} />
-                      <p>Add Member</p>
-                    </> */}
-                    <input value={search} type="text" placeholder="Search Member" onChange={handleSearch} />
+                    {show ?
+                      <>
+                        <img src="./images/add-user.png" alt="avatar" className='member-avatar' onClick={() => setShow(false)} />
+                        <p>Add Member</p>
+                      </>
+                      :
+                      <input value={search} type="text" placeholder="Search Member" onChange={handleSearch} />
+                    }
                     {loading
                       ?
                       <div className="loading">

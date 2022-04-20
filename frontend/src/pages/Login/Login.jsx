@@ -74,7 +74,7 @@ const Login = () => {
                             }
                         </div>
                         <div className="loginBoxFormButton">
-                            {username.length !== 0 && password.length !== 0 ? <button type="submit" onClick={handleSubmit}>Login</button>
+                            {username.length !== 0 && password.length !== 0 ? <button type="submit" onClick={handleSubmit}><span>Login</span></button>
                                 : null}
                         </div>
                         {error &&

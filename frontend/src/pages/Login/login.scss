@@ -47,7 +47,7 @@
             .loginBoxFormButton {
                 button {
                     width: 46%;
-                    margin: 0 70px;
+                    margin: 0 0 20px 70px;
                     height: 40px;
                     border: none;
                     border-radius: 10px;
@@ -59,7 +59,40 @@
                     &:focus {
                         outline: none;
                     }
+                    span {
+                        cursor: pointer;
+                        display: inline-block;
+                        position: relative;
+                        transition: 0.5s;
+                    }
+                    span:after {
+                        content: '\00bb';
+                        position: absolute;
+                        opacity: 0;
+                        top: 0;
+                        right: -20px;
+                        transition: 0.5s;
+                    }
+                    &:hover span {
+                        padding-right: 25px;
+                    }
+                    &:hover span:after {
+                        opacity: 1;
+                        right: 0;
+                    }
+                    &:active:after {
+                        padding: 0;
+                        margin: 0;
+                        opacity: 1;
+                        transition: 0s
+                    }
                 }
+            }
+            .failure {
+                color: red;
+                font-size: 14px;
+                font-weight: bold;
+                margin-left: 2vw;
             }
         }
         .loginBoxLink {

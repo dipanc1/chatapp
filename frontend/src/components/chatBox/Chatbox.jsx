@@ -26,6 +26,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
   React.useEffect(() => {
     socket = io(ENDPOINT);
     socket.emit("setup", user);
+    console.log(user);
     socket.on("connected", () => setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
     socket.on("stop typing", () => setIsTyping(false));
@@ -56,8 +57,11 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
   }, [messages]);
 
   React.useEffect(() => {
-
-    setProfile(selectedChat?.users.find(member => member._id !== user._id));
+    try {
+      setProfile(selectedChat?.users.find(member => member._id !== user._id));
+    } catch (error) {
+      console.log(error);
+    }
 
     fetchMessages();
 

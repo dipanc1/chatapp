@@ -74,10 +74,10 @@ const Conversations = ({ fetchAgain }) => {
             }
             const { data } = await axios.get(`http://localhost:8000/conversation`, config);
             // console.log(data);
-            
+
             // setConversations((data.map(friend => friend.isGroupChat ? null : friend.users.find(member => member._id !== user._id))).filter(friend => friend !== null).map(friend => friend));
             setConversations(data.filter(friend => !friend.isGroupChat));
-            
+
             setGroupConversations(data.filter(friend => friend.isGroupChat && friend.chatName))
 
             if (!chats.find(chat => chat._id === data._id)) {
@@ -146,7 +146,7 @@ const Conversations = ({ fetchAgain }) => {
                 <div className="group-title">
                     <img src="/images/down-arrow.png" alt="down arrow" className='down-arrow' onClick={() => setDropdownGroup(!dropdownGroup)} />
                     <h5>Groups</h5>
-                    <GroupChatModal user={user}>
+                    <GroupChatModal user={user} fetchAgain={fetchAgain}>
                         <button className='groupChatButton'>+</button>
                     </GroupChatModal>
                 </div>

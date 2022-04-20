@@ -204,8 +204,11 @@ const Register = () => {
                             </div>
                         }
                         <div className="registerBoxFormButton">
-                            {verify ? <button type="submit" onClick={handleVerify}>Verify Phone Number</button> : null}
-                            {!otp && password === confirmPassword && username.length !== 0 && password.length >=8 ? <button type="submit" onClick={handleRegister} disabled={loading ? true : false}>{loading ? "Loading..." : "Register"}</button> : null}
+                            {verify ? <button type="submit" onClick={handleVerify}>
+                                <span>
+                                    Verify Phone Number
+                                </span></button> : null}
+                            {!otp && password === confirmPassword && username.length !== 0 && password.length >= 8 ? <button type="submit" onClick={handleRegister} disabled={loading ? true : false}>{loading ? "Loading..." : "Register"}</button> : null}
                         </div>
                         {error &&
                             <span className="failure">
