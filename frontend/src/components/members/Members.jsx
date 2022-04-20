@@ -134,13 +134,14 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
         <>
           <div className="member-title">
             {selectedChat.isGroupChat ?
-              <h3> Group Info: <i style={{color:'#004dfa'}}>{selectedChat?.chatName}</i></h3>
+              <h3> Group Info: <i style={{ color: '#004dfa' }}>{selectedChat?.chatName}</i></h3>
               :
-              <h3>Personal Info: <i style={{color:'#004dfa'}}>{selectedChat?.users.find(member => member._id !== user._id).username}</i></h3>}
+              <h3>Personal Info: <i style={{ color: '#004dfa' }}>{selectedChat?.users.find(member => member._id !== user._id).username}</i></h3>}
           </div>
 
           <div className='members-container'>
-            <hr style={{ 'color': "#f3f7fc" }} />
+            
+            <hr/>
 
             {selectedChat.isGroupChat && selectedChat?.users.map(u =>
               <div className="member-avatar-name" key={u._id}>
@@ -153,9 +154,13 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
             {!selectedChat.isGroupChat && (
               <>
                 <img src={selectedChat?.users.find(member => member._id !== user._id).pic} alt="user_image" className='modalUserImage' />
-                <p className='modalUserText'>Phone Number: {selectedChat?.users.find(member => member._id !== user._id).number}</p>
+                <span className='modalUserText'>Phone Number:
+                  <i style={{ color: '#004dfa' }}>
+                    {selectedChat?.users.find(member => member._id !== user._id).number}
+                  </i></span>
               </>
             )}
+
             {selectedChat.isGroupChat &&
               <>
                 <div className="member-avatar-name-member">

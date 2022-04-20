@@ -29,6 +29,8 @@
     .members-container {
         display: flex;
         flex-direction: column;
+        align-items: center;
+        justify-content: center;
         .member-avatar-name {
             margin: 0 21px;
             width: 85%;
@@ -44,15 +46,13 @@
             }
         }
         .modalUserImage {
+            clip-path: circle();
             width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
         }
         .modalUserText {
             margin: 40px;
             font-size: medium;
-            color: #004dfa;
+            color: #000000;
         }
         .member-avatar-name-member {
             margin: 0 21px;

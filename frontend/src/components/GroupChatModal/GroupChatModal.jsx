@@ -128,8 +128,16 @@ const GroupChatModal = ({ children, fetchAgain }) => {
                                 ))}
                             </div>
                         }
-                        <button className='modalUserButton' onClick={handleSubmit}>Create Chat</button>
-                        <button className='modalUserButton' onClick={() => setShow(false)}>Close</button>
+                        <button className='modalUserButton' onClick={handleSubmit}>
+                            <span>
+                                Create Chat
+                            </span>
+                        </button>
+                        <button className='modalUserButton' onClick={() => setShow(false)}>
+                            <span>
+                                Close
+                            </span>
+                        </button>
                     </div>
                 </div>
             }

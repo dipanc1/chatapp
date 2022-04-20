@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import ProfileModal from '../ProfileModal/ProfileModal';
 import "./navbar.scss"
 import { useHistory } from "react-router-dom";
@@ -17,13 +17,27 @@ const Navbar = () => {
 
   const [profile, setProfile] = React.useState(false);
 
+  useEffect(() => {
+    if(profile){
+      setTimeout(() => {
+        setProfile(!profile);
+      }, 10000);
+    }
+    if(show){
+      setTimeout(() => {
+        setShow(!show);
+      }, 10000);
+    }
+  }, [profile, show])
+  
+
   const handleLogout = () => {
     localStorage.removeItem('user');
     history.push('/');
   }
 
   const handleProfile = () => {
-    setProfile(!profile);
+      setProfile(!profile);
   }
 
   const handleNotification = () => {
@@ -33,7 +47,7 @@ const Navbar = () => {
   return (
     <div className='navbar'>
       <div className="profile">
-        <img src={user.pic} alt="avatar" className='avatar' onMouseOver={handleProfile} />
+        <img src={user.pic} alt="avatar" className='avatar' onClick={handleProfile} />
         <p>{user.username}</p>
         <img src="https://img.icons8.com/ios/50/000000/appointment-reminders--v1.png" alt='notification' style={{
           cursor: 'pointer',
@@ -74,7 +88,7 @@ const Navbar = () => {
       {profile ?
         <div className="myProfile">
           <ul>
-            <ProfileModal user={user} >
+            <ProfileModal user={user} p={setProfile}>
               <li>
                 My Profile
               </li>

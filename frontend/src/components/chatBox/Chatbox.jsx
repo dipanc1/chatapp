@@ -138,19 +138,19 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
         selectedChat ?
           (<>
             <div className="top">
-              <div className="chatbox-group-name">
-                <h5>
+              <div className="chatbox-group-name" style={{margin: selectedChat?.isGroupChat ? '8px' :  null}}>
                   {selectedChat?.isGroupChat ?
                     null :
                     <img src={profile?.pic} alt="group-icon" className='group-icon-chat' />
                   }
+                <span>
                   {selectedChat?.isGroupChat ? selectedChat?.chatName.toUpperCase() : profile?.username}
-                </h5>
-                <p>{
+                </span>
+                <span className='chatbox-group-members'>{
                   selectedChat?.isGroupChat ?
                     `${selectedChat?.users.length} members` :
                     null
-                }</p>
+                }</span>
               </div>
             </div>
             <hr style={{

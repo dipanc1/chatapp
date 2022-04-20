@@ -1,9 +1,14 @@
 import { useState } from 'react';
 import './profileModal.scss'
 
-const ProfileModal = ({ user, children }) => {
+const ProfileModal = ({ user, children, p }) => {
 
     const [show, setShow] = useState(false);
+
+    const handleClose = () => {
+        setShow(false);
+        p(false);
+    }
 
     return (
         <>
@@ -18,7 +23,11 @@ const ProfileModal = ({ user, children }) => {
                         <h1 className='modalUserName'>{user.username}</h1>
                         <img src={user.pic} alt="user_image" className='modalUserImage' />
                         <p className='modalUserText'>Phone Number: {user.number}</p>
-                        <button className='modalUserButton' onClick={() => setShow(false)}>Close</button>
+                        <button className='modalUserButton' onClick={handleClose}>
+                            <span>
+                                Close
+                            </span>
+                        </button>
                     </div>
                 </div>
             }
