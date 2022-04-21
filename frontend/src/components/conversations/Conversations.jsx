@@ -9,9 +9,11 @@ import GroupListItem from '../UserAvatar/GroupListItem'
 import UserListItem from '../UserAvatar/UserListItem'
 import "./conversations.scss"
 
-const Conversations = ({ fetchAgain }) => {
+const Conversations = ({ fetchAgain, setFetchAgain }) => {
     const { dispatch, selectedChat, chats } = React.useContext(PhoneNumberContext);
     const [loggedUser, setLoggedUser] = React.useState();
+    const [noChats, setNoChats] = React.useState(false);
+    const [noGroupChats, setNoGroupChats] = React.useState(false);
     const [dropdown, setDropdown] = React.useState(true);
     const [dropdownGroup, setDropdownGroup] = React.useState(true);
     const [conversations, setConversations] = React.useState([])
@@ -25,6 +27,7 @@ const Conversations = ({ fetchAgain }) => {
 
     // search bar to search for users
     const handleSearch = async (e) => {
+        setNoChats(false);
         setSearch(e.target.value)
         try {
             setLoading(true);
@@ -58,6 +61,7 @@ const Conversations = ({ fetchAgain }) => {
             console.log(data);
             setLoading(false);
             setSearch('');
+            setFetchAgain(!fetchAgain);
         } catch (error) {
             console.log(error)
         }
@@ -73,12 +77,16 @@ const Conversations = ({ fetchAgain }) => {
                 }
             }
             const { data } = await axios.get(`http://localhost:8000/conversation`, config);
-            // console.log(data);
 
             // setConversations((data.map(friend => friend.isGroupChat ? null : friend.users.find(member => member._id !== user._id))).filter(friend => friend !== null).map(friend => friend));
             setConversations(data.filter(friend => !friend.isGroupChat));
+            setGroupConversations(data.filter(friend => friend.isGroupChat && friend.chatName));
 
-            setGroupConversations(data.filter(friend => friend.isGroupChat && friend.chatName))
+            // setNoChats((data.map(friend => friend).map(moreFriends => moreFriends.isGroupChat) === false) ? true : false);
+
+            setNoChats((conversations.length === 0) ? true : false);
+            setNoGroupChats((groupConversations.length === 0) ? true : false);
+            // console.log(groupConversations);
 
             if (!chats.find(chat => chat._id === data._id)) {
                 dispatch({ type: 'SET_CHATS', payload: data })
@@ -86,7 +94,7 @@ const Conversations = ({ fetchAgain }) => {
             // dispatch({ type: 'SET_SELECTED_CHAT', payload: data })
             // console.log(data);
 
-            // console.log(groupConversations);
+            console.log(groupConversations);
         } catch (error) {
             console.log(error)
         }
@@ -116,29 +124,32 @@ const Conversations = ({ fetchAgain }) => {
                 </div>
                 <hr style={{ 'color': "#f3f7fc" }} />
                 {
-                    loading ?
-                        <div className="loading">
-                            <Loading />
-                        </div>
-                        :
-                        search.length > 0 ?
-                            searchResultsUsers?.map(user => (
-                                <div className="conversation-avatar-name" key={user._id}
-                                    onClick={() => accessChat(user._id)}
-                                >
-                                    <UserListItem user={user}
-                                    />
-                                </div>
-                            ))
-                            : !dropdown ?
-                                null :
-                                conversations.map((c) => (
-                                    <div className={selectedChat ? "conversation-avatar-name" : "conversation-avatar-name.disabled"} key={c._id}
-                                        onClick={() => dispatch({ type: "SET_SELECTED_CHAT", payload: c })}
+                    // noChats ? <div className="noChat">
+                    //     <h5>No Conversations</h5>
+                    // </div> :
+                        loading ?
+                            <div className="loading">
+                                <Loading />
+                            </div>
+                            :
+                            search.length > 0 ?
+                                searchResultsUsers?.map(user => (
+                                    <div className="conversation-avatar-name" key={user._id}
+                                        onClick={() => accessChat(user._id)}
                                     >
-                                        <Conversation chat={c} />
+                                        <UserListItem user={user}
+                                        />
                                     </div>
                                 ))
+                                : !dropdown ?
+                                    null :
+                                    conversations.map((c) => (
+                                        <div className="conversation-avatar-name" key={c._id}
+                                            onClick={() => dispatch({ type: "SET_SELECTED_CHAT", payload: c })}
+                                        >
+                                            <Conversation chat={c} />
+                                        </div>
+                                    ))
                 }
             </div>
 
@@ -152,32 +163,36 @@ const Conversations = ({ fetchAgain }) => {
                 </div>
                 <hr style={{ 'color': "#f3f7fc" }} />
                 {
-                    loading ?
-                        <div className="loading">
-                            <Loading />
-                        </div>
-                        :
-                        search.length > 0 ?
-                            searchResultsGroups?.map(group => (
-                                <div className="group-icon-name" key={group._id}
-                                    onClick={() => accessChat(group._id)}
-                                >
-                                    <GroupListItem group={group}
-                                    />
-                                </div>
-                            ))
+                    noGroupChats ? <div className="noGroup">
+                        <h5>No Groups</h5>
+                    </div> :
+
+                        loading ?
+                            <div className="loading">
+                                <Loading />
+                            </div>
                             :
-                            !dropdownGroup
-                                ?
-                                null
-                                :
-                                groupConversations.map((c) => (
-                                    <div className="group-icon-name" key={c._id}
-                                        onClick={() => dispatch({ type: "SET_SELECTED_CHAT", payload: c })}
+                            search.length > 0 ?
+                                searchResultsGroups?.map(group => (
+                                    <div className="group-icon-name" key={group._id}
+                                        onClick={() => accessChat(group._id)}
                                     >
-                                        <GroupChat chat={c} />
+                                        <GroupListItem group={group}
+                                        />
                                     </div>
                                 ))
+                                :
+                                !dropdownGroup
+                                    ?
+                                    null
+                                    :
+                                    groupConversations.map((c) => (
+                                        <div className="group-icon-name" key={c._id}
+                                            onClick={() => dispatch({ type: "SET_SELECTED_CHAT", payload: c })}
+                                        >
+                                            <GroupChat chat={c} />
+                                        </div>
+                                    ))
                 }
             </div>
         </div>

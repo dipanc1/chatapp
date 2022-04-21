@@ -26,7 +26,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
   React.useEffect(() => {
     socket = io(ENDPOINT);
     socket.emit("setup", user);
-    console.log(user);
+    // console.log(user);
     socket.on("connected", () => setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
     socket.on("stop typing", () => setIsTyping(false));
@@ -45,7 +45,6 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
       const { data } = await axios.get(`http://localhost:8000/message/${selectedChat._id}`, config);
       setMessages(data);
       setLoading(false);
-
       socket.emit('join chat', selectedChat._id);
     } catch (error) {
       console.log(error);
@@ -102,7 +101,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
 
         socket.emit("new message", data);
         setMessages([...messages, data]);
-        console.log(data);
+        // console.log(data);
       } catch (error) {
         console.log(error);
       }

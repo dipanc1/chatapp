@@ -12,9 +12,9 @@ const ChatOnline = ({ user1, handleFunction }) => {
     useEffect(() => {
         socket = io(ENDPOINT);
         socket.emit("setup", user);
-        socket.on("connected", (userData) => {
-            console.log(userData);
-        });
+        // socket.on("connected", (userData) => {
+        //     console.log(userData);
+        // });
         // have to work on this online feature?/?
     }, [user, user1._id]);
 

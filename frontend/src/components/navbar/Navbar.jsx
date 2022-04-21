@@ -9,7 +9,7 @@ const Navbar = () => {
   const user = JSON.parse(localStorage.getItem('user'));
 
   const { notification, dispatch } = React.useContext(PhoneNumberContext);
-  console.log(notification);
+  // console.log(notification);
 
   const [show, setShow] = React.useState(false);
 
@@ -18,18 +18,18 @@ const Navbar = () => {
   const [profile, setProfile] = React.useState(false);
 
   useEffect(() => {
-    if(profile){
+    if (profile) {
       setTimeout(() => {
         setProfile(!profile);
       }, 10000);
     }
-    if(show){
+    if (show) {
       setTimeout(() => {
         setShow(!show);
       }, 10000);
     }
   }, [profile, show])
-  
+
 
   const handleLogout = () => {
     localStorage.removeItem('user');
@@ -37,12 +37,13 @@ const Navbar = () => {
   }
 
   const handleProfile = () => {
-      setProfile(!profile);
+    setProfile(!profile);
   }
 
   const handleNotification = () => {
     setShow(!show);
   }
+
 
   return (
     <div className='navbar'>
@@ -53,7 +54,7 @@ const Navbar = () => {
           cursor: 'pointer',
           marginRight: '30px',
           height: '40px'
-        }} onClick={handleNotification}/>
+        }} onClick={handleNotification} />
         {
           notification.length > 0 &&
           <div className="number" >
@@ -63,21 +64,25 @@ const Navbar = () => {
       </div>
       {show ? <div className="notificationModal">
         <ul>
-          {!notification.length ? <li onClick={handleNotification}>No new notifications</li> : notification.map((notification) => {
+          {!notification.length ? <li onClick={handleNotification}>No new notifications</li> : notification.map((notifications) => {
             return (
               <>
-                <li key={notification._id} onClick={()=> {
+                <li key={notifications._id} onClick={() => {
+                  // console.log(notifications);
+                  // console.log(notifications._id !== notification[0]._id);
+                  setShow(!show);
                   dispatch({
                     type: 'SET_SELECTED_CHAT',
-                    payload: notification.chat
+                    payload: notifications.chat
                   })
                   dispatch({
                     type: 'SET_NOTIFICATION',
-                    payload: notification.filter(n => n !== notification)
+                    payload: notifications.filter(notifications._id !== notification._id)
                   })
-                  setShow(false)
+
+                  //check this feature
                 }}>
-                  {notification.chat.isGroupChat ? `New Message in ${notification.chat.chatName}` : `New Message from ${notification.sender.username}`}
+                  {notifications.chat.isGroupChat ? `New Message in ${notifications.chat.chatName}` : `New Message from ${notifications.sender.username}`}
                 </li>
                 <hr />
               </>

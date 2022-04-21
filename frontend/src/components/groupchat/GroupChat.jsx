@@ -5,6 +5,7 @@ const GroupChat = ({chat}) => {
         <div className="group-name">
             {/* <img src="https://via.placeholder.com/150" alt="avatar" className='icon' />  */}
             {/* will add image later */}
+            
             <p>{chat.chatName}</p>
         </div>
     )

@@ -77,6 +77,14 @@
                 position: relative;
             }
         }
+        .noChat {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 2vh 0;
+            font-size: xx-large;
+            color: #004dfa;
+        }
         .conversation-avatar-name.disabled {
             margin: 0 21px;
             width: 85%;
@@ -117,6 +125,14 @@
                     text-transform: capitalize;
                 }
             }
+        }
+        .noGroup {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 2vh 0;
+            font-size: xx-large;
+            color: #004dfa;
         }
         .loading {
             display: flex;
