@@ -57,13 +57,13 @@ const GroupChatModal = ({ children, fetchAgain }) => {
             if (!chats.find(chat => chat._id === data._id)) {
                 dispatch({ type: 'SET_CHATS', payload: data })
             }
+            fetchAgain();
             setLoading(false);
             setSearch('');
             setGroupChatName('');
             setSelectedUsers([]);
             setShow(false);
             setSearchResults([]);
-            fetchAgain();
             console.log("Group chat created successfully");
         } catch (error) {
             console.log(error)
