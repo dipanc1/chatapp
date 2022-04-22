@@ -22,14 +22,14 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
   const [isTyping, setIsTyping] = React.useState(false);
   const scrollRef = React.useRef();
   const user = JSON.parse(localStorage.getItem('user'));
-
+  
   React.useEffect(() => {
     socket = io(ENDPOINT);
     socket.emit("setup", user);
-    // console.log(user);
     socket.on("connected", () => setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
     socket.on("stop typing", () => setIsTyping(false));
+    
   }, []);
 
   const fetchMessages = async () => {
@@ -137,11 +137,11 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
         selectedChat ?
           (<>
             <div className="top">
-              <div className="chatbox-group-name" style={{margin: selectedChat?.isGroupChat ? '8px' :  null}}>
-                  {selectedChat?.isGroupChat ?
-                    null :
-                    <img src={profile?.pic} alt="group-icon" className='group-icon-chat' />
-                  }
+              <div className="chatbox-group-name" style={{ margin: selectedChat?.isGroupChat ? '8px' : null }}>
+                {selectedChat?.isGroupChat ?
+                  null :
+                  <img src={profile?.pic} alt="group-icon" className='group-icon-chat' />
+                }
                 <span>
                   {selectedChat?.isGroupChat ? selectedChat?.chatName.toUpperCase() : profile?.username}
                 </span>

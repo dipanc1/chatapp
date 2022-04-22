@@ -50,7 +50,7 @@ io.on("connection", (socket) => {
     socket.on("setup", (userData) => {
         socket.join(userData._id);
         socket.emit("connected", userData);
-        console.log("connected", userData);
+        socket.broadcast.emit("user connected", userData);
     });
 
     socket.on("join chat", (room) => {

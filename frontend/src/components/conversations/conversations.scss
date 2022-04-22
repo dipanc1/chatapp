@@ -20,7 +20,8 @@
         display: flex;
         flex-direction: column;
         max-height: 40vh;
-        // overflow: scroll;
+        overflow: scroll;
+        overflow-x: hidden;
         .conversation-title {
             display: flex;
             justify-content: space-around;
@@ -101,7 +102,9 @@
     .groups-list {
         display: flex;
         flex-direction: column;
-        max-height: 10vh;
+        max-height: 40vh;
+        overflow: scroll;
+        overflow-x: hidden;
         .group-title {
             display: flex;
             justify-content: space-around;
