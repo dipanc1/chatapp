@@ -7,7 +7,7 @@ import "./chatbox.scss"
 import Loading from '../Loading'
 import Lottie from "lottie-react";
 import animationData from '../../animations/typing.json'
-import GroupChatModal from '../GroupChatModal/GroupChatModal'
+import DetailsModal from '../detailsmodal/DetailsModal'
 
 const ENDPOINT = 'http://localhost:8000';
 var socket, selectedChatCompare;
@@ -35,14 +35,16 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
 
   React.useEffect(() => {
     socket.on("user connected", (userData) => {
-      console.log(selectedChat);
+      // console.log(selectedChat);
       // console.log(userData._id);
       // console.log(selectedChat?.users.filter(u => u._id !== user._id)[0]._id);
-      console.log(userData._id === (selectedChat?.users.filter(u => u._id !== user._id)[0]._id) ? true : false)
-      // setOnline(userConnected._id === (selectedChat?.users.filter(u => u._id !== user._id)[0]._id) ? true : false);
+      // console.log(userData._id === (selectedChat?.users.filter(u => u._id !== user._id)[0]._id) ? true : false)
+      // setOnline(userData._id === (selectedChat?.users.filter(u => u._id !== user._id)[0]._id) ? true : false);
     });
 
-  });
+  },[selectedChat?.users]);
+
+  // need another approach
 
 
   const fetchMessages = async () => {
@@ -164,12 +166,15 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
                     null
                 }</span>
               </div>
+              {/* <div className="chatbox-online-status">
+                {online ?
+                  <img src='...' alt="online-icon" className='online-icon-chat' /> :
+                  <img src='...' alt="offline-icon" className='offline-icon-chat' />
+                }
+              </div> */}
               <div className="chatboxGroupModal">
-                <GroupChatModal>
-                  <p>
-                    eyeybeuknei
-                  </p>
-                </GroupChatModal>
+                <DetailsModal>
+                </DetailsModal>
               </div>
             </div>
             <hr style={{

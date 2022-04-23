@@ -107,7 +107,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                     type="text"
                     id="search"
                     name='search'
-                    placeholder='Search'
+                    placeholder='Start a new conversation'
                     value={search}
                     onChange={handleSearch}
                 />

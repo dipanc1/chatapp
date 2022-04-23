@@ -137,9 +137,10 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
             {selectedChat.isGroupChat ?
               <h3> Group Info: <i style={{ color: '#004dfa' }}>{selectedChat?.chatName}</i></h3>
               :
-              <h3>Personal Info: <i style={{ color: '#004dfa' }}>{selectedChat?.users.find(member => member._id !== user._id).username}</i></h3>}
+              <h3>Personal Info: <i style={{ color: '#004dfa' }}>{selectedChat?.users.find(member => member._id !== user._id).username}</i></h3>
+            }
           </div>
-          <hr style={{ 'color': "#f3f7fc", marginBottom:'10px' }} />
+          <hr style={{ 'color': "#f3f7fc", marginBottom: '10px' }} />
 
           <div className='members-container'>
 

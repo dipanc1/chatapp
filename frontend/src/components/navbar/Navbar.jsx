@@ -6,6 +6,14 @@ import { PhoneNumberContext } from '../../context/phoneNumberContext';
 
 const Navbar = () => {
 
+  const styles = {
+    navigationIcon: {
+      cursor: 'pointer',
+      marginRight: '30px',
+      height: '40px',
+    },
+  };
+
   const user = JSON.parse(localStorage.getItem('user'));
 
   const { notification, dispatch } = React.useContext(PhoneNumberContext);
@@ -44,17 +52,13 @@ const Navbar = () => {
     setShow(!show);
   }
 
-
   return (
     <div className='navbar'>
       <div className="profile">
         <img src={user.pic} alt="avatar" className='avatar' onClick={handleProfile} />
         <p>{user.username}</p>
-        <img src="https://img.icons8.com/ios/50/000000/appointment-reminders--v1.png" alt='notification' style={{
-          cursor: 'pointer',
-          marginRight: '30px',
-          height: '40px'
-        }} onClick={handleNotification} />
+        <img src="https://img.icons8.com/ios/50/000000/appointment-reminders--v1.png" alt='notification' style={styles.navigationIcon}
+          onClick={handleNotification} />
         {
           notification?.length > 0 &&
           <div className="number" >
