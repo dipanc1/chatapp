@@ -1,3 +1,5 @@
+$phone: 640px;
+$tablet: 768px;
 .register {
     background-color: #B4CBFF;
     height: 100vh;
@@ -113,6 +115,16 @@
             cursor: pointer;
             &:focus {
                 outline: none;
+            }
+        }
+    }
+    @media (max-width: $tablet) {
+        .registerBox {
+            width: 50%;
+            .registerBoxForm {
+                .registerBoxFormInput {
+                    width: 34vw;
+                }
             }
         }
     }

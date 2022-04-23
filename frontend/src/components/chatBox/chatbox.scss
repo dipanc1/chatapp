@@ -1,3 +1,5 @@
+$phone: 640px;
+$tablet: 768px;
 .chatbox {
     width: 56vw;
     height: 89vh;
@@ -35,6 +37,9 @@
                 font-size: large;
                 color: #000000;
             }
+        }
+        .chatboxGroupModal {
+            display: none;
         }
     }
     .middle {
@@ -87,5 +92,21 @@
         color: #004dfa;
         font-family: 'Roboto', sans-serif;
         cursor: default;
+    }
+}
+
+@media (max-width: $tablet) {
+    .chatbox {
+        width: 64vw;
+        margin-left: 2vw;
+        height: 95vh;
+        .top {
+            .chatboxGroupModal {
+                display: block;
+            }
+        }
+        .chatBottom {
+            margin-top: 33px;
+        }
     }
 }

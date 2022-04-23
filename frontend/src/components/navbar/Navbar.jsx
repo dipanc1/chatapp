@@ -56,9 +56,9 @@ const Navbar = () => {
           height: '40px'
         }} onClick={handleNotification} />
         {
-          notification.length > 0 &&
+          notification?.length > 0 &&
           <div className="number" >
-            <p>{notification.length}</p>
+            <p>{notification?.length}</p>
           </div>
         }
       </div>

@@ -1,3 +1,5 @@
+$phone: 640px;
+$tablet: 768px;
 .login {
     background-color: #B4CBFF;
     height: 100vh;
@@ -103,6 +105,16 @@
                 a {
                     color: #004CFB;
                     text-decoration: none;
+                }
+            }
+        }
+    }
+    @media (max-width: $tablet) {
+        .loginBox {
+            width: 50%;
+            .loginBoxForm {
+                .loginBoxFormInput {
+                    width: 34vw;
                 }
             }
         }

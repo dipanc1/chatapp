@@ -1,3 +1,5 @@
+$phone: 640px;
+$tablet: 768px;
 .members {
     height: 664px;
     width: 18rem;
@@ -170,5 +172,11 @@
                 background-color: #fa0000;
             }
         }
+    }
+}
+
+@media (max-width: $tablet) {
+    .members {
+        display: none;
     }
 }

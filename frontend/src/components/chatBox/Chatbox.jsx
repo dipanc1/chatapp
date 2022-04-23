@@ -7,12 +7,14 @@ import "./chatbox.scss"
 import Loading from '../Loading'
 import Lottie from "lottie-react";
 import animationData from '../../animations/typing.json'
+import GroupChatModal from '../GroupChatModal/GroupChatModal'
 
 const ENDPOINT = 'http://localhost:8000';
 var socket, selectedChatCompare;
 
 const Chatbox = ({ fetchAgain, setFetchAgain }) => {
   const { selectedChat, notification, dispatch } = React.useContext(PhoneNumberContext);
+  const [online, setOnline] = React.useState(false);
   const [profile, setProfile] = React.useState(null);
   const [messages, setMessages] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
@@ -22,15 +24,26 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
   const [isTyping, setIsTyping] = React.useState(false);
   const scrollRef = React.useRef();
   const user = JSON.parse(localStorage.getItem('user'));
-  
+
   React.useEffect(() => {
     socket = io(ENDPOINT);
     socket.emit("setup", user);
     socket.on("connected", () => setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
     socket.on("stop typing", () => setIsTyping(false));
-    
   }, []);
+
+  React.useEffect(() => {
+    socket.on("user connected", (userData) => {
+      console.log(selectedChat);
+      // console.log(userData._id);
+      // console.log(selectedChat?.users.filter(u => u._id !== user._id)[0]._id);
+      console.log(userData._id === (selectedChat?.users.filter(u => u._id !== user._id)[0]._id) ? true : false)
+      // setOnline(userConnected._id === (selectedChat?.users.filter(u => u._id !== user._id)[0]._id) ? true : false);
+    });
+
+  });
+
 
   const fetchMessages = async () => {
     if (!selectedChat) return;
@@ -151,6 +164,13 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
                     null
                 }</span>
               </div>
+              <div className="chatboxGroupModal">
+                <GroupChatModal>
+                  <p>
+                    eyeybeuknei
+                  </p>
+                </GroupChatModal>
+              </div>
             </div>
             <hr style={{
               marginBottom: '15px'
@@ -165,7 +185,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
                 </div>
               ) : (
                 messages?.map((m) => (
-                  <div ref={scrollRef}>
+                  <div key={m._id} ref={scrollRef}>
                     <Message key={m._id} messages={m} own={m.sender._id === user._id} />
                   </div>
                 ))

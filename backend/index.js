@@ -48,6 +48,7 @@ io.on("connection", (socket) => {
     console.log("New user connected");
 
     socket.on("setup", (userData) => {
+        console.log(userData)
         socket.join(userData._id);
         socket.emit("connected", userData);
         socket.broadcast.emit("user connected", userData);

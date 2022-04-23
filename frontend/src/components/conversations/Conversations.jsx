@@ -150,9 +150,11 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                                         >
                                             <Conversation chat={c} />
                                         </div>
-                                    )) || <div className="noChat">
-                            <h5>No Conversations</h5>
-                        </div>
+                                    ))
+                                    ||
+                                    <div className="noChat">
+                                        <h5>No Conversations</h5>
+                                    </div>
                     }
                 </div>
             </CSSTransition>
@@ -161,7 +163,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                 <div className="group-title">
                     <img src="/images/down-arrow.png" alt="down arrow" className='down-arrow' onClick={() => setDropdownGroup(!dropdownGroup)} />
                     <h5>Groups</h5>
-                    <GroupChatModal user={user} fetchAgain={fetchAgain}>
+                    <GroupChatModal user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}>
                         <button className='groupChatButton'>+</button>
                     </GroupChatModal>
                 </div>
@@ -195,8 +197,8 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                                         <GroupChat chat={c} />
                                     </div>
                                 )) || <div className="noGroup">
-                    <h5>No Groups</h5>
-                </div>
+                                    <h5>No Groups</h5>
+                                </div>
                 }
             </div>
         </div>
