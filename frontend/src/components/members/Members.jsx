@@ -13,6 +13,7 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
   const [searchResults, setSearchResults] = React.useState([]);
   const [renameLoading, setRenameLoading] = React.useState(false);
   const [loading, setLoading] = React.useState(false)
+  const [transformmm, setTransformmm] = React.useState(false);
   const [profile, setProfile] = React.useState(null);
 
   const { selectedChat, dispatch } = React.useContext(PhoneNumberContext);
@@ -135,9 +136,11 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
         <>
           <div className="member-title">
             {selectedChat.isGroupChat ?
-              <h3> Group Info: <i style={{ color: '#004dfa' }}>{selectedChat?.chatName}</i></h3>
+              <h3> Group Info: <i style={{ color: !transformmm ? '#004bfaec' : '#004dfa' }} onMouseEnter={() => setTransformmm(true)}
+                onMouseLeave={() => setTransformmm(false)}>{selectedChat?.chatName}</i></h3>
               :
-              <h3>Personal Info: <i style={{ color: '#004dfa' }}>{selectedChat?.users.find(member => member._id !== user._id).username}</i></h3>
+              <h3>Personal Info: <i style={{ color: !transformmm ? '#004bfaec' : '#004dfa' }} onMouseEnter={() => setTransformmm(true)}
+                onMouseLeave={() => setTransformmm(false)}>{selectedChat?.users.find(member => member._id !== user._id)?.username}</i></h3>
             }
           </div>
           <hr style={{ 'color': "#f3f7fc", marginBottom: '10px' }} />
@@ -154,10 +157,11 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
 
             {!selectedChat.isGroupChat && (
               <>
-                <img src={selectedChat?.users.find(member => member._id !== user._id).pic} alt="user_image" className='modalUserImage' />
+                <img src={selectedChat?.users.find(member => member._id !== user._id)?.pic} alt="user_image" className='modalUserImage' />
                 <span className='modalUserText'>Phone Number:
-                  <i style={{ color: '#004dfa' }}>
-                    {selectedChat?.users.find(member => member._id !== user._id).number}
+                  <i style={{ color: !transformmm ? '#004bfaec' : '#004dfa' }} onMouseEnter={() => setTransformmm(true)}
+                    onMouseLeave={() => setTransformmm(false)}>
+                    {selectedChat?.users.find(member => member._id !== user._id)?.number}
                   </i></span>
               </>
             )}

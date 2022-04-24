@@ -6,13 +6,7 @@ import { PhoneNumberContext } from '../../context/phoneNumberContext';
 
 const Navbar = () => {
 
-  const styles = {
-    navigationIcon: {
-      cursor: 'pointer',
-      marginRight: '30px',
-      height: '40px',
-    },
-  };
+  const [transformmm, setTransformmm] = React.useState(false);
 
   const user = JSON.parse(localStorage.getItem('user'));
 
@@ -57,8 +51,17 @@ const Navbar = () => {
       <div className="profile">
         <img src={user.pic} alt="avatar" className='avatar' onClick={handleProfile} />
         <p>{user.username}</p>
-        <img src="https://img.icons8.com/ios/50/000000/appointment-reminders--v1.png" alt='notification' style={styles.navigationIcon}
-          onClick={handleNotification} />
+        <img src="https://img.icons8.com/ios/50/000000/appointment-reminders--v1.png" alt='notification' style={{
+          transform: transformmm ? 'scale(1.1) translateY(-2px)' :  null,
+          transition: 'all 0.1s ease-in-out',
+          cursor: 'pointer',
+          marginRight: '30px',
+          height: '40px',
+        }}
+          onClick={handleNotification} 
+          onMouseEnter={() => setTransformmm(true)}
+          onMouseLeave={() => setTransformmm(false)}
+          />
         {
           notification?.length > 0 &&
           <div className="number" >

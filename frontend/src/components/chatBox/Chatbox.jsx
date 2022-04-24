@@ -13,6 +13,7 @@ const ENDPOINT = 'http://localhost:8000';
 var socket, selectedChatCompare;
 
 const Chatbox = ({ fetchAgain, setFetchAgain }) => {
+  const user = JSON.parse(localStorage.getItem('user'));
   const { selectedChat, notification, dispatch } = React.useContext(PhoneNumberContext);
   const [online, setOnline] = React.useState(false);
   const [profile, setProfile] = React.useState(null);
@@ -23,7 +24,6 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
   const [typing, setTyping] = React.useState(false);
   const [isTyping, setIsTyping] = React.useState(false);
   const scrollRef = React.useRef();
-  const user = JSON.parse(localStorage.getItem('user'));
 
   React.useEffect(() => {
     socket = io(ENDPOINT);
@@ -31,25 +31,14 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
     socket.on("connected", () => setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
     socket.on("stop typing", () => setIsTyping(false));
+    socket.on("user connected", (userData) => setOnline(userData._id === (selectedChat?.users.filter(u => u._id !== user._id)[0]._id) ? true : false));
+    // need another approach
   }, []);
 
-  React.useEffect(() => {
-    socket.on("user connected", (userData) => {
-      // console.log(selectedChat);
-      // console.log(userData._id);
-      // console.log(selectedChat?.users.filter(u => u._id !== user._id)[0]._id);
-      // console.log(userData._id === (selectedChat?.users.filter(u => u._id !== user._id)[0]._id) ? true : false)
-      // setOnline(userData._id === (selectedChat?.users.filter(u => u._id !== user._id)[0]._id) ? true : false);
-    });
-
-  },[selectedChat?.users]);
-
-  // need another approach
 
 
   const fetchMessages = async () => {
     if (!selectedChat) return;
-
     try {
       const config = {
         headers: {
@@ -166,12 +155,14 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
                     null
                 }</span>
               </div>
-              {/* <div className="chatbox-online-status">
+              {!selectedChat?.isGroupChat ? <div className="chatbox-online-status">
                 {online ?
-                  <img src='...' alt="online-icon" className='online-icon-chat' /> :
-                  <img src='...' alt="offline-icon" className='offline-icon-chat' />
+                  <img src='https://img.icons8.com/emoji/48/000000/green-circle-emoji.png' alt="online-icon" className='online-icon-chat' /> :
+                  <img src='https://img.icons8.com/emoji/48/000000/red-circle-emoji.png' alt="offline-icon" className='offline-icon-chat' />
                 }
-              </div> */}
+              </div>
+                : null
+              }
               <div className="chatboxGroupModal">
                 <DetailsModal>
                 </DetailsModal>

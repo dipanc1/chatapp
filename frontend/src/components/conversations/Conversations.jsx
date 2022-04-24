@@ -11,7 +11,7 @@ import UserListItem from '../UserAvatar/UserListItem'
 import "./conversations.scss"
 
 const Conversations = ({ fetchAgain, setFetchAgain }) => {
-    const { dispatch, chats } = React.useContext(PhoneNumberContext);
+    const { dispatch, chats, selectedChat } = React.useContext(PhoneNumberContext);
     const [loggedUser, setLoggedUser] = React.useState();
     const [dropdown, setDropdown] = React.useState(true);
     const [dropdownGroup, setDropdownGroup] = React.useState(true);
@@ -36,7 +36,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                 }
             }
             const { data } = await axios.get(`http://localhost:8000/users?search=${search}`, config)
-            console.log(data);
+            // console.log(data);
             setLoading(false);
             setSearchResultsUsers(data.users);
             setSearchResultsGroups(data.groupName);
@@ -47,6 +47,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
 
     // add user to conversation
     const accessChat = async (userId) => {
+        // console.log(userId);
         try {
             setLoading(true);
             const config = {
@@ -55,8 +56,10 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                     'Authorization': `Bearer ${user.token}`
                 }
             }
-            const { data } = await axios.post(`http://localhost:8000/conversation`, { userId }, config)
-            console.log(data);
+            const { data } = await axios.post(`http://localhost:8000/conversation`, { userId }, config);
+
+            dispatch({ type: 'SET_SELECTED_CHAT', payload: data })
+            // console.log(data);
             setLoading(false);
             setSearch('');
             setFetchAgain(!fetchAgain);
@@ -87,11 +90,43 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
             if (!chats.find(chat => chat._id === data._id)) {
                 dispatch({ type: 'SET_CHATS', payload: data })
             }
-            // dispatch({ type: 'SET_SELECTED_CHAT', payload: data })
 
         } catch (error) {
             console.log(error)
         }
+    }
+
+    const handleAddUser = async (user1, groupId) => {
+        const res = searchResultsGroups.map(group => group.users).includes(user1);
+        console.log(user1)
+        console.log(res);
+        if (res) {
+            console.log("user already in chat")
+        }
+        try {
+            setLoading(true);
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${user.token}`,
+                },
+            };
+            const { data } = await axios.put(
+                `http://localhost:8000/conversation/groupadd`,
+                {
+                    chatId: groupId,
+                    userId: user1,
+                },
+                config
+            );
+            console.log(data);
+            dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
+            setFetchAgain(!fetchAgain);
+            setLoading(false);
+        } catch (error) {
+            console.log(error);
+        }
+        setSearch('');
+
     }
 
     React.useEffect(() => {
@@ -150,14 +185,14 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                                         >
                                             <Conversation chat={c} />
                                         </div>
-                                    ))
-                                    ||
+                                    )) ||
+
                                     <div className="noChat">
                                         <h5>No Conversations</h5>
                                     </div>
                     }
                 </div>
-            </CSSTransition>
+            </CSSTransition >
 
             <div className="groups-list">
                 <div className="group-title">
@@ -179,7 +214,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                         search.length > 0 ?
                             searchResultsGroups?.map(group => (
                                 <div className="group-icon-name" key={group._id}
-                                    onClick={() => accessChat(group._id)}
+                                    onClick={() => handleAddUser(user._id, group._id)}
                                 >
                                     <GroupListItem group={group}
                                     />
@@ -201,7 +236,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                                 </div>
                 }
             </div>
-        </div>
+        </div >
     )
 }
 
