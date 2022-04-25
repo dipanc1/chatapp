@@ -19,20 +19,6 @@ const Navbar = () => {
 
   const [profile, setProfile] = React.useState(false);
 
-  useEffect(() => {
-    if (profile) {
-      setTimeout(() => {
-        setProfile(!profile);
-      }, 10000);
-    }
-    if (show) {
-      setTimeout(() => {
-        setShow(!show);
-      }, 10000);
-    }
-  }, [profile, show])
-
-
   const handleLogout = () => {
     localStorage.removeItem('user');
     history.push('/');

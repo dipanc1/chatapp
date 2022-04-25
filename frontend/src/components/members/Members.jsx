@@ -14,7 +14,6 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
   const [renameLoading, setRenameLoading] = React.useState(false);
   const [loading, setLoading] = React.useState(false)
   const [transformmm, setTransformmm] = React.useState(false);
-  const [profile, setProfile] = React.useState(null);
 
   const { selectedChat, dispatch } = React.useContext(PhoneNumberContext);
   const user = JSON.parse(localStorage.getItem('user'));
@@ -67,7 +66,7 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
         `http://localhost:8000/conversation/groupadd`,
         {
           chatId: selectedChat._id,
-          userId: user1._id,
+          userId: user1,
         },
         config
       );
@@ -101,6 +100,7 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
       }
       const { data } = await axios.put(`http://localhost:8000/conversation/rename`, body, config)
       dispatch({ type: 'SET_SELECTED_CHAT', payload: data })
+      alert(`Group chat renamed to ${groupChatName}`)
       setFetchAgain(!fetchAgain);
       setRenameLoading(false);
       setGroupChatName('');
@@ -114,7 +114,6 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
     setSearch(e.target.value);
     setLoading(true);
     try {
-
       const config = {
         headers: {
           'Content-Type': 'application/json',
@@ -123,7 +122,7 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
       }
       const { data } = await axios.get(`http://localhost:8000/users?search=${search}`, config)
       setSearchResults(data.users);
-      console.log(searchResults);
+      // console.log(searchResults);
       setLoading(false);
     } catch (error) {
       console.log(error)
@@ -195,15 +194,20 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
                       ))}
                   </div>
                 </div>
-                <form action="">
-                  <div className="groupChatName">
-                    <input value={groupChatName} type="text" placeholder="New Group Name" onChange={(e) => setGroupChatName(e.target.value)} />
-                    <button
-                      type="button"
-                      onClick={handleRename}>
-                      Update</button>
+                {renameLoading ?
+                  <div className="loading">
+                    <Loading />
                   </div>
-                </form>
+                  :
+                  <form action="">
+                    <div className="groupChatName">
+                      <input value={groupChatName} type="text" placeholder="New Group Name" onChange={(e) => setGroupChatName(e.target.value)} />
+                      <button
+                        type="button"
+                        onClick={handleRename}>
+                        Update</button>
+                    </div>
+                  </form>}
                 <div className="member-remove" onClick={() => handleRemove(user)}>
                   <img src="https://img.icons8.com/external-tanah-basah-basic-outline-tanah-basah/24/000000/external-exit-essentials-tanah-basah-basic-outline-tanah-basah-2.png" alt='leave group' />
                   <p>Leave Group</p>

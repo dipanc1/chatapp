@@ -136,6 +136,12 @@ $tablet: 768px;
                 }
             }
         }
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 2vh 0;
+        }
         .groupChatName {
             margin: 0 21px;
             width: 85%;
