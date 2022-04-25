@@ -2,7 +2,7 @@ $phone: 640px;
 $tablet: 768px;
 .chatbox {
     width: 56vw;
-    height: 89vh;
+    height: 628px;
     background-color: #fff;
     box-shadow: 0 0 10px rgb(0 0 0 / 20%);
     padding: 10px;
@@ -44,7 +44,7 @@ $tablet: 768px;
     }
     .middle {
         overflow-y: scroll;
-        height: 64vh;
+        height: 63vh;
         .loading {
             display: flex;
             justify-content: center;
@@ -54,7 +54,6 @@ $tablet: 768px;
         }
     }
     .chatBottom {
-        margin-top: 5px;
         display: flex;
         align-items: center;
         justify-content: space-between;
