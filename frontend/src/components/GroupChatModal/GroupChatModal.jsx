@@ -52,11 +52,12 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
                     'Authorization': `Bearer ${user.token}`
                 }
             }
-            const { data } = await axios.post(`http://localhost:8000/conversation/group`, { name: groupChatName, users: JSON.stringify(selectedUsers.map(u => u._id)) }, config)
-            // console.log(chats);
+            const { data } = await axios.post(`http://localhost:8000/conversation/group`, { name: groupChatName, users: JSON.stringify(selectedUsers.map(u => u._id)) }, config);
+
             if (!chats.find(chat => chat._id === data._id)) {
-                dispatch({ type: 'SET_CHATS', payload: data })
+                dispatch({ type: 'SET_SELECTED_CHAT', payload: data })
             }
+
             setFetchAgain(!fetchAgain);
             setLoading(false);
             setSearch('');

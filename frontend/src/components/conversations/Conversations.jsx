@@ -79,15 +79,14 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
             }
             const { data } = await axios.get(`http://localhost:8000/conversation`, config);
 
-            // console.log(data);
             // console.log(conversations);
             // console.log(groupConversations);
             // setConversations((data.map(friend => friend.isGroupChat ? null : friend.users.find(member => member._id !== user._id))).filter(friend => friend !== null).map(friend => friend));
-
+            
             setConversations(data.filter(friend => !friend.isGroupChat));
             setGroupConversations(data.filter(friend => friend.isGroupChat && friend.chatName));
-
-            if (!chats.find(chat => chat._id === data._id)) {
+            
+            if (!chats.find(chat => chat._id === data.map(datas => datas._id))) {
                 dispatch({ type: 'SET_CHATS', payload: data })
             }
 

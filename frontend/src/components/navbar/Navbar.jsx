@@ -61,8 +61,7 @@ const Navbar = () => {
             return (
               <>
                 <li key={notifications._id} onClick={() => {
-                  // console.log(notifications);
-                  // console.log(notifications._id !== notification[0]._id);
+                  console.log(notifications);
                   setShow(!show);
                   dispatch({
                     type: 'SET_SELECTED_CHAT',
