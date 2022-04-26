@@ -18,35 +18,35 @@ $tablet: 768px;
             outline: none;
         }
     }
+    .conversation-title {
+        display: flex;
+        justify-content: space-around;
+        flex-direction: row;
+        margin: 15px 0;
+        h5 {
+            color: rgba(0, 0, 0, 0.753);
+            cursor: default;
+            &:hover {
+                color: #000;
+            }
+        }
+        .down-arrow {
+            width: 15px;
+            cursor: pointer;
+            &:hover {
+                transform: rotate(180deg) scale(1.1) translateY(-2px);
+                transition: all 0.3s ease-in-out;
+                background-color: #b5cbfe47;
+                border-radius: 50%;
+            }
+        }
+    }
     .conversations-list {
         display: flex;
         flex-direction: column;
         max-height: 40vh;
         overflow: scroll;
         overflow-x: hidden;
-        .conversation-title {
-            display: flex;
-            justify-content: space-around;
-            flex-direction: row;
-            margin: 15px 0;
-            h5 {
-                color: rgba(0, 0, 0, 0.753);
-                cursor: default;
-                &:hover {
-                    color: #000;
-                }
-            }
-            .down-arrow {
-                width: 15px;
-                cursor: pointer;
-                &:hover {
-                    transform: rotate(180deg) scale(1.1) translateY(-2px);
-                    transition: all 0.3s ease-in-out;
-                    background-color: #b5cbfe47;
-                    border-radius: 50%;
-                }
-            }
-        }
         .loading {
             display: flex;
             justify-content: center;
@@ -114,51 +114,51 @@ $tablet: 768px;
             padding: 5px 0;
         }
     }
+    .group-title {
+        display: flex;
+        justify-content: space-around;
+        flex-direction: row;
+        margin: 15px 0;
+        align-items: center;
+        h5 {
+            color: rgba(0, 0, 0, 0.753);
+            cursor: default;
+            &:hover {
+                color: #000;
+            }
+        }
+        .down-arrow {
+            width: 15px;
+            height: 18px;
+            cursor: pointer;
+            &:hover {
+                transform: rotate(180deg) scale(1.1) translateY(-2px);
+                transition: all 0.3s ease-in-out;
+                background-color: #b5cbfe47;
+                border-radius: 50%;
+            }
+        }
+        .groupChatButton {
+            border: 1px solid white;
+            border-radius: 10px;
+            background-color: #b5cbfe;
+            font-size: 25px;
+            width: 30px;
+            cursor: pointer;
+            &:hover {
+                background-color: #004dfa;
+                text-transform: capitalize;
+                transform: scale(1) translateY(-2px) rotate(135deg);
+                transition: all 0.3s ease-in-out;
+            }
+        }
+    }
     .groups-list {
         display: flex;
         flex-direction: column;
         max-height: 40vh;
         overflow: scroll;
         overflow-x: hidden;
-        .group-title {
-            display: flex;
-            justify-content: space-around;
-            flex-direction: row;
-            margin: 15px 0;
-            align-items: center;
-            h5 {
-                color: rgba(0, 0, 0, 0.753);
-                cursor: default;
-                &:hover {
-                    color: #000;
-                }
-            }
-            .down-arrow {
-                width: 15px;
-                height: 18px;
-                cursor: pointer;
-                &:hover {
-                    transform: rotate(180deg) scale(1.1) translateY(-2px);
-                    transition: all 0.3s ease-in-out;
-                    background-color: #b5cbfe47;
-                    border-radius: 50%;
-                }
-            }
-            .groupChatButton {
-                border: 1px solid white;
-                border-radius: 10px;
-                background-color: #b5cbfe;
-                font-size: 25px;
-                width: 30px;
-                cursor: pointer;
-                &:hover {
-                    background-color: #004dfa;
-                    text-transform: capitalize;
-                    transform: scale(1) translateY(-2px) rotate(135deg);
-                    transition: all 0.3s ease-in-out;
-                }
-            }
-        }
         .noGroup {
             display: flex;
             justify-content: center;

@@ -8,6 +8,7 @@ import Loading from '../Loading'
 import Lottie from "lottie-react";
 import animationData from '../../animations/typing.json'
 import DetailsModal from '../detailsmodal/DetailsModal'
+import { format } from 'timeago.js'
 
 const ENDPOINT = 'http://localhost:8000';
 var socket, selectedChatCompare;
@@ -180,9 +181,20 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
                   <Loading />
                 </div>
               ) : (
-                messages?.map((m) => (
+                messages?.map((m, i) => (
                   <div key={m._id} ref={scrollRef}>
-                    <Message key={m._id} messages={m} own={m.sender._id === user._id} />
+                    <Message 
+                    key={m._id} 
+                    messages={m} 
+                    own={m.sender._id === user._id} 
+                    sameSender={(i < messages.length - 1 &&
+                      (messages[i + 1].sender._id !== m.sender._id ||
+                        messages[i + 1].sender._id === undefined) &&
+                      messages[i].sender._id !== user._id) || (i === messages.length - 1 &&
+                        messages[messages.length - 1].sender._id !== user._id &&
+                        messages[messages.length - 1].sender._id) } 
+                        sameTime={(i < messages.length -1) &&format(messages[i].createdAt) === format(messages[i + 1].createdAt)}
+                        />
                   </div>
                 ))
               )}

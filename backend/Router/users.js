@@ -80,6 +80,7 @@ router.post("/login", async(req, res) => {
 })
 
 //get user which we want to update
+
 // router.get("/find", async(req, res) => {
 //     const userId = req.query.userId;
 //     const username = req.query.username;
@@ -97,22 +98,20 @@ router.post("/login", async(req, res) => {
 //get users to get users with out current user, search bar api
 
 router.get("/", protect, asyncHandler(async(req, res) => {
-    const keyword = req.query.search
-    console.log(keyword) ? {
+    const keyword = req.query.search ? {
         $or: [
-            { username: { $regex: keyword, $options: "i" } },
-            { number: { $regex: keyword, $options: "i" } },
-            { chatName: { $regex: keyword, $options: "i" } },
+            { username: { $regex: req.query.search, $options: "i" } },
+            { chatName: { $regex: req.query.search, $options: "i" } },
         ],
-    } : {}
+    } : {};
 
-    const users = await User.find({ keyword }).find({ _id: { $ne: req.user._id } })
-        // added this 
-    const groupName = await Chat.find({ keyword }).find({ isGroupChat: { $ne: false } })
+    const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
+    // added this 
+    const groupName = await Chat.find(keyword).find({ isGroupChat: { $ne: false } });
     const body = {
         users,
         groupName
-    }
+    };
     res.send(body);
 }));
 

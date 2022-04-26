@@ -1,6 +1,5 @@
 import axios from 'axios'
 import React from 'react'
-import { CSSTransition } from 'react-transition-group'
 import { PhoneNumberContext } from '../../context/phoneNumberContext'
 import Conversation from '../conversation/Conversation'
 import GroupChat from '../groupchat/GroupChat'
@@ -11,8 +10,7 @@ import UserListItem from '../UserAvatar/UserListItem'
 import "./conversations.scss"
 
 const Conversations = ({ fetchAgain, setFetchAgain }) => {
-    const { dispatch, chats, selectedChat } = React.useContext(PhoneNumberContext);
-    const [loggedUser, setLoggedUser] = React.useState();
+    const { dispatch, chats } = React.useContext(PhoneNumberContext);
     const [dropdown, setDropdown] = React.useState(true);
     const [dropdownGroup, setDropdownGroup] = React.useState(true);
     const [conversations, setConversations] = React.useState([])
@@ -82,10 +80,10 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
             // console.log(conversations);
             // console.log(groupConversations);
             // setConversations((data.map(friend => friend.isGroupChat ? null : friend.users.find(member => member._id !== user._id))).filter(friend => friend !== null).map(friend => friend));
-            
+
             setConversations(data.filter(friend => !friend.isGroupChat));
             setGroupConversations(data.filter(friend => friend.isGroupChat && friend.chatName));
-            
+
             if (!chats.find(chat => chat._id === data.map(datas => datas._id))) {
                 dispatch({ type: 'SET_CHATS', payload: data })
             }
@@ -129,8 +127,8 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
     }
 
     React.useEffect(() => {
-        setLoggedUser(user);
         fetchChats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [fetchAgain])
 
 
@@ -146,65 +144,56 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                     onChange={handleSearch}
                 />
             </div>
-            <CSSTransition
-                in={dropdown}
-                timeout={300}
-                classNames="down-arrow"
-                onEnter={() => setDropdown(true)}
-                onExited={() => setDropdown(false)}
-            >
 
-                <div className="conversations-list">
-                    <div className="conversation-title">
-                        <h5>Conversations</h5>
-                        <img src="/images/down-arrow.png" alt="down arrow" className='down-arrow' onClick={() => setDropdown(!dropdown)} />
-                    </div>
-                    <hr style={{ 'color': "#f3f7fc" }} />
-                    {
-
-                        loading ?
-                            <div className="loading">
-                                <Loading />
-                            </div>
-                            :
-                            search.length > 0 ?
-                                searchResultsUsers?.map(user => (
-                                    <div className="conversation-avatar-name" key={user._id}
-                                        onClick={() => accessChat(user._id)}
-                                    >
-                                        <UserListItem user={user}
-                                        />
-                                    </div>
-                                ))
-                                : !dropdown ?
-                                    null :
-                                    conversations.map((c) => (
-                                        <div className="conversation-avatar-name" key={c._id}
-                                            onClick={() => dispatch({ type: "SET_SELECTED_CHAT", payload: c })}
-                                        >
-                                            <Conversation chat={c} />
-                                        </div>
-                                    )) ||
-
-                                    <div className="noChat">
-                                        <h5>No Conversations</h5>
-                                    </div>
-                    }
-                </div>
-            </CSSTransition >
-
-            <div className="groups-list">
-                <div className="group-title">
-                    <img src="/images/down-arrow.png" alt="down arrow" className='down-arrow' onClick={() => setDropdownGroup(!dropdownGroup)} />
-                    <h5>Groups</h5>
-                    <GroupChatModal user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}>
-                        <button className='groupChatButton'>+</button>
-                    </GroupChatModal>
-                </div>
-                <hr style={{ 'color': "#f3f7fc" }} />
+            {/* <hr style={{ 'color': "#f3f7fc" }} /> */}
+            <div className="conversation-title">
+                <h5>Conversations</h5>
+                <img src="/images/down-arrow.png" alt="down arrow" className='down-arrow' onClick={() => setDropdown(!dropdown)} />
+            </div>
+            <hr style={{ 'color': "#f3f7fc", display: dropdown ? 'block' : 'none' }} />
+            <div className="conversations-list">
                 {
+                    loading ?
+                        <div className="loading">
+                            <Loading />
+                        </div>
+                        :
+                        search.length > 0 ?
+                            searchResultsUsers?.map(user => (
+                                <div className="conversation-avatar-name" key={user._id}
+                                    onClick={() => accessChat(user._id)}
+                                >
+                                    <UserListItem user={user}
+                                    />
+                                </div>
+                            ))
+                            : !dropdown ?
+                                null :
+                                conversations.map((c) => (
+                                    <div className="conversation-avatar-name" key={c._id}
+                                        onClick={() => dispatch({ type: "SET_SELECTED_CHAT", payload: c })}
+                                    >
+                                        <Conversation chat={c} />
+                                    </div>
+                                )) ||
 
+                                <div className="noChat">
+                                    <h5>No Conversations</h5>
+                                </div>
+                }
+            </div>
 
+            {/* <hr style={{ 'color': "#f3f7fc" }} /> */}
+            <div className="group-title">
+                <img src="/images/down-arrow.png" alt="down arrow" className='down-arrow' onClick={() => setDropdownGroup(!dropdownGroup)} />
+                <h5>Groups</h5>
+                <GroupChatModal user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}>
+                    <button className='groupChatButton'>+</button>
+                </GroupChatModal>
+            </div>
+            <hr style={{ 'color': "#f3f7fc" }} />
+            <div className="groups-list">
+                {
                     loading ?
                         <div className="loading">
                             <Loading />
