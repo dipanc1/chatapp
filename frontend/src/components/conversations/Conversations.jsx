@@ -128,7 +128,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
 
     React.useEffect(() => {
         fetchChats();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [fetchAgain])
 
 
@@ -148,7 +148,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
             {/* <hr style={{ 'color': "#f3f7fc" }} /> */}
             <div className="conversation-title">
                 <h5>Conversations</h5>
-                <img src="/images/down-arrow.png" alt="down arrow" className='down-arrow' onClick={() => setDropdown(!dropdown)} />
+                <img src="/images/down-arrow.png" alt="down arrow" className='down-arrow' style={{transform: !dropdown ? 'rotate(180deg)' : null}} onClick={() => setDropdown(!dropdown)} />
             </div>
             <hr style={{ 'color': "#f3f7fc", display: dropdown ? 'block' : 'none' }} />
             <div className="conversations-list">
@@ -168,24 +168,25 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                                 </div>
                             ))
                             : !dropdown ?
-                                null :
+                                null
+                                :
                                 conversations.map((c) => (
                                     <div className="conversation-avatar-name" key={c._id}
                                         onClick={() => dispatch({ type: "SET_SELECTED_CHAT", payload: c })}
                                     >
                                         <Conversation chat={c} />
                                     </div>
-                                )) ||
+                                ))
 
-                                <div className="noChat">
-                                    <h5>No Conversations</h5>
-                                </div>
                 }
+                {conversations.length === 0 ? <div className="noChat">
+                    <h5>No Conversations</h5>
+                </div> : null}
             </div>
 
             {/* <hr style={{ 'color': "#f3f7fc" }} /> */}
             <div className="group-title">
-                <img src="/images/down-arrow.png" alt="down arrow" className='down-arrow' onClick={() => setDropdownGroup(!dropdownGroup)} />
+                <img src="/images/down-arrow.png" alt="down arrow" className='down-arrow' onClick={() => setDropdownGroup(!dropdownGroup)} style={{transform: !dropdownGroup ? 'rotate(180deg)' : null}}/>
                 <h5>Groups</h5>
                 <GroupChatModal user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}>
                     <button className='groupChatButton'>+</button>
@@ -219,10 +220,15 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                                     >
                                         <GroupChat chat={c} />
                                     </div>
-                                )) || <div className="noGroup">
-                                    <h5>No Groups</h5>
-                                </div>
+                                ))
                 }
+                {groupConversations.length === 0
+                    ?
+                    <div className="noGroup">
+                        <h5>No Groups</h5>
+                    </div>
+                    :
+                    null}
             </div>
         </div >
     )

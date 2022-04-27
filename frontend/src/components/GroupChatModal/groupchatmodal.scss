@@ -82,7 +82,9 @@
             }
         }
         .searchResults {
-            max-height: 35vh;
+            max-height: 25vh;
+            overflow: hidden;
+            overflow-y: scroll;
             .searchAvatar {
                 margin: 0 21px;
                 width: 85%;
