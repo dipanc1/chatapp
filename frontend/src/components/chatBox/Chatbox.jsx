@@ -9,6 +9,7 @@ import Lottie from "lottie-react";
 import animationData from '../../animations/typing.json'
 import DetailsModal from '../detailsmodal/DetailsModal'
 import { format } from 'timeago.js'
+import Stream from '../stream/Stream'
 
 const ENDPOINT = 'http://localhost:8000';
 var socket, selectedChatCompare;
@@ -35,7 +36,6 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
     socket.on("user connected", (userData) => setOnline(userData._id === (selectedChat?.users.filter(u => u._id !== user._id)[0]._id) ? true : false));
     // need another approach
   }, []);
-
 
 
   const fetchMessages = async () => {
@@ -156,17 +156,25 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
                     null
                 }</span>
               </div>
-              {!selectedChat?.isGroupChat ? <div className="chatbox-online-status">
-                {online ?
-                  <img src='https://img.icons8.com/emoji/48/000000/green-circle-emoji.png' alt="online-icon" className='online-icon-chat' /> :
-                  <img src='https://img.icons8.com/emoji/48/000000/red-circle-emoji.png' alt="offline-icon" className='offline-icon-chat' />
-                }
-              </div>
-                : null
+              {selectedChat?.isGroupChat ?
+                <div className="chatbox-streaming">
+                  <Stream />
+                </div>
+                :
+                null
+              }
+              {!selectedChat?.isGroupChat ?
+                <div className="chatbox-online-status">
+                  {online ?
+                    <img src='https://img.icons8.com/emoji/48/000000/green-circle-emoji.png' alt="online-icon" className='online-icon-chat' /> :
+                    <img src='https://img.icons8.com/emoji/48/000000/red-circle-emoji.png' alt="offline-icon" className='offline-icon-chat' />
+                  }
+                </div>
+                :
+                null
               }
               <div className="chatboxGroupModal">
-                <DetailsModal>
-                </DetailsModal>
+                <DetailsModal />
               </div>
             </div>
             <hr style={{
@@ -183,18 +191,18 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
               ) : (
                 messages?.map((m, i) => (
                   <div key={m._id} ref={scrollRef}>
-                    <Message 
-                    key={m._id} 
-                    messages={m} 
-                    own={m.sender._id === user._id} 
-                    sameSender={(i < messages.length - 1 &&
-                      (messages[i + 1].sender._id !== m.sender._id ||
-                        messages[i + 1].sender._id === undefined) &&
-                      messages[i].sender._id !== user._id) || (i === messages.length - 1 &&
-                        messages[messages.length - 1].sender._id !== user._id &&
-                        messages[messages.length - 1].sender._id) } 
-                        sameTime={(i < messages.length -1) &&format(messages[i].createdAt) === format(messages[i + 1].createdAt)}
-                        />
+                    <Message
+                      key={m._id}
+                      messages={m}
+                      own={m.sender._id === user._id}
+                      sameSender={(i < messages.length - 1 &&
+                        (messages[i + 1].sender._id !== m.sender._id ||
+                          messages[i + 1].sender._id === undefined) &&
+                        messages[i].sender._id !== user._id) || (i === messages.length - 1 &&
+                          messages[messages.length - 1].sender._id !== user._id &&
+                          messages[messages.length - 1].sender._id)}
+                      sameTime={(i < messages.length - 1) && format(messages[i].createdAt) === format(messages[i + 1].createdAt)}
+                    />
                   </div>
                 ))
               )}
