@@ -148,7 +148,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
             {/* <hr style={{ 'color': "#f3f7fc" }} /> */}
             <div className="conversation-title">
                 <h5>Conversations</h5>
-                <img src="/images/down-arrow.png" alt="down arrow" className='down-arrow' style={{transform: !dropdown ? 'rotate(180deg)' : null}} onClick={() => setDropdown(!dropdown)} />
+                <img src="/images/down-arrow.png" alt="down arrow" className='down-arrow' style={{ transform: !dropdown ? 'rotate(180deg)' : null }} onClick={() => setDropdown(!dropdown)} />
             </div>
             <hr style={{ 'color': "#f3f7fc", display: dropdown ? 'block' : 'none' }} />
             <div className="conversations-list">
@@ -186,7 +186,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
 
             {/* <hr style={{ 'color': "#f3f7fc" }} /> */}
             <div className="group-title">
-                <img src="/images/down-arrow.png" alt="down arrow" className='down-arrow' onClick={() => setDropdownGroup(!dropdownGroup)} style={{transform: !dropdownGroup ? 'rotate(180deg)' : null}}/>
+                <img src="/images/down-arrow.png" alt="down arrow" className='down-arrow' onClick={() => setDropdownGroup(!dropdownGroup)} style={{ transform: !dropdownGroup ? 'rotate(180deg)' : null }} />
                 <h5>Groups</h5>
                 <GroupChatModal user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}>
                     <button className='groupChatButton'>+</button>

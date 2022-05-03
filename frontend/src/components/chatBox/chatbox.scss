@@ -53,6 +53,17 @@ $tablet: 768px;
             width: 100%;
         }
     }
+    .middleStream {
+        overflow-y: scroll;
+        height: 19vh;
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+        }
+    }
     .chatBottom {
         display: flex;
         align-items: center;
@@ -75,7 +86,35 @@ $tablet: 768px;
             width: 12%;
             height: 40px;
             border-radius: 10px;
-            background-color: #b5cbfe;
+            background-color: #007bff;
+            font-size: x-large;
+            cursor: pointer;
+            color: white;
+        }
+    }
+    .chatBottomStream {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        input {
+            width: 85%;
+            height: 27px;
+            border: none;
+            border-radius: 10px;
+            background-color: #f3f7fc;
+            padding: 10px;
+            margin-bottom: 10px;
+            resize: none;
+            &:focus {
+                outline: none;
+            }
+        }
+        button {
+            border: none;
+            width: 12%;
+            height: 40px;
+            border-radius: 10px;
+            background-color: #004dfa;
             font-size: x-large;
             cursor: pointer;
             color: white;

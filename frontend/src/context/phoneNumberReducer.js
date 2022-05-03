@@ -20,6 +20,11 @@ const PhoneNumberReducer = (state, action) => {
                 ...state,
                 notification: action.payload
             };
+        case "SET_ONLINE_STATUS":
+            return {
+                ...state,
+                onlineStatus: action.payload
+            };
         default:
             return state;
     }

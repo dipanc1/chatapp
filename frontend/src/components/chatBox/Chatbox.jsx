@@ -25,6 +25,11 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
   const [socketConnected, setSocketConnected] = React.useState(false);
   const [typing, setTyping] = React.useState(false);
   const [isTyping, setIsTyping] = React.useState(false);
+  const [streaming, setStreaming] = React.useState(false);
+  const [callactive, setCallactive] = React.useState(false);
+  const [fullScreenMode, setFullScreenMode] = React.useState(true);
+  // console.warn(fullScreenMode);
+
   const scrollRef = React.useRef();
 
   React.useEffect(() => {
@@ -33,10 +38,19 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
     socket.on("connected", () => setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
     socket.on("stop typing", () => setIsTyping(false));
-    socket.on("user connected", (userData) => setOnline(userData._id === (selectedChat?.users.filter(u => u._id !== user._id)[0]._id) ? true : false));
-    // need another approach
+    socket.on('call', (data) => {
+      console.warn(data.call);
+      setCallactive(data.call);
+    });
+    // need another approach to check if the selected chat is changed
+    socket.on('user online', (userData) => {
+      if (userData._id === (selectedChat?.users.filter(u => u._id !== user._id)[0]._id)) {
+        setOnline(true);
+      } else {
+        setOnline(false);
+      }
+    });
   }, []);
-
 
   const fetchMessages = async () => {
     if (!selectedChat) return;
@@ -74,6 +88,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
   }, [selectedChat])
 
   React.useEffect(() => {
+    socket.emit('user online', user.username);
     socket.on("message received", (newMessageReceived) => {
       if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
         if (!notification.includes(newMessageReceived)) {
@@ -86,7 +101,6 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
       }
     })
   });
-
 
   const sendMessage = async (event) => {
     if (event.key === "Enter" || event.type === "click") {
@@ -147,31 +161,32 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
                   null :
                   <img src={profile?.pic} alt="group-icon" className='group-icon-chat' />
                 }
-                <span>
-                  {selectedChat?.isGroupChat ? selectedChat?.chatName.toUpperCase() : profile?.username}
-                </span>
-                <span className='chatbox-group-members'>{
-                  selectedChat?.isGroupChat ?
-                    `${selectedChat?.users.length} members` :
-                    null
-                }</span>
+                {
+                  streaming ?
+                    null :
+                    <>
+                      <span>
+                        {selectedChat?.isGroupChat ? selectedChat?.chatName.toUpperCase() : profile?.username}
+                      </span>
+                      <span className='chatbox-group-members'>{
+                        selectedChat?.isGroupChat ?
+                          `${selectedChat?.users.length} members` :
+                          null
+                      }</span>
+                    </>
+                }
               </div>
               {selectedChat?.isGroupChat ?
                 <div className="chatbox-streaming">
-                  <Stream />
+                  <Stream streaming={streaming} setStreaming={setStreaming} fullScreenMode={fullScreenMode} setFullScreenMode={setFullScreenMode} callactive={callactive} setCallactive={setCallactive} socket={socket}/>
                 </div>
                 :
-                null
-              }
-              {!selectedChat?.isGroupChat ?
                 <div className="chatbox-online-status">
                   {online ?
                     <img src='https://img.icons8.com/emoji/48/000000/green-circle-emoji.png' alt="online-icon" className='online-icon-chat' /> :
                     <img src='https://img.icons8.com/emoji/48/000000/red-circle-emoji.png' alt="offline-icon" className='offline-icon-chat' />
                   }
                 </div>
-                :
-                null
               }
               <div className="chatboxGroupModal">
                 <DetailsModal />
@@ -182,7 +197,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
             }} />
 
 
-            <div className="middle">
+            <div className={streaming && selectedChat.isGroupChat ? "middleStream" : !fullScreenMode ? 'middle' : 'middle'}>
 
               {loading ? (
                 <div className="loading">
@@ -221,7 +236,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
             </div>
 
 
-            <div className="chatBottom">
+            <div className={streaming ? "chatBottomStream" : !fullScreenMode ? 'chatBottom' : 'chatBottom'}>
               <input name="message" id="message" placeholder='Type Your Message...'
                 onChange={typingHandler}
                 value={newMessage}
