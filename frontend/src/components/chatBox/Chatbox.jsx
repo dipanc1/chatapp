@@ -25,32 +25,12 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
   const [socketConnected, setSocketConnected] = React.useState(false);
   const [typing, setTyping] = React.useState(false);
   const [isTyping, setIsTyping] = React.useState(false);
+  const [calling, setCalling] = React.useState(false);
+  const [isCalling, setIsCalling] = React.useState(false);
   const [streaming, setStreaming] = React.useState(false);
-  const [callactive, setCallactive] = React.useState(false);
-  const [fullScreenMode, setFullScreenMode] = React.useState(true);
-  // console.warn(fullScreenMode);
-
+  const [fullScreenMode, setFullScreenMode] = React.useState(false);
   const scrollRef = React.useRef();
-
-  React.useEffect(() => {
-    socket = io(ENDPOINT);
-    socket.emit("setup", user);
-    socket.on("connected", () => setSocketConnected(true));
-    socket.on("typing", () => setIsTyping(true));
-    socket.on("stop typing", () => setIsTyping(false));
-    socket.on('call', (data) => {
-      console.warn(data.call);
-      setCallactive(data.call);
-    });
-    // need another approach to check if the selected chat is changed
-    socket.on('user online', (userData) => {
-      if (userData._id === (selectedChat?.users.filter(u => u._id !== user._id)[0]._id)) {
-        setOnline(true);
-      } else {
-        setOnline(false);
-      }
-    });
-  }, []);
+  console.warn(isTyping)
 
   const fetchMessages = async () => {
     if (!selectedChat) return;
@@ -69,38 +49,6 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
       console.log(error);
     }
   }
-
-  React.useEffect(() => {
-    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  React.useEffect(() => {
-    try {
-      setProfile(selectedChat?.users.find(member => member._id !== user._id));
-    } catch (error) {
-      console.log(error);
-    }
-
-    fetchMessages();
-
-    selectedChatCompare = selectedChat;
-
-  }, [selectedChat])
-
-  React.useEffect(() => {
-    socket.emit('user online', user.username);
-    socket.on("message received", (newMessageReceived) => {
-      if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
-        if (!notification.includes(newMessageReceived)) {
-          dispatch({ type: 'SET_NOTIFICATION', payload: [newMessageReceived] });
-          // console.log(newMessageReceived);
-          setFetchAgain(!fetchAgain);
-        }
-      } else {
-        setMessages([...messages, newMessageReceived]);
-      }
-    })
-  });
 
   const sendMessage = async (event) => {
     if (event.key === "Enter" || event.type === "click") {
@@ -127,6 +75,62 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
     }
   }
 
+  React.useEffect(() => {
+    socket = io(ENDPOINT);
+    socket.emit("setup", user);
+    socket.on("connected", () => setSocketConnected(true));
+    socket.on("typing", () => setIsTyping(true));
+    socket.on("stop typing", () => setIsTyping(false));
+
+    socket.on("calling", () => setIsCalling(true));
+    socket.on("stop calling", () => setIsCalling(false));
+
+    // need another approach to check if the selected chat is changed
+    socket.on('user online', (userData) => {
+      if (userData._id === (selectedChat?.users.filter(u => u._id !== user._id)[0]._id)) {
+        setOnline(true);
+      } else {
+        setOnline(false);
+      }
+    });
+  }, []);
+
+
+  React.useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+
+  React.useEffect(() => {
+    try {
+      setProfile(selectedChat?.users.find(member => member._id !== user._id));
+    } catch (error) {
+      console.log(error);
+    }
+
+    fetchMessages();
+    setStreaming(false);
+    selectedChatCompare = selectedChat;
+
+  }, [selectedChat])
+
+  React.useEffect(() => {
+    socket.emit('user online', user.username);
+    socket.on("message received", (newMessageReceived) => {
+      if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
+        if (!notification.includes(newMessageReceived)) {
+          dispatch({ type: 'SET_NOTIFICATION', payload: [newMessageReceived] });
+          // console.log(newMessageReceived);
+          setFetchAgain(!fetchAgain);
+        }
+      } else {
+        setMessages([...messages, newMessageReceived]);
+      }
+    })
+  });
+
+
+
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
 
@@ -138,13 +142,13 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
       socket.emit("typing", selectedChat._id);
     }
     let lastTypingTime = new Date().getTime();
-    var typingTimer = 3000;
+    var typingTimer = 1500;
     setTimeout(() => {
       var timeNow = new Date().getTime();
       var timeElapsed = timeNow - lastTypingTime;
       if (timeElapsed >= typingTimer && typing) {
-        setTyping(false);
         socket.emit("stop typing", selectedChat._id);
+        setTyping(false);
       }
     }, typingTimer);
   }
@@ -155,6 +159,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
       {
         selectedChat ?
           (<>
+            {/* TOP PART  */}
             <div className="top">
               <div className="chatbox-group-name" style={{ margin: selectedChat?.isGroupChat ? '8px' : null }}>
                 {selectedChat?.isGroupChat ?
@@ -178,7 +183,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
               </div>
               {selectedChat?.isGroupChat ?
                 <div className="chatbox-streaming">
-                  <Stream streaming={streaming} setStreaming={setStreaming} fullScreenMode={fullScreenMode} setFullScreenMode={setFullScreenMode} callactive={callactive} setCallactive={setCallactive} socket={socket}/>
+                  <Stream streaming={streaming} setStreaming={setStreaming} fullScreenMode={fullScreenMode} setFullScreenMode={setFullScreenMode} calling={calling} setCalling={setCalling} isCalling={isCalling} setIsCalling={setIsCalling} socket={socket} />
                 </div>
                 :
                 <div className="chatbox-online-status">
@@ -197,7 +202,8 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
             }} />
 
 
-            <div className={streaming && selectedChat.isGroupChat ? "middleStream" : !fullScreenMode ? 'middle' : 'middle'}>
+            {/* MIDDLE PART  */}
+            <div className={streaming && selectedChat.isGroupChat ? "middleStream" : fullScreenMode ? 'middle' : 'middle'}>
 
               {loading ? (
                 <div className="loading">
@@ -232,11 +238,13 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
                   />
                 </div>
               ) : (
-                <></>)}
+                <></>
+              )}
             </div>
 
 
-            <div className={streaming ? "chatBottomStream" : !fullScreenMode ? 'chatBottom' : 'chatBottom'}>
+            {/* BOTTOM PART  */}
+            <div className={fullScreenMode ? 'chatBottom' : streaming ? "chatBottomStream" : 'chatBottom'}>
               <input name="message" id="message" placeholder='Type Your Message...'
                 onChange={typingHandler}
                 value={newMessage}

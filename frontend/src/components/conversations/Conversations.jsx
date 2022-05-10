@@ -10,7 +10,7 @@ import UserListItem from '../UserAvatar/UserListItem'
 import "./conversations.scss"
 
 const Conversations = ({ fetchAgain, setFetchAgain }) => {
-    const { dispatch, chats } = React.useContext(PhoneNumberContext);
+    const { dispatch, chats, selectedChat } = React.useContext(PhoneNumberContext);
     const [dropdown, setDropdown] = React.useState(true);
     const [dropdownGroup, setDropdownGroup] = React.useState(true);
     const [conversations, setConversations] = React.useState([])
@@ -171,7 +171,9 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                                 null
                                 :
                                 conversations.map((c) => (
-                                    <div className="conversation-avatar-name" key={c._id}
+                                    <div
+                                        className={selectedChat?._id === c._id ? "conversation-avatar-name-disabled" : "conversation-avatar-name"}
+                                        key={c._id}
                                         onClick={() => dispatch({ type: "SET_SELECTED_CHAT", payload: c })}
                                     >
                                         <Conversation chat={c} />
@@ -215,7 +217,10 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                                 null
                                 :
                                 groupConversations.map((c) => (
-                                    <div className="group-icon-name" key={c._id}
+                                    <div
+
+                                        className={selectedChat?._id === c._id ? "group-icon-name-disabled" : "group-icon-name"}
+                                        key={c._id}
                                         onClick={() => dispatch({ type: "SET_SELECTED_CHAT", payload: c })}
                                     >
                                         <GroupChat chat={c} />

@@ -3,75 +3,63 @@ import AgoraUIKit, { layout } from 'agora-react-uikit';
 import { PhoneNumberContext } from '../../context/phoneNumberContext';
 import './stream.scss'
 
-const Stream = ({ children, streaming, setStreaming, fullScreenMode, setFullScreenMode, callactive, setCallactive, socket }) => {
+const Stream = ({ children, streaming, setStreaming, fullScreenMode, setFullScreenMode, calling, setCalling, isCalling, socket }) => {
     const { selectedChat } = useContext(PhoneNumberContext);
-    const [show, setShow] = useState(false);
     const [transformmm, setTransformmm] = useState(false);
     const [videocall, setVideocall] = useState(true)
     const [isHost, setHost] = useState(false)
-    const [fullScreen, setFullScreen] = useState(false);
     const [isPinned, setPinned] = useState(false);
-    console.warn('callactive', callactive);
-    // current user will be host other users will be audience
     const rtcProps = {
         appId: 'b73adb04d0a74614b6eeba2f4915cd17',
         channel: selectedChat.chatName, // your agora channel
         // token: '7b3ffd59228f48eb8605d091a8a32ec0', // use null or skip if using app in testing mode
-        // callActive: callactive,
-        // role: !callactive ? 'host' : 'audience',
         role: isHost ? 'host' : 'audience',
         layout: isPinned ? layout.pin : layout.grid,
+        disableRtm: true,
     };
-    console.warn(rtcProps);
+
     const callbacks = {
         EndCall: () => setVideocall(false),
     };
+
     const styleProps = {
-        localBtnContainer: { backgroundColor: 'blueviolet', zIndex: '1' },
+        localBtnContainer: { backgroundColor: '#004dfa' },
     };
 
-    const rtmProps = {
-        displayUserName: true,
-    };
 
     const streamHandler = () => {
-        setShow(!show);
         setStreaming(!streaming);
-        setCallactive(!callactive);
+        if (!calling) {
+            setCalling(true);
+            socket.emit("calling", selectedChat._id);
+        }
+        if (calling) {
+            socket.emit("stop calling", selectedChat._id);
+            setCalling(false);
+        }
     }
 
-    useEffect(() => {
-        socket.emit('call', {
-            call: !callactive,
-            chatId: selectedChat._id,
-        });
-      
-    }, [selectedChat])
-    
-
     const fullScreenHandler = () => {
-        setFullScreen(!fullScreen)
-        // setFullScreenMode(!fullScreenMode);
-        // console.warn(fullScreenMode);
+        setFullScreenMode(!fullScreenMode)
     }
 
     const styles = {
         stream: {
             display: 'flex',
             marginRight: '3vw',
-            position: fullScreen ? 'absolute' : null,
-            top: fullScreen ? 0 : null,
-            left: fullScreen ? 0 : null,
-            height: fullScreen ? '31vh' : null,
-            width: fullScreen ? '100vw' : null,
-            zIndex: fullScreen ? 1 : null,
+            position: fullScreenMode ? 'absolute' : null,
+            top: fullScreenMode ? 0 : null,
+            left: fullScreenMode ? 0 : null,
+            height: fullScreenMode ? '31vh' : null,
+            width: fullScreenMode ? '100vw' : null,
+            zIndex: fullScreenMode ? 1 : null,
         },
 
         container: {
             display: 'flex',
             backgroundColor: '#007bff22',
-            width: fullScreen ? '100vw' : '51vw',
-            height: fullScreen ? '100vh' : '50vh',
+            width: fullScreenMode ? '100vw' : '51vw',
+            height: fullScreenMode ? '100vh' : '50vh',
         },
 
         nav: {
@@ -100,14 +88,14 @@ const Stream = ({ children, streaming, setStreaming, fullScreenMode, setFullScre
         <>
             {
                 children ?
-                    <span onClick={() => setShow(!show)}>{children}</span> :
+                    <span onClick={() => setStreaming(!streaming)}>{children}</span> :
                     <>
-
                         <img src="https://img.icons8.com/ios/50/000000/streamlabs-obs.png" alt='stream'
                             style={{
                                 transform: transformmm ? 'scale(1.1) translateY(-2px)' : null,
                                 cursor: 'pointer',
                                 height: '40px',
+                                filter: isCalling ? 'invert(44%) sepia(53%) saturate(4971%) hue-rotate(336deg) brightness(129%) contrast(113%)' :  null,
                                 marginLeft: '-38px',
                                 transition: 'all 0.1s ease-in-out',
                             }}
@@ -117,7 +105,7 @@ const Stream = ({ children, streaming, setStreaming, fullScreenMode, setFullScre
                         />
                     </>
             }
-            {show &&
+            {streaming &&
                 <div style={styles.stream} className='stream'>
                     <div style={styles.container} className='container'>
                         {videocall
@@ -125,19 +113,18 @@ const Stream = ({ children, streaming, setStreaming, fullScreenMode, setFullScre
                                 <div style={styles.nav} className='nav'>
                                     <p style={{ fontSize: 20, width: 126, color: '#007bff', cursor: 'default' }}>You're {isHost ? 'a host' : 'an audience'}</p>
                                     <p style={styles.btn} onClick={() => setHost(!isHost)}>Change Role</p>
-                                    <p style={styles.btn} onClick={fullScreenHandler}>{fullScreen ? 'Theatre Mode' : 'Full Screen Mode'}</p>
+                                    <p style={styles.btn} onClick={fullScreenHandler}>{fullScreenMode ? 'Theatre Mode' : 'Full Screen Mode'}</p>
                                     {/* <p style={styles.btn} onClick={() => setPinned(!isPinned)}>Change Layout</p> */}
                                 </div>
                                 <AgoraUIKit
                                     rtcProps={rtcProps}
                                     callbacks={callbacks}
                                     styleProps={styleProps}
-                                    rtmProps={rtmProps}
                                 />
                             </>
                             :
                             <div style={styles.nav} className='nav'>
-                                <p style={styles.btn} onClick={() => setFullScreen(!fullScreen)}>{fullScreen ? 'Theatre Mode' : 'Full Screen Mode'}</p>
+                                <p style={styles.btn} onClick={() => setFullScreenMode(!fullScreenMode)}>{fullScreenMode ? 'Theatre Mode' : 'Full Screen Mode'}</p>
                                 <h3 style={styles.btn} onClick={() => setVideocall(true)}>Start Call</h3>
                             </div>
                         }

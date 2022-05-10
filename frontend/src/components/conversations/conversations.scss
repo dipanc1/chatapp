@@ -102,14 +102,14 @@ $tablet: 768px;
             color: #004dfa;
             cursor: default;
         }
-        .conversation-avatar-name.disabled {
+        .conversation-avatar-name-disabled {
             margin: 0 21px;
             width: 85%;
             display: flex;
             justify-content: space-around;
             align-items: center;
             flex-direction: row;
-            background-color: #ffffff;
+            background-color: #b5cbfe;
             border: 1px solid white;
             border-radius: 10px;
             padding: 5px 0;
@@ -226,14 +226,14 @@ $tablet: 768px;
                 position: relative;
             }
         }
-        .group-icon-name.disabled {
+        .group-icon-name-disabled {
             margin: 0 21px;
             width: 85%;
             display: flex;
             justify-content: space-around;
             align-items: center;
             flex-direction: row;
-            background-color: #ffffff;
+            background-color: #b5cbfe;
             border: 1px solid white;
             border-radius: 10px;
             padding: 5px 0;
