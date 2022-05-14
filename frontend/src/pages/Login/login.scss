@@ -119,4 +119,19 @@ $tablet: 768px;
             }
         }
     }
+    @media (max-width: $phone) {
+        .loginBox {
+            width: 76%;
+            .loginBoxForm {
+                .loginBoxFormInput {
+                    width: 100%;
+                }
+                .loginBoxFormButton {
+                    button {
+                        margin: 0 0 5px 50px;
+                    }
+                }
+            }
+        }
+    }
 }

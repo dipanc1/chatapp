@@ -21,12 +21,12 @@ const Navbar = () => {
 
   useEffect(() => {
     setTimeout(() => {
-    if (show) {
-      setShow(!show);
-    }
+      if (show) {
+        setShow(!show);
+      }
     }, 10000);
   }, [show])
-  
+
 
   const handleLogout = () => {
     localStorage.removeItem('user');
@@ -43,20 +43,21 @@ const Navbar = () => {
 
   return (
     <div className='navbar'>
+      <img src="https://img.icons8.com/material-outlined/24/000000/menu--v1.png" alt='menu1' className='menu' onClick={() => dispatch({ type: 'SET_MOBILE' })} />
       <div className="profile">
         <img src={user.pic} alt="avatar" className='avatar' onClick={handleProfile} />
         <p>{user.username}</p>
         <img src="https://img.icons8.com/ios/50/000000/appointment-reminders--v1.png" alt='notification' style={{
-          transform: transformmm ? 'scale(1.1) translateY(-2px)' :  null,
+          transform: transformmm ? 'scale(1.1) translateY(-2px)' : null,
           transition: 'all 0.1s ease-in-out',
           cursor: 'pointer',
           marginRight: '30px',
           height: '40px',
         }}
-          onClick={handleNotification} 
+          onClick={handleNotification}
           onMouseEnter={() => setTransformmm(true)}
           onMouseLeave={() => setTransformmm(false)}
-          />
+        />
         {
           notification?.length > 0 &&
           <div className="number" >

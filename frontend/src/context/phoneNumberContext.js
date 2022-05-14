@@ -6,7 +6,7 @@ const INITIAL_STATE = {
   selectedChat: null,
   chats: [],
   notification: [],
-  onlineStatus: false
+  mobile: false
 };
 
 export const PhoneNumberContext = createContext(INITIAL_STATE);
@@ -21,7 +21,7 @@ export const PhoneNumberContextProvider = ({ children }) => {
         selectedChat: state.selectedChat,
         chats: state.chats,
         notification: state.notification,
-        onlineStatus: state.onlineStatus,
+        mobile: state.mobile,
         dispatch
       }}>
       {children}

@@ -1,11 +1,16 @@
+$phone: 640px;
+$tablet: 768px;
 .navbar {
     display: flex;
     justify-content: right;
-    align-items: flex-end;
+    align-items: center;
     padding: 0.5rem 1rem;
     background-color: #fff;
     border-bottom: 1px solid #e5e5e5;
     position: relative;
+    .menu {
+        display: none;
+    }
     .profile {
         display: flex;
         flex-direction: row-reverse;
@@ -85,6 +90,18 @@
                     background-color: #f3f7fc;
                 }
             }
+        }
+    }
+}
+
+@media (max-width: $phone) {
+    .navbar {
+        .menu {
+            display: flex;
+            width: 2rem;
+            height: 2rem;
+            margin-right: 7rem;
+            cursor: pointer;
         }
     }
 }

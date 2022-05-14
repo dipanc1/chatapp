@@ -148,3 +148,18 @@ $tablet: 768px;
         }
     }
 }
+
+@media (max-width: $phone) {
+    .chatbox {
+        width: 85vw;
+        height: 90vh;
+        .top {
+            .chatboxGroupModal {
+                display: block;
+            }
+        }
+        .chatBottom {
+            margin-top: 33px;
+        }
+    }
+}

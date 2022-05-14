@@ -128,4 +128,14 @@ $tablet: 768px;
             }
         }
     }
+    @media (max-width: $phone) {
+        .registerBox {
+            width: 76%;
+            .registerBoxForm {
+                .registerBoxFormInput {
+                    width: 100%;
+                }
+            }
+        }
+    }
 }
