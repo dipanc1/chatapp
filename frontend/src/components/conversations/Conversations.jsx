@@ -1,6 +1,7 @@
 import axios from 'axios'
 import React from 'react'
 import { PhoneNumberContext } from '../../context/phoneNumberContext'
+import { backend_url } from '../../production'
 import Conversation from '../conversation/Conversation'
 import GroupChat from '../groupchat/GroupChat'
 import GroupChatModal from '../GroupChatModal/GroupChatModal'
@@ -33,7 +34,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                     'Authorization': `Bearer ${user.token}`
                 }
             }
-            const { data } = await axios.get(`http://localhost:8000/users?search=${search}`, config)
+            const { data } = await axios.get(`${backend_url}/users?search=${search}`, config)
             // console.log(data);
             setLoading(false);
             setSearchResultsUsers(data.users);
@@ -54,7 +55,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                     'Authorization': `Bearer ${user.token}`
                 }
             }
-            const { data } = await axios.post(`http://localhost:8000/conversation`, { userId }, config);
+            const { data } = await axios.post(`${backend_url}/conversation`, { userId }, config);
 
             dispatch({ type: 'SET_SELECTED_CHAT', payload: data })
             // console.log(data);
@@ -75,7 +76,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                     'Authorization': `Bearer ${user.token}`
                 }
             }
-            const { data } = await axios.get(`http://localhost:8000/conversation`, config);
+            const { data } = await axios.get(`${backend_url}/conversation`, config);
 
             // console.log(conversations);
             // console.log(groupConversations);
@@ -108,7 +109,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                 },
             };
             const { data } = await axios.put(
-                `http://localhost:8000/conversation/groupadd`,
+                `${backend_url}/conversation/groupadd`,
                 {
                     chatId: groupId,
                     userId: user1,

@@ -3,11 +3,11 @@ import AgoraUIKit, { layout } from 'agora-react-uikit';
 import { PhoneNumberContext } from '../../context/phoneNumberContext';
 import './stream.scss'
 
-const Stream = ({ children, streaming, setStreaming, fullScreenMode, setFullScreenMode, calling, setCalling, isCalling, socket }) => {
+
+const Stream = ({ children, streaming, setStreaming, fullScreenMode, setFullScreenMode, calling, setCalling, isCalling, socket, setVideocall,videocall  }) => {
     const { selectedChat } = useContext(PhoneNumberContext);
     const [transformmm, setTransformmm] = useState(false);
-    const [videocall, setVideocall] = useState(true)
-    const [isHost, setHost] = useState(false)
+    const [isHost, setHost] = useState(false);
     const [isPinned, setPinned] = useState(false);
     const rtcProps = {
         appId: 'b73adb04d0a74614b6eeba2f4915cd17',
@@ -29,13 +29,14 @@ const Stream = ({ children, streaming, setStreaming, fullScreenMode, setFullScre
 
     const streamHandler = () => {
         setStreaming(!streaming);
-        if (!calling) {
-            setCalling(true);
+        // setVideocall(!videocall);
+        if (!videocall) {
+            setVideocall(true);
             socket.emit("calling", selectedChat._id);
         }
-        if (calling) {
+        if (videocall) {
             socket.emit("stop calling", selectedChat._id);
-            setCalling(false);
+            setVideocall(false);
         }
     }
 

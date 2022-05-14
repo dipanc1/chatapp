@@ -5,6 +5,7 @@ import { PhoneNumberContext } from '../../context/phoneNumberContext'
 import axios from 'axios'
 import Loading from '../Loading'
 import UserListItem from '../UserAvatar/UserListItem'
+import { backend_url } from '../../production'
 
 const Members = ({ fetchAgain, setFetchAgain }) => {
   const [show, setShow] = React.useState(false);
@@ -31,7 +32,7 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
         },
       };
       const { data } = await axios.put(
-        `http://localhost:8000/conversation/groupremove`,
+        `${backend_url}/conversation/groupremove`,
         {
           chatId: selectedChat._id,
           userId: user1._id,
@@ -63,7 +64,7 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
         },
       };
       const { data } = await axios.put(
-        `http://localhost:8000/conversation/groupadd`,
+        `${backend_url}/conversation/groupadd`,
         {
           chatId: selectedChat._id,
           userId: user1,
@@ -98,7 +99,7 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
         chatName: groupChatName,
         chatId: selectedChat._id
       }
-      const { data } = await axios.put(`http://localhost:8000/conversation/rename`, body, config)
+      const { data } = await axios.put(`${backend_url}/conversation/rename`, body, config)
       dispatch({ type: 'SET_SELECTED_CHAT', payload: data })
       alert(`Group chat renamed to ${groupChatName}`)
       setFetchAgain(!fetchAgain);
@@ -120,7 +121,7 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
           'Authorization': `Bearer ${user.token}`
         }
       }
-      const { data } = await axios.get(`http://localhost:8000/users?search=${search}`, config)
+      const { data } = await axios.get(`${backend_url}/users?search=${search}`, config)
       setSearchResults(data.users);
       // console.log(searchResults);
       setLoading(false);

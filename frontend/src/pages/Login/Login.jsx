@@ -3,6 +3,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import './login.scss'
 import { useHistory } from "react-router-dom";
+import { backend_url } from '../../production';
 
 const Login = () => {
     const [username, setUsername] = React.useState('')
@@ -33,7 +34,7 @@ const Login = () => {
             password: password
         }
         try {
-            const res = await axios.post("http://localhost:8000/users/login", user);
+            const res = await axios.post(`${backend_url}/users/login`, user);
             localStorage.setItem("user", JSON.stringify(res.data));
             console.log("working!!", res)
             history.push("/chat")

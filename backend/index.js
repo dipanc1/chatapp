@@ -8,6 +8,7 @@ const conversationRoute = require("./Router/conversation")
 const messageRoute = require("./Router/messages")
 const { mongo_url } = require("./config/mongo_auth");
 const { protect } = require("./middleware/authMiddleware");
+// const path = require("path");
 const app = express();
 
 app.use(
@@ -32,7 +33,7 @@ app.use("/users", userRoute);
 app.use("/conversation", protect, conversationRoute);
 app.use("/message", protect, messageRoute);
 
-const PORT = "8000";
+const PORT = process.env.PORT || "8000";
 const server = app.listen(PORT, () => {
     console.log(`Port running on http://localhost:${PORT} `);
 });
@@ -63,6 +64,9 @@ io.on("connection", (socket) => {
     socket.on('calling', (room) => socket.in(room).emit('calling'));
     socket.on('stop calling', (room) => socket.in(room).emit('stop calling'));
 
+    socket.on('online', (room) => socket.in(room).emit('online'));
+    socket.on('not online', (room) => socket.in(room).emit('not online'));
+
     socket.on("new message", (newMessageReceived) => {
         var chat = newMessageReceived.chat;
 
@@ -82,3 +86,11 @@ io.on("connection", (socket) => {
         socket.leave(userData._id);
     });
 });
+
+// ---------------DEPLOYMENT--------------------
+
+// app.use(express.static(path.join(__dirname, 'build')));
+
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'build', 'index.html'))
+// });

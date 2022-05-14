@@ -6,6 +6,7 @@ import axios from 'axios';
 import { PhoneNumberContext } from '../../context/phoneNumberContext';
 import { Link } from 'react-router-dom';
 import { useHistory } from "react-router-dom";
+import { backend_url } from '../../production';
 
 const Register = () => {
     const { dispatch } = React.useContext(PhoneNumberContext);
@@ -26,9 +27,9 @@ const Register = () => {
     let history = useHistory();
     const cloudName = 'dipanc1';
 
-    const apiUrlMobile = "http://localhost:8000/mobile";
-    const apiUrlOtp = "http://localhost:8000/otp";
-    const apiUrlRegister = "http://localhost:8000/users/register";
+    const apiUrlMobile = `${backend_url}/mobile`;
+    const apiUrlOtp = `${backend_url}/otp`;
+    const apiUrlRegister = `${backend_url}/users/register`;
     const pictureUpload = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
 
     const handleNumber = (e) => {

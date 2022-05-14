@@ -10,14 +10,14 @@ import animationData from '../../animations/typing.json'
 import DetailsModal from '../detailsmodal/DetailsModal'
 import { format } from 'timeago.js'
 import Stream from '../stream/Stream'
+import { backend_url } from '../../production'
 
-const ENDPOINT = 'http://localhost:8000';
+const ENDPOINT = `${backend_url}`;
 var socket, selectedChatCompare;
 
 const Chatbox = ({ fetchAgain, setFetchAgain }) => {
   const user = JSON.parse(localStorage.getItem('user'));
   const { selectedChat, notification, dispatch } = React.useContext(PhoneNumberContext);
-  const [online, setOnline] = React.useState(false);
   const [profile, setProfile] = React.useState(null);
   const [messages, setMessages] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
@@ -27,6 +27,9 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
   const [isTyping, setIsTyping] = React.useState(false);
   const [calling, setCalling] = React.useState(false);
   const [isCalling, setIsCalling] = React.useState(false);
+  const [videocall, setVideocall] = React.useState(true);
+  const [online, setOnline] = React.useState(false);
+  const [isOnline, setIsOnline] = React.useState(false);
   const [streaming, setStreaming] = React.useState(false);
   const [fullScreenMode, setFullScreenMode] = React.useState(false);
   const scrollRef = React.useRef();
@@ -41,7 +44,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
         }
       };
       setLoading(true);
-      const { data } = await axios.get(`http://localhost:8000/message/${selectedChat._id}`, config);
+      const { data } = await axios.get(`${backend_url}/message/${selectedChat._id}`, config);
       setMessages(data);
       setLoading(false);
       socket.emit('join chat', selectedChat._id);
@@ -61,7 +64,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
           }
         };
         setNewMessage('');
-        const { data } = await axios.post(`http://localhost:8000/message`, {
+        const { data } = await axios.post(`${backend_url}/message`, {
           content: newMessage,
           chatId: selectedChat._id
         }, config);
@@ -86,13 +89,8 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
     socket.on("stop calling", () => setIsCalling(false));
 
     // need another approach to check if the selected chat is changed
-    socket.on('user online', (userData) => {
-      if (userData._id === (selectedChat?.users.filter(u => u._id !== user._id)[0]._id)) {
-        setOnline(true);
-      } else {
-        setOnline(false);
-      }
-    });
+    socket.on('online', () => setIsOnline(true));
+    socket.on('not online', () => setIsOnline(false));
   }, []);
 
 
@@ -110,12 +108,14 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
 
     fetchMessages();
     setStreaming(false);
+    setVideocall(false);
+    
     selectedChatCompare = selectedChat;
 
   }, [selectedChat])
 
+
   React.useEffect(() => {
-    socket.emit('user online', user.username);
     socket.on("message received", (newMessageReceived) => {
       if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
         if (!notification.includes(newMessageReceived)) {
@@ -183,11 +183,11 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
               </div>
               {selectedChat?.isGroupChat ?
                 <div className="chatbox-streaming">
-                  <Stream streaming={streaming} setStreaming={setStreaming} fullScreenMode={fullScreenMode} setFullScreenMode={setFullScreenMode} calling={calling} setCalling={setCalling} isCalling={isCalling} setIsCalling={setIsCalling} socket={socket} />
+                  <Stream streaming={streaming} setStreaming={setStreaming} fullScreenMode={fullScreenMode} setFullScreenMode={setFullScreenMode} calling={calling} setCalling={setCalling} isCalling={isCalling} setIsCalling={setIsCalling} socket={socket} videocall={videocall} setVideocall={setVideocall} />
                 </div>
                 :
                 <div className="chatbox-online-status">
-                  {online ?
+                  {isOnline ?
                     <img src='https://img.icons8.com/emoji/48/000000/green-circle-emoji.png' alt="online-icon" className='online-icon-chat' /> :
                     <img src='https://img.icons8.com/emoji/48/000000/red-circle-emoji.png' alt="offline-icon" className='offline-icon-chat' />
                   }

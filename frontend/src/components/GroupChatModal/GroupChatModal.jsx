@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useContext, useState } from 'react';
 import { PhoneNumberContext } from '../../context/phoneNumberContext';
+import { backend_url } from '../../production';
 import Loading from '../Loading';
 import UserBadgeItem from '../UserAvatar/UserBadgeItem';
 import UserListItem from '../UserAvatar/UserListItem';
@@ -29,7 +30,7 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
                     'Authorization': `Bearer ${user.token}`
                 }
             }
-            const { data } = await axios.get(`http://localhost:8000/users?search=${search}`, config)
+            const { data } = await axios.get(`${backend_url}/users?search=${search}`, config)
             // console.log(data.users);
             setLoading(false);
             setSearchResults(data.users);
@@ -52,7 +53,7 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
                     'Authorization': `Bearer ${user.token}`
                 }
             }
-            const { data } = await axios.post(`http://localhost:8000/conversation/group`, { name: groupChatName, users: JSON.stringify(selectedUsers.map(u => u._id)) }, config);
+            const { data } = await axios.post(`${backend_url}/conversation/group`, { name: groupChatName, users: JSON.stringify(selectedUsers.map(u => u._id)) }, config);
 
             if (!chats.find(chat => chat._id === data._id)) {
                 dispatch({ type: 'SET_SELECTED_CHAT', payload: data })
