@@ -9,6 +9,7 @@ import Loading from '../Loading'
 import GroupListItem from '../UserAvatar/GroupListItem'
 import UserListItem from '../UserAvatar/UserListItem'
 import "./conversations.scss"
+import { motion } from "framer-motion"
 
 const Conversations = ({ fetchAgain, setFetchAgain }) => {
     const { dispatch, chats, selectedChat, mobile } = React.useContext(PhoneNumberContext);
@@ -132,10 +133,23 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [fetchAgain])
 
+    const variants = {
+        open: { opacity: 1, y: 1 },
+        closed: { opacity: 0, y: "-100%" },
+    }
+
+    const variants1 = {
+        visible: { opacity: 1 },
+        hidden: { opacity: 0 },
+    }
+
 
     return (
         <div className={mobile ? 'conversationsMobile' : 'conversations'}>
-            <div className="search">
+            <motion.div className="search"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+            >
                 <input
                     type="text"
                     id="search"
@@ -144,15 +158,24 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                     value={search}
                     onChange={handleSearch}
                 />
-            </div>
+            </motion.div>
 
             {/* <hr style={{ 'color': "#f3f7fc" }} /> */}
-            <div className="conversation-title">
-                <h5>Conversations</h5>
+            <motion.div className="conversation-title">
+                <motion.h5
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                >
+                    Conversations
+                </motion.h5>
                 <img src="/images/down-arrow.png" alt="down arrow" className='down-arrow' style={{ transform: !dropdown ? 'rotate(180deg)' : null }} onClick={() => setDropdown(!dropdown)} />
-            </div>
+            </motion.div>
             <hr style={{ 'color': "#f3f7fc", display: dropdown ? 'block' : 'none' }} />
-            <div className="conversations-list">
+
+            <motion.div className="conversations-list"
+                animate={dropdown ? "open" : "closed"}
+                variants={variants}
+            >
                 {
                     loading ?
                         <div className="loading">
@@ -177,7 +200,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                                         key={c._id}
                                         onClick={() => {
                                             dispatch({ type: "SET_SELECTED_CHAT", payload: c })
-                                            dispatch({ type: "SET_MOBILE"})
+                                            dispatch({ type: "SET_MOBILE" })
                                         }}
                                     >
                                         <Conversation chat={c} />
@@ -185,21 +208,36 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                                 ))
 
                 }
-                {conversations.length === 0 ? <div className="noChat">
-                    <h5>No Conversations</h5>
-                </div> : null}
-            </div>
+                {conversations.length === 0 ?
+                    <motion.div
+                        className="noChat"
+                        initial="hidden"
+                        animate="visible"
+                        variants={variants1}
+                    >
+                        <h5>No Conversations</h5>
+                    </motion.div> : null}
+            </motion.div>
 
             {/* <hr style={{ 'color': "#f3f7fc" }} /> */}
-            <div className="group-title">
+            <div className="group-title"
+
+            >
                 <img src="/images/down-arrow.png" alt="down arrow" className='down-arrow' onClick={() => setDropdownGroup(!dropdownGroup)} style={{ transform: !dropdownGroup ? 'rotate(180deg)' : null }} />
-                <h5>Groups</h5>
+                <motion.h5
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                >Groups
+                </motion.h5>
                 <GroupChatModal user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}>
                     <button className='groupChatButton'>+</button>
                 </GroupChatModal>
             </div>
             <hr style={{ 'color': "#f3f7fc" }} />
-            <div className="groups-list">
+            <motion.div className="groups-list"
+                animate={dropdownGroup ? "open" : "closed"}
+                variants={variants}
+            >
                 {
                     loading ?
                         <div className="loading">
@@ -226,7 +264,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                                         key={c._id}
                                         onClick={() => {
                                             dispatch({ type: "SET_SELECTED_CHAT", payload: c })
-                                            dispatch({ type: "SET_MOBILE"})
+                                            dispatch({ type: "SET_MOBILE" })
                                         }}
                                     >
                                         <GroupChat chat={c} />
@@ -235,12 +273,17 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                 }
                 {groupConversations.length === 0
                     ?
-                    <div className="noGroup">
+                    <motion.div
+                        className="noGroup"
+                        initial="hidden"
+                        animate="visible"
+                        variants={variants1}
+                    >
                         <h5>No Groups</h5>
-                    </div>
+                    </motion.div>
                     :
                     null}
-            </div>
+            </motion.div>
         </div >
     )
 }

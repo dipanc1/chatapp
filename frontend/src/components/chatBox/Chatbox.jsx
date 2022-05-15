@@ -11,6 +11,7 @@ import DetailsModal from '../detailsmodal/DetailsModal'
 import { format } from 'timeago.js'
 import Stream from '../stream/Stream'
 import { backend_url } from '../../production'
+import { motion } from 'framer-motion'
 
 const ENDPOINT = `${backend_url}`;
 var socket, selectedChatCompare;
@@ -33,7 +34,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
   const [streaming, setStreaming] = React.useState(false);
   const [fullScreenMode, setFullScreenMode] = React.useState(false);
   const scrollRef = React.useRef();
-  console.warn(isTyping)
+  // console.warn(isTyping)
 
   const fetchMessages = async () => {
     if (!selectedChat) return;
@@ -153,34 +154,64 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
     }, typingTimer);
   }
 
+  const variants = {
+    visible: { opacity: 1 },
+    hidden: { opacity: 0 },
+  }
 
   return (
-    <div className={mobile? 'chatbox':'chatboxMobile'}>
+    <div className={mobile ? 'chatbox' : 'chatboxMobile'}>
       {
         selectedChat ?
           (<>
             {/* TOP PART  */}
-            <div className="top">
-              <div className="chatbox-group-name" style={{ margin: selectedChat?.isGroupChat ? '8px' : null }}>
+            <motion.div
+              className="top"
+              initial="hidden"
+              animate="visible"
+              variants={variants}
+            >
+              <motion.div
+                className="chatbox-group-name"
+                initial="hidden"
+                animate="visible"
+                variants={variants}
+                style={{ margin: selectedChat?.isGroupChat ? '8px' : null }}>
                 {selectedChat?.isGroupChat ?
                   null :
-                  <img src={profile?.pic} alt="group-icon" className='group-icon-chat' />
+                  <motion.img
+                    src={profile?.pic}
+                    alt="group-icon"
+                    className='group-icon-chat'
+                    initial="hidden"
+                    animate="visible"
+                    variants={variants}
+                  />
                 }
                 {
                   streaming ?
                     null :
                     <>
-                      <span>
+                      <motion.span
+                        initial="hidden"
+                        animate="visible"
+                        variants={variants}
+                      >
                         {selectedChat?.isGroupChat ? selectedChat?.chatName.toUpperCase() : profile?.username}
-                      </span>
-                      <span className='chatbox-group-members'>{
-                        selectedChat?.isGroupChat ?
-                          `${selectedChat?.users.length} members` :
-                          null
-                      }</span>
+                      </motion.span>
+                      <motion.span
+                        initial="hidden"
+                        animate="visible"
+                        variants={variants}
+                        className='chatbox-group-members'
+                      >{
+                          selectedChat?.isGroupChat ?
+                            `${selectedChat?.users.length} members` :
+                            null
+                        }</motion.span>
                     </>
                 }
-              </div>
+              </motion.div>
               {selectedChat?.isGroupChat ?
                 <div className="chatbox-streaming">
                   <Stream streaming={streaming} setStreaming={setStreaming} fullScreenMode={fullScreenMode} setFullScreenMode={setFullScreenMode} calling={calling} setCalling={setCalling} isCalling={isCalling} setIsCalling={setIsCalling} socket={socket} videocall={videocall} setVideocall={setVideocall} />
@@ -196,14 +227,19 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
               <div className="chatboxGroupModal">
                 <DetailsModal />
               </div>
-            </div>
+            </motion.div>
             <hr style={{
               marginBottom: '15px'
             }} />
 
 
             {/* MIDDLE PART  */}
-            <div className={streaming && selectedChat.isGroupChat ? "middleStream" : fullScreenMode ? 'middle' : 'middle'}>
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={variants}
+              className={streaming && selectedChat.isGroupChat ? "middleStream" : fullScreenMode ? 'middle' : 'middle'}
+            >
 
               {loading ? (
                 <div className="loading">
@@ -211,7 +247,12 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
                 </div>
               ) : (
                 messages?.map((m, i) => (
-                  <div key={m._id} ref={scrollRef}>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    key={m._id} 
+                    ref={scrollRef}>
                     <Message
                       key={m._id}
                       messages={m}
@@ -224,7 +265,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
                           messages[messages.length - 1].sender._id)}
                       sameTime={(i < messages.length - 1) && format(messages[i].createdAt) === format(messages[i + 1].createdAt)}
                     />
-                  </div>
+                  </motion.div>
                 ))
               )}
               {isTyping ? (
@@ -240,7 +281,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
               ) : (
                 <></>
               )}
-            </div>
+            </motion.div>
 
 
             {/* BOTTOM PART  */}
@@ -250,9 +291,19 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
                 value={newMessage}
                 onKeyDown={newMessage !== "" ? sendMessage : null}
               />
-              <button className='chatSubmit' onClick={newMessage !== "" ? sendMessage : null}>→</button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className='chatSubmit' onClick={newMessage !== "" ? sendMessage : null}>→</motion.button>
             </div>
-          </>) : (<span className='noConvo'>Open a conversation to start a chat.</span>)
+          </>)
+          :
+          (<motion.span
+            className='noConvo'
+            initial="hidden"
+            animate="visible"
+            variants={variants}
+          >Open a conversation to start a chat.</motion.span>)
       }
     </div>
   )
