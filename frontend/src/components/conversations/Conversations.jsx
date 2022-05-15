@@ -11,7 +11,7 @@ import UserListItem from '../UserAvatar/UserListItem'
 import "./conversations.scss"
 
 const Conversations = ({ fetchAgain, setFetchAgain }) => {
-    const { dispatch, chats, selectedChat } = React.useContext(PhoneNumberContext);
+    const { dispatch, chats, selectedChat, mobile } = React.useContext(PhoneNumberContext);
     const [dropdown, setDropdown] = React.useState(true);
     const [dropdownGroup, setDropdownGroup] = React.useState(true);
     const [conversations, setConversations] = React.useState([])
@@ -134,7 +134,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
 
 
     return (
-        <div className='conversations'>
+        <div className={mobile ? 'conversationsMobile' : 'conversations'}>
             <div className="search">
                 <input
                     type="text"
@@ -175,7 +175,10 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                                     <div
                                         className={selectedChat?._id === c._id ? "conversation-avatar-name-disabled" : "conversation-avatar-name"}
                                         key={c._id}
-                                        onClick={() => dispatch({ type: "SET_SELECTED_CHAT", payload: c })}
+                                        onClick={() => {
+                                            dispatch({ type: "SET_SELECTED_CHAT", payload: c })
+                                            dispatch({ type: "SET_MOBILE"})
+                                        }}
                                     >
                                         <Conversation chat={c} />
                                     </div>
@@ -219,10 +222,12 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                                 :
                                 groupConversations.map((c) => (
                                     <div
-
                                         className={selectedChat?._id === c._id ? "group-icon-name-disabled" : "group-icon-name"}
                                         key={c._id}
-                                        onClick={() => dispatch({ type: "SET_SELECTED_CHAT", payload: c })}
+                                        onClick={() => {
+                                            dispatch({ type: "SET_SELECTED_CHAT", payload: c })
+                                            dispatch({ type: "SET_MOBILE"})
+                                        }}
                                     >
                                         <GroupChat chat={c} />
                                     </div>

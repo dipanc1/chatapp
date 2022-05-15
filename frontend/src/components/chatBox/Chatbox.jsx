@@ -17,7 +17,7 @@ var socket, selectedChatCompare;
 
 const Chatbox = ({ fetchAgain, setFetchAgain }) => {
   const user = JSON.parse(localStorage.getItem('user'));
-  const { selectedChat, notification, dispatch } = React.useContext(PhoneNumberContext);
+  const { selectedChat, notification, dispatch, mobile } = React.useContext(PhoneNumberContext);
   const [profile, setProfile] = React.useState(null);
   const [messages, setMessages] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
@@ -109,7 +109,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
     fetchMessages();
     setStreaming(false);
     setVideocall(false);
-    
+
     selectedChatCompare = selectedChat;
 
   }, [selectedChat])
@@ -155,7 +155,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
 
 
   return (
-    <div className='chatbox'>
+    <div className={mobile? 'chatbox':'chatboxMobile'}>
       {
         selectedChat ?
           (<>

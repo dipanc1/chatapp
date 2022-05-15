@@ -103,5 +103,19 @@ $tablet: 768px;
             margin-right: 7rem;
             cursor: pointer;
         }
+        .myProfile {
+            ul {
+                width: 32vw;
+            }
+        }
+        .notificationModal {
+            right: 42vw;
+            ul {
+                width: 30vw;
+                li {
+                    padding: 0.5rem 1rem;
+                }
+            }
+        }
     }
 }

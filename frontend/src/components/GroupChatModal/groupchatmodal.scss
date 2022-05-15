@@ -1,3 +1,5 @@
+$phone: 640px;
+$tablet: 768px;
 .groupModal {
     position: absolute;
     width: 100vw;
@@ -100,6 +102,15 @@
                     background-color: #b5cbfe;
                 }
             }
+        }
+    }
+}
+
+@media (max-width: $phone) {
+    .groupModal {
+        right: -16px;
+        .groupModalContainer {
+            width: 74vw;
         }
     }
 }

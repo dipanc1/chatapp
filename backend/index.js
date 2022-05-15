@@ -8,7 +8,7 @@ const conversationRoute = require("./Router/conversation")
 const messageRoute = require("./Router/messages")
 const { mongo_url } = require("./config/mongo_auth");
 const { protect } = require("./middleware/authMiddleware");
-// const path = require("path");
+const path = require("path");
 const app = express();
 
 app.use(
@@ -89,8 +89,8 @@ io.on("connection", (socket) => {
 
 // ---------------DEPLOYMENT--------------------
 
-// app.use(express.static(path.join(__dirname, 'build')));
+app.use(express.static(path.join(__dirname, 'build')));
 
-// app.get('*', (req, res) => {
-//     res.sendFile(path.join(__dirname, 'build', 'index.html'))
-// });
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'))
+});

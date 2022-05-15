@@ -10,7 +10,7 @@ const Navbar = () => {
 
   const user = JSON.parse(localStorage.getItem('user'));
 
-  const { notification, dispatch } = React.useContext(PhoneNumberContext);
+  const { notification, dispatch, mobile } = React.useContext(PhoneNumberContext);
   // console.log(notification);
 
   const [show, setShow] = React.useState(false);
@@ -43,7 +43,8 @@ const Navbar = () => {
 
   return (
     <div className='navbar'>
-      <img src="https://img.icons8.com/material-outlined/24/000000/menu--v1.png" alt='menu1' className='menu' onClick={() => dispatch({ type: 'SET_MOBILE' })} />
+      {mobile ? <img src="https://img.icons8.com/material-outlined/24/000000/menu--v1.png" alt='menu1' className='menu' onClick={() => dispatch({ type: 'SET_MOBILE' })} /> :
+      <img src="https://img.icons8.com/ios/50/000000/delete-sign--v1.png" alt='menu1' className='menu' onClick={() => dispatch({ type: 'SET_MOBILE' })}/>}
       <div className="profile">
         <img src={user.pic} alt="avatar" className='avatar' onClick={handleProfile} />
         <p>{user.username}</p>
