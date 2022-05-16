@@ -6,6 +6,7 @@ import axios from 'axios'
 import Loading from '../Loading'
 import UserListItem from '../UserAvatar/UserListItem'
 import { backend_url } from '../../production'
+import { motion } from 'framer-motion'
 
 const Members = ({ fetchAgain, setFetchAgain }) => {
   const [show, setShow] = React.useState(false);
@@ -130,11 +131,33 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
     }
   }
 
+  const list = {
+    visible: {
+      opacity: 1,
+      transition: {
+        when: "beforeChildren",
+        staggerChildren: 0.3,
+      },
+    },
+    hidden: {
+      opacity: 0,
+      transition: {
+        when: "afterChildren",
+      },
+    },
+  }
+
+  const item = {
+    visible: { opacity: 1, x: 0 },
+    hidden: { opacity: 0, x: -100 },
+  }
+
   return (
     <div className='members'>
       {selectedChat ? (
         <>
-          <div className="member-title">
+          <div className="member-title"
+          >
             {selectedChat.isGroupChat ?
               <h3> Group Info: <i style={{ color: !transformmm ? '#004bfaec' : '#004dfa' }} onMouseEnter={() => setTransformmm(true)}
                 onMouseLeave={() => setTransformmm(false)}>{selectedChat?.chatName}</i></h3>

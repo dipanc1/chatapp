@@ -241,17 +241,18 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
               className={streaming && selectedChat.isGroupChat ? "middleStream" : fullScreenMode ? 'middle' : 'middle'}
             >
 
-              {loading ? (
-                <div className="loading">
-                  <Loading />
-                </div>
-              ) : (
-                messages?.map((m, i) => (
+              {loading ?
+                (
+                  <div className="loading">
+                    <Loading />
+                  </div>
+                ) :
+                (messages?.map((m, i) => (
                   <motion.div
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     viewport={{ once: true }}
-                    key={m._id} 
+                    key={m._id}
                     ref={scrollRef}>
                     <Message
                       key={m._id}
@@ -266,8 +267,8 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
                       sameTime={(i < messages.length - 1) && format(messages[i].createdAt) === format(messages[i + 1].createdAt)}
                     />
                   </motion.div>
-                ))
-              )}
+                )))
+              }
               {isTyping ? (
                 <div className='typing'>
                   <Lottie

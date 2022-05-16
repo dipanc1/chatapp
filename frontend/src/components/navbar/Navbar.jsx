@@ -3,6 +3,7 @@ import ProfileModal from '../ProfileModal/ProfileModal';
 import "./navbar.scss"
 import { useHistory } from "react-router-dom";
 import { PhoneNumberContext } from '../../context/phoneNumberContext';
+import {  motion } from 'framer-motion';
 
 const Navbar = () => {
 
@@ -41,10 +42,36 @@ const Navbar = () => {
     setShow(!show);
   }
 
+  const list = {
+    visible: {
+      opacity: 1,
+      transition: {
+        when: "beforeChildren",
+        staggerChildren: 0.3,
+      },
+    },
+    hidden: {
+      opacity: 0,
+      transition: {
+        when: "afterChildren",
+      },
+    },
+  }
+
+  const item = {
+    visible: { opacity: 1, x: 0 },
+    hidden: { opacity: 0, x: -100 },
+  }
+
   return (
     <div className='navbar'>
-      {mobile ? <img src="https://img.icons8.com/material-outlined/24/000000/menu--v1.png" alt='menu1' className='menu' onClick={() => dispatch({ type: 'SET_MOBILE' })} /> :
-      <img src="https://img.icons8.com/ios/50/000000/delete-sign--v1.png" alt='menu1' className='menu' onClick={() => dispatch({ type: 'SET_MOBILE' })}/>}
+      {mobile ?
+        <img
+          src="https://img.icons8.com/material-outlined/24/000000/menu--v1.png" alt='menu1' className='menu' onClick={() => dispatch({ type: 'SET_MOBILE' })} />
+        :
+        <img
+          src="https://img.icons8.com/ios/50/000000/delete-sign--v1.png" alt='menu1' className='menu' onClick={() => dispatch({ type: 'SET_MOBILE' })} />
+      }
       <div className="profile">
         <img src={user.pic} alt="avatar" className='avatar' onClick={handleProfile} />
         <p>{user.username}</p>
@@ -67,43 +94,58 @@ const Navbar = () => {
         }
       </div>
       {show ? <div className="notificationModal">
-        <ul>
+        <motion.ul
+          initial="hidden"
+          animate="visible"
+          variants={list}
+        >
           {!notification.length ? <li onClick={handleNotification}>No new notifications</li> : notification.map((notifications) => {
             return (
               <>
-                <li key={notifications._id} onClick={() => {
-                  console.log(notifications);
-                  setShow(!show);
-                  dispatch({
-                    type: 'SET_SELECTED_CHAT',
-                    payload: notifications.chat
-                  })
-                  dispatch({
-                    type: 'SET_NOTIFICATION',
-                    payload: notifications.filter(notifications._id !== notification._id)
-                  })
+                <li
+                  variants={item}
+                  key={notifications._id}
+                  onClick={() => {
+                    console.log(notifications);
+                    setShow(!show);
+                    dispatch({
+                      type: 'SET_SELECTED_CHAT',
+                      payload: notifications.chat
+                    })
+                    dispatch({
+                      type: 'SET_NOTIFICATION',
+                      payload: notifications.filter(notifications._id !== notification._id)
+                    })
 
-                  //check this feature
-                }}>
+                    //check this feature
+                  }}>
                   {notifications.chat.isGroupChat ? `New Message in ${notifications.chat.chatName}` : `New Message from ${notifications.sender.username}`}
                 </li>
                 <hr />
               </>
             )
           })}
-        </ul>
+        </motion.ul>
       </div> : null}
       {profile ?
         <div className="myProfile">
-          <ul>
+          <motion.ul
+            initial="hidden"
+            animate="visible"
+            variants={list}
+          >
             <ProfileModal user={user} p={setProfile}>
-              <li>
+              <li
+                variants={item}>
                 My Profile
               </li>
             </ProfileModal>
             <hr />
-            <li onClick={handleLogout}>Logout</li>
-          </ul>
+            <li
+              variants={item}
+              onClick={handleLogout}
+            >Logout</li>
+          </motion.ul>
         </div>
         : null}
     </div>
