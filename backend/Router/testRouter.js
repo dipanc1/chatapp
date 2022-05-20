@@ -7,7 +7,7 @@ router.post("/mobile", (req, res) => {
     client.verify
         .services(serviceSID)
         .verifications.create({
-            to: `+91${req.body.number}`,
+            to: req.body.number,
             channel: "sms",
         })
         .then((resp) => {
@@ -19,11 +19,11 @@ router.post("/mobile", (req, res) => {
 router.post("/otp", (req, res) => {
     const { OTP, number1 } = req.body;
     console.log("otp", OTP);
-    console.log("number", `+91${number1.number}`);
+    console.log("number", number1.number);
     client.verify.services(serviceSID)
         .verificationChecks
         .create({
-            to: `+91${number1.number}`,
+            to: number1.number,
             code: OTP,
         })
         .then((resp) => {

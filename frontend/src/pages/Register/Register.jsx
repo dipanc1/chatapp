@@ -1,4 +1,6 @@
 import React from 'react'
+import 'react-phone-number-input/style.css'
+import PhoneInput from 'react-phone-number-input'
 import './register.scss'
 import OTPInput, { ResendOTP } from "otp-input-react";
 import validator from 'validator'
@@ -14,7 +16,7 @@ const Register = () => {
     const [otp, setOtp] = React.useState(true);
     const [OTP, setOTP] = React.useState("");
     const [username, setUsername] = React.useState("");
-    const [number, setNumber] = React.useState("");
+    const [number, setNumber] = React.useState();
     const [password, setPassword] = React.useState('');
     const [confirmPassword, setConfirmPassword] = React.useState('');
     const [error, setError] = React.useState(false)
@@ -151,6 +153,8 @@ const Register = () => {
     const renderTime = () => React.Fragment;
 
 
+
+
     return (
         <div className='register'>
             <div className="registerBox">
@@ -162,7 +166,12 @@ const Register = () => {
                         {verify &&
                             <div className="registerBoxFormInput">
                                 <label htmlFor="phone">Phone Number</label>
-                                <input type="text" id="phone" name='phone' placeholder='Enter Phone Number' required onChange={handleNumber} maxLength="10" minLength={10} />
+                                <PhoneInput
+                                    international
+                                    defaultCountry="IN"
+                                    value={number}
+                                    onChange={setNumber} />
+                                {/* <input type="text" id="phone" name='phone' placeholder='Enter Phone Number' required onChange={handleNumber} maxLength="10" minLength={10} /> */}
                             </div>}
                         {!otp &&
                             <>
