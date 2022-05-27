@@ -26,15 +26,13 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
   const [socketConnected, setSocketConnected] = React.useState(false);
   const [typing, setTyping] = React.useState(false);
   const [isTyping, setIsTyping] = React.useState(false);
+  const [online, setOnline] = React.useState(false);
   const [calling, setCalling] = React.useState(false);
   const [isCalling, setIsCalling] = React.useState(false);
   const [videocall, setVideocall] = React.useState(true);
-  const [online, setOnline] = React.useState(false);
-  const [isOnline, setIsOnline] = React.useState(false);
   const [streaming, setStreaming] = React.useState(false);
   const [fullScreenMode, setFullScreenMode] = React.useState(false);
   const scrollRef = React.useRef();
-  // console.warn(isTyping)
 
   const fetchMessages = async () => {
     if (!selectedChat) return;
@@ -85,13 +83,8 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
     socket.on("connected", () => setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
     socket.on("stop typing", () => setIsTyping(false));
-
-    socket.on("calling", () => setIsCalling(true));
-    socket.on("stop calling", () => setIsCalling(false));
-
-    // need another approach to check if the selected chat is changed
-    socket.on('online', () => setIsOnline(true));
-    socket.on('not online', () => setIsOnline(false));
+    // user online
+    socket.emit("user-online", user._id);
   }, []);
 
 
@@ -112,6 +105,18 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
     setVideocall(false);
 
     selectedChatCompare = selectedChat;
+    socket.on("user-online", (userId) => {
+      console.warn(userId, "USER ONLINE");
+      if (selectedChat?.users.find(member => member._id === userId)) {
+        setOnline(true);
+      }
+    });
+    socket.on("user-offline", (userId) => {
+      console.warn(userId, "USER OFFLINE");
+      if (selectedChat?.users.find(member => member._id === userId)) {
+        setOnline(false);
+      }
+    });
 
   }, [selectedChat])
 
@@ -218,9 +223,10 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
                 </div>
                 :
                 <div className="chatbox-online-status">
-                  {isOnline ?
-                    <img src='https://img.icons8.com/emoji/48/000000/green-circle-emoji.png' alt="online-icon" className='online-icon-chat' /> :
-                    <img src='https://img.icons8.com/emoji/48/000000/red-circle-emoji.png' alt="offline-icon" className='offline-icon-chat' />
+                  {
+                    online ?
+                    <img src='https://img.icons8.com/emoji/48/000000/green-circle-emoji.png' alt="online-icon" className='online-icon-chat' width={15}/> :
+                    <img src='https://img.icons8.com/emoji/48/000000/red-circle-emoji.png' alt="offline-icon" className='offline-icon-chat' width={15} />
                   }
                 </div>
               }

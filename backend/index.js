@@ -8,6 +8,7 @@ const conversationRoute = require("./Router/conversation")
 const messageRoute = require("./Router/messages")
 const { mongo_url } = require("./config/mongo_auth");
 const { protect } = require("./middleware/authMiddleware");
+const _ = require("lodash");
 const path = require("path");
 const app = express();
 
@@ -45,12 +46,26 @@ const io = require("socket.io")(server, {
     },
 });
 
+let users = {};
 io.on("connection", (socket) => {
     console.log("New user connected");
 
     socket.on("setup", (userData) => {
         socket.join(userData._id);
         socket.emit("connected", userData);
+    });
+
+    //user online
+    socket.on("user-online", (userData) => {
+        console.log("user-online", userData);
+        users[socket.id] = userData;
+        socket.broadcast.emit("user-online", userData);
+    });
+
+    // user offline
+    socket.on("disconnect", () => {
+        console.log("user-offline", users[socket.id]);
+        socket.broadcast.emit("user-offline", users[socket.id]);
     });
 
     socket.on("join chat", (room) => {
@@ -63,9 +78,6 @@ io.on("connection", (socket) => {
 
     socket.on('calling', (room) => socket.in(room).emit('calling'));
     socket.on('stop calling', (room) => socket.in(room).emit('stop calling'));
-
-    socket.on('online', (room) => socket.in(room).emit('online'));
-    socket.on('not online', (room) => socket.in(room).emit('not online'));
 
     socket.on("new message", (newMessageReceived) => {
         var chat = newMessageReceived.chat;

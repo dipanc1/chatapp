@@ -51,8 +51,9 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
   }
 
   const handleAddUser = async (user1) => {
-    if (selectedChat.users.find(u => u._id === user1._id)) {
-      console.log("user already in chat")
+    // console.warn("USER ID TO ADD", selectedChat.users.map(user => user._id).includes(user1));
+    if (selectedChat.users.map(user => user._id).includes(user1)) {
+      return alert('User already in chat')
     }
     if (selectedChat.groupAdmin._id !== user._id) {
       console.log("you are not the admin")

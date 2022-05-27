@@ -36,6 +36,9 @@ $tablet: 768px;
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        max-height: 76vh;
+        overflow: scroll;
+        overflow-x: hidden;
         .member-avatar-name {
             margin: 0 21px;
             width: 85%;
