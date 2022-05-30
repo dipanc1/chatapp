@@ -34,10 +34,6 @@ const Register = () => {
     const apiUrlRegister = `${backend_url}/users/register`;
     const pictureUpload = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
 
-    const handleNumber = (e) => {
-        setNumber(e.target.value);
-    }
-
     const handleUsername = (e) => {
         setUsername(e.target.value);
     }
@@ -171,7 +167,6 @@ const Register = () => {
                                     defaultCountry="IN"
                                     value={number}
                                     onChange={setNumber} />
-                                {/* <input type="text" id="phone" name='phone' placeholder='Enter Phone Number' required onChange={handleNumber} maxLength="10" minLength={10} /> */}
                             </div>}
                         {!otp &&
                             <>
