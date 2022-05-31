@@ -66,12 +66,6 @@ const Login = () => {
                         {errorMessage}
                     </Text>
                 }
-                <View style={styles.registerLinkBox}>
-                    <Text style={styles.newUserButton}>New User?</Text>
-                    <TouchableOpacity>
-                        <Text style={styles.newUserButtonLink}>Register</Text>
-                    </TouchableOpacity>
-                </View>
             </View>
         </View>
     )

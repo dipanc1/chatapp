@@ -10,37 +10,27 @@ import axios from 'axios';
 
 const Register = () => {
 
-  const { dispatch, number } = React.useContext(PhoneAppContext);
-  const [verify, setVerify] = React.useState(false);
-  const [otp, setOtp] = React.useState(false);
+  const { dispatch } = React.useContext(PhoneAppContext);
+  const [verify, setVerify] = React.useState(true);
+  const [otp, setOtp] = React.useState(true);
   const [username, setUsername] = React.useState('');
+  const [number, setNumber] = React.useState('');
   const [formattedNumber, setFormattedNumber] = React.useState();
   const [password, setPassword] = React.useState('');
   const [confirmPassword, setConfirmPassword] = React.useState('');
   const [error, setError] = React.useState(false)
   const [errorMessage, setErrorMessage] = React.useState('')
   const [show, setShow] = React.useState(false)
-  const [pic, setPic] = React.useState('')
+  const [pic, setPic] = React.useState(null)
   const [loading, setLoading] = React.useState(false)
   const phoneInput = useRef(null);
+  const number1 = React.useContext(PhoneAppContext)
 
   const cloudName = 'dipanc1';
   const apiUrlMobile = `${backend_url}/mobile`;
   const apiUrlOtp = `${backend_url}/otp`;
   const apiUrlRegister = `${backend_url}/users/register`;
   const pictureUpload = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
-
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    console.log(result);
-  };
-
 
 
   const handleVerify = () => {
@@ -62,13 +52,12 @@ const Register = () => {
     }
   }
 
-  
   const handleOtp = (OTP) => {
     console.log("OTP", OTP);
     if (OTP.length === 5) {
       setTimeout(() => {
-        console.log("NumberJHFBJKFDSJ", {number1: number});
-        axios.post(apiUrlOtp, { OTP, number1: number })
+        console.log("NumberJHFBJKFDSJ", { number1 });
+        axios.post(apiUrlOtp, { OTP, number1 })
           .then((res) => {
             console.log(res)
             if (res.data.resp.valid) {
@@ -85,7 +74,72 @@ const Register = () => {
     }
   }
 
-  const handleRegister = () => {}
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      // aspect: [4, 3],
+      base64: true
+    });
+    setLoading(true)
+    if (!result.cancelled) {
+      setPic({ image: result.uri })
+
+      let base64Img = `data:image/jpg;base64,${result.base64}`
+
+      //Add your cloud name
+      let apiUrl = pictureUpload;
+
+      let data = {
+        "file": base64Img,
+        "upload_preset": "chat-app",
+        'api_key': '835688546376544'
+      }
+
+      fetch(apiUrl, {
+        body: JSON.stringify(data),
+        headers: {
+          'content-type': 'application/json'
+        },
+        method: 'POST',
+      }).then(async r => {
+        let data = await r.json()
+        console.log(data.secure_url)
+        setLoading(false)
+        return data.secure_url
+      }).catch(err => {
+        console.log(err)
+        setLoading(false)
+      })
+    }
+
+  }
+
+  const handleRegister = () => {
+    if (password !== confirmPassword) {
+      setError(true);
+      setErrorMessage('Passwords do not match');
+      return
+
+    } else {
+      const details ={
+        username: username,
+        number1: number1,
+        password: password,
+        pic: pic.image
+      }
+      axios.post(apiUrlRegister, details)
+        .then(res => {
+          console.log(res.data);
+          // localStorage.setItem("user", JSON.stringify(res.data));
+          // history.push('/');
+        })
+        .catch(err => {
+          console.log(err);
+          setError(true);
+          setErrorMessage('Please enter valid details');
+        })
+    }
+  }
 
 
   return (
@@ -134,6 +188,8 @@ const Register = () => {
                 placeholder='Enter User Name'
                 placeholderTextColor={'#000'}
                 style={styles.registerInput}
+                value={username}
+                onChangeText={(text) => setUsername(text)}
               />
 
               <Text style={styles.registerLabel}>Password</Text>
@@ -142,6 +198,8 @@ const Register = () => {
                 placeholderTextColor={'#000'}
                 secureTextEntry={true}
                 style={styles.registerInput}
+                value={password}
+                onChangeText={(text) => setPassword(text)}
               />
 
               <Text style={styles.registerLabel}>Confirm Password</Text>
@@ -150,11 +208,12 @@ const Register = () => {
                 placeholderTextColor={'#000'}
                 secureTextEntry={true}
                 style={styles.registerInput}
-                
+                value={confirmPassword}
+                onChangeText={(text) => setConfirmPassword(text)}
               />
 
               <View style={styles.registerLabel}>
-                <Button title="Upload Your Picture" onPress={pickImage} />
+                <Button title="Upload Your Picture" onPress={() => pickImage()} />
               </View>
             </>
           }
@@ -162,8 +221,9 @@ const Register = () => {
         {verify ? <TouchableOpacity onPress={handleVerify} style={styles.registerButtonVerify}>
           <Text style={styles.registerButtonText}>Verify Phone Number</Text>
         </TouchableOpacity> : null}
-        {!otp ? <TouchableOpacity onPress={handleRegister} style={styles.registerButtonVerify}>
-          <Text style={styles.registerButtonText}>Register</Text>
+
+        {!otp && password === confirmPassword && username.length !== 0 && password.length >= 8 ? <TouchableOpacity onPress={handleRegister} style={styles.registerButtonVerify} disabled={loading ? true : false}>
+          <Text style={styles.registerButtonText}>{loading ? "Loading..." : "Register"}</Text>
         </TouchableOpacity> : null}
 
         {error &&
@@ -171,12 +231,6 @@ const Register = () => {
             {errorMessage}
           </Text>
         }
-        <View style={styles.registerLinkBox}>
-          <Text style={styles.newUserButton}>Already Have an Account?</Text>
-          <TouchableOpacity>
-            <Text style={styles.newUserButtonLink}>Login</Text>
-          </TouchableOpacity>
-        </View>
       </View>
     </View>
   )

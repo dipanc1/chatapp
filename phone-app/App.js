@@ -1,36 +1,77 @@
-import { StatusBar } from 'expo-status-bar';
 import * as React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, useWindowDimensions, Animated } from 'react-native';
+import { TabView, SceneMap } from 'react-native-tab-view';
 import { PhoneAppContextProvider } from './context/PhoneAppContext';
 import Login from './screens/Login';
 import Register from './screens/Register';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-const Stack = createNativeStackNavigator();
+
+const renderScene = SceneMap({
+  first: Login,
+  second: Register,
+});
+
 
 export default function App() {
-  return (
-    // <NavigationContainer>
-    <PhoneAppContextProvider>
-      <View style={styles.container}>
-        {/* <Stack.Navigator initialRouteName="Login"> */}
-        {/* <Stack.Screen name="Login" component={Login} /> */}
-        {/* <Login /> */}
-        <Register />
-        {/* <Stack.Screen name="Register" component={Register} /> */}
-        {/* </Stack.Navigator> */}
+  const layout = useWindowDimensions();
+
+  const [index, setIndex] = React.useState(0);
+  const [routes] = React.useState([
+    { key: 'first', title: 'Login' },
+    { key: 'second', title: 'Register' },
+  ]);
+
+  const renderTabBar = (props) => {
+    const inputRange = props.navigationState.routes.map((x, i) => i);
+
+    return (
+      <View style={styles.tabBar}>
+        {props.navigationState.routes.map((route, i) => {
+          const opacity = props.position.interpolate({
+            inputRange,
+            outputRange: inputRange.map((inputIndex) =>
+              inputIndex === i ? 1 : 0.5
+            ),
+          });
+
+          return (
+            <TouchableOpacity
+              style={styles.tabItem}
+              onPress={() => this.setState({ index: i })}
+              key={route.key}
+              >
+              <Animated.Text style={{ opacity }}>{route.title}</Animated.Text>
+            </TouchableOpacity>
+          );
+        })}
       </View>
+    );
+  };
+
+  return (
+    <PhoneAppContextProvider>
+      <TabView
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        // initialLayout={{ width: layout.width }}
+        renderTabBar={renderTabBar}
+      />
     </PhoneAppContextProvider>
-    // </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+  },
+  tabBar: {
+    flexDirection: 'row',
+    // paddingTop: layout.statusBarHeight,
+  },
+  tabItem: {
+    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    padding: 16,
   },
 });
