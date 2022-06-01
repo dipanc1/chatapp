@@ -6,6 +6,7 @@ import OTPTextView from 'react-native-otp-textinput';
 import * as ImagePicker from 'expo-image-picker';
 import { backend_url } from '../production'
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Register = () => {
@@ -121,7 +122,7 @@ const Register = () => {
       return
 
     } else {
-      const details ={
+      const details = {
         username: username,
         number1: number1,
         password: password,
@@ -132,6 +133,8 @@ const Register = () => {
           console.log(res.data);
           // localStorage.setItem("user", JSON.stringify(res.data));
           // history.push('/');
+          const jsonValue = JSON.stringify(res.data)
+          AsyncStorage.setItem('user', jsonValue)
         })
         .catch(err => {
           console.log(err);

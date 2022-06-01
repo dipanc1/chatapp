@@ -2,6 +2,7 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-nativ
 import React from 'react'
 import { backend_url } from '../production'
 import axios from 'axios'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const Login = () => {
     const [username, setUsername] = React.useState('')
@@ -27,6 +28,8 @@ const Login = () => {
             const res = await axios.post(`${backend_url}/users/login`, user);
             console.log("working!!", res.data)
             // localStorage.setItem("user", JSON.stringify(res.data));
+            const jsonValue = JSON.stringify(res.data)
+            AsyncStorage.setItem('user', jsonValue)
         } catch (err) {
             setError(true)
             setErrorMessage("Invalid username or password")
@@ -47,10 +50,12 @@ const Login = () => {
                         style={styles.loginInput}
                         value={username}
                         onChangeText={handleName}
+                        blurOnSubmit={true}
                     />
                     <Text style={styles.loginLabel}>Password</Text>
                     <TextInput
                         placeholder='Enter Your Password'
+                        blurOnSubmit={true}
                         placeholderTextColor={'#000'}
                         secureTextEntry={true}
                         style={styles.loginInput}
@@ -58,7 +63,7 @@ const Login = () => {
                         onChangeText={handlePassword}
                     />
                 </View>
-                <TouchableOpacity style={styles.loginButton} onPress={handleSubmit}>
+                <TouchableOpacity style={styles.loginButton} onPress={handleSubmit} disabled={(username.length || password.length) === 0 && true}>
                     <Text style={styles.loginButtonText}>Login</Text>
                 </TouchableOpacity>
                 {error &&

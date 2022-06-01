@@ -2,6 +2,7 @@ import * as React from 'react';
 import { StyleSheet, TouchableOpacity, View, useWindowDimensions, Animated } from 'react-native';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import { PhoneAppContextProvider } from './context/PhoneAppContext';
+import Chat from './screens/Chat';
 import Login from './screens/Login';
 import Register from './screens/Register';
 
@@ -39,7 +40,7 @@ export default function App() {
               style={styles.tabItem}
               onPress={() => this.setState({ index: i })}
               key={route.key}
-              >
+            >
               <Animated.Text style={{ opacity }}>{route.title}</Animated.Text>
             </TouchableOpacity>
           );
@@ -50,13 +51,14 @@ export default function App() {
 
   return (
     <PhoneAppContextProvider>
-      <TabView
+      {/* <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
         onIndexChange={setIndex}
         // initialLayout={{ width: layout.width }}
         renderTabBar={renderTabBar}
-      />
+      /> */}
+      <Chat />
     </PhoneAppContextProvider>
   );
 }
