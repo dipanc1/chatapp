@@ -27,9 +27,8 @@ const Login = () => {
         try {
             const res = await axios.post(`${backend_url}/users/login`, user);
             console.log("working!!", res.data)
-            // localStorage.setItem("user", JSON.stringify(res.data));
             const jsonValue = JSON.stringify(res.data)
-            AsyncStorage.setItem('user', jsonValue)
+            await AsyncStorage.setItem('user', jsonValue)
         } catch (err) {
             setError(true)
             setErrorMessage("Invalid username or password")

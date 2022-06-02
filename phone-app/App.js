@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as React from 'react';
 import { StyleSheet, TouchableOpacity, View, useWindowDimensions, Animated } from 'react-native';
 import { TabView, SceneMap } from 'react-native-tab-view';
@@ -15,7 +16,7 @@ const renderScene = SceneMap({
 
 export default function App() {
   const layout = useWindowDimensions();
-
+  const [user, setUser] = React.useState(null);
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     { key: 'first', title: 'Login' },
@@ -49,16 +50,36 @@ export default function App() {
     );
   };
 
+  const getData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('user')
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (e) {
+      // error reading value
+    }
+  }
+
+  React.useEffect(() => {
+    getData().then(res => {
+      if (res) {
+        console.log("res", res)
+        setUser(res)
+      }
+    })
+  }, [])
+
+
   return (
     <PhoneAppContextProvider>
-      {/* <TabView
-        navigationState={{ index, routes }}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        // initialLayout={{ width: layout.width }}
-        renderTabBar={renderTabBar}
-      /> */}
-      <Chat />
+      {user ? <Chat /> :
+        <TabView
+          navigationState={{ index, routes }}
+          renderScene={renderScene}
+          onIndexChange={setIndex}
+          initialLayout={{ width: layout.width }}
+          renderTabBar={renderTabBar}
+        />
+      }
     </PhoneAppContextProvider>
   );
 }

@@ -131,10 +131,8 @@ const Register = () => {
       axios.post(apiUrlRegister, details)
         .then(res => {
           console.log(res.data);
-          // localStorage.setItem("user", JSON.stringify(res.data));
-          // history.push('/');
-          const jsonValue = JSON.stringify(res.data)
-          AsyncStorage.setItem('user', jsonValue)
+          // const jsonValue = JSON.stringify(res.data)
+          // AsyncStorage.setItem('user', jsonValue)
         })
         .catch(err => {
           console.log(err);
