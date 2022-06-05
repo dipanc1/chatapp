@@ -1,9 +1,7 @@
 import { View, TextInput } from 'react-native'
 import React from 'react'
 
-const Search = () => {
-
-    const [search, setSearch] = React.useState('')
+const Search = ({search, handleSearch}) => {
 
   return (
     <View>
@@ -19,7 +17,7 @@ const Search = () => {
         }}
         placeholder="Search"
         value={search}
-        onChangeText={text => setSearch(text)}
+        onChangeText={handleSearch}
       />
     </View>
   )

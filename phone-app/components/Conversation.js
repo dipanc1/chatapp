@@ -1,22 +1,30 @@
 import { View, Text, StyleSheet, Image } from 'react-native'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 
-const Conversation = () => {
+const Conversation = ({ chat, user }) => {
+
+    const [friends, setFriends] = useState([]);
+
+    useEffect(() => {
+        setFriends((chat.users.find(member => member._id !== user._id)))
+
+    }, [chat, friends, user._id])
+
     return (
         <View style={styles.conversation}>
             <Image
                 source={{
-                    uri: 'https://facebook.github.io/react-native/docs/assets/favicon.png',
+                    uri: chat && friends?.pic,
                 }}
                 style={styles.conversationAvatar}
             />
             <View style={styles.conversationInfo}>
                 <Text style={styles.conversationName}>
-                    Admin1
+                    {chat && friends?.username}
                 </Text>
 
                 <Text style={styles.conversationLastMessage}>
-                    Lorem ipsum dolor sit 
+                    {chat.latestMessage && chat?.latestMessage.content}
                 </Text>
             </View>
         </View>

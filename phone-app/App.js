@@ -56,13 +56,14 @@ export default function App() {
       return jsonValue != null ? JSON.parse(jsonValue) : null;
     } catch (e) {
       // error reading value
+      console.log(e)
     }
   }
 
   React.useEffect(() => {
     getData().then(res => {
       if (res) {
-        console.log("res", res)
+        // console.log("res", res)
         setUser(res)
       }
     })
@@ -71,7 +72,7 @@ export default function App() {
 
   return (
     <PhoneAppContextProvider>
-      {user ? <Chat /> :
+      {user ? <Chat user={user} /> :
         <TabView
           navigationState={{ index, routes }}
           renderScene={renderScene}
