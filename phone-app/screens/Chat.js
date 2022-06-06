@@ -1,4 +1,4 @@
-import { View, useWindowDimensions, StyleSheet } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import React, { useContext } from 'react'
 import Navbar from '../components/Navbar'
 import Search from '../components/Search'
@@ -10,13 +10,13 @@ import Chatbox from '../components/Chatbox'
 import { backend_url } from '../production'
 import axios from 'axios'
 import { PhoneAppContext } from '../context/PhoneAppContext'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const Tab = createMaterialTopTabNavigator();
 
 
 const Chat = ({ user }) => {
     const { chats, dispatch } = useContext(PhoneAppContext)
-
     const [search, setSearch] = React.useState('')
     const [searchResultsUsers, setSearchResultsUsers] = React.useState([])
     const [searchResultsGroups, setSearchResultsGroups] = React.useState([])
@@ -88,7 +88,8 @@ const Chat = ({ user }) => {
                         {props => <Conversations {...props} user={user} searchResultsUsers={searchResultsUsers} search={search} setSearch={setSearch} conversations={conversations} />}
                     </Tab.Screen>
                     <Tab.Screen name="Groups">
-                        {props => <GroupChats {...props} user={user} searchResultsGroups={searchResultsGroups} groupConversations={groupConversations} />}
+                        {props => <GroupChats {...props} user={user}
+                            search={search} setSearch={setSearch} searchResultsGroups={searchResultsGroups} groupConversations={groupConversations} />}
                     </Tab.Screen>
                 </Tab.Navigator>
             </NavigationContainer>

@@ -1,22 +1,18 @@
 import { View, Text, StyleSheet, Image } from 'react-native'
 import React from 'react'
 
-const Group = ({ chat }) => {
+const GroupLists = ({ chat }) => {
     return (
-        <View style={styles.group}>
+        <View style={styles.grouplists}>
             {/* <Image
                 source={{
-                    uri: 'https://facebook.github.io/react-native/docs/assets/favicon.png',
+                    uri: user.pic,
                 }}
-                style={styles.groupAvatar}
+                style={styles.grouplistsAvatar}
             /> */}
-            <View style={styles.groupInfo}>
-                <Text style={styles.groupName}>
+            <View style={styles.grouplistsInfo}>
+                <Text style={styles.grouplistsName}>
                     {chat.chatName}
-                </Text>
-
-                <Text style={styles.groupLastMessage}>
-                    {chat.latestMessage && chat?.latestMessage.content}
                 </Text>
             </View>
         </View>
@@ -24,32 +20,33 @@ const Group = ({ chat }) => {
 }
 
 const styles = StyleSheet.create({
-    group: {
+    grouplists: {
         backgroundColor: '#f8f8f8',
         padding: 10,
         margin: 10,
         borderRadius: 5,
         display: 'flex',
         flexDirection: 'row',
+        alignItems: 'center',
     },
-    groupAvatar: {
+    grouplistsAvatar: {
         width: 40,
         height: 40,
         borderRadius: 20,
     },
-    groupInfo: {
+    grouplistsInfo: {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
         marginLeft: 10,
     },
-    groupName: {
+    grouplistsName: {
         fontSize: 16,
         fontWeight: 'bold',
     },
-    groupLastMessage: {
+    grouplistsLastMessage: {
         fontSize: 14,
     },
 });
 
-export default Group
+export default GroupLists
