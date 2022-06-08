@@ -1,32 +1,172 @@
-import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity } from 'react-native'
-import React from 'react'
+import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native'
+import React, { useRef } from 'react'
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import Message from './Message';
+import { PhoneAppContext } from '../context/PhoneAppContext';
+import { backend_url } from '../production';
+import axios from 'axios';
+import { format } from 'timeago.js'
 
-const Chatbox = () => {
+const Chatbox = ({ user }) => {
+
+    const { selectedChat, notification, dispatch, mobile } = React.useContext(PhoneAppContext);
+    const scrollViewRef = useRef();
+    const [profile, setProfile] = React.useState(null);
+    const [messages, setMessages] = React.useState([]);
+    const [loading, setLoading] = React.useState(false);
+    const [newMessage, setNewMessage] = React.useState();
+    const [socketConnected, setSocketConnected] = React.useState(false);
+    const [typing, setTyping] = React.useState(false);
+    const [isTyping, setIsTyping] = React.useState(false);
+
+    const fetchMessages = async () => {
+        if (!selectedChat) return;
+        try {
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${user.token}`
+                }
+            };
+            setLoading(true);
+            const { data } = await axios.get(`${backend_url}/message/${selectedChat._id}`, config);
+            setMessages(data);
+            setLoading(false);
+            // socket.emit('join chat', selectedChat._id);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const sendMessage = async (event) => {
+        try {
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user.token}`
+                }
+            };
+            setNewMessage('');
+            const { data } = await axios.post(`${backend_url}/message`, {
+                content: newMessage,
+                chatId: selectedChat._id
+            }, config);
+
+            // socket.emit("new message", data);
+            setMessages([...messages, data]);
+            // console.log(data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const typingHandler = (e) => {
+        setNewMessage(e);
+
+        // typing indicator logic
+        // if (!socketConnected) return;
+
+        // if (!typing) {
+        //     setTyping(true);
+        //     socket.emit("typing", selectedChat._id);
+        // }
+        // let lastTypingTime = new Date().getTime();
+        // var typingTimer = 1500;
+        // setTimeout(() => {
+        //     var timeNow = new Date().getTime();
+        //     var timeElapsed = timeNow - lastTypingTime;
+        //     if (timeElapsed >= typingTimer && typing) {
+        //         socket.emit("stop typing", selectedChat._id);
+        //         setTyping(false);
+        //     }
+        // }, typingTimer);
+    }
+
+    React.useEffect(() => {
+        try {
+            setProfile(selectedChat?.users.find(member => member._id !== user._id));
+        } catch (error) {
+            console.log(error);
+        }
+
+        fetchMessages();
+        // setStreaming(false);
+        // setVideocall(false);
+
+        // selectedChatCompare = selectedChat;
+        // socket.on("user-online", (userId) => {
+        //   console.warn(userId, "USER ONLINE");
+        //   if (selectedChat?.users.find(member => member._id === userId)) {
+        //     setOnline(true);
+        //   }
+        // });
+        // socket.on("user-offline", (userId) => {
+        //   console.warn(userId, "USER OFFLINE");
+        //   if (selectedChat?.users.find(member => member._id === userId)) {
+        //     setOnline(false);
+        //   }
+        // });
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedChat])
+
     return (
         <View style={styles.chatbox}>
+
+            {/* top part  */}
             <View style={styles.menuDetails}>
-                <AntDesign name="back" size={24} color="black" />
-                <Image
-                    source={{
-                        uri: 'https://facebook.github.io/react-native/docs/assets/favicon.png',
-                    }}
-                    style={styles.avatar}
+                <AntDesign
+                    name="back"
+                    size={24}
+                    color="black"
+                    onPress={() => dispatch({ type: 'SET_SELECTED_CHAT', payload: null })}
                 />
-                <Text style={styles.username}>Admin1</Text>
+                {
+                    selectedChat?.isGroupChat ?
+                        null :
+                        <Image
+                            source={{
+                                uri: profile?.pic
+                            }}
+                            style={styles.avatar}
+                        />
+                }
+                <Text style={styles.username}>{selectedChat?.isGroupChat ? selectedChat?.chatName : profile?.username}</Text>
             </View>
-            <View style={styles.chat}>
-                <Message />
-            </View>
+
+            {/* middle part  */}
+            <SafeAreaView style={styles.chat}>
+                <ScrollView
+                    ref={scrollViewRef}
+                    onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}>
+
+                    {messages?.map((m, i) => (
+                        <Message
+                            key={m._id}
+                            messages={m}
+                            own={m.sender._id === user._id}
+                            sameSender={(i < messages.length - 1 &&
+                                (messages[i + 1].sender._id !== m.sender._id ||
+                                    messages[i + 1].sender._id === undefined) &&
+                                messages[i].sender._id !== user._id) || (i === messages.length - 1 &&
+                                    messages[messages.length - 1].sender._id !== user._id &&
+                                    messages[messages.length - 1].sender._id)}
+                            sameTime={(i < messages.length - 1) && format(messages[i].createdAt) === format(messages[i + 1].createdAt)}
+                        />
+                    ))}
+                </ScrollView>
+            </SafeAreaView>
+
+            {/* bottom part  */}
             <View style={styles.sendMessage}>
                 <TextInput
                     style={styles.input}
                     placeholder="Type a message"
                     placeholderTextColor="black"
                     underlineColorAndroid="transparent"
+                    onChangeText={typingHandler}
+                    value={newMessage}
                 />
-                <TouchableOpacity>
+                <TouchableOpacity onPress={newMessage !== "" ? sendMessage : null}>
                     <Ionicons name="send" size={24} color="black" style={styles.button} />
                 </TouchableOpacity>
             </View>
@@ -57,6 +197,7 @@ const styles = StyleSheet.create({
     username: {
         fontSize: 16,
         fontWeight: 'bold',
+        marginLeft: 10,
     },
     chat: {
         flex: 9,

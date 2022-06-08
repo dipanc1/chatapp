@@ -7,7 +7,7 @@ import { backend_url } from '../production'
 import { PhoneAppContext } from '../context/PhoneAppContext'
 
 const Conversations = ({ conversations, user, searchResultsUsers, search, setSearch }) => {
-    const { dispatch } = React.useContext(PhoneAppContext)
+    const { dispatch, selectedChat } = React.useContext(PhoneAppContext)
 
     // add user to conversation
     const accessChat = async (userId) => {
@@ -32,6 +32,7 @@ const Conversations = ({ conversations, user, searchResultsUsers, search, setSea
         }
     }
 
+
     return (
         <View>
             {search.length > 0 ?
@@ -47,7 +48,6 @@ const Conversations = ({ conversations, user, searchResultsUsers, search, setSea
                     <TouchableOpacity key={c._id}
                     onPress={() => {
                         dispatch({ type: "SET_SELECTED_CHAT", payload: c })
-                        dispatch({ type: "SET_MOBILE" })
                     }}
                     >
                         <Conversation user={user} chat={c} />

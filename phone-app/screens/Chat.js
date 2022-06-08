@@ -16,7 +16,7 @@ const Tab = createMaterialTopTabNavigator();
 
 
 const Chat = ({ user }) => {
-    const { chats, dispatch } = useContext(PhoneAppContext)
+    const { chats, dispatch, selectedChat } = useContext(PhoneAppContext)
     const [search, setSearch] = React.useState('')
     const [searchResultsUsers, setSearchResultsUsers] = React.useState([])
     const [searchResultsGroups, setSearchResultsGroups] = React.useState([])
@@ -78,21 +78,28 @@ const Chat = ({ user }) => {
         // fetchAgain
     }, [])
 
+
     return (
         <View style={styles.chat}>
-            <Navbar user={user} />
-            <Search search={search} handleSearch={handleSearch} />
-            <NavigationContainer>
-                <Tab.Navigator>
-                    <Tab.Screen name="Chats">
-                        {props => <Conversations {...props} user={user} searchResultsUsers={searchResultsUsers} search={search} setSearch={setSearch} conversations={conversations} />}
-                    </Tab.Screen>
-                    <Tab.Screen name="Groups">
-                        {props => <GroupChats {...props} user={user}
-                            search={search} setSearch={setSearch} searchResultsGroups={searchResultsGroups} groupConversations={groupConversations} />}
-                    </Tab.Screen>
-                </Tab.Navigator>
-            </NavigationContainer>
+            {!selectedChat ?
+                <>
+                    <Navbar user={user} />
+                    <Search search={search} handleSearch={handleSearch} />
+                    <NavigationContainer>
+                        <Tab.Navigator>
+                            <Tab.Screen name="Chats">
+                                {props => <Conversations {...props} user={user} searchResultsUsers={searchResultsUsers} search={search} setSearch={setSearch} conversations={conversations} />}
+                            </Tab.Screen>
+                            <Tab.Screen name="Groups">
+                                {props => <GroupChats {...props} user={user}
+                                    search={search} setSearch={setSearch} searchResultsGroups={searchResultsGroups} groupConversations={groupConversations} />}
+                            </Tab.Screen>
+                        </Tab.Navigator>
+                    </NavigationContainer>
+                </>
+                :
+                <Chatbox user={user} />
+            }
         </View>
     )
 }
