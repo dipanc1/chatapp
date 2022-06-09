@@ -11,6 +11,7 @@ import { backend_url } from '../production'
 import axios from 'axios'
 import { PhoneAppContext } from '../context/PhoneAppContext'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import Members from '../components/Members'
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -23,6 +24,7 @@ const Chat = ({ user }) => {
     const [conversations, setConversations] = React.useState([])
     const [groupConversations, setGroupConversations] = React.useState([])
     const [loading, setLoading] = React.useState(false)
+    const [members, setMembers] = React.useState(false)
 
     // search bar to search for users
     const handleSearch = async (e) => {
@@ -98,7 +100,8 @@ const Chat = ({ user }) => {
                     </NavigationContainer>
                 </>
                 :
-                <Chatbox user={user} />
+                members ? <Members user={user} setMembers={setMembers} /> :
+                    <Chatbox user={user} setMembers={setMembers} />
             }
         </View>
     )

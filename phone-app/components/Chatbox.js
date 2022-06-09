@@ -6,10 +6,11 @@ import { PhoneAppContext } from '../context/PhoneAppContext';
 import { backend_url } from '../production';
 import axios from 'axios';
 import { format } from 'timeago.js'
+import { Entypo } from '@expo/vector-icons';
 
-const Chatbox = ({ user }) => {
+const Chatbox = ({ user, setMembers }) => {
 
-    const { selectedChat, notification, dispatch, mobile } = React.useContext(PhoneAppContext);
+    const { selectedChat, dispatch } = React.useContext(PhoneAppContext);
     const scrollViewRef = useRef();
     const [profile, setProfile] = React.useState(null);
     const [messages, setMessages] = React.useState([]);
@@ -114,23 +115,30 @@ const Chatbox = ({ user }) => {
 
             {/* top part  */}
             <View style={styles.menuDetails}>
-                <AntDesign
-                    name="back"
-                    size={24}
-                    color="black"
-                    onPress={() => dispatch({ type: 'SET_SELECTED_CHAT', payload: null })}
-                />
-                {
-                    selectedChat?.isGroupChat ?
-                        null :
-                        <Image
-                            source={{
-                                uri: profile?.pic
-                            }}
-                            style={styles.avatar}
-                        />
-                }
-                <Text style={styles.username}>{selectedChat?.isGroupChat ? selectedChat?.chatName : profile?.username}</Text>
+
+                <View style={styles.name}>
+                    <AntDesign
+                        name="back"
+                        size={24}
+                        color="black"
+                        onPress={() => dispatch({ type: 'SET_SELECTED_CHAT', payload: null })}
+                    />
+                    {
+                        selectedChat?.isGroupChat ?
+                            null :
+                            <Image
+                                source={{
+                                    uri: profile?.pic
+                                }}
+                                style={styles.avatar}
+                            />
+                    }
+                    <Text style={styles.username}>{selectedChat?.isGroupChat ? selectedChat?.chatName : profile?.username}</Text>
+                </View>
+                <TouchableOpacity onPress={() => setMembers(true)}>
+                    <Entypo name="dots-three-vertical" size={24} color="black" />
+                </TouchableOpacity>
+
             </View>
 
             {/* middle part  */}
@@ -153,6 +161,7 @@ const Chatbox = ({ user }) => {
                             sameTime={(i < messages.length - 1) && format(messages[i].createdAt) === format(messages[i + 1].createdAt)}
                         />
                     ))}
+
                 </ScrollView>
             </SafeAreaView>
 
@@ -182,10 +191,15 @@ const styles = StyleSheet.create({
     menuDetails: {
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'flex-start',
+        justifyContent: 'space-between',
         alignItems: 'center',
         padding: 10,
         flex: 1,
+    },
+    name: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     avatar: {
         width: 40,
