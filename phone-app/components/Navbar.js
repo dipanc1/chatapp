@@ -37,6 +37,27 @@ const Navbar = ({ user }) => {
                     }}>
                     <View style={styles.centeredView}>
                         <View style={styles.modalView}>
+                            <TouchableOpacity>
+                                <Text style={styles.modalText}>Profile</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity>
+                                <Text style={styles.modalText}>Logout</Text>
+                            </TouchableOpacity>  
+                        </View>
+                    </View>
+                </Modal>
+
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => {
+                        Alert.alert('Modal has been closed.');
+                        setModalVisible(!modalVisible);
+                    }}>
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalView}>
                             <Text style={styles.modalText}>Username: {user.username}</Text>
                             <Image
                                 source={{

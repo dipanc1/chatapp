@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native'
+import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, ScrollView, SafeAreaView, Alert } from 'react-native'
 import React, { useRef } from 'react'
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import Message from './Message';
@@ -6,6 +6,7 @@ import { PhoneAppContext } from '../context/PhoneAppContext';
 import { backend_url } from '../production';
 import axios from 'axios';
 import { format } from 'timeago.js'
+import { FontAwesome5 } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 
 const Chatbox = ({ user, setMembers }) => {
@@ -19,6 +20,10 @@ const Chatbox = ({ user, setMembers }) => {
     const [socketConnected, setSocketConnected] = React.useState(false);
     const [typing, setTyping] = React.useState(false);
     const [isTyping, setIsTyping] = React.useState(false);
+
+    const [rename, setRename] = React.useState(false);
+    const [groupChatName, setGroupChatName] = React.useState('');
+    const [renameLoading, setRenameLoading] = React.useState(false);
 
     const fetchMessages = async () => {
         if (!selectedChat) return;
@@ -110,6 +115,36 @@ const Chatbox = ({ user, setMembers }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedChat])
 
+    const handleRename = async () => {
+        if (!groupChatName) {
+            return
+        }
+
+        try {
+            setRenameLoading(true);
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user.token}`
+                }
+            }
+            const body = {
+                chatName: groupChatName,
+                chatId: selectedChat._id
+            }
+            const { data } = await axios.put(`${backend_url}/conversation/rename`, body, config)
+            dispatch({ type: 'SET_SELECTED_CHAT', payload: data })
+            Alert.alert(`Group chat renamed to ${groupChatName}`)
+            //   setFetchAgain(!fetchAgain);
+            setRenameLoading(false);
+            setGroupChatName('');
+            setRename(false);
+        } catch (err) {
+            console.log(err)
+            setRenameLoading(false);
+        }
+    }
+
     return (
         <View style={styles.chatbox}>
 
@@ -133,7 +168,30 @@ const Chatbox = ({ user, setMembers }) => {
                                 style={styles.avatar}
                             />
                     }
-                    <Text style={styles.username}>{selectedChat?.isGroupChat ? selectedChat?.chatName : profile?.username}</Text>
+                    {
+                        !rename &&
+                        <Text style={styles.username}>{selectedChat?.isGroupChat ? selectedChat?.chatName : profile?.username}</Text>
+                    }
+                    {rename &&
+                        <>
+                            <TextInput
+                                value={groupChatName}
+                                onChangeText={(text) => setGroupChatName(text)}
+                                style={styles.groupChatName}
+                            />
+                            <TouchableOpacity onPress={handleRename} style={styles.groupChatNameButton}>
+                                <Text style={styles.save}>Rename</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={()=> setRename(!rename)} style={styles.groupChatNameCancelButton}>
+                                <Text style={styles.save}>Cancel</Text>
+                            </TouchableOpacity>
+                        </>
+                    }
+                    {selectedChat?.isGroupChat && !rename ?
+                        <FontAwesome5 name="pencil-alt" size={16} color="black" onPress={
+                            () => setRename(!rename)
+                        } style={{ marginLeft: 8 }} />
+                        : null}
                 </View>
                 <TouchableOpacity onPress={() => setMembers(true)}>
                     <Entypo name="dots-three-vertical" size={24} color="black" />
@@ -184,6 +242,33 @@ const Chatbox = ({ user, setMembers }) => {
 }
 
 const styles = StyleSheet.create({
+    groupChatName:{
+        borderWidth: 0.7,
+        padding: 5,
+        minWidth:100,
+        maxWidth:150,
+        marginLeft: 10,
+        borderRadius: 10,
+        fontSize: 16,
+        color: 'black'
+    },
+    groupChatNameButton:{
+        marginLeft: 10,
+        borderRadius: 10,
+        backgroundColor: '#00b894',
+        padding: 6,
+    },
+    groupChatNameCancelButton:{
+        marginLeft: 10,
+        borderRadius: 10,
+        backgroundColor: '#e53e3e',
+        padding: 6,
+    },
+    save:{
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold'
+    },
     chatbox: {
         flex: 1,
         backgroundColor: '#f8f8f8',

@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 
-const ChatOnline = ({ user1, user }) => {
+const ChatOnline = ({ user1, user,handleFunction }) => {
     return (
         <View style={styles.memberBox}>
             <Image
@@ -16,7 +16,7 @@ const ChatOnline = ({ user1, user }) => {
             </Text>
             <View style={styles.memberButton}>
                 {user._id === user1._id ? null :
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={handleFunction}>
                         <LinearGradient
                             colors={[
                                 '#8A2387',

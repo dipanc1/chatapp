@@ -24,13 +24,13 @@ const Chat = () => {
       {user && <Navbar />}
       <div className='chat'>
         <div className="left">
-          {user && <Conversations fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}/>}
+          {user && <Conversations fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
         </div>
         <div className="middle">
-          {user && <Chatbox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}/>}
+          {user && <Chatbox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
         </div>
         <div className="right">
-          {user && <Members fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}/>}
+          {user && <Members fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
         </div>
       </div>
     </>

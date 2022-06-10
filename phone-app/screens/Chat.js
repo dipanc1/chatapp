@@ -25,6 +25,8 @@ const Chat = ({ user }) => {
     const [groupConversations, setGroupConversations] = React.useState([])
     const [loading, setLoading] = React.useState(false)
     const [members, setMembers] = React.useState(false)
+    const [fetchAgain, setFetchAgain] = React.useState(false)
+
 
     // search bar to search for users
     const handleSearch = async (e) => {
@@ -77,8 +79,7 @@ const Chat = ({ user }) => {
     React.useEffect(() => {
         fetchChats();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        // fetchAgain
-    }, [])
+    }, [fetchAgain])
 
 
     return (
@@ -100,7 +101,7 @@ const Chat = ({ user }) => {
                     </NavigationContainer>
                 </>
                 :
-                members ? <Members user={user} setMembers={setMembers} /> :
+                members ? <Members user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} setMembers={setMembers} /> :
                     <Chatbox user={user} setMembers={setMembers} />
             }
         </View>
