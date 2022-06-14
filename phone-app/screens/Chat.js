@@ -62,7 +62,6 @@ const Chat = ({ user }) => {
 
             // console.log(data);
             // console.log(groupConversations);
-            // setConversations((data.map(friend => friend.isGroupChat ? null : friend.users.find(member => member._id !== user._id))).filter(friend => friend !== null).map(friend => friend));
 
             setConversations(data.filter(friend => !friend.isGroupChat));
             setGroupConversations(data.filter(friend => friend.isGroupChat && friend.chatName));
@@ -102,7 +101,7 @@ const Chat = ({ user }) => {
                 </>
                 :
                 members ? <Members user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} setMembers={setMembers} /> :
-                    <Chatbox user={user} setMembers={setMembers} />
+                    <Chatbox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} user={user} setMembers={setMembers} />
             }
         </View>
     )

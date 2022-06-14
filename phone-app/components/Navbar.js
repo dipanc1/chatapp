@@ -1,10 +1,15 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, Alert, Pressable } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, Alert, Pressable, StatusBar } from 'react-native'
 import React, { useState } from 'react'
 import { Ionicons } from '@expo/vector-icons'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { PhoneAppContext } from '../context/PhoneAppContext';
 
 
 const Navbar = ({ user }) => {
     const [modalVisible, setModalVisible] = useState(false);
+    const [modalVisible1, setModalVisible1] = useState(false);
+    const [notificationModal, setNotificationModal] = useState(false);
+    const { notification, dispatch } = React.useContext(PhoneAppContext);
 
     return (
         <>
@@ -12,7 +17,7 @@ const Navbar = ({ user }) => {
                 <View style={styles.profile}>
                     <Text style={styles.navbarText}>ChatApp</Text>
                     <View style={styles.navMenu}>
-                        <TouchableOpacity onPress={() => setModalVisible(true)}>
+                        <TouchableOpacity onPress={() => setModalVisible1(true)}>
                             <Image
                                 source={{
                                     uri: user.pic,
@@ -21,29 +26,51 @@ const Navbar = ({ user }) => {
                             />
                         </TouchableOpacity>
                         <Text style={styles.username}>{user.username}</Text>
-                        <TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => setNotificationModal(!notificationModal)}>
                             <Ionicons name="notifications" size={34} color="black" />
+                            {
+                                notification?.length > 0 ?
+                            <View style={styles.notification}>
+                                <Text style={styles.notificationNumber}>
+                                    {notification?.length}
+                                </Text>
+                            </View>
+                            : null
+                            }
                         </TouchableOpacity>
                     </View>
                 </View>
 
                 <Modal
-                    animationType="slide"
+                    animationType="fade"
                     transparent={true}
-                    visible={modalVisible}
+                    visible={modalVisible1}
                     onRequestClose={() => {
-                        Alert.alert('Modal has been closed.');
-                        setModalVisible(!modalVisible);
+                        setModalVisible1(!modalVisible1);
                     }}>
-                    <View style={styles.centeredView}>
-                        <View style={styles.modalView}>
-                            <TouchableOpacity>
-                                <Text style={styles.modalText}>Profile</Text>
+                    <View style={styles.centeredView1}>
+                        <View style={styles.modalView1}>
+                            <TouchableOpacity
+                                onPress={
+                                    () => {
+                                        setModalVisible1(!modalVisible1);
+                                        setModalVisible(!modalVisible);
+                                    }
+                                }
+                            >
+                                <Text style={styles.modalText1}>Profile</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity>
-                                <Text style={styles.modalText}>Logout</Text>
-                            </TouchableOpacity>  
+                            <TouchableOpacity
+                                onPress={
+                                    () => {
+                                        AsyncStorage.clear();
+                                    }
+                                }
+                            >
+                                <Text style={styles.modalText1}>Logout</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </Modal>
@@ -53,7 +80,6 @@ const Navbar = ({ user }) => {
                     transparent={true}
                     visible={modalVisible}
                     onRequestClose={() => {
-                        Alert.alert('Modal has been closed.');
                         setModalVisible(!modalVisible);
                     }}>
                     <View style={styles.centeredView}>
@@ -71,6 +97,47 @@ const Navbar = ({ user }) => {
                                 onPress={() => setModalVisible(!modalVisible)}>
                                 <Text style={styles.textStyle}>Close</Text>
                             </Pressable>
+                        </View>
+                    </View>
+                </Modal>
+
+                <Modal
+                    animationType="none"
+                    transparent={true}
+                    visible={notificationModal}
+                    onRequestClose={() => {
+                        setNotificationModal(!notificationModal);
+                    }}>
+                    <View style={styles.centeredViewNotification}>
+                        <View style={styles.modalViewNotification}>
+                            {!notification?.length ?
+                                <Text style={styles.modalTextNotification}>
+                                    No notifications
+                                </Text>
+                                :
+                                notification?.map((notifications, index) => {
+                                    <TouchableOpacity
+                                        style={styles.modalNotification}
+                                        key={notifications._id}
+                                        onClick={() => {
+                                            console.log(notifications);
+                                            setShow(!show);
+                                            dispatch({
+                                                type: 'SET_SELECTED_CHAT',
+                                                payload: notifications.chat
+                                            })
+                                            dispatch({
+                                                type: 'SET_NOTIFICATION',
+                                                payload: notifications.filter(notifications._id !== notification._id)
+                                            })
+                                        }}
+                                    >
+                                        <Text style={styles.modalTextNotification}>
+                                            {notifications.chat.isGroupChat ? `New Message in ${notifications.chat.chatName}` : `New Message from ${notifications.sender.username}`}
+                                        </Text>
+                                    </TouchableOpacity>
+                                })
+                            }
                         </View>
                     </View>
                 </Modal>
@@ -134,6 +201,28 @@ const styles = StyleSheet.create({
         shadowRadius: 2,
         elevation: 100,
     },
+    centeredView1: {
+        // flex: 1,
+        marginLeft: '65%',
+        marginTop: StatusBar.currentHeight - 15,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalView1: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 8,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 15,
+        },
+        shadowOpacity: 5,
+        shadowRadius: 2,
+        elevation: 100,
+    },
     button: {
         borderRadius: 20,
         padding: 10,
@@ -156,10 +245,44 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
     },
+    modalText1: {
+        margin: 15,
+        fontSize: 12,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
     avatar: {
         width: 200,
         height: 200,
         borderRadius: 50,
+    },
+    centeredViewNotification: {
+        // marginLeft: '5%',
+        marginTop: StatusBar.currentHeight - 15,
+        justifyContent: 'center',
+        alignItems: 'center',
+        // backgroundColor: '#f8f8',
+    },
+    modalViewNotification: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 8,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 15,
+        },
+        shadowOpacity: 5,
+        shadowRadius: 2,
+        elevation: 100,
+    },
+    modalTextNotification: {
+        margin: 15,
+        fontSize: 18,
+        fontWeight: 'bold',
+        textAlign: 'center',
     }
 })
 

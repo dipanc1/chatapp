@@ -5,13 +5,20 @@ import Message from './Message';
 import { PhoneAppContext } from '../context/PhoneAppContext';
 import { backend_url } from '../production';
 import axios from 'axios';
+import animationData from '../animations/typing.json';
+import LottieView from 'lottie-react-native';
 import { format } from 'timeago.js'
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
+import { io } from 'socket.io-client';
 
-const Chatbox = ({ user, setMembers }) => {
+const ENDPOINT = `${backend_url}`;
+var socket, selectedChatCompare;
 
-    const { selectedChat, dispatch } = React.useContext(PhoneAppContext);
+const Chatbox = ({ fetchAgain, setFetchAgain, user, setMembers }) => {
+
+    const { selectedChat, dispatch, notification } = React.useContext(PhoneAppContext);
+    const animation = useRef(null);
     const scrollViewRef = useRef();
     const [profile, setProfile] = React.useState(null);
     const [messages, setMessages] = React.useState([]);
@@ -25,6 +32,16 @@ const Chatbox = ({ user, setMembers }) => {
     const [groupChatName, setGroupChatName] = React.useState('');
     const [renameLoading, setRenameLoading] = React.useState(false);
 
+    React.useEffect(() => {
+        socket = io(ENDPOINT);
+        socket.emit("setup", user);
+        socket.on("connected", () => setSocketConnected(true));
+        socket.on("typing", () => setIsTyping(true));
+        socket.on("stop typing", () => setIsTyping(false));
+        // user online
+        socket.emit("user-online", user._id);
+    }, []);
+
     const fetchMessages = async () => {
         if (!selectedChat) return;
         try {
@@ -37,13 +54,14 @@ const Chatbox = ({ user, setMembers }) => {
             const { data } = await axios.get(`${backend_url}/message/${selectedChat._id}`, config);
             setMessages(data);
             setLoading(false);
-            // socket.emit('join chat', selectedChat._id);
+            socket.emit('join chat', selectedChat._id);
         } catch (error) {
             console.log(error);
         }
     }
 
     const sendMessage = async (event) => {
+        socket.emit("stop typing", selectedChat._id);
         try {
             const config = {
                 headers: {
@@ -57,7 +75,7 @@ const Chatbox = ({ user, setMembers }) => {
                 chatId: selectedChat._id
             }, config);
 
-            // socket.emit("new message", data);
+            socket.emit("new message", data);
             setMessages([...messages, data]);
             // console.log(data);
         } catch (error) {
@@ -69,22 +87,22 @@ const Chatbox = ({ user, setMembers }) => {
         setNewMessage(e);
 
         // typing indicator logic
-        // if (!socketConnected) return;
+        if (!socketConnected) return;
 
-        // if (!typing) {
-        //     setTyping(true);
-        //     socket.emit("typing", selectedChat._id);
-        // }
-        // let lastTypingTime = new Date().getTime();
-        // var typingTimer = 1500;
-        // setTimeout(() => {
-        //     var timeNow = new Date().getTime();
-        //     var timeElapsed = timeNow - lastTypingTime;
-        //     if (timeElapsed >= typingTimer && typing) {
-        //         socket.emit("stop typing", selectedChat._id);
-        //         setTyping(false);
-        //     }
-        // }, typingTimer);
+        if (!typing) {
+            setTyping(true);
+            socket.emit("typing", selectedChat._id);
+        }
+        let lastTypingTime = new Date().getTime();
+        var typingTimer = 1500;
+        setTimeout(() => {
+            var timeNow = new Date().getTime();
+            var timeElapsed = timeNow - lastTypingTime;
+            if (timeElapsed >= typingTimer && typing) {
+                socket.emit("stop typing", selectedChat._id);
+                setTyping(false);
+            }
+        }, typingTimer);
     }
 
     React.useEffect(() => {
@@ -98,28 +116,30 @@ const Chatbox = ({ user, setMembers }) => {
         // setStreaming(false);
         // setVideocall(false);
 
-        // selectedChatCompare = selectedChat;
-        // socket.on("user-online", (userId) => {
-        //   console.warn(userId, "USER ONLINE");
-        //   if (selectedChat?.users.find(member => member._id === userId)) {
-        //     setOnline(true);
-        //   }
-        // });
-        // socket.on("user-offline", (userId) => {
-        //   console.warn(userId, "USER OFFLINE");
-        //   if (selectedChat?.users.find(member => member._id === userId)) {
-        //     setOnline(false);
-        //   }
-        // });
+        selectedChatCompare = selectedChat;
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedChat])
+
+    React.useEffect(() => {
+        socket.on("message received", (newMessageReceived) => {
+            if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
+                if (!notification.includes(newMessageReceived)) {
+                    dispatch({ type: 'SET_NOTIFICATION', payload: [newMessageReceived] });
+                    // console.log(newMessageReceived);
+                    setFetchAgain(!fetchAgain);
+                }
+            } else {
+                setMessages([...messages, newMessageReceived]);
+            }
+        })
+    });
+
 
     const handleRename = async () => {
         if (!groupChatName) {
             return
         }
-
         try {
             setRenameLoading(true);
             const config = {
@@ -135,7 +155,7 @@ const Chatbox = ({ user, setMembers }) => {
             const { data } = await axios.put(`${backend_url}/conversation/rename`, body, config)
             dispatch({ type: 'SET_SELECTED_CHAT', payload: data })
             Alert.alert(`Group chat renamed to ${groupChatName}`)
-            //   setFetchAgain(!fetchAgain);
+            setFetchAgain(!fetchAgain);
             setRenameLoading(false);
             setGroupChatName('');
             setRename(false);
@@ -182,7 +202,7 @@ const Chatbox = ({ user, setMembers }) => {
                             <TouchableOpacity onPress={handleRename} style={styles.groupChatNameButton}>
                                 <Text style={styles.save}>Rename</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={()=> setRename(!rename)} style={styles.groupChatNameCancelButton}>
+                            <TouchableOpacity onPress={() => setRename(!rename)} style={styles.groupChatNameCancelButton}>
                                 <Text style={styles.save}>Cancel</Text>
                             </TouchableOpacity>
                         </>
@@ -219,7 +239,19 @@ const Chatbox = ({ user, setMembers }) => {
                             sameTime={(i < messages.length - 1) && format(messages[i].createdAt) === format(messages[i + 1].createdAt)}
                         />
                     ))}
-
+                    {isTyping ? (
+                        <View>
+                            <LottieView
+                                loop={true}
+                                style={{
+                                    width: '7vw',
+                                }}
+                                animationData={animationData}
+                            />
+                        </View>
+                    ) : (
+                        <></>
+                    )}
                 </ScrollView>
             </SafeAreaView>
 
@@ -242,29 +274,29 @@ const Chatbox = ({ user, setMembers }) => {
 }
 
 const styles = StyleSheet.create({
-    groupChatName:{
+    groupChatName: {
         borderWidth: 0.7,
         padding: 5,
-        minWidth:100,
-        maxWidth:150,
+        // minWidth:100,
+        width: 150,
         marginLeft: 10,
         borderRadius: 10,
         fontSize: 16,
         color: 'black'
     },
-    groupChatNameButton:{
+    groupChatNameButton: {
         marginLeft: 10,
         borderRadius: 10,
         backgroundColor: '#00b894',
         padding: 6,
     },
-    groupChatNameCancelButton:{
+    groupChatNameCancelButton: {
         marginLeft: 10,
         borderRadius: 10,
         backgroundColor: '#e53e3e',
         padding: 6,
     },
-    save:{
+    save: {
         color: 'white',
         fontSize: 16,
         fontWeight: 'bold'

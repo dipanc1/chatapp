@@ -137,7 +137,6 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
   });
 
 
-
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
 
