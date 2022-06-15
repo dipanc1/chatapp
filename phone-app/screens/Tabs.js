@@ -11,7 +11,7 @@ const renderScene = SceneMap({
     second: Register,
 });
 
-const Tabs = ({  setUser }) => {
+const Tabs = ({ setUser }) => {
     const layout = useWindowDimensions();
     const [index, setIndex] = React.useState(0);
     const [routes] = React.useState([
@@ -46,10 +46,16 @@ const Tabs = ({  setUser }) => {
         );
     };
 
+    //TODO: send user to Login
     return (
         <TabView
             navigationState={{ index, routes }}
-            renderScene={renderScene}
+            renderScene={
+                SceneMap({
+                    first: Login,
+                    second: Register,
+                })
+            }
             onIndexChange={setIndex}
             initialLayout={{ width: layout.width }}
             renderTabBar={renderTabBar}

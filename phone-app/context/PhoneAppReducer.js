@@ -20,10 +20,10 @@ const PhoneAppReducer = (state, action) => {
                 ...state,
                 notification: action.payload
             };
-        case "SET_MOBILE":
+        case "SET_USER":
             return {
                 ...state,
-                mobile: !state.mobile
+                user: action.payload
             };
         default:
             return state;

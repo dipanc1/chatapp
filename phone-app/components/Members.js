@@ -41,6 +41,7 @@ const Members = ({ setMembers, user, fetchAgain, setFetchAgain }) => {
                 config
             );
             console.log(data);
+            Alert.alert('User added to chat');
             dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
             setFetchAgain(!fetchAgain);
             setLoading(false);
@@ -104,17 +105,21 @@ const Members = ({ setMembers, user, fetchAgain, setFetchAgain }) => {
             {/* Top  */}
             {!show ?
                 <View style={styles.groupHeader}>
-                    <>
-                        <AntDesign
-                            name="back"
-                            size={24}
-                            color="black"
-                            onPress={() => setMembers(false)}
-                        />
+                    <AntDesign
+                        name="back"
+                        size={24}
+                        color="black"
+                        onPress={() => setMembers(false)}
+                    />
+                    {selectedChat.isGroupChat ?
                         <Text style={styles.groupHeaderText}>
                             {selectedChat?.users.length} Group members
                         </Text>
-                    </>
+                        :
+                        <Text style={styles.headerText}>
+                            {selectedChat?.users.find(member => member._id !== user._id)?.username}
+                        </Text>
+                    }
                 </View>
                 :
                 <View style={styles.searchMember}>
@@ -166,7 +171,7 @@ const Members = ({ setMembers, user, fetchAgain, setFetchAgain }) => {
             </ScrollView>
 
             {/* Bottom */}
-            {!show &&
+            {!show && selectedChat.isGroupChat &&
                 <View style={styles.groupFooter}>
                     <TouchableOpacity onPress={() => setShow(true)} style={styles.footerButton}>
                         <Text style={styles.footerText}>
@@ -196,6 +201,12 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         marginLeft: 10,
+    },
+    headerText: {
+        fontSize: 20,
+        marginLeft: 10,
+        fontWeight: 'bold',
+        fontStyle: 'italic',
     },
     groupFooter: {
         margin: 20,

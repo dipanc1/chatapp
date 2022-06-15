@@ -29,15 +29,13 @@ const Navbar = ({ user }) => {
                         <TouchableOpacity
                             onPress={() => setNotificationModal(!notificationModal)}>
                             <Ionicons name="notifications" size={34} color="black" />
-                            {
-                                notification?.length > 0 ?
-                            <View style={styles.notification}>
-                                <Text style={styles.notificationNumber}>
-                                    {notification?.length}
-                                </Text>
-                            </View>
-                            : null
-                            }
+                            {notification?.length > 0 ?
+                                <View style={styles.notification}>
+                                    <Text style={styles.notificationNumber}>
+                                        {notification?.length}
+                                    </Text>
+                                </View>
+                                : null}
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -241,13 +239,13 @@ const styles = StyleSheet.create({
     },
     modalText: {
         margin: 15,
-        fontSize: 18,
+        fontSize: 15,
         fontWeight: 'bold',
         textAlign: 'center',
     },
     modalText1: {
         margin: 15,
-        fontSize: 12,
+        fontSize: 15,
         fontWeight: 'bold',
         textAlign: 'center',
     },

@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Alert } from 'react-native'
+import { View, Text, TouchableOpacity, Alert, ScrollView } from 'react-native'
 import React from 'react'
 import Group from './Group'
 import { PhoneAppContext } from '../context/PhoneAppContext'
@@ -43,25 +43,27 @@ const GroupChats = ({ user, groupConversations, searchResultsGroups, search }) =
 
     return (
         <View>
-            {search.length > 0 ?
-                searchResultsGroups.map(chat => (
-                    <TouchableOpacity key={chat._id} onPress={
-                        () => handleAddUser(user._id, chat._id)
-                    }>
-                        <GroupLists chat={chat} />
-                    </TouchableOpacity>
-                )) :
-                groupConversations.map(c => (
-                    <TouchableOpacity
-                        key={c._id}
-                        onPress={() => {
-                            dispatch({ type: "SET_SELECTED_CHAT", payload: c })
-                            dispatch({ type: "SET_MOBILE" })
-                        }}
-                    >
-                        <Group chat={c} />
-                    </TouchableOpacity>
-                ))}
+            <ScrollView>
+                {search.length > 0 ?
+                    searchResultsGroups.map(chat => (
+                        <TouchableOpacity key={chat._id} onPress={
+                            () => handleAddUser(user._id, chat._id)
+                        }>
+                            <GroupLists chat={chat} />
+                        </TouchableOpacity>
+                    )) :
+                    groupConversations.map(c => (
+                        <TouchableOpacity
+                            key={c._id}
+                            onPress={() => {
+                                dispatch({ type: "SET_SELECTED_CHAT", payload: c })
+                                dispatch({ type: "SET_MOBILE" })
+                            }}
+                        >
+                            <Group chat={c} />
+                        </TouchableOpacity>
+                    ))}
+            </ScrollView>
         </View>
     )
 }

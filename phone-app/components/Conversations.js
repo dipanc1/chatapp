@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native'
 import React from 'react'
 import axios from 'axios'
 import Conversation from './Conversation'
@@ -35,25 +35,27 @@ const Conversations = ({ conversations, user, searchResultsUsers, search, setSea
 
     return (
         <View>
-            {search.length > 0 ?
-                searchResultsUsers.map(user => (
-                    <TouchableOpacity key={user._id} onPress={
-                        () => accessChat(user._id)
-                    }>
-                        <UserLists user={user} />
-                    </TouchableOpacity>
-                )) :
+            <ScrollView>
+                {search.length > 0 ?
+                    searchResultsUsers.map(user => (
+                        <TouchableOpacity key={user._id} onPress={
+                            () => accessChat(user._id)
+                        }>
+                            <UserLists user={user} />
+                        </TouchableOpacity>
+                    )) :
 
-                conversations.map(c => (
-                    <TouchableOpacity key={c._id}
-                    onPress={() => {
-                        dispatch({ type: "SET_SELECTED_CHAT", payload: c })
-                    }}
-                    >
-                        <Conversation user={user} chat={c} />
-                    </TouchableOpacity>
-                ))
-            }
+                    conversations.map(c => (
+                        <TouchableOpacity key={c._id}
+                            onPress={() => {
+                                dispatch({ type: "SET_SELECTED_CHAT", payload: c })
+                            }}
+                        >
+                            <Conversation user={user} chat={c} />
+                        </TouchableOpacity>
+                    ))
+                }
+            </ScrollView>
         </View>
     )
 }

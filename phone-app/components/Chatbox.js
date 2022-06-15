@@ -8,8 +8,7 @@ import axios from 'axios';
 import animationData from '../animations/typing.json';
 import LottieView from 'lottie-react-native';
 import { format } from 'timeago.js'
-import { FontAwesome5 } from '@expo/vector-icons';
-import { Entypo } from '@expo/vector-icons';
+import { FontAwesome5, Feather, Entypo } from '@expo/vector-icons';
 import { io } from 'socket.io-client';
 
 const ENDPOINT = `${backend_url}`;
@@ -213,9 +212,16 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user, setMembers }) => {
                         } style={{ marginLeft: 8 }} />
                         : null}
                 </View>
-                <TouchableOpacity onPress={() => setMembers(true)}>
-                    <Entypo name="dots-three-vertical" size={24} color="black" />
-                </TouchableOpacity>
+
+                {selectedChat?.isGroupChat ?
+                    <TouchableOpacity onPress={() => setMembers(true)}>
+                        <Entypo name="dots-three-vertical" size={24} color="black" />
+                    </TouchableOpacity>
+                    :
+                    <TouchableOpacity onPress={() => setMembers(true)}>
+                        <Feather name="info" size={24} color="black" />
+                    </TouchableOpacity>
+                }
 
             </View>
 
@@ -241,13 +247,17 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user, setMembers }) => {
                     ))}
                     {isTyping ? (
                         <View>
-                            <LottieView
-                                loop={true}
+                            {/* <LottieView
+                                autoPlay
+                                ref={animation}
                                 style={{
                                     width: '7vw',
                                 }}
-                                animationData={animationData}
-                            />
+                                source={require('../animations/typing.json')}
+                            /> */}
+                            <Text>
+                                Typing...
+                            </Text>
                         </View>
                     ) : (
                         <></>
