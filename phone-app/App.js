@@ -23,7 +23,7 @@ export default function App() {
     getData().then(res => {
       setUser(res);
     });
-  }, [user])
+  }, [user, setUser])
 
 
 

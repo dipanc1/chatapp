@@ -281,6 +281,18 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         textAlign: 'center',
+    },
+    notification:{
+        position: 'relative',
+        top: -10,
+        left: -10,
+        backgroundColor: 'red',
+        borderRadius: 20,
+    },
+    notificationNumber: {
+        position: 'absolute',
+        top: -10,
+        color: 'white',
     }
 })
 

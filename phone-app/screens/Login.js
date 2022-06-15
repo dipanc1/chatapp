@@ -4,7 +4,7 @@ import { backend_url } from '../production'
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-const Login = () => {
+const Login = ({ setUser }) => {
     const [username, setUsername] = React.useState('')
     const [password, setPassword] = React.useState('')
     const [error, setError] = React.useState(false)
@@ -29,6 +29,7 @@ const Login = () => {
             console.log("working!!", res.data)
             const jsonValue = JSON.stringify(res.data)
             await AsyncStorage.setItem('user', jsonValue)
+            setUser(res.data)
         } catch (err) {
             setError(true)
             setErrorMessage("Invalid username or password")

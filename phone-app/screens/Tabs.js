@@ -3,15 +3,19 @@ import { TabView, SceneMap } from 'react-native-tab-view';
 import React from 'react'
 import Login from './Login';
 import Register from './Register';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
-const renderScene = SceneMap({
-    first: Login,
-    second: Register,
-});
 
 const Tabs = ({ setUser }) => {
+    const renderScene = ({ route }) => {
+        switch (route.key) {
+            case 'first':
+                return <Login setUser={setUser}/>;
+            case 'second':
+                return <Register />;
+            default:
+                return null;
+        }
+    };
     const layout = useWindowDimensions();
     const [index, setIndex] = React.useState(0);
     const [routes] = React.useState([
@@ -50,12 +54,7 @@ const Tabs = ({ setUser }) => {
     return (
         <TabView
             navigationState={{ index, routes }}
-            renderScene={
-                SceneMap({
-                    first: Login,
-                    second: Register,
-                })
-            }
+            renderScene={renderScene}
             onIndexChange={setIndex}
             initialLayout={{ width: layout.width }}
             renderTabBar={renderTabBar}
