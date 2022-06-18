@@ -50,5 +50,26 @@ router.get("/:chatId", async(req, res) => {
     }
 });
 
+// message is read
+router.post("/read", async(req, res) => {
+    try {
+        const { messageId } = req.body;
+        if (!messageId) {
+            return res.status(400).json({
+                message: "Please provide messageId"
+            })
+        }
+
+        await Message.findByIdAndUpdate(messageId, {
+            readBy: [req.user._id]
+        });
+        res.status(200).json({
+            message: "Message is read"
+        });
+    } catch (error) {
+        res.status(500).json(error)
+    }
+});
+
 
 module.exports = router;

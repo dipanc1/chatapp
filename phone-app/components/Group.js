@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, Image } from 'react-native'
 import React from 'react'
+import { format } from 'timeago.js'
 
 const Group = ({ chat }) => {
     return (
@@ -17,6 +18,11 @@ const Group = ({ chat }) => {
 
                 <Text style={styles.groupLastMessage}>
                     {chat.latestMessage && chat?.latestMessage.content}
+                </Text>
+            </View>
+            <View style={styles.conversationTime}>
+                <Text style={styles.conversationTimeText}>
+                    {chat.latestMessage && format(chat?.latestMessage.createdAt)}
                 </Text>
             </View>
         </View>
@@ -50,6 +56,16 @@ const styles = StyleSheet.create({
     groupLastMessage: {
         fontSize: 14,
     },
+    conversationTime: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        marginLeft: 'auto',
+    },
+    conversationTimeText: {
+        fontSize: 12,
+        color: '#8c8c8c',
+    }
 });
 
 export default Group

@@ -8,3 +8,12 @@
 #### Group chat picture add
 #### Confirmation while leaving group and other operations
 #### Send broadcast active or not
+
+### Phone App
+
+#### Push Notifications
+#### Unseen Messages outside chats on chatbox
+#### Fetch again setup
+#### Group Chat Picture
+#### Click outside to hide modal
+#### Search API not working

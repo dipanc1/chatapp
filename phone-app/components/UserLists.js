@@ -2,17 +2,19 @@ import { View, Text, StyleSheet, Image } from 'react-native'
 import React from 'react'
 
 const UserLists = ({ user }) => {
+
+
     return (
         <View style={styles.userlists}>
             <Image
                 source={{
-                    uri: user.pic,
+                    uri: user?.pic,
                 }}
                 style={styles.userlistsAvatar}
             />
             <View style={styles.userlistsInfo}>
                 <Text style={styles.userlistsName}>
-                    {user.username}
+                    {user?.username}
                 </Text>
             </View>
         </View>

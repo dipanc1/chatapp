@@ -17,6 +17,7 @@ const Navbar = ({ user }) => {
                 <View style={styles.profile}>
                     <Text style={styles.navbarText}>ChatApp</Text>
                     <View style={styles.navMenu}>
+
                         <TouchableOpacity onPress={() => setModalVisible1(true)}>
                             <Image
                                 source={{
@@ -26,6 +27,7 @@ const Navbar = ({ user }) => {
                             />
                         </TouchableOpacity>
                         <Text style={styles.username}>{user.username}</Text>
+
                         <TouchableOpacity
                             onPress={() => setNotificationModal(!notificationModal)}>
                             <Ionicons name="notifications" size={34} color="black" />
@@ -255,11 +257,9 @@ const styles = StyleSheet.create({
         borderRadius: 50,
     },
     centeredViewNotification: {
-        // marginLeft: '5%',
         marginTop: StatusBar.currentHeight - 15,
         justifyContent: 'center',
         alignItems: 'center',
-        // backgroundColor: '#f8f8',
     },
     modalViewNotification: {
         margin: 20,

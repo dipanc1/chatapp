@@ -121,7 +121,7 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
                         </div>
                         {loading ? <Loading /> :
                             <div className="searchResults">
-                                {searchResults?.slice(0, 4).map(user => (
+                                {searchResults?.map(user => (
                                     <div className="searchAvatar" key={user._id} onClick={() => handleGroup(user)}
                                     >
                                         <UserListItem user={user}

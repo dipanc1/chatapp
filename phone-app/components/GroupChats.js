@@ -3,19 +3,21 @@ import React from 'react'
 import Group from './Group'
 import { PhoneAppContext } from '../context/PhoneAppContext'
 import GroupLists from './GroupLists'
+import axios from 'axios'
+import { backend_url } from '../production'
 
-const GroupChats = ({ user, groupConversations, searchResultsGroups, search }) => {
+const GroupChats = ({ user, groupConversations, searchResultsGroups, search, setSearch }) => {
     const { dispatch } = React.useContext(PhoneAppContext)
 
     const handleAddUser = async (user1, groupId) => {
         const res = searchResultsGroups.map(group => group.users).includes(user1);
-        console.log(user1)
-        console.log(res);
+        // console.log(user1)
+        // console.log(res);
         if (res) {
             Alert.alert('User already in chat')
         }
         try {
-            setLoading(true);
+            // setLoading(true);
             const config = {
                 headers: {
                     Authorization: `Bearer ${user.token}`,
@@ -31,8 +33,8 @@ const GroupChats = ({ user, groupConversations, searchResultsGroups, search }) =
             );
             console.log(data);
             dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
-            setFetchAgain(!fetchAgain);
-            setLoading(false);
+            // setFetchAgain(!fetchAgain);
+            // setLoading(false);
         } catch (error) {
             console.log(error);
         }
@@ -57,7 +59,6 @@ const GroupChats = ({ user, groupConversations, searchResultsGroups, search }) =
                             key={c._id}
                             onPress={() => {
                                 dispatch({ type: "SET_SELECTED_CHAT", payload: c })
-                                dispatch({ type: "SET_MOBILE" })
                             }}
                         >
                             <Group chat={c} />

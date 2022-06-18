@@ -1,4 +1,4 @@
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import React, { useContext } from 'react'
 import Navbar from '../components/Navbar'
 import Search from '../components/Search'
@@ -12,6 +12,7 @@ import axios from 'axios'
 import { PhoneAppContext } from '../context/PhoneAppContext'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Members from '../components/Members'
+import AddGroup from '../components/AddGroup'
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -26,6 +27,7 @@ const Chat = ({ user }) => {
     const [loading, setLoading] = React.useState(false)
     const [members, setMembers] = React.useState(false)
     const [fetchAgain, setFetchAgain] = React.useState(false)
+    const [addGroup, setAddGroup] = React.useState(false)
 
 
     // search bar to search for users
@@ -84,21 +86,36 @@ const Chat = ({ user }) => {
     return (
         <View style={styles.chat}>
             {!selectedChat ?
-                <>
-                    <Navbar user={user} />
-                    <Search search={search} handleSearch={handleSearch} />
-                    <NavigationContainer>
-                        <Tab.Navigator>
-                            <Tab.Screen name="Chats">
-                                {props => <Conversations {...props} user={user} searchResultsUsers={searchResultsUsers} search={search} setSearch={setSearch} conversations={conversations} />}
-                            </Tab.Screen>
-                            <Tab.Screen name="Groups">
-                                {props => <GroupChats {...props} user={user}
-                                    search={search} setSearch={setSearch} searchResultsGroups={searchResultsGroups} groupConversations={groupConversations} />}
-                            </Tab.Screen>
-                        </Tab.Navigator>
-                    </NavigationContainer>
-                </>
+                addGroup ?
+                    <AddGroup user={user} setAddGroup={setAddGroup}/>
+                    :
+                    <>
+                        <Navbar user={user} />
+                        <Search search={search} handleSearch={handleSearch} />
+                        <NavigationContainer>
+                            <Tab.Navigator>
+                                <Tab.Screen name="Conversations">
+                                    {props => <Conversations {...props} user={user} searchResultsUsers={searchResultsUsers} search={search} setSearch={setSearch} conversations={conversations} />}
+                                </Tab.Screen>
+                                <Tab.Screen name="Groups">
+                                    {props => <GroupChats {...props} user={user}
+                                        search={search} setSearch={setSearch} searchResultsGroups={searchResultsGroups} groupConversations={groupConversations} />}
+                                </Tab.Screen>
+                            </Tab.Navigator>
+                        </NavigationContainer>
+
+                        <View style={styles.groupAdd}>
+                            <TouchableOpacity style={styles.groupAddButton}
+                                onPress={
+                                    () => setAddGroup(!addGroup)
+                                }
+                            >
+                                <Text style={styles.groupAddText}>
+                                    {'  +  '}
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </>
                 :
                 members ? <Members user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} setMembers={setMembers} /> :
                     <Chatbox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} user={user} setMembers={setMembers} />
@@ -111,10 +128,28 @@ const styles = StyleSheet.create({
     chat: {
         flex: 1,
         backgroundColor: '#f8f8f8',
+        position: 'relative'
     },
     tabs: {
         // flex: 1,
         backgroundColor: '#b91919',
+    },
+    groupAdd: {
+        position: 'absolute',
+        bottom: 15,
+        right: 15,
+    },
+    groupAddButton: {
+        padding: 5,
+        borderRadius: 50,
+        backgroundColor: '#161216',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    groupAddText: {
+        color: 'white',
+        fontSize: 40,
+        fontWeight: 'bold',
     }
 })
 
