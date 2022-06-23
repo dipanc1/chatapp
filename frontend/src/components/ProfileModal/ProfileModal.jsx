@@ -1,50 +1,81 @@
-import { useState } from 'react';
-import './profileModal.scss'
-import { motion } from 'framer-motion';
+import {
+    ViewIcon
+} from '@chakra-ui/icons'
+import {
+    IconButton,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+    useDisclosure,
+    Button,
+    Image,
+    Text
+} from '@chakra-ui/react'
 
-const ProfileModal = ({ user, children, p }) => {
-
-    const [show, setShow] = useState(false);
-
-    const handleClose = () => {
-        setShow(false);
-        p(false);
-    }
-
-    const variants = {
-        open: { opacity: 1, x: 0 },
-        closed: { opacity: 0, x: "-100%" },
-    }
+const ProfileModal = ({ user, children }) => {
+    const { isOpen, onOpen, onClose } = useDisclosure()
 
     return (
         <>
-            {
-                children ?
-                    <span onClick={() => setShow(true)}>{children}</span> :
-                    <img src="https://img.icons8.com/ios-glyphs/30/000000/visible--v1.png" alt='show' onClick={() => setShow(true)} style={{ cursor: "pointer" }} />
-            }
-            {show &&
-                <div className='profileModal'
+            {children ? (
+                <span onClick={onOpen}>{children}</span>
+            ) : (
+                <IconButton d={{ base: "flex" }} icon={<ViewIcon />} onClick={onOpen} />
+            )}
+            <Modal
+                isCentered
+                onClose={onClose}
+                isOpen={isOpen}
+                motionPreset='slideInBottom'
+            >
+                <ModalOverlay />
+                <ModalContent
+                    display={'flex'}
+                    flexDirection={'column'}
+                    alignItems={'center'}
+                    justifyContent={'center'}
+                    borderRadius={'lg'}
+                    border={'1px solid #eaeaea'}
+                    boxShadow={'lg'}
                 >
-                    <motion.div
-                        animate={show ? "open" : "closed"}
-                        variants={variants} className="profileModalContainer">
-                        <h1 className='modalUserName'>{user.username}</h1>
-                        <img src={user.pic} alt="user_image" className='modalUserImage' />
-                        <p className='modalUserText'>Phone Number: {user.number}</p>
-                        <motion.button
-                            className='modalUserButton'
-                            onClick={handleClose}
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
+                    <ModalHeader
+                        fontSize="40px"
+                        d="flex"
+                        justifyContent="center"
+                    >
+                        {user.username}
+                    </ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody
+                        display={'flex'}
+                        alignItems="center"
+                        justifyContent="center"
+                        flexDirection={'column'}
+                    >
+                        <Image
+                            borderRadius="full"
+                            boxSize="250px"
+                            src={user.pic}
+                            alt={user.name}
+                        />
+                        <Text
+                            fontSize={{ base: "28px", md: "30px" }}
                         >
-                            <span>
-                                Close
-                            </span>
-                        </motion.button>
-                    </motion.div>
-                </div>
-            }
+                            Phone Number: {user.number}
+                        </Text>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button colorScheme='blue' mr={3} onClick={onClose}>
+                            Close
+                        </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+
         </>
     )
 }

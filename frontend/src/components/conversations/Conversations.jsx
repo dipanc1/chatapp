@@ -10,6 +10,19 @@ import GroupListItem from '../UserAvatar/GroupListItem'
 import UserListItem from '../UserAvatar/UserListItem'
 import "./conversations.scss"
 import { motion } from "framer-motion"
+import {
+    Input,
+    Text,
+    Divider,
+    Spinner,
+    Center,
+    Box,
+    Button
+} from '@chakra-ui/react'
+import {
+    AddIcon,
+    ChevronDownIcon, ChevronUpIcon, PlusSquareIcon
+} from '@chakra-ui/icons'
 
 const Conversations = ({ fetchAgain, setFetchAgain }) => {
     const { dispatch, chats, selectedChat, mobile } = React.useContext(PhoneNumberContext);
@@ -147,30 +160,38 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
     return (
         <div className={mobile ? 'conversationsMobile' : 'conversations'}>
             <motion.div className="search"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
             >
-                <input
-                    type="text"
-                    id="search"
-                    name='search'
+                <Input
                     placeholder='Start a new conversation'
                     value={search}
                     onChange={handleSearch}
                 />
             </motion.div>
 
-            {/* <hr style={{ 'color': "#f3f7fc" }} /> */}
             <motion.div className="conversation-title">
-                <motion.h5
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
+                <Text
+                    fontSize="lg"
+                    fontWeight="bold"
                 >
                     Conversations
-                </motion.h5>
-                <img src="/images/down-arrow.png" alt="down arrow" className='down-arrow' style={{ transform: !dropdown ? 'rotate(180deg)' : null }} onClick={() => setDropdown(!dropdown)} />
+                </Text>
+                {
+                    dropdown ?
+                        <ChevronDownIcon
+                            onClick={() => setDropdown(!dropdown)}
+                            _hover={{ scale: 1.05 }}
+                            cursor="pointer"
+                        /> :
+                        <ChevronUpIcon
+                            onClick={() => setDropdown(!dropdown)}
+                            _hover={{ scale: 1.05 }}
+                            cursor="pointer"
+                        />
+                }
             </motion.div>
-            <hr style={{ 'color': "#f3f7fc", display: dropdown ? 'block' : 'none' }} />
+            <Divider orientation='horizontal' />
 
             <motion.div className="conversations-list"
                 animate={dropdown ? "open" : "closed"}
@@ -178,9 +199,15 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
             >
                 {
                     loading ?
-                        <div className="loading">
-                            <Loading />
-                        </div>
+                        <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
+                            <Spinner
+                                thickness='4px'
+                                speed='0.45s'
+                                emptyColor='gray.200'
+                                color='blue.500'
+                                size='xl'
+                            />
+                        </Box>
                         :
                         search.length > 0 ?
                             searchResultsUsers?.map(user => (
@@ -209,28 +236,49 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
 
                 }
                 {conversations.length === 0 ?
-                    <motion.div
-                        className="noChat"
+                    <Box
                         initial="hidden"
                         animate="visible"
                         variants={variants1}
+                        display={'flex'}
+                        alignItems={'center'}
+                        justifyContent={'center'}
                     >
-                        <h5>No Conversations</h5>
-                    </motion.div> : null}
+                        <Text color={'blue'} fontSize={'3xl'}>No Conversations</Text>
+                    </Box> : null}
             </motion.div>
 
-            {/* <hr style={{ 'color': "#f3f7fc" }} /> */}
             <div className="group-title"
-
             >
-                <img src="/images/down-arrow.png" alt="down arrow" className='down-arrow' onClick={() => setDropdownGroup(!dropdownGroup)} style={{ transform: !dropdownGroup ? 'rotate(180deg)' : null }} />
-                <motion.h5
+                {dropdownGroup?
+
+                    <ChevronDownIcon
+                        onClick={() => setDropdownGroup(!dropdownGroup)}
+                        _hover={{ scale: 1.05 }}
+                        cursor="pointer"
+                    /> :
+                <ChevronUpIcon
+                    onClick={() => setDropdownGroup(!dropdownGroup)}
+                    _hover={{ scale: 1.05 }}
+                    cursor="pointer"
+                />
+                    }
+                <Text
+                    fontSize="lg"
+                    fontWeight="bold"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                 >Groups
-                </motion.h5>
+                </Text>
                 <GroupChatModal user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}>
-                    <button className='groupChatButton'>+</button>
+                    <Button
+                        variantColor="blue"
+                        // onClick={() => setShowModal(true)}
+                        _hover={{ scale: 1.05 }}
+                        cursor="pointer"
+                    >
+                        <AddIcon />
+                    </Button>
                 </GroupChatModal>
             </div>
             <hr style={{ 'color': "#f3f7fc" }} />
@@ -240,9 +288,15 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
             >
                 {
                     loading ?
-                        <div className="loading">
-                            <Loading />
-                        </div>
+                        <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
+                            <Spinner
+                                thickness='4px'
+                                speed='0.65s'
+                                emptyColor='gray.200'
+                                color='blue.500'
+                                size='xl'
+                            />
+                        </Box>
                         :
                         search.length > 0 ?
                             searchResultsGroups?.map(group => (
@@ -273,14 +327,16 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                 }
                 {groupConversations.length === 0
                     ?
-                    <motion.div
-                        className="noGroup"
+                    <Box
                         initial="hidden"
                         animate="visible"
                         variants={variants1}
+                        display={'flex'}
+                        alignItems={'center'}
+                        justifyContent={'center'}
                     >
-                        <h5>No Groups</h5>
-                    </motion.div>
+                        <Text color={'blue'} fontSize={'3xl'}>No Groups</Text>
+                    </Box>
                     :
                     null}
             </motion.div>
