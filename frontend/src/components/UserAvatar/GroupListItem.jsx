@@ -1,12 +1,18 @@
+import { Box, Text } from '@chakra-ui/react'
 import React from 'react'
 
-const GroupListItem = ({group}) => {
+const GroupListItem = ({ group }) => {
     return (
-        <div className="group-name">
+        <Box
+            display={'flex'}
+            flexDirection={'row'}
+            justifyContent={'space-around'}
+            alignItems={'center'}
+        >
             {/* <img src="https://via.placeholder.com/150" alt="avatar" className='icon' />  */}
             {/* will add image later */}
-            <p>{group.chatName}</p>
-        </div>
+            <Text>{group.chatName}</Text>
+        </Box>
     )
 }
 

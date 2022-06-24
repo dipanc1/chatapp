@@ -158,19 +158,35 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
 
 
     return (
-        <div className={mobile ? 'conversationsMobile' : 'conversations'}>
-            <motion.div className="search"
+        <Box
+            bg={'white'}
+            height={'100%'}
+            width={'17rem'}
+        >
+            <Box
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
             >
                 <Input
+                    borderRadius={'0.8rem'}
+                    width={'80%'}
+                    py={'0.8rem'}
+                    fontWeight={'bold'}
+                    mx={'auto'}
+                    ml={'1.8rem'}
                     placeholder='Start a new conversation'
                     value={search}
                     onChange={handleSearch}
                 />
-            </motion.div>
+            </Box>
 
-            <motion.div className="conversation-title">
+            <Box
+                display={'flex'}
+                alignItems={'center'}
+                justifyContent={'space-between'}
+                padding={'1rem'}
+                px={'2rem'}
+            >
                 <Text
                     fontSize="lg"
                     fontWeight="bold"
@@ -190,10 +206,15 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                             cursor="pointer"
                         />
                 }
-            </motion.div>
+            </Box>
             <Divider orientation='horizontal' />
 
-            <motion.div className="conversations-list"
+            <Box
+                display={'flex'}
+                flexDirection={'column'}
+                maxHeight={'27vh'}
+                overflow={'scroll'}
+                overflowX={'hidden'}
                 animate={dropdown ? "open" : "closed"}
                 variants={variants}
             >
@@ -211,19 +232,39 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                         :
                         search.length > 0 ?
                             searchResultsUsers?.map(user => (
-                                <div className="conversation-avatar-name" key={user._id}
+                                <Box
+                                    _hover={{
+                                        background: '#b5cbfe',
+                                        color: 'white',
+                                    }}
+                                    bg={'#E8E8E8'}
+                                    p={2}
+                                    cursor={'pointer'}
+                                    my={'0.2rem'}
+                                    mx={'2rem'}
+                                    borderRadius="lg"
+                                    key={user._id}
                                     onClick={() => accessChat(user._id)}
                                 >
                                     <UserListItem user={user}
                                     />
-                                </div>
+                                </Box>
                             ))
                             : !dropdown ?
                                 null
                                 :
                                 conversations.map((c) => (
-                                    <div
-                                        className={selectedChat?._id === c._id ? "conversation-avatar-name-disabled" : "conversation-avatar-name"}
+                                    <Box
+                                        _hover={{
+                                            background: '#b5cbfe',
+                                            color: 'white',
+                                        }}
+                                        bg={selectedChat?._id === c._id ? '#b5cbfe' : '#E8E8E8'}
+                                        p={2}
+                                        cursor={'pointer'}
+                                        my={'0.2rem'}
+                                        mx={'2rem'}
+                                        borderRadius="lg"
                                         key={c._id}
                                         onClick={() => {
                                             dispatch({ type: "SET_SELECTED_CHAT", payload: c })
@@ -231,7 +272,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                                         }}
                                     >
                                         <Conversation chat={c} />
-                                    </div>
+                                    </Box>
                                 ))
 
                 }
@@ -244,25 +285,30 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                         alignItems={'center'}
                         justifyContent={'center'}
                     >
-                        <Text color={'blue'} fontSize={'3xl'}>No Conversations</Text>
+                        <Text cursor={'default'} color={'blue'} fontSize={'3xl'}>No Conversations</Text>
                     </Box> : null}
-            </motion.div>
+            </Box>
 
-            <div className="group-title"
+            <Box
+                display={'flex'}
+                alignItems={'center'}
+                justifyContent={'space-between'}
+                padding={'1rem'}
+                px={'2rem'}
             >
-                {dropdownGroup?
+                {dropdownGroup ?
 
                     <ChevronDownIcon
                         onClick={() => setDropdownGroup(!dropdownGroup)}
                         _hover={{ scale: 1.05 }}
                         cursor="pointer"
                     /> :
-                <ChevronUpIcon
-                    onClick={() => setDropdownGroup(!dropdownGroup)}
-                    _hover={{ scale: 1.05 }}
-                    cursor="pointer"
-                />
-                    }
+                    <ChevronUpIcon
+                        onClick={() => setDropdownGroup(!dropdownGroup)}
+                        _hover={{ scale: 1.05 }}
+                        cursor="pointer"
+                    />
+                }
                 <Text
                     fontSize="lg"
                     fontWeight="bold"
@@ -280,9 +326,15 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                         <AddIcon />
                     </Button>
                 </GroupChatModal>
-            </div>
-            <hr style={{ 'color': "#f3f7fc" }} />
-            <motion.div className="groups-list"
+            </Box>
+            <Divider orientation='horizontal' />
+
+            <Box
+                display={'flex'}
+                flexDirection={'column'}
+                maxHeight={'27vh'}
+                overflow={'scroll'}
+                overflowX={'hidden'}
                 animate={dropdownGroup ? "open" : "closed"}
                 variants={variants}
             >
@@ -300,12 +352,23 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                         :
                         search.length > 0 ?
                             searchResultsGroups?.map(group => (
-                                <div className="group-icon-name" key={group._id}
+                                <Box
+                                    _hover={{
+                                        background: '#b5cbfe',
+                                        color: 'white',
+                                    }}
+                                    bg={'#E8E8E8'}
+                                    p={2}
+                                    cursor={'pointer'}
+                                    my={'0.2rem'}
+                                    mx={'2rem'}
+                                    borderRadius="lg"
+                                    key={group._id}
                                     onClick={() => handleAddUser(user._id, group._id)}
                                 >
                                     <GroupListItem group={group}
                                     />
-                                </div>
+                                </Box>
                             ))
                             :
                             !dropdownGroup
@@ -313,8 +376,17 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                                 null
                                 :
                                 groupConversations.map((c) => (
-                                    <div
-                                        className={selectedChat?._id === c._id ? "group-icon-name-disabled" : "group-icon-name"}
+                                    <Box
+                                        _hover={{
+                                            background: '#b5cbfe',
+                                            color: 'white',
+                                        }}
+                                        bg={selectedChat?._id === c._id ? '#b5cbfe' : '#E8E8E8'}
+                                        p={2}
+                                        cursor={'pointer'}
+                                        my={'0.2rem'}
+                                        mx={'2rem'}
+                                        borderRadius="lg"
                                         key={c._id}
                                         onClick={() => {
                                             dispatch({ type: "SET_SELECTED_CHAT", payload: c })
@@ -322,7 +394,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                                         }}
                                     >
                                         <GroupChat chat={c} />
-                                    </div>
+                                    </Box>
                                 ))
                 }
                 {groupConversations.length === 0
@@ -335,12 +407,12 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                         alignItems={'center'}
                         justifyContent={'center'}
                     >
-                        <Text color={'blue'} fontSize={'3xl'}>No Groups</Text>
+                        <Text cursor={'default'} color={'blue'} fontSize={'3xl'}>No Groups</Text>
                     </Box>
                     :
                     null}
-            </motion.div>
-        </div >
+            </Box>
+        </Box>
     )
 }
 

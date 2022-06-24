@@ -2,15 +2,35 @@ import axios from 'axios';
 import { useContext, useState } from 'react';
 import { PhoneNumberContext } from '../../context/phoneNumberContext';
 import { backend_url } from '../../production';
-import Loading from '../Loading';
+import {
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+    Button,
+    useDisclosure,
+    FormControl,
+    Input,
+    useToast,
+    Spinner,
+    Box,
+    IconButton
+} from "@chakra-ui/react";
+import {
+    ViewIcon
+} from '@chakra-ui/icons'
 import UserBadgeItem from '../UserAvatar/UserBadgeItem';
 import UserListItem from '../UserAvatar/UserListItem';
 import './groupchatmodal.scss'
 
 const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
+    const { isOpen, onOpen, onClose } = useDisclosure();
     const user = JSON.parse(localStorage.getItem('user'))
     const { dispatch, chats } = useContext(PhoneNumberContext);
-    const [show, setShow] = useState(false);
+    const toast = useToast();
     const [groupChatName, setGroupChatName] = useState();
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [search, setSearch] = useState('');
@@ -35,13 +55,26 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
             setLoading(false);
             setSearchResults(data.users);
         } catch (error) {
-            console.log(error)
+            toast({
+                title: "Error Occured!",
+                description: "Failed to Load the Search Results",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "bottom-left",
+            });
         }
     }
 
     const handleSubmit = async (e) => {
         if (!groupChatName || !selectedUsers.length) {
-            console.log("Please enter a group chat name and select at least one user");
+            toast({
+                title: "Please enter a group chat name and select at least one user",
+                status: "warning",
+                duration: 5000,
+                isClosable: true,
+                position: "top",
+            });
             return;
         }
         e.preventDefault();
@@ -62,87 +95,129 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
             setFetchAgain(!fetchAgain);
             setLoading(false);
             setSearch('');
+            onClose();
             setGroupChatName('');
             setSelectedUsers([]);
-            setShow(false);
             setSearchResults([]);
-            alert("Group chat created successfully");
+            toast({
+                title: "New Group Chat Created Successfully!",
+                status: "success",
+                duration: 5000,
+                isClosable: true,
+                position: "bottom",
+            });
         } catch (error) {
-            console.log(error)
+            toast({
+                title: "Failed to Create the Chat!",
+                description: error.response.data,
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "bottom",
+            });
         }
     }
 
     const handleGroup = (userToAdd) => {
         if (selectedUsers.includes(userToAdd)) {
-            console.log('already added');
-        } else {
-            setSelectedUsers([...selectedUsers, userToAdd])
+            toast({
+                title: "User already added",
+                status: "warning",
+                duration: 5000,
+                isClosable: true,
+                position: "top",
+            });
+            return;
         }
+        setSelectedUsers([...selectedUsers, userToAdd])
     }
 
     const handleDelete = (userToDelete) => {
         setSelectedUsers(selectedUsers.filter(user => user._id !== userToDelete._id))
     }
-    // TODO: start from here
 
     return (
         <>
             {
-                children ?
-                    <span onClick={() => setShow(true)}>{children}</span> :
-                    <img src="https://img.icons8.com/ios-glyphs/30/000000/visible--v1.png" alt='show' onClick={() => setShow(true)} style={{ cursor: "pointer" }} />
-            }
-            {show &&
-                <div className='groupModal'>
-                    <div className="groupModalContainer">
-                        <h1 className='modalUserName'>Create Group Chat</h1>
-                        <form action="">
-                            <div className="groupChatName">
-                                <input type="text" placeholder="Group Name" onChange={(e) => setGroupChatName(e.target.value)} />
-                            </div>
-                            <div className="search">
-                                <input
-                                    type="text"
-                                    id="search"
-                                    name='search'
-                                    placeholder='Add Users eg: Dipan, Abhishek, Vikram'
-                                    value={search}
-                                    onChange={(e) => handleSearch(e.target.value)}
-                                />
-                            </div>
-                        </form>
-                        <div className="badgeItem" style={{ display: 'flex', flexWrap: 'wrap' }} >
-                            {selectedUsers.map(u =>
+                children ? (
+                    <span onClick={onOpen}>{children}</span>
+                ) : (
+                    <IconButton d={{ base: "flex" }} icon={<ViewIcon />} onClick={onOpen} />
+                )}
+            <Modal onClose={onClose} isOpen={isOpen} isCentered>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader
+                        fontSize="35px"
+                        d="flex"
+                        justifyContent="center"
+                    >
+                        Create Group Chat
+                    </ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody d="flex" flexDir="column" alignItems="center">
+                        <FormControl>
+                            <Input
+                                placeholder="Chat Name"
+                                mb={3}
+                                onChange={(e) => setGroupChatName(e.target.value)}
+                            />
+                        </FormControl>
+                        <FormControl>
+                            <Input
+                                placeholder="Add Users eg: Dipan, Abhishek, Vikram"
+                                mb={1}
+                                onChange={(e) => handleSearch(e.target.value)}
+                            />
+                        </FormControl>
+                        <Box w="100%" d="flex" flexWrap="wrap">
+                            {selectedUsers.map((u) => (
                                 <UserBadgeItem
                                     key={u._id}
                                     user={u}
-                                    handleFunction={() => handleDelete(u)} />
-                            )}
-                        </div>
-                        {loading ? <Loading /> :
-                            <div className="searchResults">
-                                {searchResults?.map(user => (
-                                    <div className="searchAvatar" key={user._id} onClick={() => handleGroup(user)}
-                                    >
-                                        <UserListItem user={user}
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                        }
-                        <button className='modalUserButton' onClick={handleSubmit}>
-                            <span>
-                                Create Chat
-                            </span>
-                        </button>
-                        <button className='modalUserButton' onClick={() => setShow(false)}>
-                            <span>
-                                Close
-                            </span>
-                        </button>
-                    </div>
-                </div>
-            }
+                                    handleFunction={() => handleDelete(u)}
+                                />
+                            ))}
+                        </Box>
+                        {loading ? (
+                            <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
+                                <Spinner
+                                    thickness='4px'
+                                    speed='0.65s'
+                                    emptyColor='gray.200'
+                                    color='blue.500'
+                                    size='xl'
+                                />
+                            </Box>
+                            // need to refine search result
+                        ) : (searchResults.slice(0, 4).map((user) => (
+                            <Box
+                                _hover={{
+                                    background: '#b5cbfe',
+                                    color: 'white',
+                                }}
+                                bg={'#E8E8E8'}
+                                p={2}
+                                cursor={'pointer'}
+                                my={'0.2rem'}
+                                mx={'2rem'}
+                                borderRadius="lg"
+                                key={user._id}
+                                onClick={() => handleGroup(user)}>
+                                <UserListItem
+                                    user={user}
+                                />
+                            </Box>
+                        ))
+                        )}
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button onClick={handleSubmit} colorScheme="blue">
+                            Create Chat
+                        </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
         </>
     )
 }

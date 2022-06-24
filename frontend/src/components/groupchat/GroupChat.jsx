@@ -1,5 +1,6 @@
 import './groupChat.scss'
 import { motion } from 'framer-motion'
+import { Box, Text } from '@chakra-ui/react'
 
 const GroupChat = ({ chat }) => {
     const list = {
@@ -24,7 +25,11 @@ const GroupChat = ({ chat }) => {
     }
 
     return (
-        <motion.div className="group-name"
+        <Box
+            display={'flex'}
+            flexDirection={'row'}
+            justifyContent={'space-around'}
+            alignItems={'center'}
             initial="hidden"
             animate="visible"
             variants={list}
@@ -32,8 +37,8 @@ const GroupChat = ({ chat }) => {
             {/* <img src="https://via.placeholder.com/150" alt="avatar" className='icon' />  */}
             {/* will add image later */}
 
-            <p variants={item}>{chat.chatName}</p>
-        </motion.div>
+            <Text fontSize='md' variants={item}>{chat.chatName}</Text>
+        </Box>
     )
 }
 
