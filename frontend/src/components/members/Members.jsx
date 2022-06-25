@@ -3,27 +3,37 @@ import ChatOnline from '../chatOnline/ChatOnline'
 import "./members.scss"
 import { PhoneNumberContext } from '../../context/phoneNumberContext'
 import axios from 'axios'
-import Loading from '../Loading'
 import UserListItem from '../UserAvatar/UserListItem'
 import { backend_url } from '../../production'
-import { motion } from 'framer-motion'
+import { HiUserRemove } from 'react-icons/hi'
+import {
+  Avatar,
+  Box, Button, Divider, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Text, useDisclosure, useToast,
+} from '@chakra-ui/react'
+import { GrUserAdd } from 'react-icons/gr'
 
 const Members = ({ fetchAgain, setFetchAgain }) => {
-  const [show, setShow] = React.useState(false);
   const [groupChatName, setGroupChatName] = React.useState('');
   const [search, setSearch] = React.useState('');
   const [searchResults, setSearchResults] = React.useState([]);
   const [renameLoading, setRenameLoading] = React.useState(false);
   const [loading, setLoading] = React.useState(false)
   const [transformmm, setTransformmm] = React.useState(false);
-
+  const toast = useToast();
   const { selectedChat, dispatch } = React.useContext(PhoneNumberContext);
   const user = JSON.parse(localStorage.getItem('user'));
-
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const handleRemove = async (user1) => {
     if (selectedChat.groupAdmin._id !== user._id && user1._id !== user._id) {
-      return alert('You are not the admin of this group chat')
+      return toast({
+        title: "Error Occured!",
+        description: "You are not the admin of this group",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
     }
     try {
       setLoading(true);
@@ -44,19 +54,47 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
       user1._id === user._id ? dispatch({ type: 'SET_SELECTED_CHAT', payload: '' }) : dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
       setFetchAgain(!fetchAgain);
       setLoading(false);
-      alert('User removed from group chat');
+      toast({
+        title: "Success!",
+        description: "Member Removed",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
     } catch (error) {
-      console.log(error);
+      toast({
+        title: "Error Occured!",
+        description: "Failed to Remove Member",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
     }
   }
 
   const handleAddUser = async (user1) => {
     // console.warn("USER ID TO ADD", selectedChat.users.map(user => user._id).includes(user1));
     if (selectedChat.users.map(user => user._id).includes(user1)) {
-      return alert('User already in chat')
+      return toast({
+        title: "Error Occured!",
+        description: "User already in group chat",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
     }
     if (selectedChat.groupAdmin._id !== user._id) {
-      console.log("you are not the admin")
+      toast({
+        title: "Error Occured!",
+        description: "You are not the admin of this group chat",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
     }
     try {
       setLoading(true);
@@ -77,8 +115,23 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
       dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
       setFetchAgain(!fetchAgain);
       setLoading(false);
+      toast({
+        title: "Success!",
+        description: "User added to group chat",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
     } catch (error) {
-      console.log(error);
+      toast({
+        title: "Error Occured!",
+        description: "Failed to add user to group chat",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
     }
     setSearch('');
 
@@ -103,12 +156,26 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
       }
       const { data } = await axios.put(`${backend_url}/conversation/rename`, body, config)
       dispatch({ type: 'SET_SELECTED_CHAT', payload: data })
-      alert(`Group chat renamed to ${groupChatName}`)
+      toast({
+        title: "Group chat renamed",
+        description: "Group chat renamed to " + groupChatName,
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
       setFetchAgain(!fetchAgain);
       setRenameLoading(false);
       setGroupChatName('');
     } catch (err) {
-      console.log(err)
+      toast({
+        title: "Error Occured!",
+        description: "Failed to Rename Group Chat",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
       setRenameLoading(false);
     }
   }
@@ -128,123 +195,184 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
       // console.log(searchResults);
       setLoading(false);
     } catch (error) {
-      console.log(error)
+      toast({
+        title: "Error Occured!",
+        description: "Failed to Load the Search Results",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
     }
   }
 
-  const list = {
-    visible: {
-      opacity: 1,
-      transition: {
-        when: "beforeChildren",
-        staggerChildren: 0.3,
-      },
-    },
-    hidden: {
-      opacity: 0,
-      transition: {
-        when: "afterChildren",
-      },
-    },
-  }
-
-  const item = {
-    visible: { opacity: 1, x: 0 },
-    hidden: { opacity: 0, x: -100 },
-  }
 
   return (
-    <div className='members'>
+    <Box
+      height={'628px'}
+      width={'98%'}
+      bg={'white'}
+      p={'1.5'}
+      my={'3'}
+      mr={'10'}
+      borderRadius={'xl'}
+      boxShadow={'dark-lg'}>
       {selectedChat ? (
         <>
-          <div className="member-title"
-          >
+          <Box
+            p={2}
+            mx={'2'}
+            my={'1'}
+            display={'flex'}
+            justifyContent={'space-between'}
+            alignItems={'center'}>
             {selectedChat.isGroupChat ?
-              <h3> Group Info: <i style={{ color: !transformmm ? '#004bfaec' : '#004dfa' }} onMouseEnter={() => setTransformmm(true)}
-                onMouseLeave={() => setTransformmm(false)}>{selectedChat?.chatName}</i></h3>
+              <Text as='samp' fontSize={'xl'}> Group Info: <Text as='cite' color={'#004dfa'}>{selectedChat?.chatName}</Text></Text>
               :
-              <h3>Personal Info: <i style={{ color: !transformmm ? '#004bfaec' : '#004dfa' }} onMouseEnter={() => setTransformmm(true)}
-                onMouseLeave={() => setTransformmm(false)}>{selectedChat?.users.find(member => member._id !== user._id)?.username}</i></h3>
+              <Text as='samp' fontSize={'lg'}>Personal Info: <Text as='cite' color={'#004dfa'}>{selectedChat?.users.find(member => member._id !== user._id)?.username}</Text></Text>
             }
-          </div>
-          <hr style={{ 'color': "#f3f7fc", marginBottom: '10px' }} />
+          </Box>
 
-          <div className='members-container'>
+          <Divider orientation='horizontal' />
+
+          <Box
+            display={'flex'}
+            flexDirection={'column'}
+            alignItems={'center'}
+            justifyContent={'center'}
+            overflow={selectedChat.isGroupChat && 'scroll'}
+            overflowX={'hidden'}
+            maxHeight={'sm'}
+            minHeight={'sm'}
+          >
 
             {selectedChat.isGroupChat && selectedChat?.users.map(u =>
-              <div className="member-avatar-name" key={u._id}>
+              <Box my={'2'} key={u._id}>
                 <ChatOnline
                   user1={u}
                   handleFunction={() => handleRemove(u)} />
-              </div>
+              </Box>
             )}
 
             {!selectedChat.isGroupChat && (
               <>
-                <img src={selectedChat?.users.find(member => member._id !== user._id)?.pic} alt="user_image" className='modalUserImage' />
-                <span className='modalUserText'>Phone Number:
-                  <i style={{ color: !transformmm ? '#004bfaec' : '#004dfa' }} onMouseEnter={() => setTransformmm(true)}
-                    onMouseLeave={() => setTransformmm(false)}>
+                <Avatar my={'10'} size={'2xl'} name={selectedChat?.users.find(member => member._id !== user._id)?.username} src={selectedChat?.users.find(member => member._id !== user._id)?.pic} />
+                <Text as='samp' fontSize={'lg'}>Phone Number:
+                  <Text as='cite' color={'#004dfa'}>
                     {selectedChat?.users.find(member => member._id !== user._id)?.number}
-                  </i></span>
+                  </Text></Text>
               </>
             )}
+          </Box>
 
-            {selectedChat.isGroupChat &&
-              <>
-                <div className="member-avatar-name-member">
-                  <div className="member-name">
-                    {show ?
-                      <>
-                        <img src="./images/add-user.png" alt="avatar" className='member-avatar' onClick={() => setShow(false)} />
-                        <p>Add Member</p>
-                      </>
-                      :
-                      <input value={search} type="text" placeholder="Search Member" onChange={handleSearch} />
-                    }
-                    {loading
-                      ?
-                      <div className="loading">
-                        <Loading />
-                      </div>
-                      :
-                      search.length > 0 &&
-                      searchResults?.map(user => (
-                        <div className="conversation-avatar-name" key={user._id}
-                          onClick={() => handleAddUser(user._id)}
-                        >
-                          <UserListItem user={user}
+
+          {selectedChat.isGroupChat &&
+            <Box
+              display={'flex'}
+              justifyContent={'space-between'}
+              flexDirection={'column'}
+              alignItems={'center'}
+            >
+              <Box my={'2'}>
+                <Button onClick={onOpen} rightIcon={<GrUserAdd />} colorScheme='blue' variant='outline'>
+                  Add Member
+                </Button>
+                <Modal isOpen={isOpen} onClose={onClose}>
+                  <ModalOverlay />
+                  <ModalContent>
+                    <ModalHeader>Add Member</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody maxHeight={'lg'} overflow={'scroll'} overflowX={'hidden'}>
+                      <Input
+                        value={search}
+                        placeholder="Search Member" onChange={handleSearch}
+                      />
+                      {loading
+                        ?
+                        <Box display={'flex'} alignItems={'center'} justifyContent={'center'} my={2}>
+                          <Spinner
+                            thickness='4px'
+                            speed='0.6s'
+                            emptyColor='gray.200'
+                            color='blue.500'
+                            size='xl'
                           />
-                        </div>
-                      ))}
-                  </div>
-                </div>
-                {renameLoading ?
-                  <div className="loading">
-                    <Loading />
-                  </div>
-                  :
-                  <form action="">
-                    <div className="groupChatName">
-                      <input value={groupChatName} type="text" placeholder="New Group Name" onChange={(e) => setGroupChatName(e.target.value)} />
-                      <button
-                        type="button"
-                        onClick={handleRename}>
-                        Update</button>
-                    </div>
-                  </form>}
-                <div className="member-remove" onClick={() => handleRemove(user)}>
-                  <img src="https://img.icons8.com/external-tanah-basah-basic-outline-tanah-basah/24/000000/external-exit-essentials-tanah-basah-basic-outline-tanah-basah-2.png" alt='leave group' />
-                  <p>Leave Group</p>
-                </div>
-              </>
-            }
-          </div>
+                        </Box>
+                        :
+                        search.length > 0 &&
+                        searchResults?.map(user => (
+                          <Box my={'2'}
+                            _hover={{
+                              background: '#b5cbfe',
+                              color: 'white',
+                            }}
+                            bg={'#E8E8E8'}
+                            p={2}
+                            cursor={'pointer'}
+                            mx={'2rem'}
+                            borderRadius="lg"
+                            key={user._id}
+                            onClick={() => handleAddUser(user._id)}
+                          >
+                            <UserListItem user={user}
+                            />
+                          </Box>
+                        ))}
+                    </ModalBody>
+
+                    <ModalFooter>
+                      <Button colorScheme='blue' mr={3} onClick={onClose}>
+                        Close
+                      </Button>
+                    </ModalFooter>
+                  </ModalContent>
+                </Modal>
+              </Box>
+
+              {renameLoading ?
+                <Box display={'flex'} alignItems={'center'} justifyContent={'center'} my={2}>
+                  <Spinner
+                    thickness='4px'
+                    speed='0.7s'
+                    emptyColor='gray.200'
+                    color='blue.500'
+                    size='md'
+                  />
+                </Box>
+                :
+                <Box display={'flex'} mx={'2'}>
+                  <Input
+                    mr={'2'}
+                    value={groupChatName}
+                    placeholder="Change Group Name"
+                    onChange={(e) => setGroupChatName(e.target.value)}
+                  />
+                  <Button colorScheme={'blue'} onClick={handleRename}>
+                    Rename
+                  </Button>
+                </Box>
+              }
+              <Box my={'2'}>
+                <Button onClick={() => handleRemove(user)} rightIcon={<HiUserRemove />} colorScheme='red' variant='outline'>
+                  Leave Group
+                </Button>
+              </Box>
+            </Box>
+          }
         </>
       )
         :
-        (<span className='noConvo'>No Chat is Selected</span>)}
-    </div>
+        (<Box
+          display={'flex'}
+          justifyContent={'center'}
+          alignItems={'center'}
+          height={'100%'}
+        >
+          <Text Text cursor={'default'} color={'blue'} fontSize={'2xl'}>
+            No Chat is Selected
+          </Text>
+        </Box>)}
+    </Box>
   )
 }
 

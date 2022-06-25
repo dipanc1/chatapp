@@ -357,7 +357,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
             variants={variants}
           >
             <Text fontSize={'5xl'} color={'#004dfa'}>
-              Open a conversation to start a chat.
+              Open a Conversation to Start a Chat
             </Text>
           </Box>)
       }

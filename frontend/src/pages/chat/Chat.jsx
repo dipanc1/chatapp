@@ -18,6 +18,7 @@ const Chat = () => {
 
   const [fetchAgain, setFetchAgain] = React.useState(false)
 
+  //TODO: Check use toasts in all chat components and use chakra in rest of the app
 
   return (
     <>
