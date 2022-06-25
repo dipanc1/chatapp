@@ -12,6 +12,8 @@ import { format } from 'timeago.js'
 import Stream from '../stream/Stream'
 import { backend_url } from '../../production'
 import { motion } from 'framer-motion'
+import { Avatar, AvatarBadge, Box, Button, Divider, Input, Spinner, Text } from '@chakra-ui/react'
+import { ArrowForwardIcon } from '@chakra-ui/icons'
 
 const ENDPOINT = `${backend_url}`;
 var socket, selectedChatCompare;
@@ -118,7 +120,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
       }
     });
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedChat])
 
 
@@ -165,96 +167,122 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
   }
 
   return (
-    <div className={mobile ? 'chatbox' : 'chatboxMobile'}>
+    <Box
+    height={'628px'}
+    bg={'white'}
+    p={'1.5'}
+    my={'3'}
+    mr={'10'}
+    borderRadius={'xl'}
+    boxShadow={'dark-lg'}
+    >
       {
         selectedChat ?
           (<>
             {/* TOP PART  */}
-            <motion.div
-              className="top"
+            <Box
+              display={'flex'}
+              flexDirection={'row'}
+              justifyContent={'space-between'}
+              alignItems={'center'}
+              my={2}
+              mx={6}
               initial="hidden"
               animate="visible"
               variants={variants}
             >
-              <motion.div
-                className="chatbox-group-name"
+
+              <Box
+                display="flex"
+                flexDirection="row"
+                justifyContent="space-between"
+                alignItems="center"
                 initial="hidden"
                 animate="visible"
                 variants={variants}
                 style={{ margin: selectedChat?.isGroupChat ? '8px' : null }}>
                 {selectedChat?.isGroupChat ?
                   null :
-                  <motion.img
-                    src={profile?.pic}
-                    alt="group-icon"
-                    className='group-icon-chat'
+                  <Avatar
                     initial="hidden"
                     animate="visible"
                     variants={variants}
-                  />
+                    size='md'
+                    name={profile?.username}
+                    src={profile?.pic}
+                  >
+                    {online ?
+                      <AvatarBadge boxSize='1em' bg='green.500' />
+                      : <AvatarBadge borderColor='papayawhip' bg='tomato' boxSize='1em' />}
+                  </Avatar>
                 }
                 {
                   streaming ?
                     null :
                     <>
-                      <motion.span
+                      <Text
                         initial="hidden"
                         animate="visible"
                         variants={variants}
+                        ml={'4'}
+                        fontSize={'xl'}
+                        color={'#004dfa'}
                       >
                         {selectedChat?.isGroupChat ? selectedChat?.chatName.toUpperCase() : profile?.username}
-                      </motion.span>
-                      <motion.span
+                      </Text>
+                      <Text
+                        ml={'4'}
+                        fontSize={'xs'}
                         initial="hidden"
                         animate="visible"
                         variants={variants}
-                        className='chatbox-group-members'
                       >{
                           selectedChat?.isGroupChat ?
                             `${selectedChat?.users.length} members` :
                             null
-                        }</motion.span>
+                        }</Text>
                     </>
                 }
-              </motion.div>
-              {selectedChat?.isGroupChat ?
-                <div className="chatbox-streaming">
+              </Box>
+
+              {selectedChat?.isGroupChat &&
+                <Box>
                   <Stream streaming={streaming} setStreaming={setStreaming} fullScreenMode={fullScreenMode} setFullScreenMode={setFullScreenMode} calling={calling} setCalling={setCalling} isCalling={isCalling} setIsCalling={setIsCalling} socket={socket} videocall={videocall} setVideocall={setVideocall} />
-                </div>
-                :
-                <div className="chatbox-online-status">
-                  {
-                    online ?
-                    <img src='https://img.icons8.com/emoji/48/000000/green-circle-emoji.png' alt="online-icon" className='online-icon-chat' width={15}/> :
-                    <img src='https://img.icons8.com/emoji/48/000000/red-circle-emoji.png' alt="offline-icon" className='offline-icon-chat' width={15} />
-                  }
-                </div>
+                </Box>
+
               }
-              <div className="chatboxGroupModal">
+              {/* for mobile yet to edit  */}
+              {/* <div className="chatboxGroupModal">
                 <DetailsModal />
-              </div>
-            </motion.div>
-            <hr style={{
-              marginBottom: '15px'
-            }} />
+              </div> */}
+
+            </Box>
+
+            <Divider orientation='horizontal' />
 
 
             {/* MIDDLE PART  */}
-            <motion.div
+            <Box
               initial="hidden"
               animate="visible"
               variants={variants}
-              className={streaming && selectedChat.isGroupChat ? "middleStream" : fullScreenMode ? 'middle' : 'middle'}
+              height={'md'}
+              overflowY={'scroll'}
             >
-
               {loading ?
                 (
-                  <div className="loading">
-                    <Loading />
-                  </div>
+                  <Box display={'flex'} alignItems={'center'} justifyContent={'center'} mt={44}>
+                    <Spinner
+                      thickness='4px'
+                      speed='0.2s'
+                      emptyColor='gray.200'
+                      color='blue.500'
+                      size='xl'
+                    />
+                  </Box>
                 ) :
                 (messages?.map((m, i) => (
-                  <motion.div
+                  <Box
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     viewport={{ once: true }}
@@ -272,11 +300,11 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
                           messages[messages.length - 1].sender._id)}
                       sameTime={(i < messages.length - 1) && format(messages[i].createdAt) === format(messages[i + 1].createdAt)}
                     />
-                  </motion.div>
+                  </Box>
                 )))
               }
               {isTyping ? (
-                <div className='typing'>
+                <Box>
                   <Lottie
                     loop={true}
                     style={{
@@ -284,35 +312,56 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
                     }}
                     animationData={animationData}
                   />
-                </div>
+                </Box>
               ) : (
                 <></>
               )}
-            </motion.div>
+            </Box>
 
 
             {/* BOTTOM PART  */}
-            <div className={fullScreenMode ? 'chatBottom' : streaming ? "chatBottomStream" : 'chatBottom'}>
-              <input name="message" id="message" placeholder='Type Your Message...'
+            <Box
+              display={'flex'}
+              alignItems={'center'}
+              justifyContent={'space-between'}
+              my={6}
+            >
+              <Input
+                mr={'10px'}
+                height={'66px'}
+                bgColor={'#f3f7fc'}
+                border={'none'}
+                placeholder='Type Your Message...'
                 onChange={typingHandler}
                 value={newMessage}
                 onKeyDown={newMessage !== "" ? sendMessage : null}
               />
-              <motion.button
+              <Button
+                colorScheme='messenger'
+                size='lg'
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className='chatSubmit' onClick={newMessage !== "" ? sendMessage : null}>→</motion.button>
-            </div>
+                onClick={newMessage !== "" ? sendMessage : null}>
+                <ArrowForwardIcon />
+              </Button>
+            </Box>
           </>)
           :
-          (<motion.span
-            className='noConvo'
+          (<Box
+            display={'flex'}
+            justifyContent={'center'}
+            alignItems={'center'}
+            height={'100%'}
             initial="hidden"
             animate="visible"
             variants={variants}
-          >Open a conversation to start a chat.</motion.span>)
+          >
+            <Text fontSize={'5xl'} color={'#004dfa'}>
+              Open a conversation to start a chat.
+            </Text>
+          </Box>)
       }
-    </div>
+    </Box>
   )
 }
 
