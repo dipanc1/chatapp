@@ -7,8 +7,10 @@ import validator from 'validator'
 import axios from 'axios';
 import { PhoneNumberContext } from '../../context/phoneNumberContext';
 import { Link } from 'react-router-dom';
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { backend_url } from '../../production';
+
+// TODO: check toasts in chat component, use chakra in register (maybe) 
 
 const Register = () => {
     const { dispatch } = React.useContext(PhoneNumberContext);
@@ -26,7 +28,7 @@ const Register = () => {
     const [loading, setLoading] = React.useState(false)
 
     const number1 = React.useContext(PhoneNumberContext)
-    let history = useHistory();
+    let navigate = useNavigate();
     const cloudName = 'dipanc1';
 
     const apiUrlMobile = `${backend_url}/mobile`;
@@ -96,7 +98,7 @@ const Register = () => {
                 .then(res => {
                     console.log(res.data);
                     localStorage.setItem("user", JSON.stringify(res.data));
-                    history.push('/');
+                    navigate('/');
                 })
                 .catch(err => {
                     console.log(err);

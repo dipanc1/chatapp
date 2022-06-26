@@ -4,36 +4,35 @@ import Conversations from '../../components/conversations/Conversations'
 import Members from '../../components/members/Members'
 import Navbar from '../../components/navbar/Navbar'
 import "./chat.scss"
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { Box } from '@chakra-ui/react'
 
 const Chat = () => {
   const user = JSON.parse(localStorage.getItem('user'));
-  let history = useHistory();
+  let navigate = useNavigate();
 
   React.useEffect(() => {
     if (!user) {
-      history.push('/');
+      navigate('/');
     }
-  }, [history, user]);
+  }, [navigate, user]);
 
   const [fetchAgain, setFetchAgain] = React.useState(false)
-
-  //TODO: Check use toasts in all chat components and use chakra in rest of the app
 
   return (
     <>
       {user && <Navbar />}
-      <div className='chat'>
-        <div className="left">
+      <Box display={'flex'} bg={'#B4CBFF'} height={'calc(92vh)'}>
+        <Box flex={'2.5'}>
           {user && <Conversations fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
-        </div>
-        <div className="middle">
+        </Box>
+        <Box flex={'7.5'}>
           {user && <Chatbox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
-        </div>
-        <div className="right">
+        </Box>
+        <Box flex={'2'}>
           {user && <Members fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
-        </div>
-      </div>
+        </Box>
+      </Box>
     </>
   )
 }

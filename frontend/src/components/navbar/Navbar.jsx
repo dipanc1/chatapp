@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import ProfileModal from '../ProfileModal/ProfileModal';
 import "./navbar.scss"
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { PhoneNumberContext } from '../../context/phoneNumberContext';
 import { motion } from 'framer-motion';
 import {
@@ -46,24 +46,24 @@ const Navbar = () => {
   const { notification, dispatch } = React.useContext(PhoneNumberContext);
   // console.log(notification);
 
-  let history = useHistory();
+  let navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem('user');
-    history.push('/');
+    navigate('/');
   }
 
   return (
     <> 
       <Box px={4}>
-        <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
+        <Flex h={'14'} alignItems={'center'} justifyContent={'space-between'}>
           <Box>ChatApp</Box>
 
           <Flex alignItems={'center'}>
             <Stack direction={'row'} spacing={7}>
-              <Button bg={colorMode === 'light' ? 'white' : 'blackAlpha.600'} onClick={toggleColorMode}>
+              {/* <Button bg={colorMode === 'light' ? 'white' : 'blackAlpha.600'} onClick={toggleColorMode}>
                 {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-              </Button>
+              </Button> */}
               <Menu>
                 <MenuButton>
                   <BellIcon fontSize={'xl'} />

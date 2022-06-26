@@ -213,7 +213,7 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
       width={'98%'}
       bg={'white'}
       p={'1.5'}
-      my={'3'}
+      my={'5'}
       mr={'10'}
       borderRadius={'xl'}
       boxShadow={'dark-lg'}>
@@ -223,13 +223,20 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
             p={2}
             mx={'2'}
             my={'1'}
+            flexWrap={'wrap'}
             display={'flex'}
-            justifyContent={'space-between'}
+            justifyContent={'space-around'}
             alignItems={'center'}>
             {selectedChat.isGroupChat ?
-              <Text as='samp' fontSize={'xl'}> Group Info: <Text as='cite' color={'#004dfa'}>{selectedChat?.chatName}</Text></Text>
+              <>
+                <Text as='kbd' fontSize={'lg'}> Group Info: </Text>
+                <Text as='samp' color={'#004dfa'}>{selectedChat?.chatName}</Text>
+              </>
               :
-              <Text as='samp' fontSize={'lg'}>Personal Info: <Text as='cite' color={'#004dfa'}>{selectedChat?.users.find(member => member._id !== user._id)?.username}</Text></Text>
+              <>
+                <Text as='kbd' fontSize={'lg'}>Personal Info: </Text>
+                <Text as='samp' color={'#004dfa'}>{selectedChat?.users.find(member => member._id !== user._id)?.username}</Text>
+              </>
             }
           </Box>
 
@@ -240,10 +247,10 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
             flexDirection={'column'}
             alignItems={'center'}
             justifyContent={'center'}
-            overflow={selectedChat.isGroupChat && 'scroll'}
-            overflowX={'hidden'}
             maxHeight={'sm'}
+            overflow={selectedChat.isGroupChat && 'scroll'}
             minHeight={'sm'}
+            overflowX={'hidden'}
           >
 
             {selectedChat.isGroupChat && selectedChat?.users.map(u =>
@@ -257,10 +264,10 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
             {!selectedChat.isGroupChat && (
               <>
                 <Avatar my={'10'} size={'2xl'} name={selectedChat?.users.find(member => member._id !== user._id)?.username} src={selectedChat?.users.find(member => member._id !== user._id)?.pic} />
-                <Text as='samp' fontSize={'lg'}>Phone Number:
-                  <Text as='cite' color={'#004dfa'}>
-                    {selectedChat?.users.find(member => member._id !== user._id)?.number}
-                  </Text></Text>
+                <Text as='kbd' fontSize={'lg'}>Phone Number:</Text>
+                <Text as='samp' color={'#004dfa'}>
+                  {selectedChat?.users.find(member => member._id !== user._id)?.number}
+                </Text>
               </>
             )}
           </Box>

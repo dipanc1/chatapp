@@ -171,7 +171,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
     height={'628px'}
     bg={'white'}
     p={'1.5'}
-    my={'3'}
+    my={'5'}
     mr={'10'}
     borderRadius={'xl'}
     boxShadow={'dark-lg'}
