@@ -18,14 +18,15 @@ import {
     useColorModeValue,
     HStack,
     useToast,
+    InputRightElement,
+    InputGroup
 } from '@chakra-ui/react';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 
 const Login = () => {
     const [username, setUsername] = React.useState('')
     const [password, setPassword] = React.useState('')
-    const [error, setError] = React.useState(false)
-    const [errorMessage, setErrorMessage] = React.useState('')
-    const [show, setShow] = React.useState(false)
+    const [showPassword, setShowPassword] = React.useState(false);
     const user = JSON.parse(localStorage.getItem('user'))
     const toast = useToast();
 
@@ -39,9 +40,6 @@ const Login = () => {
         setPassword(e.target.value)
     }
 
-    const handleShow = () => {
-        setShow(!show);
-    }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -55,8 +53,6 @@ const Login = () => {
             // console.log("working!!", res)
             navigate('/chat')
         } catch (err) {
-            setError(true)
-            setErrorMessage("Invalid username or password")
             toast({
                 title: "Invalid username or password",
                 description: "Please try again",
@@ -88,6 +84,12 @@ const Login = () => {
                 </Stack>
                 <Box
                     rounded={'lg'}
+                    minH={'70vh'}
+                    w={'25vw'}
+                    display={'flex'}
+                    flexDirection={'column'}
+                    alignItems={'center'}
+                    justifyContent={'center'}
                     bg={useColorModeValue('white', 'gray.700')}
                     boxShadow={'lg'}
                     p={8}>
@@ -99,29 +101,25 @@ const Login = () => {
                             </FormControl>
                             <FormControl id="password">
                                 <FormLabel>Password</FormLabel>
-                                <Input value={password} placeholder='Enter Password' required onChange={handlePassword} type={'password'} />
+                                <InputGroup>
+                                    <Input value={password} placeholder='Enter Password' required onChange={handlePassword} type={showPassword ? 'text' : 'password'} />
+                                    <InputRightElement h={'full'}>
+                                        <Button
+                                            variant={'ghost'}
+                                            onClick={() =>
+                                                setShowPassword((showPassword) => !showPassword)
+                                            }>
+                                            {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                                        </Button>
+                                    </InputRightElement>
+                                </InputGroup>
                             </FormControl>
-                            {/* {error &&
-                                <Text color={'red.400'}>
-                                    {errorMessage}
-                                </Text>
-                            } */}
                             <Stack spacing={10}>
                                 <Stack
                                     direction={{ base: 'column', sm: 'row' }}
                                     align={'start'}
                                     justify={'space-between'}>
                                     <Checkbox>Remember me</Checkbox>
-                                    <HStack>
-                                        <Text>
-                                            New User?{' '}
-                                        </Text>
-                                        <Text color={'blue.500'}>
-                                            <Link to={'/register'}>
-                                                Register
-                                            </Link>
-                                        </Text>
-                                    </HStack>
                                 </Stack>
                                 <Button
                                     type='submit'
@@ -136,6 +134,16 @@ const Login = () => {
                             </Stack>
                         </Stack>
                     </form>
+                    <HStack pt={10}>
+                        <Text>
+                            New User?{' '}
+                        </Text>
+                        <Text color={'blue.500'}>
+                            <Link to={'/register'}>
+                                Register
+                            </Link>
+                        </Text>
+                    </HStack>
                 </Box>
             </Stack>
         </Flex>

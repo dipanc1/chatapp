@@ -2,39 +2,58 @@ import React from 'react'
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
 import './register.scss'
-import OTPInput, { ResendOTP } from "otp-input-react";
+import { ResendOTP } from "otp-input-react";
 import validator from 'validator'
 import axios from 'axios';
 import { PhoneNumberContext } from '../../context/phoneNumberContext';
 import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 import { backend_url } from '../../production';
+import {
+    Flex,
+    Box,
+    FormControl,
+    FormLabel,
+    Input,
+    InputGroup,
+    InputRightElement,
+    Stack,
+    Button,
+    Heading,
+    Text,
+    useColorModeValue,
+    PinInput,
+    PinInputField,
+    useToast,
+} from '@chakra-ui/react';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 
-// TODO: check toasts in chat component, use chakra in register (maybe) 
+// TODO: check toasts in whole component 
 
 const Register = () => {
     const { dispatch } = React.useContext(PhoneNumberContext);
     const [verify, setVerify] = React.useState(true);
     const [otp, setOtp] = React.useState(true);
     const [OTP, setOTP] = React.useState("");
-    const [username, setUsername] = React.useState("");
-    const [number, setNumber] = React.useState();
+    const [username, setUsername] = React.useState('');
+    const [number, setNumber] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [confirmPassword, setConfirmPassword] = React.useState('');
-    const [error, setError] = React.useState(false)
-    const [errorMessage, setErrorMessage] = React.useState('')
-    const [show, setShow] = React.useState(false)
+    const [showPassword, setShowPassword] = React.useState(false);
     const [pic, setPic] = React.useState('')
     const [loading, setLoading] = React.useState(false)
 
     const number1 = React.useContext(PhoneNumberContext)
     let navigate = useNavigate();
+    const toast = useToast();
+    
     const cloudName = 'dipanc1';
-
     const apiUrlMobile = `${backend_url}/mobile`;
     const apiUrlOtp = `${backend_url}/otp`;
     const apiUrlRegister = `${backend_url}/users/register`;
     const pictureUpload = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+
+
 
     const handleUsername = (e) => {
         setUsername(e.target.value);
@@ -48,16 +67,17 @@ const Register = () => {
         setConfirmPassword(e.target.value);
     }
 
-    const handleShow = () => {
-        setShow(!show);
-    }
-
     const postDetails = (pics) => {
         setLoading(true)
         if (pics === undefined) {
             setPic('')
-            setError(true)
-            setErrorMessage('Please upload a profile picture')
+            toast({
+                title: "Error",
+                description: "Please upload a picture",
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+            });
         }
         if (pics.type === 'image/jpeg' || pics.type === 'image/png') {
             const formData = new FormData();
@@ -72,13 +92,23 @@ const Register = () => {
                 })
                 .catch(err => {
                     setLoading(false)
-                    setError(true)
-                    setErrorMessage('Server Error')
+                    toast({
+                        title: "Error",
+                        description: "Server error",
+                        status: "error",
+                        duration: 9000,
+                        isClosable: true,
+                    });
                 })
         } else {
             setLoading(false)
-            setError(true)
-            setErrorMessage('Please upload a valid image')
+            toast({
+                title: "Error",
+                description: "Please upload a picture",
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+            });
         }
     }
 
@@ -86,8 +116,14 @@ const Register = () => {
         console.log(pic);
         e.preventDefault();
         if (password !== confirmPassword) {
-            setError(true);
-            setErrorMessage('Passwords do not match');
+            toast({
+                title: "Error",
+                description: "Passwords do not match",
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+            });
+            return
         } else {
             axios.post(apiUrlRegister, {
                 number1: number1,
@@ -102,13 +138,28 @@ const Register = () => {
                 })
                 .catch(err => {
                     console.log(err);
-                    setError(true);
-                    setErrorMessage('Please enter valid details');
+                    toast({
+                        title: "Error",
+                        description: "Please enter valid details",
+                        status: "error",
+                        duration: 9000,
+                        isClosable: true,
+                    });
                 })
         }
     }
 
     const handleVerify = () => {
+        if(number === '') {
+            toast({
+                title: "Error",
+                description: "Please enter a valid phone number",
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+            });
+            return
+        }
         dispatch({ type: "SET_NUMBER", payload: number });
         const isValidPhoneNumber = validator.isMobilePhone(number)
         if (isValidPhoneNumber) {
@@ -119,10 +170,22 @@ const Register = () => {
                     setNumber("");
                 }
                 else
-                    alert('Invalid Phone Number')
+                    toast({
+                        title: "Error",
+                        description: "Please enter valid phone number",
+                        status: "error",
+                        duration: 9000,
+                        isClosable: true,
+                    });
             })
         } else {
-            alert('Invalid Phone Number')
+            toast({
+                title: "Error",
+                description: "Please enter valid phone number",
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+            });
         }
     }
 
@@ -137,7 +200,13 @@ const Register = () => {
                         setOtp(false)
                     } else {
                         setOtp(true);
-                        setError(true);
+                        toast({
+                            title: "Error",
+                            description: "Please enter valid OTP",
+                            status: "error",
+                            duration: 9000,
+                            isClosable: true,
+                        });
                     }
                 });
             }, 1000);
@@ -145,92 +214,145 @@ const Register = () => {
     }
 
     const renderButton = (buttonProps) => {
-        return <button style={{ cursor: buttonProps.remainingTime !== 0 && 'not-allowed' }} {...buttonProps} className='otp'>{buttonProps.remainingTime !== 0 ? `${buttonProps.remainingTime} seconds remaining` : "Resend"}</button>;
+        return <Button mt={'3'} colorScheme={'blue'} style={{ cursor: buttonProps.remainingTime !== 0 && 'not-allowed' }} {...buttonProps}>{buttonProps.remainingTime !== 0 ? `${buttonProps.remainingTime} seconds remaining` : "Resend"}</Button>;
     };
 
     const renderTime = () => React.Fragment;
 
-
-
-
     return (
-        <div className='register'>
-            <div className="registerBox">
-                <div className="registerBoxTitle">
-                    <h1>Register</h1>
-                </div>
-                <div className="registerBoxForm">
-                    <form>
-                        {verify &&
-                            <div className="registerBoxFormInput">
-                                <label htmlFor="phone">Phone Number</label>
-                                <PhoneInput
-                                    international
-                                    defaultCountry="IN"
-                                    value={number}
-                                    onChange={setNumber} />
-                            </div>}
-                        {!otp &&
-                            <>
-                                <div className="registerBoxFormInput">
-                                    <label htmlFor="userName">User Name</label>
-                                    <input type="text" id="username" name='username' value={username} placeholder='Enter User Name' required maxLength={20} minLength={2} onChange={handleUsername} />
-                                </div>
-                                <div className="registerBoxFormInput">
-                                    <label htmlFor="password">Password</label>
-                                    <input type={show ? "text" : "password"} id="password" name='password' placeholder='Enter Password' value={password} required minLength={8} onChange={handlePassword} />
-                                    {
-                                        !show ?
-                                            <img src="/images/show-pass.png" alt="show" width={22} onClick={handleShow} style={{ cursor: "pointer" }} /> :
-                                            <img src="/images/hide-pass.png" alt="show" width={22} onClick={handleShow} style={{ cursor: "pointer" }} />
-                                    }
-                                </div>
-                                <div className="registerBoxFormInput">
-                                    <label htmlFor="confirmpassword">Confirm Password</label>
-                                    <input type={show ? "text" : "password"} id="confirmpassword" name='confirmpassword' placeholder='Confirm Password' required value={confirmPassword} onChange={handleConfirmPassword} />
-                                    {
-                                        !show ?
-                                            <img src="/images/show-pass.png" alt="show" width={22} onClick={handleShow} style={{ cursor: "pointer" }} /> :
-                                            <img src="/images/hide-pass.png" alt="show" width={22} onClick={handleShow} style={{ cursor: "pointer" }} />
-                                    }
-                                </div>
-                                <div className="registerBoxFormInput">
-                                    <label htmlFor="uploadPicture">Upload Your Picture</label>
-                                    <input type="file" accept='image/*'
-                                        onChange={(e) =>
+        <Flex
+            minH={'100vh'}
+            align={'center'}
+            justify={'center'}
+            bg={useColorModeValue('blue.50', 'blue.800')}>
+            <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
+                <Stack align={'center'}>
+                    <Heading fontSize={'4xl'} textAlign={'center'}>
+                        Sign up
+                    </Heading>
+                </Stack>
+                <Box
+                    rounded={'lg'}
+                    minH={'70vh'}
+                    w={'25vw'}
+                    display={'flex'}
+                    flexDirection={'column'}
+                    alignItems={'center'}
+                    justifyContent={'center'}
+                    bg={useColorModeValue('white', 'gray.700')}
+                    boxShadow={'lg'}
+                    p={8}>
+                    <Stack spacing={10}>
+                        <form>
+                            {verify &&
+                                <FormControl id="number" isRequired>
+                                    <FormLabel>Phone Number</FormLabel>
+                                    <PhoneInput
+                                        international
+                                        defaultCountry="IN"
+                                        value={number}
+                                        onChange={setNumber} />
+                                </FormControl>}
+                            {!otp &&
+                                <>
+                                    <FormControl id="username" isRequired>
+                                        <FormLabel>User Name</FormLabel>
+                                        <Input type="text" id="username" name='username' value={username} placeholder='Enter User Name' maxLength={20} minLength={2} onChange={handleUsername} />
+                                    </FormControl>
+                                    <FormControl id="password" isRequired>
+                                        <FormLabel>Password</FormLabel>
+                                        <InputGroup>
+                                            <Input type={showPassword ? 'text' : 'password'} id="password" name='password' placeholder='Enter Password' value={password} minLength={8} onChange={handlePassword} />
+                                            <InputRightElement h={'full'}>
+                                                <Button
+                                                    variant={'ghost'}
+                                                    onClick={() =>
+                                                        setShowPassword((showPassword) => !showPassword)
+                                                    }>
+                                                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                                                </Button>
+                                            </InputRightElement>
+                                        </InputGroup>
+                                    </FormControl>
+                                    <FormControl id="confirmpassword" isRequired>
+                                        <FormLabel>Confirm Password</FormLabel>
+                                        <InputGroup>
+                                            <Input type={showPassword ? 'text' : 'password'} id="confirmpassword" name='confirmpassword' placeholder='Confirm Password' value={confirmPassword} onChange={handleConfirmPassword} />
+                                            <InputRightElement h={'full'}>
+                                                <Button
+                                                    variant={'ghost'}
+                                                    onClick={() =>
+                                                        setShowPassword((showPassword) => !showPassword)
+                                                    }>
+                                                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                                                </Button>
+                                            </InputRightElement>
+                                        </InputGroup>
+                                    </FormControl>
+
+                                    <FormControl id="picture" isRequired>
+                                        <FormLabel>Upload Your Picture</FormLabel>
+                                        <Input type="file" accept='image/*' onChange={(e) =>
                                             postDetails(e.target.files[0])
-                                        }
-                                    />
-                                </div>
-                            </>
-                        }
-                        {(!verify && otp) &&
-                            <div className="registerBoxFormInput">
-                                <OTPInput value={OTP} onChange={handleOtp} autoFocus OTPLength={5} otpType="number" disabled={false} />
-                                <ResendOTP renderButton={renderButton} renderTime={renderTime} maxTime={10} onClick={handleOtp} />
-                            </div>
-                        }
-                        <div className="registerBoxFormButton">
-                            {verify ? <button type="submit" onClick={handleVerify}>
-                                <span>
-                                    Verify Phone Number
-                                </span></button> : null}
-                            {!otp && password === confirmPassword && username.length !== 0 && password.length >= 8 ? <button type="submit" onClick={handleRegister} disabled={loading ? true : false}>{loading ? "Loading..." : "Register"}</button> : null}
-                        </div>
-                        {error &&
-                            <span className="failure">
-                                {errorMessage}
-                            </span>
-                        }
-                    </form>
-                </div>
-                <div className="registerBoxLink">
-                    <p>
-                        Already Have an Account? <Link to="/">Login</Link>
-                    </p>
-                </div>
-            </div>
-        </div>
+                                        } />
+                                    </FormControl>
+
+                                </>
+                            }
+                            {(!verify && otp) &&
+                                <FormControl>
+                                    <PinInput onChange={handleOtp} value={OTP} otp>
+                                        <PinInputField />
+                                        <PinInputField />
+                                        <PinInputField />
+                                        <PinInputField />
+                                        <PinInputField />
+                                    </PinInput>
+                                    <ResendOTP renderButton={renderButton} renderTime={renderTime} maxTime={120} onClick={handleVerify} />
+
+                                </FormControl>
+                            }
+                            <Stack spacing={10} pt={8}>
+                                {verify ?
+                                    <Button
+                                        type="submit"
+                                        onClick={handleVerify}
+                                        loadingText={loading && "Submitting"}
+                                        size="lg"
+                                        bg={'blue.400'}
+                                        color={'white'}
+                                        _hover={{
+                                            bg: 'blue.500',
+                                        }}>
+                                        Verify Phone Number
+                                    </Button> : null}
+
+                                {!otp ?
+                                    <Button
+                                        type="submit"
+                                        onClick={handleRegister}
+                                        disabled={!(password === confirmPassword && username.length !== 0 && password.length >= 8 && pic.length !== 0)}
+                                        loadingText={loading && "Submitting"}
+                                        size="lg"
+                                        bg={'blue.400'}
+                                        color={'white'}
+                                        _hover={{
+                                            bg: 'blue.500',
+                                        }}>
+                                        Register
+                                    </Button> : null}
+                            </Stack>
+                        </form>
+                    </Stack>
+                    <Stack direction={'row'} pt={10}>
+                        <Text>Already a user?</Text>
+                        <Link to="/">
+                            <Text color={'blue.500'}>Login</Text>
+                        </Link>
+                    </Stack>
+                </Box>
+            </Stack >
+        </Flex >
     )
 }
 
