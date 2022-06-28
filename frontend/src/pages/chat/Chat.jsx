@@ -22,8 +22,8 @@ const Chat = () => {
   return (
     <>
       {user && <Navbar />}
-      <Box display={'flex'} bg={'#B4CBFF'} height={'calc(92vh)'}>
-        <Box flex={'2.5'}>
+      <Box display={'flex'} bg={'backgroundColor'} height={'calc(92vh)'}>
+        <Box flex={'2'}>
           {user && <Conversations fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
         </Box>
         <Box flex={'7.5'}>

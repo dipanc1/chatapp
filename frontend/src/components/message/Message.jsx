@@ -20,7 +20,7 @@ const Message = ({ messages, own, sameSender, sameTime }) => {
                     {sameSender ?
                         <Avatar size='sm' mr={'1.5'} name={messages.sender.username} src={messages.sender.pic} />
                         : null}
-                    <Box p={2} borderRadius={'xl'} bg={own ? '#b5cbfe' : '#f3f7fc'}>
+                    <Box p={2} borderRadius={'xl'} bg={own ? 'ownChatColor' : '#f3f7fc'}>
                         <Text color={own ? 'white' : ''}>{messages.content}</Text>
                     </Box>
                 </Box>

@@ -28,8 +28,6 @@ import {
 } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 
-// TODO: check toasts in whole component 
-
 const Register = () => {
     const { dispatch } = React.useContext(PhoneNumberContext);
     const [verify, setVerify] = React.useState(true);

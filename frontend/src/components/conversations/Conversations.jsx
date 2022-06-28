@@ -15,13 +15,12 @@ import {
     Text,
     Divider,
     Spinner,
-    Center,
     Box,
     Button
 } from '@chakra-ui/react'
 import {
     AddIcon,
-    ChevronDownIcon, ChevronUpIcon, PlusSquareIcon
+    ChevronDownIcon, ChevronUpIcon
 } from '@chakra-ui/icons'
 
 const Conversations = ({ fetchAgain, setFetchAgain }) => {
@@ -92,10 +91,6 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
             }
             const { data } = await axios.get(`${backend_url}/conversation`, config);
 
-            // console.log(conversations);
-            // console.log(groupConversations);
-            // setConversations((data.map(friend => friend.isGroupChat ? null : friend.users.find(member => member._id !== user._id))).filter(friend => friend !== null).map(friend => friend));
-
             setConversations(data.filter(friend => !friend.isGroupChat));
             setGroupConversations(data.filter(friend => friend.isGroupChat && friend.chatName));
 
@@ -161,7 +156,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
         <Box
             bg={'white'}
             height={'100%'}
-            width={'17rem'}
+            // width={'17rem'}
         >
             <Box
                 whileHover={{ scale: 1.02 }}
@@ -234,8 +229,9 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                             searchResultsUsers?.map(user => (
                                 <Box
                                     _hover={{
-                                        background: '#b5cbfe',
-                                        color: 'white',
+                                        background: 'selectPrimaryColor',
+                                        fontWeight: 'bold',
+
                                     }}
                                     bg={'#E8E8E8'}
                                     p={2}
@@ -256,10 +252,10 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                                 conversations.map((c) => (
                                     <Box
                                         _hover={{
-                                            background: '#b5cbfe',
-                                            color: 'white',
+                                            background: 'selectPrimaryColor',
+                                        fontWeight: 'bold',
                                         }}
-                                        bg={selectedChat?._id === c._id ? '#b5cbfe' : '#E8E8E8'}
+                                        bg={selectedChat?._id === c._id ? 'selectPrimaryColor' : '#E8E8E8'}
                                         p={2}
                                         cursor={'pointer'}
                                         my={'0.2rem'}
@@ -354,8 +350,8 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                             searchResultsGroups?.map(group => (
                                 <Box
                                     _hover={{
-                                        background: '#b5cbfe',
-                                        color: 'white',
+                                        background: 'selectPrimaryColor',
+                                        fontWeight: 'bold',
                                     }}
                                     bg={'#E8E8E8'}
                                     p={2}
@@ -378,10 +374,10 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                                 groupConversations.map((c) => (
                                     <Box
                                         _hover={{
-                                            background: '#b5cbfe',
-                                            color: 'white',
+                                            background: 'selectPrimaryColor',
+                                            fontWeight: 'bold',
                                         }}
-                                        bg={selectedChat?._id === c._id ? '#b5cbfe' : '#E8E8E8'}
+                                        bg={selectedChat?._id === c._id ? 'selectPrimaryColor' : '#E8E8E8'}
                                         p={2}
                                         cursor={'pointer'}
                                         my={'0.2rem'}

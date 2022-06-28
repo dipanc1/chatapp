@@ -13,7 +13,7 @@ import Stream from '../stream/Stream'
 import { backend_url } from '../../production'
 import { motion } from 'framer-motion'
 import { Avatar, AvatarBadge, Box, Button, Divider, Input, Spinner, Text } from '@chakra-ui/react'
-import { ArrowForwardIcon } from '@chakra-ui/icons'
+import { FiSend } from 'react-icons/fi'
 
 const ENDPOINT = `${backend_url}`;
 var socket, selectedChatCompare;
@@ -168,13 +168,13 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
 
   return (
     <Box
-    height={'628px'}
-    bg={'white'}
-    p={'1.5'}
-    my={'5'}
-    mr={'10'}
-    borderRadius={'xl'}
-    boxShadow={'dark-lg'}
+      height={'628px'}
+      bg={'white'}
+      p={'1.5'}
+      my={'5'}
+      mx={'10'}
+      borderRadius={'xl'}
+      boxShadow={'dark-lg'}
     >
       {
         selectedChat ?
@@ -219,29 +219,17 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
                 {
                   streaming ?
                     null :
-                    <>
+                    
                       <Text
                         initial="hidden"
                         animate="visible"
                         variants={variants}
                         ml={'4'}
                         fontSize={'xl'}
-                        color={'#004dfa'}
+                        fontWeight={'bold'}
                       >
                         {selectedChat?.isGroupChat ? selectedChat?.chatName.toUpperCase() : profile?.username}
                       </Text>
-                      <Text
-                        ml={'4'}
-                        fontSize={'xs'}
-                        initial="hidden"
-                        animate="visible"
-                        variants={variants}
-                      >{
-                          selectedChat?.isGroupChat ?
-                            `${selectedChat?.users.length} members` :
-                            null
-                        }</Text>
-                    </>
                 }
               </Box>
 
@@ -337,12 +325,12 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
                 onKeyDown={newMessage !== "" ? sendMessage : null}
               />
               <Button
-                colorScheme='messenger'
+                bg='buttonPrimaryColor'
                 size='lg'
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={newMessage !== "" ? sendMessage : null}>
-                <ArrowForwardIcon />
+                <FiSend />
               </Button>
             </Box>
           </>)

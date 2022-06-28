@@ -8,9 +8,10 @@ import { backend_url } from '../../production'
 import { HiUserRemove } from 'react-icons/hi'
 import {
   Avatar,
-  Box, Button, Divider, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Text, useDisclosure, useToast,
+  Box, Button, Divider, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Tab, TabList, TabPanel, TabPanels, Tabs, Text, useDisclosure, useToast,
 } from '@chakra-ui/react'
 import { GrUserAdd } from 'react-icons/gr'
+import { BsTelephone, BsPerson } from 'react-icons/bs'
 
 const Members = ({ fetchAgain, setFetchAgain }) => {
   const [groupChatName, setGroupChatName] = React.useState('');
@@ -218,155 +219,186 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
       borderRadius={'xl'}
       boxShadow={'dark-lg'}>
       {selectedChat ? (
-        <>
-          <Box
-            p={2}
-            mx={'2'}
-            my={'1'}
-            flexWrap={'wrap'}
-            display={'flex'}
-            justifyContent={'space-around'}
-            alignItems={'center'}>
-            {selectedChat.isGroupChat ?
-              <>
-                <Text as='kbd' fontSize={'lg'}> Group Info: </Text>
-                <Text as='samp' color={'#004dfa'}>{selectedChat?.chatName}</Text>
-              </>
-              :
-              <>
-                <Text as='kbd' fontSize={'lg'}>Personal Info: </Text>
-                <Text as='samp' color={'#004dfa'}>{selectedChat?.users.find(member => member._id !== user._id)?.username}</Text>
-              </>
-            }
-          </Box>
 
-          <Divider orientation='horizontal' />
+        selectedChat?.isGroupChat ? (
+          <Tabs variant='unstyled'>
+            <TabList>
+              <Tab _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>Participants</Tab>
+              <Tab _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>Settings</Tab>
+            </TabList>
+            <TabPanels>
 
-          <Box
-            display={'flex'}
-            flexDirection={'column'}
-            alignItems={'center'}
-            justifyContent={'center'}
-            maxHeight={'sm'}
-            overflow={selectedChat.isGroupChat && 'scroll'}
-            minHeight={'sm'}
-            overflowX={'hidden'}
-          >
+              <TabPanel>
+                <Box>
+                  <Text>
+                    {selectedChat?.users.length} members
+                  </Text>
+                </Box>
+                <Box
+                  display={'flex'}
+                  flexDirection={'column'}
+                  alignItems={'center'}
+                  justifyContent={'center'}
+                  minHeight={'sm'}
+                  maxHeight={'75vh'}
+                  overflow={'scroll'}
+                  overflowX={'hidden'}>
+                  {selectedChat?.users.map(u =>
+                    <Box my={'2'} key={u._id}>
+                      <ChatOnline
+                        user1={u}
+                        handleFunction={() => handleRemove(u)} />
+                    </Box>
+                  )}
+                </Box>
+              </TabPanel>
 
-            {selectedChat.isGroupChat && selectedChat?.users.map(u =>
-              <Box my={'2'} key={u._id}>
-                <ChatOnline
-                  user1={u}
-                  handleFunction={() => handleRemove(u)} />
-              </Box>
-            )}
+              <TabPanel>
+                <Box
+                  display={'flex'}
+                  flexDirection={'column'}
+                  alignItems={'center'}
+                  justifyContent={'flex-end'}
+                  maxHeight={'sm'}
+                  minHeight={'75vh'}
+                >
 
-            {!selectedChat.isGroupChat && (
-              <>
-                <Avatar my={'10'} size={'2xl'} name={selectedChat?.users.find(member => member._id !== user._id)?.username} src={selectedChat?.users.find(member => member._id !== user._id)?.pic} />
-                <Text as='kbd' fontSize={'lg'}>Phone Number:</Text>
-                <Text as='samp' color={'#004dfa'}>
-                  {selectedChat?.users.find(member => member._id !== user._id)?.number}
-                </Text>
-              </>
-            )}
-          </Box>
+                  {renameLoading ?
+                    <Box display={'flex'}
+                      alignItems={'center'}
+                      justifyContent={'center'}
+                      my={2}>
+                      <Spinner
+                        thickness='4px'
+                        speed='0.7s'
+                        emptyColor='gray.200'
+                        color='blue.500'
+                        size='md'
+                      />
+                    </Box>
+                    :
+                    <Box display={'flex'} flexDirection={'column'} mx={'2'} mb={'36'}>
+                      <Input
+                        mr={'2'}
+                        value={groupChatName}
+                        placeholder={selectedChat?.chatName}
+                        _placeholder={{ color: 'inherit' }}
+                        onChange={(e) => setGroupChatName(e.target.value)}
+                      />
+                      <Button mt={'4'} colorScheme={'blue'} onClick={handleRename}>
+                        Rename
+                      </Button>
+                    </Box>
+                  }
 
+                  <Box my={'2'}>
 
-          {selectedChat.isGroupChat &&
+                    <Button onClick={onOpen} rightIcon={<GrUserAdd />} colorScheme='blue' variant='outline'>
+                      Add Member
+                    </Button>
+
+                    <Modal isOpen={isOpen} onClose={onClose}>
+                      <ModalOverlay />
+                      <ModalContent>
+                        <ModalHeader>Add Member</ModalHeader>
+                        <ModalCloseButton />
+                        <ModalBody maxHeight={'lg'} overflow={'scroll'} overflowX={'hidden'}>
+                          <Input
+                            value={search}
+                            placeholder="Search Member" onChange={handleSearch}
+                          />
+                          {loading
+                            ?
+                            <Box display={'flex'} alignItems={'center'} justifyContent={'center'} my={2}>
+                              <Spinner
+                                thickness='4px'
+                                speed='0.6s'
+                                emptyColor='gray.200'
+                                color='blue.500'
+                                size='xl'
+                              />
+                            </Box>
+                            :
+                            search.length > 0 &&
+                            searchResults?.map(user => (
+                              <Box my={'2'}
+                                _hover={{
+                                  background: '#b5cbfe',
+                                  color: 'white',
+                                }}
+                                bg={'#E8E8E8'}
+                                p={2}
+                                cursor={'pointer'}
+                                mx={'2rem'}
+                                borderRadius="lg"
+                                key={user._id}
+                                onClick={() => handleAddUser(user._id)}
+                              >
+                                <UserListItem user={user}
+                                />
+                              </Box>
+                            ))}
+                        </ModalBody>
+
+                        <ModalFooter>
+                          <Button colorScheme='blue' mr={3} onClick={onClose}>
+                            Close
+                          </Button>
+                        </ModalFooter>
+                      </ModalContent>
+                    </Modal>
+
+                  </Box>
+
+                  <Box my={'2'}>
+                    <Button onClick={() => handleRemove(user)} rightIcon={<HiUserRemove />} colorScheme='red' variant='outline'>
+                      Leave Group
+                    </Button>
+                  </Box>
+
+                </Box>
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
+        ) : (
+          <>
+            <Box
+              p={2}
+              mx={'2'}
+              my={'1'}
+              flexWrap={'wrap'}
+              display={'flex'}
+              justifyContent={'space-around'}
+              alignItems={'center'}>
+              <Text as='kbd' fontSize={'lg'}>Personal Information </Text>
+            </Box>
+            <Divider orientation='horizontal' />
+
             <Box
               display={'flex'}
-              justifyContent={'space-between'}
               flexDirection={'column'}
               alignItems={'center'}
+              justifyContent={'center'}
+              maxHeight={'sm'}
+              minHeight={'sm'}
+              overflowX={'hidden'}
             >
-              <Box my={'2'}>
-                <Button onClick={onOpen} rightIcon={<GrUserAdd />} colorScheme='blue' variant='outline'>
-                  Add Member
-                </Button>
-                <Modal isOpen={isOpen} onClose={onClose}>
-                  <ModalOverlay />
-                  <ModalContent>
-                    <ModalHeader>Add Member</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody maxHeight={'lg'} overflow={'scroll'} overflowX={'hidden'}>
-                      <Input
-                        value={search}
-                        placeholder="Search Member" onChange={handleSearch}
-                      />
-                      {loading
-                        ?
-                        <Box display={'flex'} alignItems={'center'} justifyContent={'center'} my={2}>
-                          <Spinner
-                            thickness='4px'
-                            speed='0.6s'
-                            emptyColor='gray.200'
-                            color='blue.500'
-                            size='xl'
-                          />
-                        </Box>
-                        :
-                        search.length > 0 &&
-                        searchResults?.map(user => (
-                          <Box my={'2'}
-                            _hover={{
-                              background: '#b5cbfe',
-                              color: 'white',
-                            }}
-                            bg={'#E8E8E8'}
-                            p={2}
-                            cursor={'pointer'}
-                            mx={'2rem'}
-                            borderRadius="lg"
-                            key={user._id}
-                            onClick={() => handleAddUser(user._id)}
-                          >
-                            <UserListItem user={user}
-                            />
-                          </Box>
-                        ))}
-                    </ModalBody>
+              <Avatar my={'10'} size={'2xl'} name={selectedChat?.users.find(member => member._id !== user._id)?.username} src={selectedChat?.users.find(member => member._id !== user._id)?.pic} />
 
-                    <ModalFooter>
-                      <Button colorScheme='blue' mr={3} onClick={onClose}>
-                        Close
-                      </Button>
-                    </ModalFooter>
-                  </ModalContent>
-                </Modal>
-              </Box>
+              <BsPerson />
+              <Text as='samp' mb={'5'}>
+                {selectedChat?.users.find(member => member._id !== user._id)?.username}
+              </Text>
 
-              {renameLoading ?
-                <Box display={'flex'} alignItems={'center'} justifyContent={'center'} my={2}>
-                  <Spinner
-                    thickness='4px'
-                    speed='0.7s'
-                    emptyColor='gray.200'
-                    color='blue.500'
-                    size='md'
-                  />
-                </Box>
-                :
-                <Box display={'flex'} mx={'2'}>
-                  <Input
-                    mr={'2'}
-                    value={groupChatName}
-                    placeholder="Change Group Name"
-                    onChange={(e) => setGroupChatName(e.target.value)}
-                  />
-                  <Button colorScheme={'blue'} onClick={handleRename}>
-                    Rename
-                  </Button>
-                </Box>
-              }
-              <Box my={'2'}>
-                <Button onClick={() => handleRemove(user)} rightIcon={<HiUserRemove />} colorScheme='red' variant='outline'>
-                  Leave Group
-                </Button>
-              </Box>
+              <BsTelephone />
+              <Text as='samp'>
+                {selectedChat?.users.find(member => member._id !== user._id)?.number}
+              </Text>
+
             </Box>
-          }
-        </>
+          </>
+        )
+
       )
         :
         (<Box

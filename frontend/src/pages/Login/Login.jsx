@@ -1,7 +1,6 @@
 import axios from 'axios'
 import React from 'react'
 import { Link } from 'react-router-dom'
-import './login.scss'
 import { useNavigate } from "react-router-dom";
 import { backend_url } from '../../production';
 import {
@@ -85,7 +84,7 @@ const Login = () => {
                 <Box
                     rounded={'lg'}
                     minH={'70vh'}
-                    w={'25vw'}
+                    w={['86vw', '86vw', '25vw']}
                     display={'flex'}
                     flexDirection={'column'}
                     alignItems={'center'}

@@ -2,9 +2,11 @@ import React, { useContext, useEffect, useState } from 'react'
 import AgoraUIKit, { layout } from 'agora-react-uikit';
 import { PhoneNumberContext } from '../../context/phoneNumberContext';
 import './stream.scss'
+import { AiOutlineVideoCamera } from 'react-icons/ai'
+import { Button } from '@chakra-ui/react';
 
 
-const Stream = ({ children, streaming, setStreaming, fullScreenMode, setFullScreenMode, calling, setCalling, isCalling, socket, setVideocall,videocall  }) => {
+const Stream = ({ children, streaming, setStreaming, fullScreenMode, setFullScreenMode, calling, setCalling, isCalling, socket, setVideocall, videocall }) => {
     const { selectedChat } = useContext(PhoneNumberContext);
     const [transformmm, setTransformmm] = useState(false);
     const [isHost, setHost] = useState(false);
@@ -91,19 +93,14 @@ const Stream = ({ children, streaming, setStreaming, fullScreenMode, setFullScre
                 children ?
                     <span onClick={() => setStreaming(!streaming)}>{children}</span> :
                     <>
-                        <img src="https://img.icons8.com/ios/50/000000/streamlabs-obs.png" alt='stream'
-                            style={{
-                                transform: transformmm ? 'scale(1.1) translateY(-2px)' : null,
-                                cursor: 'pointer',
-                                height: '40px',
-                                filter: isCalling ? 'invert(44%) sepia(53%) saturate(4971%) hue-rotate(336deg) brightness(129%) contrast(113%)' :  null,
-                                marginLeft: '-38px',
-                                transition: 'all 0.1s ease-in-out',
-                            }}
-                            onClick={streamHandler}
+                        <Button onClick={streamHandler}
                             onMouseEnter={() => setTransformmm(true)}
                             onMouseLeave={() => setTransformmm(false)}
-                        />
+                            style={{
+                                filter: isCalling ? 'invert(44%) sepia(53%) saturate(4971%) hue-rotate(336deg) brightness(129%) contrast(113%)' : null,
+                            }}>
+                            <AiOutlineVideoCamera />
+                        </Button>
                     </>
             }
             {streaming &&
