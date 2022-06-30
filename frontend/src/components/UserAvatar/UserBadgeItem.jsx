@@ -34,7 +34,7 @@ const UserBadgeItem = ({ user, handleFunction }) => {
             mb={2}
             variant="solid"
             fontSize={12}
-            colorScheme="whatsapp"
+            bgColor={'#3CC4B7'}
             cursor="pointer"
             onClick={handleFunction}
         >

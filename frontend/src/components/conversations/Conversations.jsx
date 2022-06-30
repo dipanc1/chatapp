@@ -156,7 +156,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
         <Box
             bg={'white'}
             height={'100%'}
-            // width={'17rem'}
+        // width={'17rem'}
         >
             <Box
                 whileHover={{ scale: 1.02 }}
@@ -172,6 +172,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                     placeholder='Start a new conversation'
                     value={search}
                     onChange={handleSearch}
+                    focusBorderColor='#9F85F7'
                 />
             </Box>
 
@@ -194,8 +195,8 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                             onClick={() => setDropdown(!dropdown)}
                             _hover={{ scale: 1.05 }}
                             cursor="pointer"
-                        /> :
-                        <ChevronUpIcon
+                            /> :
+                            <ChevronUpIcon
                             onClick={() => setDropdown(!dropdown)}
                             _hover={{ scale: 1.05 }}
                             cursor="pointer"
@@ -220,7 +221,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                                 thickness='4px'
                                 speed='0.45s'
                                 emptyColor='gray.200'
-                                color='blue.500'
+                                color='buttonPrimaryColor'
                                 size='xl'
                             />
                         </Box>
@@ -253,7 +254,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                                     <Box
                                         _hover={{
                                             background: 'selectPrimaryColor',
-                                        fontWeight: 'bold',
+                                            fontWeight: 'bold',
                                         }}
                                         bg={selectedChat?._id === c._id ? 'selectPrimaryColor' : '#E8E8E8'}
                                         p={2}
@@ -281,7 +282,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                         alignItems={'center'}
                         justifyContent={'center'}
                     >
-                        <Text cursor={'default'} color={'blue'} fontSize={'3xl'}>No Conversations</Text>
+                        <Text cursor={'default'} color={'buttonPrimaryColor'} fontSize={'3xl'}>No Conversations</Text>
                     </Box> : null}
             </Box>
 
@@ -292,19 +293,6 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                 padding={'1rem'}
                 px={'2rem'}
             >
-                {dropdownGroup ?
-
-                    <ChevronDownIcon
-                        onClick={() => setDropdownGroup(!dropdownGroup)}
-                        _hover={{ scale: 1.05 }}
-                        cursor="pointer"
-                    /> :
-                    <ChevronUpIcon
-                        onClick={() => setDropdownGroup(!dropdownGroup)}
-                        _hover={{ scale: 1.05 }}
-                        cursor="pointer"
-                    />
-                }
                 <Text
                     fontSize="lg"
                     fontWeight="bold"
@@ -312,16 +300,33 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                     whileTap={{ scale: 0.9 }}
                 >Groups
                 </Text>
-                <GroupChatModal user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}>
-                    <Button
-                        variantColor="blue"
-                        // onClick={() => setShowModal(true)}
-                        _hover={{ scale: 1.05 }}
-                        cursor="pointer"
-                    >
-                        <AddIcon />
-                    </Button>
-                </GroupChatModal>
+                <Box>
+
+                    <GroupChatModal user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}>
+                        <Button
+                            color={'#3CC4B7'}
+                            _hover={{ scale: 1.05 }}
+                            variant='outline'
+                            size={'xs'}
+                            cursor="pointer"
+                            mr={'2'}
+                        >
+                            <AddIcon />
+                        </Button>
+                    </GroupChatModal>
+                    {dropdownGroup ?
+                        <ChevronDownIcon
+                            onClick={() => setDropdownGroup(!dropdownGroup)}
+                            _hover={{ scale: 1.05 }}
+                            cursor="pointer"
+                        /> :
+                        <ChevronUpIcon
+                            onClick={() => setDropdownGroup(!dropdownGroup)}
+                            _hover={{ scale: 1.05 }}
+                            cursor="pointer"
+                        />
+                    }
+                </Box>
             </Box>
             <Divider orientation='horizontal' />
 
@@ -341,7 +346,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                                 thickness='4px'
                                 speed='0.65s'
                                 emptyColor='gray.200'
-                                color='blue.500'
+                                color='buttonPrimaryColor'
                                 size='xl'
                             />
                         </Box>
@@ -403,7 +408,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                         alignItems={'center'}
                         justifyContent={'center'}
                     >
-                        <Text cursor={'default'} color={'blue'} fontSize={'3xl'}>No Groups</Text>
+                        <Text cursor={'default'} color={'buttonPrimaryColor'} fontSize={'3xl'}>No Groups</Text>
                     </Box>
                     :
                     null}

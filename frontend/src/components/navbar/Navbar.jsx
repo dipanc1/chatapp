@@ -20,7 +20,8 @@ import {
   Stack,
   useColorMode,
   Center,
-  Portal
+  Portal,
+  Text
 } from '@chakra-ui/react';
 import { BellIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 
@@ -57,7 +58,11 @@ const Navbar = () => {
     <> 
       <Box px={4}>
         <Flex h={'14'} alignItems={'center'} justifyContent={'space-between'}>
-          <Box>ChatApp</Box>
+          <Box>
+            <Text cursor={'default'} fontWeight={'bold'} fontSize={'3xl'}>
+              Logo
+            </Text>
+          </Box>
 
           <Flex alignItems={'center'}>
             <Stack direction={'row'} spacing={7}>

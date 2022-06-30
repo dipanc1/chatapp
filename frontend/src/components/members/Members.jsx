@@ -7,6 +7,7 @@ import UserListItem from '../UserAvatar/UserListItem'
 import { backend_url } from '../../production'
 import { HiUserRemove } from 'react-icons/hi'
 import {
+  Accordion,
   Avatar,
   Box, Button, Divider, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Tab, TabList, TabPanel, TabPanels, Tabs, Text, useDisclosure, useToast,
 } from '@chakra-ui/react'
@@ -221,11 +222,12 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
       {selectedChat ? (
 
         selectedChat?.isGroupChat ? (
-          <Tabs variant='unstyled'>
+          <Tabs variant='unstyled' isFitted>
             <TabList>
               <Tab _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>Participants</Tab>
               <Tab _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>Settings</Tab>
             </TabList>
+
             <TabPanels>
 
               <TabPanel>
@@ -239,15 +241,17 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
                   flexDirection={'column'}
                   alignItems={'center'}
                   justifyContent={'center'}
-                  minHeight={'sm'}
-                  maxHeight={'75vh'}
+                  minHeight={'10'}
+                  maxHeight={'72vh'}
                   overflow={'scroll'}
                   overflowX={'hidden'}>
                   {selectedChat?.users.map(u =>
-                    <Box my={'2'} key={u._id}>
-                      <ChatOnline
-                        user1={u}
-                        handleFunction={() => handleRemove(u)} />
+                    <Box my={'1'} key={u._id}>
+                      <Accordion allowToggle>
+                        <ChatOnline
+                          user1={u}
+                          handleFunction={() => handleRemove(u)} />
+                      </Accordion>
                     </Box>
                   )}
                 </Box>
@@ -272,7 +276,7 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
                         thickness='4px'
                         speed='0.7s'
                         emptyColor='gray.200'
-                        color='blue.500'
+                        color='buttonPrimaryColor'
                         size='md'
                       />
                     </Box>
@@ -285,7 +289,7 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
                         _placeholder={{ color: 'inherit' }}
                         onChange={(e) => setGroupChatName(e.target.value)}
                       />
-                      <Button mt={'4'} colorScheme={'blue'} onClick={handleRename}>
+                      <Button mt={'4'} color={'white'} backgroundColor={'buttonPrimaryColor'} onClick={handleRename}>
                         Rename
                       </Button>
                     </Box>
@@ -293,7 +297,7 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
 
                   <Box my={'2'}>
 
-                    <Button onClick={onOpen} rightIcon={<GrUserAdd />} colorScheme='blue' variant='outline'>
+                    <Button onClick={onOpen} rightIcon={<GrUserAdd />} color={'buttonPrimaryColor'} variant='outline'>
                       Add Member
                     </Button>
 
@@ -314,7 +318,7 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
                                 thickness='4px'
                                 speed='0.6s'
                                 emptyColor='gray.200'
-                                color='blue.500'
+                                color='buttonPrimaryColor'
                                 size='xl'
                               />
                             </Box>
@@ -405,10 +409,15 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
           display={'flex'}
           justifyContent={'center'}
           alignItems={'center'}
+          flexDirection={'column'}
+
           height={'100%'}
         >
-          <Text Text cursor={'default'} color={'blue'} fontSize={'2xl'}>
-            No Chat is Selected
+          <Text cursor={'default'} color={'buttonPrimaryColor'} fontSize={'2xl'}>
+            Select a chat
+          </Text>
+          <Text color={'greyTextColor'} p={'4'}>
+            Select or create a group to see the participants of that group along with settings and other information.
           </Text>
         </Box>)}
     </Box>

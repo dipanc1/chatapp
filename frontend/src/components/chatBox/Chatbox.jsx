@@ -12,7 +12,7 @@ import { format } from 'timeago.js'
 import Stream from '../stream/Stream'
 import { backend_url } from '../../production'
 import { motion } from 'framer-motion'
-import { Avatar, AvatarBadge, Box, Button, Divider, Input, Spinner, Text } from '@chakra-ui/react'
+import { Avatar, AvatarBadge, Box, Button, Divider, Image, Input, Spinner, Text } from '@chakra-ui/react'
 import { FiSend } from 'react-icons/fi'
 
 const ENDPOINT = `${backend_url}`;
@@ -219,17 +219,17 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
                 {
                   streaming ?
                     null :
-                    
-                      <Text
-                        initial="hidden"
-                        animate="visible"
-                        variants={variants}
-                        ml={'4'}
-                        fontSize={'xl'}
-                        fontWeight={'bold'}
-                      >
-                        {selectedChat?.isGroupChat ? selectedChat?.chatName.toUpperCase() : profile?.username}
-                      </Text>
+
+                    <Text
+                      initial="hidden"
+                      animate="visible"
+                      variants={variants}
+                      ml={'4'}
+                      fontSize={'xl'}
+                      fontWeight={'bold'}
+                    >
+                      {selectedChat?.isGroupChat ? selectedChat?.chatName.toUpperCase() : profile?.username}
+                    </Text>
                 }
               </Box>
 
@@ -264,7 +264,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
                       thickness='4px'
                       speed='0.2s'
                       emptyColor='gray.200'
-                      color='blue.500'
+                      color='buttonPrimaryColor'
                       size='xl'
                     />
                   </Box>
@@ -340,12 +340,17 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
             justifyContent={'center'}
             alignItems={'center'}
             height={'100%'}
+            flexDirection={'column'}
             initial="hidden"
             animate="visible"
             variants={variants}
           >
-            <Text fontSize={'5xl'} color={'#004dfa'}>
+            <Image src='./images/groupchat.jpg' />
+            <Text fontSize={'5xl'} color={'buttonPrimaryColor'}>
               Open a Conversation to Start a Chat
+            </Text>
+            <Text color={'greyTextColor'}>
+            Select or create a group to have conversation, share video and start connecting with other users.
             </Text>
           </Box>)
       }

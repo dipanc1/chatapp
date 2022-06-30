@@ -14,21 +14,33 @@ const customTheme = extendTheme({
         _dark: 'gray.50',
       },
       backgroundColor: {
-        default: '#f5f7fb',
+        default: '#EAE4Ff',
         _dark: '#1d2127',
       },
-      selectPrimaryColor:{
-        default: '#ebe4fe',
+      selectPrimaryColor: {
+        default: '#EAE4Ff',
+        _dark: '#0070f3',
+      },
+      selectSecondaryColor: {
+        default: '#F5F7FB',
         _dark: '#0070f3',
       },
       buttonPrimaryColor: {
-        default: '#9e84f7',
+        default: '#9F85F7',
         _dark: '#9e84f7',
       },
       ownChatColor: {
         default: '#4f436d',
         _dark: '#4f436d',
-      }
+      },
+      errorColor: {
+        default: '#FF4343',
+        _dark: '#ff0000',
+      },
+      greyTextColor:{
+        default: '#737373',
+        _dark: '#737373',
+      },
     },
   },
 })

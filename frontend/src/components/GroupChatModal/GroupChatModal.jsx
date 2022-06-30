@@ -185,11 +185,11 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
                                     thickness='4px'
                                     speed='0.65s'
                                     emptyColor='gray.200'
-                                    color='blue.500'
+                                    color='buttonPrimaryColor'
                                     size='xl'
                                 />
                             </Box>
-                            // need to refine search result
+                            //TODO: need to refine search result
                         ) : (searchResults.slice(0, 4).map((user) => (
                             <Box
                                 _hover={{
@@ -212,7 +212,7 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
                         )}
                     </ModalBody>
                     <ModalFooter>
-                        <Button onClick={handleSubmit} colorScheme="blue">
+                        <Button onClick={handleSubmit} color={'white'} backgroundColor={'buttonPrimaryColor'}>
                             Create Chat
                         </Button>
                     </ModalFooter>
