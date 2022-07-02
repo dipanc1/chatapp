@@ -41,6 +41,10 @@ const customTheme = extendTheme({
         default: '#737373',
         _dark: '#737373',
       },
+      whiteColor: {
+        default: 'white',
+        _dark:'light'
+      }
     },
   },
 })

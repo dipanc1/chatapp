@@ -29,6 +29,7 @@ import { AiOutlineLock, AiOutlineUser } from 'react-icons/ai';
 const Login = () => {
     const [username, setUsername] = React.useState('')
     const [password, setPassword] = React.useState('')
+    const [disable, setDisable] = React.useState(false)
     const [showPassword, setShowPassword] = React.useState(false);
     const user = JSON.parse(localStorage.getItem('user'))
     const toast = useToast();
@@ -50,6 +51,7 @@ const Login = () => {
             username: username,
             password: password
         }
+        setDisable(true)
         try {
             const res = await axios.post(`${backend_url}/users/login`, user);
             localStorage.setItem("user", JSON.stringify(res.data));
@@ -65,7 +67,7 @@ const Login = () => {
             });
             // console.log("ERORO<<><<<<<<<<<<<", err)
         }
-
+        setDisable(false)
     }
 
     React.useEffect(() => {
@@ -172,7 +174,7 @@ const Login = () => {
                                 </Stack>
                                 <Button
                                     type='submit'
-                                    disabled={username.length === 0 || password.length === 0}
+                                    disabled={username.length === 0 || password.length === 0 || disable}
                                     bg={'buttonPrimaryColor'}
                                     color={'white'}
                                     _hover={{

@@ -1,13 +1,13 @@
 import { DeleteIcon } from '@chakra-ui/icons';
-import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Avatar, Box, Divider, Flex, Tag, TagCloseButton, TagLabel, Text } from '@chakra-ui/react';
+import { AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Avatar, Box, Divider, Flex, Tag, TagCloseButton, TagLabel, Text } from '@chakra-ui/react';
 import { BsPerson, BsTelephone } from 'react-icons/bs';
 import './chatOnline.scss'
 
-const ChatOnline = ({ user1, handleFunction }) => {
+const ChatOnline = ({ id, user1, handleFunction }) => {
     const user = JSON.parse(localStorage.getItem('user'));
 
     return (
-        <AccordionItem minWidth={'12vw'}>
+        <AccordionItem key={id} minWidth={'12vw'}>
             <h2>
                 <AccordionButton
                     backgroundColor={'selectSecondaryColor'}

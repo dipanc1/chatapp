@@ -213,7 +213,7 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
     <Box
       height={'628px'}
       width={'98%'}
-      bg={'white'}
+      bg={'whiteColor'}
       p={'1.5'}
       my={'5'}
       mr={'10'}
@@ -243,17 +243,17 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
                   justifyContent={'center'}
                   minHeight={'10'}
                   maxHeight={'72vh'}
-                  overflow={'scroll'}
-                  overflowX={'hidden'}>
-                  {selectedChat?.users.map(u =>
-                    <Box my={'1'} key={u._id}>
-                      <Accordion allowToggle>
-                        <ChatOnline
-                          user1={u}
-                          handleFunction={() => handleRemove(u)} />
-                      </Accordion>
-                    </Box>
-                  )}
+                  overflowY={'scroll'}
+                  overflowX={'hidden'}
+                >
+                  <Accordion allowToggle>
+                    {selectedChat?.users.map(u =>
+                      <ChatOnline
+                        key={u._id}
+                        user1={u}
+                        handleFunction={() => handleRemove(u)} />
+                    )}
+                  </Accordion>
                 </Box>
               </TabPanel>
 

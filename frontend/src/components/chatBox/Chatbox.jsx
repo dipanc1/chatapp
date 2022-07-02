@@ -169,7 +169,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
   return (
     <Box
       height={'628px'}
-      bg={'white'}
+      bg={'whiteColor'}
       p={'1.5'}
       my={'5'}
       mx={'10'}
@@ -320,6 +320,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
                 bgColor={'#f3f7fc'}
                 border={'none'}
                 placeholder='Type Your Message...'
+                focusBorderColor='#9F85F7'
                 onChange={typingHandler}
                 value={newMessage}
                 onKeyDown={newMessage !== "" ? sendMessage : null}

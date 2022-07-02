@@ -155,7 +155,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
 
     return (
         <Box
-            bg={'white'}
+            bg={'whiteColor'}
             height={'100%'}
         // width={'17rem'}
         >
@@ -235,7 +235,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                                         fontWeight: 'bold',
 
                                     }}
-                                    bg={'#E8E8E8'}
+                                    bg={'selectSecondaryColor'}
                                     p={2}
                                     cursor={'pointer'}
                                     my={'0.2rem'}
@@ -257,7 +257,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                                             background: 'selectPrimaryColor',
                                             fontWeight: 'bold',
                                         }}
-                                        bg={selectedChat?._id === c._id ? 'selectPrimaryColor' : '#E8E8E8'}
+                                        bg={selectedChat?._id === c._id ? 'selectPrimaryColor' : 'selectSecondaryColor'}
                                         p={2}
                                         cursor={'pointer'}
                                         my={'0.2rem'}
@@ -365,7 +365,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                                         background: 'selectPrimaryColor',
                                         fontWeight: 'bold',
                                     }}
-                                    bg={'#E8E8E8'}
+                                    bg={'selectSecondaryColor'}
                                     p={2}
                                     cursor={'pointer'}
                                     my={'0.2rem'}
@@ -389,7 +389,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                                             background: 'selectPrimaryColor',
                                             fontWeight: 'bold',
                                         }}
-                                        bg={selectedChat?._id === c._id ? 'selectPrimaryColor' : '#E8E8E8'}
+                                        bg={selectedChat?._id === c._id ? 'selectPrimaryColor' : 'selectSecondaryColor'}
                                         p={2}
                                         cursor={'pointer'}
                                         my={'0.2rem'}
