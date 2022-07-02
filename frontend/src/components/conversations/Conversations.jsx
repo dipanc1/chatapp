@@ -16,7 +16,8 @@ import {
     Divider,
     Spinner,
     Box,
-    Button
+    Button,
+    Image
 } from '@chakra-ui/react'
 import {
     AddIcon,
@@ -195,8 +196,8 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                             onClick={() => setDropdown(!dropdown)}
                             _hover={{ scale: 1.05 }}
                             cursor="pointer"
-                            /> :
-                            <ChevronUpIcon
+                        /> :
+                        <ChevronUpIcon
                             onClick={() => setDropdown(!dropdown)}
                             _hover={{ scale: 1.05 }}
                             cursor="pointer"
@@ -208,7 +209,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
             <Box
                 display={'flex'}
                 flexDirection={'column'}
-                maxHeight={'27vh'}
+                maxHeight={'29vh'}
                 overflow={'scroll'}
                 overflowX={'hidden'}
                 animate={dropdown ? "open" : "closed"}
@@ -281,7 +282,13 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                         display={'flex'}
                         alignItems={'center'}
                         justifyContent={'center'}
+                        flexDirection={'column'}
+                        my={'2'}
                     >
+                        <Image
+                            src='./images/noconvo.png'
+                            w={'28'}
+                        />
                         <Text cursor={'default'} color={'buttonPrimaryColor'} fontSize={'3xl'}>No Conversations</Text>
                     </Box> : null}
             </Box>
@@ -333,7 +340,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
             <Box
                 display={'flex'}
                 flexDirection={'column'}
-                maxHeight={'27vh'}
+                maxHeight={'29vh'}
                 overflow={'scroll'}
                 overflowX={'hidden'}
                 animate={dropdownGroup ? "open" : "closed"}
@@ -407,8 +414,23 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                         display={'flex'}
                         alignItems={'center'}
                         justifyContent={'center'}
+                        flexDirection={'column'}
                     >
+                        <Image
+                            src='./images/groupchat.png'
+                            w={'28'}
+                        />
                         <Text cursor={'default'} color={'buttonPrimaryColor'} fontSize={'3xl'}>No Groups</Text>
+                        <GroupChatModal user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}>
+                            <Button
+                                backgroundColor={'buttonPrimaryColor'}
+                                color={'white'}
+                                size={'lg'}
+                                _hover={{ bg: 'backgroundColor', color: 'text' }}
+                            >
+                                Create
+                            </Button>
+                        </GroupChatModal>
                     </Box>
                     :
                     null}

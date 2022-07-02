@@ -5,7 +5,7 @@ import { Routes, Route } from "react-router-dom";
 import Chat from "./pages/chat/Chat"
 import { AnimatePresence } from "framer-motion";
 
-// TODO: check toasts in whole component and follow the design on members component, start form there also delete styles make app clean, have to create new compoennts for video sharing this won't work.
+// TODO: check toasts in whole component and follow the design on members component, start form there also delete styles make app clean, have to create new compoennts for video sharing this won't work. side drawer in mobile mode on members and conversations
 
 function App() {
 

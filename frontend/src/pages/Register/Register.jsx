@@ -44,7 +44,7 @@ const Register = () => {
     const number1 = React.useContext(PhoneNumberContext)
     let navigate = useNavigate();
     const toast = useToast();
-    
+
     const cloudName = 'dipanc1';
     const apiUrlMobile = `${backend_url}/mobile`;
     const apiUrlOtp = `${backend_url}/otp`;
@@ -148,7 +148,7 @@ const Register = () => {
     }
 
     const handleVerify = () => {
-        if(number === '') {
+        if (number === '') {
             toast({
                 title: "Error",
                 description: "Please enter a valid phone number",
@@ -212,7 +212,13 @@ const Register = () => {
     }
 
     const renderButton = (buttonProps) => {
-        return <Button mt={'3'} colorScheme={'blue'} style={{ cursor: buttonProps.remainingTime !== 0 && 'not-allowed' }} {...buttonProps}>{buttonProps.remainingTime !== 0 ? `${buttonProps.remainingTime} seconds remaining` : "Resend"}</Button>;
+        return <Button mt={'3'} size="lg"
+            bg={'buttonPrimaryColor'}
+            color={'white'}
+            _hover={{
+                bg: 'backgroundColor',
+                color: 'text'
+            }} style={{ cursor: buttonProps.remainingTime !== 0 && 'not-allowed' }} {...buttonProps}>{buttonProps.remainingTime !== 0 ? `${buttonProps.remainingTime} seconds remaining` : "Resend"}</Button>;
     };
 
     const renderTime = () => React.Fragment;
@@ -222,12 +228,15 @@ const Register = () => {
             minH={'100vh'}
             align={'center'}
             justify={'center'}
-            bg={useColorModeValue('blue.50', 'blue.800')}>
+            bg={'backgroundColor'}>
             <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
                 <Stack align={'center'}>
                     <Heading fontSize={'4xl'} textAlign={'center'}>
                         Sign up
                     </Heading>
+                    <Text color={'greyTextColor'}>
+                        Verify your phone number to start your registration process
+                    </Text>
                 </Stack>
                 <Box
                     rounded={'lg'}
@@ -317,10 +326,11 @@ const Register = () => {
                                         onClick={handleVerify}
                                         loadingText={loading && "Submitting"}
                                         size="lg"
-                                        bg={'blue.400'}
+                                        bg={'buttonPrimaryColor'}
                                         color={'white'}
                                         _hover={{
-                                            bg: 'blue.500',
+                                            bg: 'backgroundColor',
+                                            color: 'text'
                                         }}>
                                         Verify Phone Number
                                     </Button> : null}
@@ -332,10 +342,11 @@ const Register = () => {
                                         disabled={!(password === confirmPassword && username.length !== 0 && password.length >= 8 && pic.length !== 0)}
                                         loadingText={loading && "Submitting"}
                                         size="lg"
-                                        bg={'blue.400'}
+                                        bg={'buttonPrimaryColor'}
                                         color={'white'}
                                         _hover={{
-                                            bg: 'blue.500',
+                                            bg: 'backgroundColor',
+                                            color: 'text'
                                         }}>
                                         Register
                                     </Button> : null}
@@ -345,7 +356,7 @@ const Register = () => {
                     <Stack direction={'row'} pt={10}>
                         <Text>Already a user?</Text>
                         <Link to="/">
-                            <Text color={'blue.500'}>Login</Text>
+                            <Text color={'buttonPrimaryColor'}>Login</Text>
                         </Link>
                     </Stack>
                 </Box>

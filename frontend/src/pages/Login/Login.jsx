@@ -18,9 +18,13 @@ import {
     HStack,
     useToast,
     InputRightElement,
-    InputGroup
+    InputGroup,
+    InputLeftElement,
+    Image
 } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import { GrUserAdd } from 'react-icons/gr';
+import { AiOutlineLock, AiOutlineUser } from 'react-icons/ai';
 
 const Login = () => {
     const [username, setUsername] = React.useState('')
@@ -76,10 +80,32 @@ const Login = () => {
             minH={'100vh'}
             align={'center'}
             justify={'center'}
-            bg={useColorModeValue('blue.50', 'blue.800')}>
+            position={'relative'}
+            bg={'backgroundColor'}
+            >
+            <Image
+                src={'./images/login1.png'}
+                w={'28'}
+                position={'absolute'}
+                left={'28'}
+                opacity={'0.5'}
+                bottom={'60'}
+            />
+            <Image
+                src={'./images/login2.png'}
+                w={'48'}
+                position={'absolute'}
+                right={'28'}
+                opacity={'0.5'}
+                bottom={'56'}
+                            />
             <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
                 <Stack align={'center'}>
                     <Heading fontSize={'4xl'}>Sign in to your account</Heading>
+                    <Text color={'greyTextColor'}>
+                        Login to you account and get all access
+                        to chats
+                    </Text>
                 </Stack>
                 <Box
                     rounded={'lg'}
@@ -96,12 +122,32 @@ const Login = () => {
                         <Stack spacing={4}>
                             <FormControl id="email">
                                 <FormLabel>Username</FormLabel>
-                                <Input value={username} type={'text'} placeholder='Enter Your Username' required onChange={handleName} />
+                                <InputGroup>
+                                    <InputLeftElement
+                                        pointerEvents='none'
+                                        children={<AiOutlineUser color='greyTextColor' />}
+                                    />
+                                    <Input
+                                        value={username}
+                                        type={'text'}
+                                        placeholder='Enter Your Username'
+                                        focusBorderColor='#9F85F7'
+                                        required
+                                        onChange={handleName} />
+                                </InputGroup>
                             </FormControl>
                             <FormControl id="password">
                                 <FormLabel>Password</FormLabel>
                                 <InputGroup>
-                                    <Input value={password} placeholder='Enter Password' required onChange={handlePassword} type={showPassword ? 'text' : 'password'} />
+                                    <InputLeftElement
+                                        pointerEvents='none'
+                                        children={<AiOutlineLock color='greyTextColor' />}
+                                    />
+                                    <Input
+                                        value={password} placeholder='Enter Password' required
+                                        onChange={handlePassword}
+                                        focusBorderColor='#9F85F7'
+                                        type={showPassword ? 'text' : 'password'} />
                                     <InputRightElement h={'full'}>
                                         <Button
                                             variant={'ghost'}
@@ -118,15 +164,20 @@ const Login = () => {
                                     direction={{ base: 'column', sm: 'row' }}
                                     align={'start'}
                                     justify={'space-between'}>
-                                    <Checkbox>Remember me</Checkbox>
+                                    <Text color={'buttonPrimaryColor'}>
+                                        <Link to={'/'}>
+                                            Forgot Password?
+                                        </Link>
+                                    </Text>
                                 </Stack>
                                 <Button
                                     type='submit'
                                     disabled={username.length === 0 || password.length === 0}
-                                    bg={'blue.400'}
+                                    bg={'buttonPrimaryColor'}
                                     color={'white'}
                                     _hover={{
-                                        bg: 'blue.500',
+                                        bg: 'backgroundColor',
+                                        color: 'text'
                                     }}>
                                     Sign in
                                 </Button>
@@ -137,7 +188,7 @@ const Login = () => {
                         <Text>
                             New User?{' '}
                         </Text>
-                        <Text color={'blue.500'}>
+                        <Text color={'buttonPrimaryColor'}>
                             <Link to={'/register'}>
                                 Register
                             </Link>
