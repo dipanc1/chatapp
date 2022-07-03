@@ -1,13 +1,17 @@
+import { ViewIcon } from '@chakra-ui/icons';
+import { IconButton, Modal, ModalContent, ModalOverlay, useDisclosure } from '@chakra-ui/react';
 import axios from 'axios';
 import React from 'react';
 import { PhoneNumberContext } from '../../context/phoneNumberContext';
 import { backend_url } from '../../production';
 import ChatOnline from '../chatOnline/ChatOnline';
 import Loading from '../Loading';
+import { MembersComponent } from '../members/Members';
 import UserListItem from '../UserAvatar/UserListItem';
 import './detailsmodal.scss'
 
 const DetailsModal = ({ children, fetchAgain, setFetchAgain }) => {
+    const { isOpen, onOpen, onClose } = useDisclosure()
     const [show, setShow] = React.useState(false);
     const [groupChatName, setGroupChatName] = React.useState('');
     const [search, setSearch] = React.useState('');
@@ -132,95 +136,40 @@ const DetailsModal = ({ children, fetchAgain, setFetchAgain }) => {
 
 
     return (
-        <>
-            {
-                children ?
-                    <span onClick={() => setShow(true)}>{children}</span> :
-                    <img src="https://img.icons8.com/ios-glyphs/30/000000/visible--v1.png" alt='show' onClick={() => setShow(true)} style={{ cursor: "pointer" }} />
-            }
-            {show &&
-                <div className='groupModal'>
-                    <div className="groupModalContainer">
-                        <button onClick={()=> setShow(false)}>Hide</button>
-                        {selectedChat ? (
-                            <>
-                                <div className="member-title">
-                                    {selectedChat.isGroupChat ?
-                                        <h3> Group Info: <i style={{ color: '#004dfa' }}>{selectedChat?.chatName}</i></h3>
-                                        :
-                                        <h3>Personal Info: <i style={{ color: '#004dfa' }}>{selectedChat?.users.find(member => member._id !== user._id).username}</i></h3>
-                                    }
-                                </div>
-                                <hr style={{ 'color': "#f3f7fc", marginBottom: '10px' }} />
+        children ?
+            <span onClick={onOpen}>{children}</span> :
+            <>
+                <IconButton
+                    aria-label='View Profile'
+                    size='md'
+                    onClick={onOpen}
+                    icon={<ViewIcon />}
+                />
 
-                                <div className='members-container'>
+                <Modal
+                    size={['xs', 'md', 'md', 'md']}
+                    isCentered
+                    onClose={onClose}
+                    isOpen={isOpen}
+                    motionPreset='slideInBottom'
+                >
+                    <ModalOverlay />
+                    <ModalContent
+                        display={'flex'}
+                        flexDirection={'column'}
+                        alignItems={'center'}
+                        justifyContent={'center'}
+                        borderRadius={'lg'}
+                        border={'1px solid #eaeaea'}
+                        boxShadow={'lg'}
+                    >
 
-                                    {selectedChat.isGroupChat && selectedChat?.users.map(u =>
-                                        <div className="member-avatar-name" key={u._id}>
-                                            <ChatOnline
-                                                user1={u}
-                                                handleFunction={() => handleRemove(u)} />
-                                        </div>
-                                    )}
+                        <MembersComponent fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+                    </ModalContent>
 
-                                    {!selectedChat.isGroupChat && (
-                                        <>
-                                            <img src={selectedChat?.users.find(member => member._id !== user._id).pic} alt="user_image" className='modalUserImage' />
-                                            <span className='modalUserText'>Phone Number:
-                                                <i style={{ color: '#004dfa' }}>
-                                                    {selectedChat?.users.find(member => member._id !== user._id).number}
-                                                </i></span>
-                                        </>
-                                    )}
+                </Modal>
+            </>
 
-                                    {selectedChat.isGroupChat &&
-                                        <>
-                                            <div className="member-avatar-name-member">
-                                                <div className="member-name">
-
-                                                    <input value={search} type="text" placeholder="Search Member" onChange={handleSearch} />
-
-                                                    {loading
-                                                        ?
-                                                        <div className="loading">
-                                                            <Loading />
-                                                        </div>
-                                                        :
-                                                        search.length > 0 &&
-                                                        searchResults?.map(user => (
-                                                            <div className="conversation-avatar-name" key={user._id}
-                                                                onClick={() => handleAddUser(user._id)}
-                                                            >
-                                                                <UserListItem user={user}
-                                                                />
-                                                            </div>
-                                                        ))}
-                                                </div>
-                                            </div>
-                                            <form action="">
-                                                <div className="groupChatName">
-                                                    <input value={groupChatName} type="text" placeholder="New Group Name" onChange={(e) => setGroupChatName(e.target.value)} />
-                                                    <button
-                                                        type="button"
-                                                        onClick={handleRename}>
-                                                        Update</button>
-                                                </div>
-                                            </form>
-                                            <div className="member-remove" onClick={() => handleRemove(user)}>
-                                                <img src="https://img.icons8.com/external-tanah-basah-basic-outline-tanah-basah/24/000000/external-exit-essentials-tanah-basah-basic-outline-tanah-basah-2.png" alt='leave group' />
-                                                <p>Leave Group</p>
-                                            </div>
-                                        </>
-                                    }
-                                </div>
-                            </>
-                        )
-                            :
-                            (<span className='noConvo'>No Chat is Selected</span>)}
-                    </div>
-                </div>
-            }
-        </>
     )
 }
 

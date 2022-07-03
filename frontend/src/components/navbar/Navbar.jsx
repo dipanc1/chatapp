@@ -21,9 +21,16 @@ import {
   useColorMode,
   Center,
   Portal,
-  Text
+  Text,
+  IconButton,
+  Drawer,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerHeader,
+  DrawerBody,
 } from '@chakra-ui/react';
-import { BellIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
+import { BellIcon, HamburgerIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
+import Conversations, { DrawerConversations } from '../conversations/Conversations';
 
 const NavLink = ({ children }) => (
   <Link
@@ -39,13 +46,13 @@ const NavLink = ({ children }) => (
   </Link>
 );
 
-const Navbar = () => {
+const Navbar = ({ fetchAgain, setFetchAgain }) => {
   const { colorMode, toggleColorMode } = useColorMode();
-
+  const { onOpen, isOpen, onClose } = useDisclosure()
   const user = JSON.parse(localStorage.getItem('user'));
 
-  const { notification, dispatch } = React.useContext(PhoneNumberContext);
-  // console.log(notification);
+  const { notification, dispatch, mobile } = React.useContext(PhoneNumberContext);
+  console.log("MOBILE<<<<<<<<<<<<<<", mobile);
 
   let navigate = useNavigate();
 
@@ -55,13 +62,18 @@ const Navbar = () => {
   }
 
   return (
-    <> 
+    <>
       <Box px={4}>
         <Flex h={'14'} alignItems={'center'} justifyContent={'space-between'}>
           <Box>
-            <Text cursor={'default'} fontWeight={'bold'} fontSize={'3xl'}>
+            <Text display={['none', 'none', 'none', 'block']} cursor={'default'} fontWeight={'bold'} fontSize={'3xl'}>
               Logo
             </Text>
+            <IconButton
+              display={['block', 'none', 'none', 'none']}
+              icon={<HamburgerIcon />}
+              onClick={onOpen}
+            />
           </Box>
 
           <Flex alignItems={'center'}>
@@ -137,6 +149,20 @@ const Navbar = () => {
           </Flex>
         </Flex>
       </Box>
+
+      <Drawer placement={'left'} onClose={onClose} isOpen={isOpen}>
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerHeader borderBottomWidth='1px'>
+          <Text cursor={'default'} fontWeight={'bold'} fontSize={'3xl'}>
+              Logo
+            </Text>
+          </DrawerHeader>
+          <DrawerBody>
+            <DrawerConversations fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
     </>
   )
 }

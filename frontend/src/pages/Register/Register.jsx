@@ -84,7 +84,7 @@ const Register = () => {
             formData.append('upload_preset', 'chat-app');
             axios.post(pictureUpload, formData)
                 .then(res => {
-                    console.log(res);
+                    // console.log(res);
                     setPic(res.data.url.toString());
                     setLoading(false)
                 })
@@ -111,7 +111,7 @@ const Register = () => {
     }
 
     const handleRegister = (e) => {
-        console.log(pic);
+        // console.log(pic);
         e.preventDefault();
         if (password !== confirmPassword) {
             toast({
@@ -130,12 +130,12 @@ const Register = () => {
                 pic: pic
             })
                 .then(res => {
-                    console.log(res.data);
+                    // console.log(res.data);
                     localStorage.setItem("user", JSON.stringify(res.data));
                     navigate('/');
                 })
                 .catch(err => {
-                    console.log(err);
+                    // console.log(err);
                     toast({
                         title: "Error",
                         description: "Please enter valid details",
@@ -189,11 +189,11 @@ const Register = () => {
 
     const handleOtp = (OTP) => {
         setOTP(OTP);
-        console.log(OTP);
+        // console.log(OTP);
         if (OTP.length === 5) {
             setTimeout(() => {
                 axios.post(apiUrlOtp, { OTP, number1 }).then((res) => {
-                    console.log(res)
+                    // console.log(res)
                     if (res.data.resp.valid) {
                         setOtp(false)
                     } else {

@@ -5,7 +5,6 @@ import { backend_url } from '../../production'
 import Conversation from '../conversation/Conversation'
 import GroupChat from '../groupchat/GroupChat'
 import GroupChatModal from '../GroupChatModal/GroupChatModal'
-import Loading from '../Loading'
 import GroupListItem from '../UserAvatar/GroupListItem'
 import UserListItem from '../UserAvatar/UserListItem'
 import "./conversations.scss"
@@ -17,15 +16,17 @@ import {
     Spinner,
     Box,
     Button,
-    Image
+    Image,
+    useToast,
 } from '@chakra-ui/react'
 import {
     AddIcon,
     ChevronDownIcon, ChevronUpIcon
 } from '@chakra-ui/icons'
 
-const Conversations = ({ fetchAgain, setFetchAgain }) => {
-    const { dispatch, chats, selectedChat, mobile } = React.useContext(PhoneNumberContext);
+export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
+
+    const { dispatch, chats, selectedChat } = React.useContext(PhoneNumberContext);
     const [dropdown, setDropdown] = React.useState(true);
     const [dropdownGroup, setDropdownGroup] = React.useState(true);
     const [conversations, setConversations] = React.useState([])
@@ -35,6 +36,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
     const [searchResultsGroups, setSearchResultsGroups] = React.useState([])
     const [loading, setLoading] = React.useState(false)
     const user = JSON.parse(localStorage.getItem('user'))
+    const toast = useToast();
 
 
     // search bar to search for users
@@ -54,7 +56,15 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
             setSearchResultsUsers(data.users);
             setSearchResultsGroups(data.groupName);
         } catch (error) {
-            console.log(error)
+            // console.log(error)
+            toast({
+                title: "Error Occured!",
+                description: "Failed to Load the Search Results",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "bottom-left",
+            });
         }
     }
 
@@ -77,7 +87,15 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
             setSearch('');
             setFetchAgain(!fetchAgain);
         } catch (error) {
-            console.log(error)
+            // console.log(error)
+            toast({
+                title: "Error Occured!",
+                description: "Failed to Load the Search Results",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "bottom-left",
+            });
         }
     }
 
@@ -100,16 +118,32 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
             }
 
         } catch (error) {
-            console.log(error)
+            // console.log(error)
+            toast({
+                title: "Error Occured!",
+                description: "Failed to Load the Conversations",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "bottom-left",
+            });
         }
     }
 
     const handleAddUser = async (user1, groupId) => {
         const res = searchResultsGroups.map(group => group.users).includes(user1);
-        console.log(user1)
-        console.log(res);
+        // console.log(user1)
+        // console.log(res);
         if (res) {
-            console.log("user already in chat")
+            // console.log("user already in chat")
+            toast({
+                title: "Error Occured!",
+                description: "User Already in Chat",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "bottom-left",
+            });
         }
         try {
             setLoading(true);
@@ -126,12 +160,20 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                 },
                 config
             );
-            console.log(data);
+            // console.log(data);
             dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
             setFetchAgain(!fetchAgain);
             setLoading(false);
         } catch (error) {
-            console.log(error);
+            // console.log(error);
+            toast({
+                title: "Error Occured!",
+                description: "Failed to Add User to Group",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "bottom-left",
+            });
         }
         setSearch('');
 
@@ -152,13 +194,8 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
         hidden: { opacity: 0 },
     }
 
-
     return (
-        <Box
-            bg={'whiteColor'}
-            height={'100%'}
-        // width={'17rem'}
-        >
+        <>
             <Box
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -204,6 +241,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                         />
                 }
             </Box>
+
             <Divider orientation='horizontal' />
 
             <Box
@@ -335,6 +373,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                     }
                 </Box>
             </Box>
+
             <Divider orientation='horizontal' />
 
             <Box
@@ -435,7 +474,23 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
                     :
                     null}
             </Box>
-        </Box>
+        </>
+    )
+}
+
+const Conversations = ({ fetchAgain, setFetchAgain }) => {
+
+    return (
+        <>
+            <Box
+                bg={'whiteColor'}
+                height={'100%'}
+                // width={'17rem'}
+                display={['none', 'none', 'none', 'block']}
+            >
+                <DrawerConversations fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+            </Box>
+        </>
     )
 }
 

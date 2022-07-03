@@ -12,7 +12,7 @@ import { format } from 'timeago.js'
 import Stream from '../stream/Stream'
 import { backend_url } from '../../production'
 import { motion } from 'framer-motion'
-import { Avatar, AvatarBadge, Box, Button, Divider, Image, Input, Spinner, Text } from '@chakra-ui/react'
+import { Avatar, AvatarBadge, Box, Button, Divider, Flex, Image, Input, Spinner, Text, useToast } from '@chakra-ui/react'
 import { FiSend } from 'react-icons/fi'
 
 const ENDPOINT = `${backend_url}`;
@@ -34,6 +34,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
   const [videocall, setVideocall] = React.useState(true);
   const [streaming, setStreaming] = React.useState(false);
   const [fullScreenMode, setFullScreenMode] = React.useState(false);
+  const toast = useToast();
   const scrollRef = React.useRef();
 
   const fetchMessages = async () => {
@@ -50,7 +51,15 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
       setLoading(false);
       socket.emit('join chat', selectedChat._id);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
+      toast({
+        title: "Error Occured!",
+        description: "Failed to Load the Messages",
+        status: "error",
+        isClosable: true,
+        position: "top",
+        duration: 5000
+      });
     }
   }
 
@@ -74,7 +83,15 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
         setMessages([...messages, data]);
         // console.log(data);
       } catch (error) {
-        console.log(error);
+        // console.log(error);
+        toast({
+          title: "Error Occured!",
+          description: "Failed to Send the Message",
+          status: "error",
+          isClosable: true,
+          position: "top",
+          duration: 5000,
+        });
       }
     }
   }
@@ -99,7 +116,15 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
     try {
       setProfile(selectedChat?.users.find(member => member._id !== user._id));
     } catch (error) {
-      console.log(error);
+      // console.log(error);
+      toast({
+        title: "Error Occured!",
+        description: "Failed to Load the Profile",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
     }
 
     fetchMessages();
@@ -172,7 +197,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
       bg={'whiteColor'}
       p={'1.5'}
       my={'5'}
-      mx={'10'}
+      mx={['5', '10', '10', '10']}
       borderRadius={'xl'}
       boxShadow={'dark-lg'}
     >
@@ -240,9 +265,11 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
 
               }
               {/* for mobile yet to edit  */}
-              {/* <div className="chatboxGroupModal">
+              <Flex
+              display={['block', 'none', 'none', 'none']}
+              >
                 <DetailsModal />
-              </div> */}
+              </Flex>
 
             </Box>
 
@@ -347,11 +374,11 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
             variants={variants}
           >
             <Image src='./images/groupchat.jpg' />
-            <Text fontSize={'5xl'} color={'buttonPrimaryColor'}>
+            <Text fontSize={['xl', 'xl', 'xl', '5xl']} color={'buttonPrimaryColor'}>
               Open a Conversation to Start a Chat
             </Text>
-            <Text color={'greyTextColor'}>
-            Select or create a group to have conversation, share video and start connecting with other users.
+            <Text fontSize={['xs', 'md', 'md', 'md']} color={'greyTextColor'}>
+              Select or create a group to have conversation, share video and start connecting with other users.
             </Text>
           </Box>)
       }

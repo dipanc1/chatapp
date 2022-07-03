@@ -6,7 +6,7 @@ const INITIAL_STATE = {
   selectedChat: null,
   chats: [],
   notification: [],
-  mobile: false
+  mobile: null
 };
 
 export const PhoneNumberContext = createContext(INITIAL_STATE);

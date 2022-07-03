@@ -21,15 +21,15 @@ const Chat = () => {
 
   return (
     <>
-      {user && <Navbar />}
+      {user && <Navbar fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
       <Box display={'flex'} bg={'backgroundColor'} height={'calc(100vh - 14)'}>
-        <Box flex={'2'}>
+        <Box flex={['0', '2', '2', '2']}>
           {user && <Conversations fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
         </Box>
-        <Box flex={'7.5'}>
+        <Box flex={['12', '7.5', '7.5', '7.5']}>
           {user && <Chatbox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
         </Box>
-        <Box flex={'2'}>
+        <Box flex={['0', '2', '2', '2']}>
           {user && <Members fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
         </Box>
       </Box>

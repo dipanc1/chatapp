@@ -23,7 +23,7 @@ const PhoneNumberReducer = (state, action) => {
         case "SET_MOBILE":
             return {
                 ...state,
-                mobile: !state.mobile
+                mobile: action.payload
             };
         default:
             return state;

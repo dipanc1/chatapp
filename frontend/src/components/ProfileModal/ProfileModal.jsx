@@ -27,6 +27,7 @@ const ProfileModal = ({ user, children }) => {
                 <IconButton d={{ base: "flex" }} icon={<ViewIcon />} onClick={onOpen} />
             )}
             <Modal
+            size={['xs', 'md', 'md', 'md']}
                 isCentered
                 onClose={onClose}
                 isOpen={isOpen}
