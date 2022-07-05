@@ -1,11 +1,10 @@
-import './message.scss'
 import { format } from 'timeago.js'
 import { useContext } from 'react';
-import { PhoneNumberContext } from '../../context/phoneNumberContext';
+import { AppContext } from '../../context/AppContext';
 import { Avatar, Box, Text } from '@chakra-ui/react';
 
 const Message = ({ messages, own, sameSender, sameTime }) => {
-    const { selectedChat } = useContext(PhoneNumberContext);
+    const { selectedChat } = useContext(AppContext);
     // console.log(messages);
     return (
         selectedChat?._id === messages?.chat._id ? (

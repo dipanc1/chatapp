@@ -1,9 +1,8 @@
 import React from 'react'
-import ChatOnline from '../chatOnline/ChatOnline'
-import "./members.scss"
-import { PhoneNumberContext } from '../../context/phoneNumberContext'
+import ChatOnline from '../Miscellaneous/ChatOnline'
+import { AppContext } from '../../context/AppContext'
 import axios from 'axios'
-import UserListItem from '../UserAvatar/UserListItem'
+import UserListItem from '../UserItems/UserListItem'
 import { backend_url } from '../../production'
 import { HiUserRemove } from 'react-icons/hi'
 import {
@@ -22,7 +21,7 @@ export const MembersComponent = ({ fetchAgain, setFetchAgain }) => {
   const [loading, setLoading] = React.useState(false)
   const [transformmm, setTransformmm] = React.useState(false);
   const toast = useToast();
-  const { selectedChat, dispatch } = React.useContext(PhoneNumberContext);
+  const { selectedChat, dispatch } = React.useContext(AppContext);
   const user = JSON.parse(localStorage.getItem('user'));
   const { isOpen, onOpen, onClose } = useDisclosure()
 

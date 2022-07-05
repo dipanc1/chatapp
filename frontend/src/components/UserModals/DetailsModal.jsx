@@ -2,13 +2,11 @@ import { ViewIcon } from '@chakra-ui/icons';
 import { IconButton, Modal, ModalContent, ModalOverlay, useDisclosure } from '@chakra-ui/react';
 import axios from 'axios';
 import React from 'react';
-import { PhoneNumberContext } from '../../context/phoneNumberContext';
+import { AppContext } from '../../context/AppContext';
 import { backend_url } from '../../production';
-import ChatOnline from '../chatOnline/ChatOnline';
-import Loading from '../Loading';
-import { MembersComponent } from '../members/Members';
-import UserListItem from '../UserAvatar/UserListItem';
-import './detailsmodal.scss'
+import ChatOnline from '../Miscellaneous/ChatOnline';
+import { MembersComponent } from '../UserChat/Members';
+import UserListItem from '../UserItems/UserListItem';
 
 const DetailsModal = ({ children, fetchAgain, setFetchAgain }) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
@@ -20,7 +18,7 @@ const DetailsModal = ({ children, fetchAgain, setFetchAgain }) => {
     const [loading, setLoading] = React.useState(false)
     const [profile, setProfile] = React.useState(null);
 
-    const { selectedChat, dispatch } = React.useContext(PhoneNumberContext);
+    const { selectedChat, dispatch } = React.useContext(AppContext);
     const user = JSON.parse(localStorage.getItem('user'));
 
 

@@ -1,4 +1,4 @@
-const PhoneNumberReducer = (state, action) => {
+const AppReducer = (state, action) => {
     switch (action.type) {
         case "SET_NUMBER":
             return {
@@ -20,14 +20,14 @@ const PhoneNumberReducer = (state, action) => {
                 ...state,
                 notification: action.payload
             };
-        case "SET_MOBILE":
+        case "SET_STREAM":
             return {
                 ...state,
-                mobile: action.payload
+                stream: !state.stream
             };
         default:
             return state;
     }
 };
 
-export default PhoneNumberReducer;
+export default AppReducer;

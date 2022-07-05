@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react'
-import ProfileModal from '../ProfileModal/ProfileModal';
-import "./navbar.scss"
+import ProfileModal from '../UserModals/ProfileModal';
 import { useNavigate } from "react-router-dom";
-import { PhoneNumberContext } from '../../context/phoneNumberContext';
+import { AppContext } from '../../context/AppContext';
 import { motion } from 'framer-motion';
 import {
   Box,
@@ -30,7 +29,7 @@ import {
   DrawerBody,
 } from '@chakra-ui/react';
 import { BellIcon, HamburgerIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
-import Conversations, { DrawerConversations } from '../conversations/Conversations';
+import { DrawerConversations } from '../UserChat/Conversations';
 
 const NavLink = ({ children }) => (
   <Link
@@ -51,7 +50,7 @@ const Navbar = ({ fetchAgain, setFetchAgain }) => {
   const { onOpen, isOpen, onClose } = useDisclosure()
   const user = JSON.parse(localStorage.getItem('user'));
 
-  const { notification, dispatch, mobile } = React.useContext(PhoneNumberContext);
+  const { notification, dispatch, mobile } = React.useContext(AppContext);
   console.log("MOBILE<<<<<<<<<<<<<<", mobile);
 
   let navigate = useNavigate();

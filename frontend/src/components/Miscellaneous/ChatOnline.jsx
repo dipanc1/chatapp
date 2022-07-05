@@ -1,7 +1,6 @@
 import { DeleteIcon } from '@chakra-ui/icons';
 import { AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Avatar, Box, Divider, Flex, Tag, TagCloseButton, TagLabel, Text } from '@chakra-ui/react';
 import { BsPerson, BsTelephone } from 'react-icons/bs';
-import './chatOnline.scss'
 
 const ChatOnline = ({ id, user1, handleFunction }) => {
     const user = JSON.parse(localStorage.getItem('user'));

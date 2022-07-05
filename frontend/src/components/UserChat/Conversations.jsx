@@ -1,13 +1,12 @@
 import axios from 'axios'
 import React from 'react'
-import { PhoneNumberContext } from '../../context/phoneNumberContext'
+import { AppContext } from '../../context/AppContext'
 import { backend_url } from '../../production'
-import Conversation from '../conversation/Conversation'
-import GroupChat from '../groupchat/GroupChat'
-import GroupChatModal from '../GroupChatModal/GroupChatModal'
-import GroupListItem from '../UserAvatar/GroupListItem'
-import UserListItem from '../UserAvatar/UserListItem'
-import "./conversations.scss"
+import Conversation from '../Miscellaneous/Conversation'
+import GroupChat from '../Miscellaneous/GroupChat'
+import GroupChatModal from '../UserModals/GroupChatModal'
+import GroupListItem from '../UserItems/GroupListItem'
+import UserListItem from '../UserItems/UserListItem'
 import { motion } from "framer-motion"
 import {
     Input,
@@ -26,7 +25,7 @@ import {
 
 export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
 
-    const { dispatch, chats, selectedChat } = React.useContext(PhoneNumberContext);
+    const { dispatch, chats, selectedChat } = React.useContext(AppContext);
     const [dropdown, setDropdown] = React.useState(true);
     const [dropdownGroup, setDropdownGroup] = React.useState(true);
     const [conversations, setConversations] = React.useState([])

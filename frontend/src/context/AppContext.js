@@ -1,21 +1,21 @@
 import { createContext, useReducer } from "react";
-import PhoneNumberReducer from "./phoneNumberReducer";
+import AppReducer from "./AppReducer";
 
 const INITIAL_STATE = {
   number: "",
   selectedChat: null,
   chats: [],
   notification: [],
-  mobile: null
+  stream: false
 };
 
-export const PhoneNumberContext = createContext(INITIAL_STATE);
+export const AppContext = createContext(INITIAL_STATE);
 
-export const PhoneNumberContextProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(PhoneNumberReducer, INITIAL_STATE);
+export const AppContextProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(AppReducer, INITIAL_STATE);
 
   return (
-    <PhoneNumberContext.Provider
+    <AppContext.Provider
       value={{
         number: state.number,
         selectedChat: state.selectedChat,
@@ -25,6 +25,6 @@ export const PhoneNumberContextProvider = ({ children }) => {
         dispatch
       }}>
       {children}
-    </PhoneNumberContext.Provider>
+    </AppContext.Provider>
   );
 }; 

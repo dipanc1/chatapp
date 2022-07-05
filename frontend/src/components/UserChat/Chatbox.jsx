@@ -1,15 +1,13 @@
 import axios from 'axios'
 import React from 'react'
 import { io } from 'socket.io-client'
-import { PhoneNumberContext } from '../../context/phoneNumberContext'
-import Message from '../message/Message'
-import "./chatbox.scss"
-import Loading from '../Loading'
+import { AppContext } from '../../context/AppContext'
+import Message from '../Miscellaneous/Message'
 import Lottie from "lottie-react";
 import animationData from '../../animations/typing.json'
-import DetailsModal from '../detailsmodal/DetailsModal'
+import DetailsModal from '../UserModals/DetailsModal'
 import { format } from 'timeago.js'
-import Stream from '../stream/Stream'
+import StreamModal from '../Miscellaneous/StreamModal'
 import { backend_url } from '../../production'
 import { motion } from 'framer-motion'
 import { Avatar, AvatarBadge, Box, Button, Divider, Flex, Image, Input, Spinner, Text, useToast } from '@chakra-ui/react'
@@ -20,7 +18,7 @@ var socket, selectedChatCompare;
 
 const Chatbox = ({ fetchAgain, setFetchAgain }) => {
   const user = JSON.parse(localStorage.getItem('user'));
-  const { selectedChat, notification, dispatch, mobile } = React.useContext(PhoneNumberContext);
+  const { selectedChat, notification, dispatch, mobile } = React.useContext(AppContext);
   const [profile, setProfile] = React.useState(null);
   const [messages, setMessages] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
@@ -260,7 +258,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
 
               {selectedChat?.isGroupChat &&
                 <Box>
-                  <Stream streaming={streaming} setStreaming={setStreaming} fullScreenMode={fullScreenMode} setFullScreenMode={setFullScreenMode} calling={calling} setCalling={setCalling} isCalling={isCalling} setIsCalling={setIsCalling} socket={socket} videocall={videocall} setVideocall={setVideocall} />
+                  <StreamModal />
                 </Box>
 
               }

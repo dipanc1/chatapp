@@ -1,4 +1,3 @@
-import './groupChat.scss'
 import { motion } from 'framer-motion'
 import { Box, Text } from '@chakra-ui/react'
 

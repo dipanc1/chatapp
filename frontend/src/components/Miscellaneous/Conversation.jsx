@@ -1,8 +1,7 @@
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { useContext, useEffect, useState } from 'react'
-import { PhoneNumberContext } from '../../context/phoneNumberContext';
-import './conversation.scss'
+import { AppContext } from '../../context/AppContext';
 import {
   Box,
   Text,
@@ -12,8 +11,8 @@ import {
 const Conversation = ({ chat }) => {
   const user = JSON.parse(localStorage.getItem('user'));
   // const [loggedUser, setLoggedUser] = useState();
-  // const selectedChat = useContext(PhoneNumberContext);
-  // const { dispatch } = useContext(PhoneNumberContext);
+  // const selectedChat = useContext(AppContext);
+  // const { dispatch } = useContext(AppContext);
   const [friends, setFriends] = useState([]);
 
   useEffect(() => {

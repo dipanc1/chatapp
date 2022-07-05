@@ -3,7 +3,7 @@ import * as React from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App';
 import { BrowserRouter } from "react-router-dom";
-import { PhoneNumberContextProvider } from './context/phoneNumberContext';
+import { AppContextProvider } from './context/AppContext';
 
 const customTheme = extendTheme({
   semanticTokens: {
@@ -53,9 +53,9 @@ createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
       <ChakraProvider theme={customTheme}>
-        <PhoneNumberContextProvider>
+        <AppContextProvider>
           <App />
-        </PhoneNumberContextProvider>
+        </AppContextProvider>
       </ChakraProvider>
     </BrowserRouter>
   </React.StrictMode>,

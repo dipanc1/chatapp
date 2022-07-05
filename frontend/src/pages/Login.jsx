@@ -2,7 +2,7 @@ import axios from 'axios'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { useNavigate } from "react-router-dom";
-import { backend_url } from '../../production';
+import { backend_url } from '../production';
 import {
     Flex,
     Box,
@@ -23,7 +23,6 @@ import {
     Image
 } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import { GrUserAdd } from 'react-icons/gr';
 import { AiOutlineLock, AiOutlineUser } from 'react-icons/ai';
 
 const Login = () => {
@@ -90,17 +89,17 @@ const Login = () => {
                 w={'28'}
                 position={'absolute'}
                 left={'28'}
-                opacity={'0.5'}
                 bottom={'60'}
+                opacity={['0','0','0','0.5']}
             />
             <Image
                 src={'./images/login2.png'}
                 w={'48'}
                 position={'absolute'}
                 right={'28'}
-                opacity={'0.5'}
+                opacity={['0','0','0','0.5']}
                 bottom={'56'}
-                            />
+            />
             <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
                 <Stack align={'center'}>
                     <Heading fontSize={'4xl'}>Sign in to your account</Heading>

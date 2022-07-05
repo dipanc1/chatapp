@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { PhoneNumberContext } from '../../context/phoneNumberContext'
-import UserBadgeItem from '../UserAvatar/UserBadgeItem';
+import UserBadgeItem from '../UserListItems/UserBadgeItem';
 
 const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
 

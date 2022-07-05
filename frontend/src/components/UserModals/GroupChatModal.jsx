@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useContext, useState } from 'react';
-import { PhoneNumberContext } from '../../context/phoneNumberContext';
+import { AppContext } from '../../context/AppContext';
 import { backend_url } from '../../production';
 import {
     Modal,
@@ -22,14 +22,14 @@ import {
 import {
     ViewIcon
 } from '@chakra-ui/icons'
-import UserBadgeItem from '../UserAvatar/UserBadgeItem';
-import UserListItem from '../UserAvatar/UserListItem';
-import './groupchatmodal.scss'
+import UserBadgeItem from '../UserItems/UserBadgeItem';
+import UserListItem from '../UserItems/UserBadgeItem';
+
 
 const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const user = JSON.parse(localStorage.getItem('user'))
-    const { dispatch, chats } = useContext(PhoneNumberContext);
+    const { dispatch, chats } = useContext(AppContext);
     const toast = useToast();
     const [groupChatName, setGroupChatName] = useState();
     const [selectedUsers, setSelectedUsers] = useState([]);
@@ -144,7 +144,7 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
                 ) : (
                     <IconButton d={{ base: "flex" }} icon={<ViewIcon />} onClick={onOpen} />
                 )}
-            <Modal onClose={onClose} isOpen={isOpen} isCentered>
+            <Modal size={['xs', 'xs','xl','lg']} onClose={onClose} isOpen={isOpen} isCentered>
                 <ModalOverlay />
                 <ModalContent>
                     <ModalHeader

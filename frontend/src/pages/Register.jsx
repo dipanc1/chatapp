@@ -1,14 +1,13 @@
 import React from 'react'
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
-import './register.scss'
 import { ResendOTP } from "otp-input-react";
 import validator from 'validator'
 import axios from 'axios';
-import { PhoneNumberContext } from '../../context/phoneNumberContext';
+import { AppContext } from '../context/AppContext';
 import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
-import { backend_url } from '../../production';
+import { backend_url } from '../production';
 import {
     Flex,
     Box,
@@ -29,7 +28,7 @@ import {
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 
 const Register = () => {
-    const { dispatch } = React.useContext(PhoneNumberContext);
+    const { dispatch } = React.useContext(AppContext);
     const [verify, setVerify] = React.useState(true);
     const [otp, setOtp] = React.useState(true);
     const [OTP, setOTP] = React.useState("");
@@ -41,7 +40,7 @@ const Register = () => {
     const [pic, setPic] = React.useState('')
     const [loading, setLoading] = React.useState(false)
 
-    const number1 = React.useContext(PhoneNumberContext)
+    const number1 = React.useContext(AppContext)
     let navigate = useNavigate();
     const toast = useToast();
 
@@ -241,7 +240,7 @@ const Register = () => {
                 <Box
                     rounded={'lg'}
                     minH={'70vh'}
-                    w={'25vw'}
+                    w={['90vw', '80vw', '80vw', '25vw']}
                     display={'flex'}
                     flexDirection={'column'}
                     alignItems={'center'}
