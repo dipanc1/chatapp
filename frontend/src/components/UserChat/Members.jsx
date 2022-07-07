@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react'
 import { GrUserAdd } from 'react-icons/gr'
 import { BsTelephone, BsPerson } from 'react-icons/bs'
+import Chatbox, { ChatBoxComponent, ChatboxComponent } from './Chatbox'
 
 export const MembersComponent = ({ fetchAgain, setFetchAgain }) => {
   const [groupChatName, setGroupChatName] = React.useState('');
@@ -21,7 +22,8 @@ export const MembersComponent = ({ fetchAgain, setFetchAgain }) => {
   const [loading, setLoading] = React.useState(false)
   const [transformmm, setTransformmm] = React.useState(false);
   const toast = useToast();
-  const { selectedChat, dispatch } = React.useContext(AppContext);
+  const { selectedChat, dispatch, stream } = React.useContext(AppContext);
+  console.warn(stream);
   const user = JSON.parse(localStorage.getItem('user'));
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -213,11 +215,19 @@ export const MembersComponent = ({ fetchAgain, setFetchAgain }) => {
       selectedChat?.isGroupChat ? (
         <Tabs variant='unstyled' isFitted>
           <TabList>
+            {stream && 
+              <Tab _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>Chat</Tab>
+            }
+
             <Tab _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>Participants</Tab>
             <Tab _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>Settings</Tab>
           </TabList>
 
           <TabPanels>
+
+          {stream &&  <TabPanel>
+              <ChatBoxComponent fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} selectedChat={selectedChat} user={user} toast={toast} />
+            </TabPanel>}
 
             <TabPanel>
               <Box>
@@ -351,6 +361,7 @@ export const MembersComponent = ({ fetchAgain, setFetchAgain }) => {
 
               </Box>
             </TabPanel>
+
           </TabPanels>
         </Tabs>
       ) : (
@@ -413,8 +424,6 @@ export const MembersComponent = ({ fetchAgain, setFetchAgain }) => {
 }
 
 const Members = ({ fetchAgain, setFetchAgain }) => {
-
-
 
   return (
     <Box

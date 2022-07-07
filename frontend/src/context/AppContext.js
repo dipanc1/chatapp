@@ -21,7 +21,7 @@ export const AppContextProvider = ({ children }) => {
         selectedChat: state.selectedChat,
         chats: state.chats,
         notification: state.notification,
-        mobile: state.mobile,
+        stream: state.stream,
         dispatch
       }}>
       {children}

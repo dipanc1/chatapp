@@ -19,7 +19,7 @@ import {
 
 const StreamModal = ({ children }) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const { selectedChat } = useContext(AppContext);
+    const { selectedChat, dispatch } = useContext(AppContext);
     const [transformmm, setTransformmm] = useState(false);
     const [isHost, setHost] = useState(false);
     const [isPinned, setPinned] = useState(false);
@@ -105,10 +105,7 @@ const StreamModal = ({ children }) => {
             <>
                 <Button onClick={onOpen}
                     onMouseEnter={() => setTransformmm(true)}
-                    onMouseLeave={() => setTransformmm(false)}
-                    style={{
-                        filter: 'invert(44%) sepia(53%) saturate(4971%) hue-rotate(336deg) brightness(129%) contrast(113%)',
-                    }}>
+                    onMouseLeave={() => setTransformmm(false)}>
                     <AiOutlineVideoCamera />
                 </Button>
 
@@ -129,7 +126,14 @@ const StreamModal = ({ children }) => {
                                 <Button color='buttonPrimaryColor' variant='outline' mr={3} onClick={onClose}>
                                     Cancel
                                 </Button>
-                                <Button color={'whiteColor'} variant='solid' bg='buttonPrimaryColor' >Share</Button>
+                                <Button color={'whiteColor'} variant='solid' bg='buttonPrimaryColor'
+                                onClick={
+                                    () => {
+                                        dispatch({ type: 'SET_STREAM', payload: true });
+                                        onClose();
+                                    }
+                                }
+                                >Share</Button>
                             </Flex>
                         </ModalBody>
                         <ModalFooter>

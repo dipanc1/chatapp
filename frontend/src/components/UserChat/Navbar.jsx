@@ -50,8 +50,7 @@ const Navbar = ({ fetchAgain, setFetchAgain }) => {
   const { onOpen, isOpen, onClose } = useDisclosure()
   const user = JSON.parse(localStorage.getItem('user'));
 
-  const { notification, dispatch, mobile } = React.useContext(AppContext);
-  console.log("MOBILE<<<<<<<<<<<<<<", mobile);
+  const { notification, dispatch } = React.useContext(AppContext);
 
   let navigate = useNavigate();
 
