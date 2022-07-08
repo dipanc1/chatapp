@@ -215,7 +215,7 @@ export const MembersComponent = ({ fetchAgain, setFetchAgain }) => {
       selectedChat?.isGroupChat ? (
         <Tabs variant='unstyled' isFitted>
           <TabList>
-            {stream && 
+            {stream &&
               <Tab _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>Chat</Tab>
             }
 
@@ -225,7 +225,7 @@ export const MembersComponent = ({ fetchAgain, setFetchAgain }) => {
 
           <TabPanels>
 
-          {stream &&  <TabPanel>
+            {stream && <TabPanel>
               <ChatBoxComponent fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} selectedChat={selectedChat} user={user} toast={toast} />
             </TabPanel>}
 
@@ -248,6 +248,7 @@ export const MembersComponent = ({ fetchAgain, setFetchAgain }) => {
                 <Accordion allowToggle>
                   {selectedChat?.users.map(u =>
                     <ChatOnline
+                      stream={stream}
                       key={u._id}
                       user1={u}
                       handleFunction={() => handleRemove(u)} />

@@ -7,7 +7,7 @@ import Lottie from "lottie-react";
 import animationData from '../../animations/typing.json'
 import DetailsModal from '../UserModals/DetailsModal'
 import { format } from 'timeago.js'
-import StreamModal from '../Miscellaneous/StreamModal'
+import StreamModal from '../UserModals/StreamModal'
 import { backend_url } from '../../production'
 import { motion } from 'framer-motion'
 import { Avatar, AvatarBadge, Box, Button, Divider, Flex, Image, Input, Spinner, Text, useToast } from '@chakra-ui/react'
