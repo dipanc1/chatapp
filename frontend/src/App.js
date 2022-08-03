@@ -5,7 +5,7 @@ import Login from './pages/Login'
 import Chat from './pages/Chat'
 import Register from './pages/Register'
 
-// TODO: add one more tab in members and use chat code in there start with video sdk, also use isonline in databse then compare it with socket io and update the database
+//TODO: add participant name and host name, delete console statements
 
 function App() {
 
@@ -13,7 +13,7 @@ function App() {
     <div className="app">
       <AnimatePresence exitBeforeEnter initial={false}>
         <Routes>
-          <Route path="/" element={<Login/>} />
+          <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/chat" element={<Chat />} />
         </Routes>

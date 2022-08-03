@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react'
 import { GrUserAdd } from 'react-icons/gr'
 import { BsTelephone, BsPerson } from 'react-icons/bs'
-import Chatbox, { ChatBoxComponent, ChatboxComponent } from './Chatbox'
+import { ChatBoxComponent } from './Chatbox'
 
 export const MembersComponent = ({ fetchAgain, setFetchAgain }) => {
   const [groupChatName, setGroupChatName] = React.useState('');
@@ -23,7 +23,6 @@ export const MembersComponent = ({ fetchAgain, setFetchAgain }) => {
   const [transformmm, setTransformmm] = React.useState(false);
   const toast = useToast();
   const { selectedChat, dispatch, stream } = React.useContext(AppContext);
-  console.warn(stream);
   const user = JSON.parse(localStorage.getItem('user'));
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -225,9 +224,10 @@ export const MembersComponent = ({ fetchAgain, setFetchAgain }) => {
 
           <TabPanels>
 
-            {stream && <TabPanel>
-              <ChatBoxComponent fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} selectedChat={selectedChat} user={user} toast={toast} />
-            </TabPanel>}
+            {stream &&
+              <TabPanel>
+                <ChatBoxComponent fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} selectedChat={selectedChat} user={user} toast={toast} />
+              </TabPanel>}
 
             <TabPanel>
               <Box>

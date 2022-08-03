@@ -6,10 +6,13 @@ const userRoute = require("./Router/users")
 const testRouter = require("./Router/testRouter")
 const conversationRoute = require("./Router/conversation")
 const messageRoute = require("./Router/messages")
+const meetingRoute = require("./Router/meetings")
 const { mongo_url } = require("./config/mongo_auth");
 const { protect } = require("./middleware/authMiddleware");
 const _ = require("lodash");
 const path = require("path");
+const User = require("./models/User");
+const Chat = require("./models/Conversation");
 const app = express();
 
 app.use(
@@ -20,9 +23,9 @@ app.use(
 
 mongoose.connect(
     mongo_url, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    },
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+},
     () => {
         console.log("Connected to MongoDB");
     }, 600000
@@ -33,6 +36,7 @@ app.use("/", testRouter)
 app.use("/users", userRoute);
 app.use("/conversation", protect, conversationRoute);
 app.use("/message", protect, messageRoute);
+app.use("/meetings", meetingRoute);
 
 const PORT = process.env.PORT || "8000";
 const server = app.listen(PORT, () => {
@@ -46,42 +50,62 @@ const io = require("socket.io")(server, {
     },
 });
 
-let users = {};
 io.on("connection", (socket) => {
-    console.log("New user connected");
+    console.log("New user connected", socket.id);
 
     socket.on("setup", (userData) => {
         socket.join(userData._id);
         socket.emit("connected", userData);
     });
 
-    //user online
+    //user online update in database and save socket id
     socket.on("user-online", (userData) => {
-        console.log("user-online", userData);
-        users[socket.id] = userData;
-        socket.broadcast.emit("user-online", userData);
+        // console.log(userData)
+        User.findByIdAndUpdate(userData._id, {
+            $set: {
+                socketId: socket.id,
+                isOnline: true,
+            },
+        })
+            .then((user) => {
+                // socket.broadcast.emit("user-online", user);
+                console.log("User online");
+            })
+            .catch(err => console.log("Online ",err))
     });
 
-    // user offline
+    // if socket disconnect, update database and set isOnline to false
     socket.on("disconnect", () => {
-        console.log("user-offline", users[socket.id]);
-        socket.broadcast.emit("user-offline", users[socket.id]);
+        // console.log(socket.id, "disconnected");
+        User.findOne({ socketId: socket.id })
+            .then((user) => {
+                User.findByIdAndUpdate(user._id, {
+                    $set: {
+                        isOnline: false,
+                        socketId: null,
+                    },
+                })
+                    .then((user) => {
+                        // socket.broadcast.emit("user-offline", user);
+                        console.log("User offline");
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+            })
+            .catch(err => console.log(err))
     });
 
     socket.on("join chat", (room) => {
         socket.join(room);
-        console.log(`User Joined Room: ${room}`);
+        // console.log(`User Joined Room: ${room}`);
     });
 
     socket.on('typing', (room) => socket.in(room).emit('typing'));
     socket.on('stop typing', (room) => socket.in(room).emit('stop typing'));
 
-    socket.on('calling', (room) => socket.in(room).emit('calling'));
-    socket.on('stop calling', (room) => socket.in(room).emit('stop calling'));
-
     socket.on("new message", (newMessageReceived) => {
         var chat = newMessageReceived.chat;
-
         if (!chat.users) {
             console.log("No users in chat");
         }
@@ -93,7 +117,7 @@ io.on("connection", (socket) => {
         });
     });
 
-    socket.off("setup", () => {
+    socket.off("setup", (userData) => {
         console.log("USER DISCONNECTED");
         socket.leave(userData._id);
     });

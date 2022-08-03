@@ -56,7 +56,8 @@ const Navbar = ({ fetchAgain, setFetchAgain }) => {
 
   const handleLogout = () => {
     localStorage.removeItem('user');
-    navigate('/');
+    // navigate('/');
+    window.location.reload();
   }
 
   return (

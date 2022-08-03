@@ -50,10 +50,10 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                 }
             }
             const { data } = await axios.get(`${backend_url}/users?search=${search}`, config)
-            // console.log(data);
+            console.warn("gorups,,,", data);
             setLoading(false);
             setSearchResultsUsers(data.users);
-            setSearchResultsGroups(data.groupName);
+            setSearchResultsGroups(data.groups);
         } catch (error) {
             // console.log(error)
             toast({

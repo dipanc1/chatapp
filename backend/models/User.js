@@ -28,6 +28,15 @@ const UserSchema = new mongoose.Schema({
         required: true,
         default: false,
     },
+    isOnline: {
+        type: Boolean,
+        required: true,
+        default: false,
+    },
+    socketId: {
+        type: String,
+        default: null,
+    }
 }, { timestamps: true });
 
 const User = mongoose.model("User", UserSchema);

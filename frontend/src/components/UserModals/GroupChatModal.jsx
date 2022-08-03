@@ -23,7 +23,7 @@ import {
     ViewIcon
 } from '@chakra-ui/icons'
 import UserBadgeItem from '../UserItems/UserBadgeItem';
-import UserListItem from '../UserItems/UserBadgeItem';
+import UserListItem from '../UserItems/UserListItem';
 
 
 const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
@@ -107,6 +107,11 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
                 position: "bottom",
             });
         } catch (error) {
+            setFetchAgain(!fetchAgain);
+            setLoading(false);
+            setSearch('');
+            setSelectedUsers([]);
+            setSearchResults([]);
             toast({
                 title: "Failed to Create the Chat!",
                 description: error.response.data,
@@ -144,7 +149,7 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
                 ) : (
                     <IconButton d={{ base: "flex" }} icon={<ViewIcon />} onClick={onOpen} />
                 )}
-            <Modal size={['xs', 'xs','xl','lg']} onClose={onClose} isOpen={isOpen} isCentered>
+            <Modal size={['xs', 'xs', 'xl', 'lg']} onClose={onClose} isOpen={isOpen} isCentered>
                 <ModalOverlay />
                 <ModalContent>
                     <ModalHeader
@@ -189,27 +194,31 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
                                     size='xl'
                                 />
                             </Box>
-                            //TODO: need to refine search result
-                        ) : (searchResults.slice(0, 4).map((user) => (
+                        ) :
                             <Box
-                                _hover={{
-                                    background: '#b5cbfe',
-                                    color: 'white',
-                                }}
-                                bg={'#E8E8E8'}
-                                p={2}
-                                cursor={'pointer'}
-                                my={'0.2rem'}
-                                mx={'2rem'}
-                                borderRadius="lg"
-                                key={user._id}
-                                onClick={() => handleGroup(user)}>
-                                <UserListItem
-                                    user={user}
-                                />
+                            maxHeight={'48'}
+                            overflowY={'scroll'}
+                            >
+                                {searchResults.map((user) => (
+                                    <Box
+                                        _hover={{
+                                            background: '#b5cbfe',
+                                            color: 'white',
+                                        }}
+                                        bg={'#E8E8E8'}
+                                        p={2}
+                                        cursor={'pointer'}
+                                        my={'0.2rem'}
+                                        mx={'2rem'}
+                                        borderRadius="lg"
+                                        key={user._id}
+                                        onClick={() => handleGroup(user)}>
+                                        <UserListItem user={user} />
+                                    </Box>
+                                ))
+                                }
                             </Box>
-                        ))
-                        )}
+                        }
                     </ModalBody>
                     <ModalFooter>
                         <Button onClick={handleSubmit} color={'white'} backgroundColor={'buttonPrimaryColor'}>

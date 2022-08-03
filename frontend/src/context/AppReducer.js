@@ -25,6 +25,11 @@ const AppReducer = (state, action) => {
                 ...state,
                 stream: !state.stream
             };
+        case "SET_STREAMEXISTS":
+            return{
+                ...state,
+                streamExists: !state.streamExists
+            }
         default:
             return state;
     }

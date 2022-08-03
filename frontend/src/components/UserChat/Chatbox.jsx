@@ -1,7 +1,7 @@
 import axios from 'axios'
 import React from 'react'
-import { io } from 'socket.io-client'
 import { AppContext } from '../../context/AppContext'
+import { SocketContext } from '../../context/socketContext'
 import Message from '../Miscellaneous/Message'
 import Lottie from "lottie-react";
 import animationData from '../../animations/typing.json'
@@ -9,32 +9,28 @@ import DetailsModal from '../UserModals/DetailsModal'
 import { format } from 'timeago.js'
 import StreamModal from '../UserModals/StreamModal'
 import { backend_url } from '../../production'
-import { motion } from 'framer-motion'
 import { Avatar, AvatarBadge, Box, Button, Divider, Flex, Image, Input, Spinner, Text, useToast } from '@chakra-ui/react'
 import { FiSend } from 'react-icons/fi'
 
-const ENDPOINT = `${backend_url}`;
-var socket, selectedChatCompare;
 
-export const ChatBoxComponent = ({selectedChat, fetchAgain, setFetchAgain, user, toast}) => {
-  const { notification, dispatch } = React.useContext(AppContext);
+var selectedChatCompare;
+
+export const ChatBoxComponent = ({ meetingId, selectedChat, fetchAgain, setFetchAgain, user, toast }) => {
+  const socket = React.useContext(SocketContext);
+  // console.log("HBBHBKJNJ",socket)
+  const { notification, dispatch, stream } = React.useContext(AppContext);
   const [messages, setMessages] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
-  const [newMessage, setNewMessage] = React.useState();
+  const [newMessage, setNewMessage] = React.useState("");
   const [socketConnected, setSocketConnected] = React.useState(false);
   const [typing, setTyping] = React.useState(false);
   const [isTyping, setIsTyping] = React.useState(false);
-  const [fullScreenMode, setFullScreenMode] = React.useState(false);
   const scrollRef = React.useRef();
 
   React.useEffect(() => {
-    socket = io(ENDPOINT);
-    socket.emit("setup", user);
     socket.on("connected", () => setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
     socket.on("stop typing", () => setIsTyping(false));
-    // user online
-    socket.emit("user-online", user._id);
   }, []);
 
 
@@ -111,9 +107,6 @@ export const ChatBoxComponent = ({selectedChat, fetchAgain, setFetchAgain, user,
     }
   }
 
-
-
-
   React.useEffect(() => {
     socket.on("message received", (newMessageReceived) => {
       if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
@@ -131,7 +124,6 @@ export const ChatBoxComponent = ({selectedChat, fetchAgain, setFetchAgain, user,
 
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
-
     // typing indicator logic
     if (!socketConnected) return;
 
@@ -232,7 +224,7 @@ export const ChatBoxComponent = ({selectedChat, fetchAgain, setFetchAgain, user,
           focusBorderColor='#9F85F7'
           onChange={typingHandler}
           value={newMessage}
-          onKeyDown={newMessage !== "" ? sendMessage : null}
+          onKeyDownCapture={newMessage !== "" ? sendMessage : null}
         />
         <Button
           bg='buttonPrimaryColor'
@@ -247,16 +239,27 @@ export const ChatBoxComponent = ({selectedChat, fetchAgain, setFetchAgain, user,
   )
 }
 
-const Chatbox = ({ fetchAgain, setFetchAgain }) => {
+const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) => {
   const user = JSON.parse(localStorage.getItem('user'));
   const [online, setOnline] = React.useState(false);
   const [profile, setProfile] = React.useState(null);
-  const [calling, setCalling] = React.useState(false);
-  const [isCalling, setIsCalling] = React.useState(false);
-  const [videocall, setVideocall] = React.useState(true);
-  const [streaming, setStreaming] = React.useState(false);
   const toast = useToast();
   const { selectedChat } = React.useContext(AppContext);
+
+  const CheckOnlineStatus = async (friendId) => {
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.get(`${backend_url}/users/check-online/${friendId}`, config)
+      // console.log("DATAAAAAAAAAAAA", data);
+      setOnline(data.isOnline);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
 
   React.useEffect(() => {
@@ -273,24 +276,11 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
         position: "top",
       });
     }
-    setStreaming(false);
-    setVideocall(false);
-    // socket.on("user-online", (userId) => {
-    //   console.warn(userId, "USER ONLINE");
-    //   if (selectedChat?.users.find(member => member._id === userId)) {
-    //     setOnline(true);
-    //   }
-    // });
-    // socket.on("user-offline", (userId) => {
-    //   console.warn(userId, "USER OFFLINE");
-    //   if (selectedChat?.users.find(member => member._id === userId)) {
-    //     setOnline(false);
-    //   }
-    // });
-
-
+    if (selectedChat && !selectedChat.isGroupChat) {
+      CheckOnlineStatus(selectedChat?.users.find(member => member._id !== user._id)._id);
+    }
+    // console.log("fnsdjnfjdsnfj", selectedChat?.isGroupChat);
     selectedChatCompare = selectedChat;
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedChat])
 
@@ -350,26 +340,22 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
                       : <AvatarBadge borderColor='papayawhip' bg='tomato' boxSize='1em' />}
                   </Avatar>
                 }
-                {
-                  streaming ?
-                    null :
 
-                    <Text
-                      initial="hidden"
-                      animate="visible"
-                      variants={variants}
-                      ml={'4'}
-                      fontSize={'xl'}
-                      fontWeight={'bold'}
-                    >
-                      {selectedChat?.isGroupChat ? selectedChat?.chatName.toUpperCase() : profile?.username}
-                    </Text>
-                }
+                <Text
+                  initial="hidden"
+                  animate="visible"
+                  variants={variants}
+                  ml={'4'}
+                  fontSize={'xl'}
+                  fontWeight={'bold'}
+                >
+                  {selectedChat?.isGroupChat ? selectedChat?.chatName.toUpperCase() : profile?.username}
+                </Text>
               </Box>
 
               {selectedChat?.isGroupChat &&
                 <Box>
-                  <StreamModal />
+                  <StreamModal getMeetingAndToken={getMeetingAndToken} />
                 </Box>
 
               }
@@ -383,8 +369,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
             </Box>
 
             <Divider orientation='horizontal' />
-
-            <ChatBoxComponent fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} user={user} toast={toast} />
+            <ChatBoxComponent setOnline={setOnline} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} user={user} toast={toast} selectedChat={selectedChat} meetingId={meetingId} />
 
 
           </>)

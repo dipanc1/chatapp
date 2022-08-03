@@ -1,4 +1,4 @@
-import { createContext, useReducer } from "react";
+import { createContext, useEffect, useReducer } from "react";
 import AppReducer from "./AppReducer";
 
 const INITIAL_STATE = {
@@ -6,7 +6,8 @@ const INITIAL_STATE = {
   selectedChat: null,
   chats: [],
   notification: [],
-  stream: false
+  stream: false,
+  streamExists: false
 };
 
 export const AppContext = createContext(INITIAL_STATE);
@@ -22,6 +23,7 @@ export const AppContextProvider = ({ children }) => {
         chats: state.chats,
         notification: state.notification,
         stream: state.stream,
+        streamExists: state.streamExists,
         dispatch
       }}>
       {children}

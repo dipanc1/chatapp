@@ -15,97 +15,45 @@ import {
     ModalFooter,
     useDisclosure
 } from '@chakra-ui/react'
+import { useMeeting } from '@videosdk.live/react-sdk';
+import axios from 'axios';
+import { backend_url } from '../../production';
 
 
-const StreamModal = ({ children }) => {
+const StreamModal = ({ children, getMeetingAndToken }) => {
+    const user = JSON.parse(localStorage.getItem('user'))
     const { isOpen, onOpen, onClose } = useDisclosure()
     const { selectedChat, dispatch } = useContext(AppContext);
-    const [transformmm, setTransformmm] = useState(false);
-    const [isHost, setHost] = useState(false);
-    const [isPinned, setPinned] = useState(false);
-    const rtcProps = {
-        appId: 'b73adb04d0a74614b6eeba2f4915cd17',
-        channel: selectedChat.chatName, // your agora channel
-        // token: '7b3ffd59228f48eb8605d091a8a32ec0', // use null or skip if using app in testing mode
-        role: isHost ? 'host' : 'audience',
-        layout: isPinned ? layout.pin : layout.grid,
-        disableRtm: true,
-    };
-
-    // const callbacks = {
-    //     EndCall: () => setVideocall(false),
-    // };
-
-    // const styleProps = {
-    //     localBtnContainer: { backgroundColor: '#004dfa' },
-    // };
-
-
-    // const streamHandler = () => {
-    //     setStreaming(!streaming);
-    //     // setVideocall(!videocall);
-    //     if (!videocall) {
-    //         setVideocall(true);
-    //         socket.emit("calling", selectedChat._id);
-    //     }
-    //     if (videocall) {
-    //         socket.emit("stop calling", selectedChat._id);
-    //         setVideocall(false);
-    //     }
-    // }
-
-    // const fullScreenHandler = () => {
-    //     setFullScreenMode(!fullScreenMode)
-    // }
-
-    // const styles = {
-    //     stream: {
-    //         display: 'flex',
-    //         marginRight: '3vw',
-    //         position: fullScreenMode ? 'absolute' : null,
-    //         top: fullScreenMode ? 0 : null,
-    //         left: fullScreenMode ? 0 : null,
-    //         height: fullScreenMode ? '31vh' : null,
-    //         width: fullScreenMode ? '100vw' : null,
-    //         zIndex: fullScreenMode ? 1 : null,
-    //     },
-
-    //     container: {
-    //         display: 'flex',
-    //         backgroundColor: '#007bff22',
-    //         width: fullScreenMode ? '100vw' : '51vw',
-    //         height: fullScreenMode ? '100vh' : '50vh',
-    //     },
-
-    //     nav: {
-    //         display: 'flex',
-    //         justifyContent: 'space-around',
-    //         alignItems: 'center',
-    //         padding: '0.5rem',
-    //         backgroundColor: '#007bff22',
-    //     },
-
-    //     btn: {
-    //         display: 'flex',
-    //         flexDirecton: 'column',
-    //         backgroundColor: '#007bff',
-    //         cursor: 'pointer',
-    //         borderRadius: 5,
-    //         padding: 5,
-    //         margin: 5,
-    //         color: '#ffffff',
-    //         fontSize: 20
-    //     },
-    // }
+    const [disabled, setDisabled] = useState(false)
+    const [meetingId, setMeetingId] = useState(null);
+    
+    const startMeeting = async () => {
+        setDisabled(true);
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${user.token}`
+            }
+        }
+        const { data } = await axios.get(`${backend_url}/conversation/streaming/${selectedChat._id}`, config);
+        setMeetingId(data);
+        if (data) {
+            dispatch({ type: 'SET_STREAMEXISTS', payload: true });
+        }
+        console.warn("STREAM MODAL which is joinscreen", data, "MEETING ID", meetingId);
+        await getMeetingAndToken(data);
+        onClose();
+        dispatch({ type: 'SET_STREAM', payload: true });
+    }
 
 
     return (
         children ?
             <span>{children}</span> :
             <>
-                <Button onClick={onOpen}
-                    onMouseEnter={() => setTransformmm(true)}
-                    onMouseLeave={() => setTransformmm(false)}>
+                <Button onClick={() => {
+                    onOpen();
+                }}>
                     <AiOutlineVideoCamera />
                 </Button>
 
@@ -126,13 +74,8 @@ const StreamModal = ({ children }) => {
                                 <Button color='buttonPrimaryColor' variant='outline' mr={3} onClick={onClose}>
                                     Cancel
                                 </Button>
-                                <Button color={'whiteColor'} variant='solid' bg='buttonPrimaryColor'
-                                onClick={
-                                    () => {
-                                        dispatch({ type: 'SET_STREAM', payload: true });
-                                        onClose();
-                                    }
-                                }
+                                <Button disabled={disabled} color={'whiteColor'} variant='solid' bg='buttonPrimaryColor'
+                                    onClick={startMeeting}
                                 >Share</Button>
                             </Flex>
                         </ModalBody>

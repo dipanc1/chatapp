@@ -6,7 +6,7 @@ const ChatOnline = ({ stream, id, user1, handleFunction }) => {
     const user = JSON.parse(localStorage.getItem('user'));
 
     return (
-        <AccordionItem key={id} minWidth={stream ? '28vw' :'12vw'}>
+        <AccordionItem key={id} minWidth={stream ? '19vw' :'12vw'}>
             <h2>
                 <AccordionButton
                     backgroundColor={'selectSecondaryColor'}

@@ -12,6 +12,8 @@ const ConversationSchema = mongoose.Schema({
         ref: "Message",
     },
     groupAdmin: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    isStreaming: { type: Boolean, default: false },
+    meetingId: { type: String, default: null },
 }, { timestamps: true });
 
 const Chat = mongoose.model("Chat", ConversationSchema);

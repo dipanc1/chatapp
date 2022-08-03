@@ -5,7 +5,7 @@ const Chat = require("../models/Conversation")
 
 
 //new conversation
-router.post("/", asyncHandler(async(req, res) => {
+router.post("/", asyncHandler(async (req, res) => {
 
     const { userId } = req.body;
 
@@ -15,12 +15,12 @@ router.post("/", asyncHandler(async(req, res) => {
     }
 
     var isChat = await Chat.find({
-            isGroupChat: false,
-            $and: [
-                { users: { $elemMatch: { $eq: req.user._id } } },
-                { users: { $elemMatch: { $eq: userId } } },
-            ],
-        })
+        isGroupChat: false,
+        $and: [
+            { users: { $elemMatch: { $eq: req.user._id } } },
+            { users: { $elemMatch: { $eq: userId } } },
+        ],
+    })
         .populate("users", "-password")
         .populate("latestMessage");
 
@@ -53,16 +53,16 @@ router.post("/", asyncHandler(async(req, res) => {
 
 
 //get all chats
-router.get("/", async(req, res) => {
+router.get("/", async (req, res) => {
     try {
         Chat.find({
-                users: { $elemMatch: { $eq: req.user._id } }
-            })
+            users: { $elemMatch: { $eq: req.user._id } }
+        })
             .populate("users", "-password")
             .populate("groupAdmin", "-password")
             .populate("latestMessage")
             .sort({ updatedAt: -1 })
-            .then(async(results) => {
+            .then(async (results) => {
                 results = await User.populate(results, {
                     path: "latestMessage.sender",
                     select: "username number pic"
@@ -76,14 +76,14 @@ router.get("/", async(req, res) => {
 
 
 // create groups
-router.post("/group", asyncHandler(async(req, res) => {
+router.post("/group", asyncHandler(async (req, res) => {
     if (!req.body.users || !req.body.name) {
         return res.status(400).send("All Feilds are required")
     }
 
     var users = JSON.parse(req.body.users);
     if (users.length < 2) {
-        return res.status(400).send("You need at least 2 users to create a group")
+        return res.status(400).send("You need at least 2 members to create a group")
     }
 
     users.push(req.user);
@@ -107,7 +107,7 @@ router.post("/group", asyncHandler(async(req, res) => {
 
 
 //renaming group
-router.put("/rename", asyncHandler(async(req, res) => {
+router.put("/rename", asyncHandler(async (req, res) => {
     const { chatId, chatName } = req.body;
     const updatedChat = await Chat.findByIdAndUpdate(chatId, { chatName }, { new: true })
         .populate("users", "-password")
@@ -122,12 +122,12 @@ router.put("/rename", asyncHandler(async(req, res) => {
 
 
 // adding in group
-router.put("/groupadd", asyncHandler(async(req, res) => {
+router.put("/groupadd", asyncHandler(async (req, res) => {
     const { chatId, userId } = req.body;
 
     const added = await Chat.findByIdAndUpdate(chatId, {
-            $push: { users: userId }
-        }, { new: true })
+        $push: { users: userId }
+    }, { new: true })
         .populate("users", "-password")
         .populate("groupAdmin", "-password")
 
@@ -140,12 +140,12 @@ router.put("/groupadd", asyncHandler(async(req, res) => {
 
 
 // removing people from group
-router.put("/groupremove", asyncHandler(async(req, res) => {
+router.put("/groupremove", asyncHandler(async (req, res) => {
     const { chatId, userId } = req.body;
 
     const removed = await Chat.findByIdAndUpdate(chatId, {
-            $pull: { users: userId }
-        }, { new: true })
+        $pull: { users: userId }
+    }, { new: true })
         .populate("users", "-password")
         .populate("groupAdmin", "-password")
 
@@ -155,5 +155,60 @@ router.put("/groupremove", asyncHandler(async(req, res) => {
         res.status(200).json(removed);
     }
 }));
+
+// start streaming
+router.put("/stream", asyncHandler(async (req, res) => {
+    console.log(req.body)
+    const { data } = req.body;
+
+    Chat.findByIdAndUpdate(data.chatId, {
+        $set: {
+            isStreaming: true,
+            meetingId: data.meetingId,
+        },
+    }).then((chat) => {
+        console.log("streaming");
+    }).catch((err) => {
+        console.log(err);
+    });
+
+}));
+
+router.put("/stop-stream", asyncHandler(async (req, res) => {
+    console.log(req.body)
+    const { data } = req.body;
+
+    Chat.findByIdAndUpdate(data.chatId, {
+        $set: {
+            isStreaming: false,
+            meetingId: null,
+        },
+    }).then((chat) => {
+        console.log("streaming stopped!!");
+        res.status(200).json({ msg: "streaming stopped!!"});
+    }).catch((err) => {
+        console.log(err);
+    });
+
+}));
+
+router.get("/streaming/:chatid", asyncHandler(async (req, res) => {
+
+    const { chatid } = req.params;
+
+    Chat.findById(chatid).then((chat) => {
+        if (chat.isStreaming) {
+            res.status(200).json(chat.meetingId);
+        } else {
+            res.status(200).json(null);
+        }
+    }).catch((err) => {
+        console.log(err);
+    })
+}));
+
+
+
+
 
 module.exports = router;

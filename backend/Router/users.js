@@ -8,8 +8,7 @@ const Chat = require("../models/Conversation");
 
 
 // register
-
-router.post("/register", async(req, res) => {
+router.post("/register", async (req, res) => {
     try {
         // generate  new password
         const salt = await bcrypt.genSalt(10)
@@ -43,13 +42,12 @@ router.post("/register", async(req, res) => {
 })
 
 //login
-
-router.post("/login", async(req, res) => {
+router.post("/login", async (req, res) => {
     try {
 
         // find the user
         const user = await User.findOne({ username: req.body.username })
-            // console.log(user)
+        // console.log(user)
 
         if (!user) {
             return res.status(400).json("Wrong Username or Password")
@@ -79,40 +77,45 @@ router.post("/login", async(req, res) => {
     }
 })
 
-//get user which we want to update
+//get user online status
+router.get("/check-online/:id", protect, async (req, res) => {
+    // console.log(req.params.id)
+    try {
+        const user = await User.findOne({ _id: req.params.id })
 
-// router.get("/find", async(req, res) => {
-//     const userId = req.query.userId;
-//     const username = req.query.username;
-//     try {
-//         const user = userId ?
-//             await User.findById(userId) :
-//             await User.findOne({ username: username });
-//         const { password, updatedAt, ...other } = user._doc;
-//         res.status(200).json(other);
-//     } catch (err) {
-//         res.status(500).json(err);
-//     }
-// });
+        if (!user) {
+            return res.status(400).json("User not found")
+        }
 
-//get users to get users with out current user, search bar api
+        res.status(200).json({
+            _id: user._id,
+            username: user.username,
+            isOnline: user.isOnline,
+        })
 
-router.get("/", protect, asyncHandler(async(req, res) => {
-    const keyword = req.query.search ? {
-        $or: [
-            { username: { $regex: req.query.search, $options: "i" } },
-            { chatName: { $regex: req.query.search, $options: "i" } },
-        ],
-    } : {};
+    } catch (err) {
+        res.status(500).json(err)
+        console.log(err)
+    }
+});
 
-    const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
-    // added this 
-    const groupName = await Chat.find(keyword).find({ isGroupChat: { $ne: false } });
-    const body = {
-        users,
-        groupName
-    };
-    res.send(body);
-}));
+// search query for users and groups  exclusing user logged in
+router.get("/", protect, async (req, res) => {
+    try {
+        const users = await User.find({
+            $or: [{ username: { $regex: req.query.search, $options: "i" } }]
+        }).find({ _id: { $ne: req.user._id } })
+        const groups = await Chat.find({
+            $or: [{ chatName: { $regex: req.query.search, $options: "i" } }]
+        }).find({ isGroupChat: true, _id: { $ne: req.user._id } })
+        res.status(200).json({
+            users: users,
+            groups: groups
+        })
+    } catch (err) {
+        res.status(500).json(err)
+        console.log(err)
+    }
+})
 
 module.exports = router;

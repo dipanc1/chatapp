@@ -37,26 +37,24 @@ const customTheme = extendTheme({
         default: '#FF4343',
         _dark: '#ff0000',
       },
-      greyTextColor:{
+      greyTextColor: {
         default: '#737373',
         _dark: '#737373',
       },
       whiteColor: {
         default: 'white',
-        _dark:'light'
+        _dark: 'light'
       }
     },
   },
 })
 
 createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <ChakraProvider theme={customTheme}>
+  <BrowserRouter>
+    <ChakraProvider theme={customTheme}>
         <AppContextProvider>
           <App />
         </AppContextProvider>
-      </ChakraProvider>
-    </BrowserRouter>
-  </React.StrictMode>,
+    </ChakraProvider>
+  </BrowserRouter>,
 );
