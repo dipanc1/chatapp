@@ -39,7 +39,7 @@ const Tabs = ({ setUser }) => {
                     return (
                         <TouchableOpacity
                             style={styles.tabItem}
-                            onPress={() => this.setState({ index: i })}
+                            onPress={() => setIndex(i)}
                             key={route.key}
                         >
                             <Animated.Text style={{ opacity }}>{route.title}</Animated.Text>

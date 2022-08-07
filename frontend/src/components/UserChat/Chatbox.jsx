@@ -28,9 +28,12 @@ export const ChatBoxComponent = ({ meetingId, selectedChat, fetchAgain, setFetch
   const scrollRef = React.useRef();
 
   React.useEffect(() => {
+    socket.emit("setup", user);
     socket.on("connected", () => setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
     socket.on("stop typing", () => setIsTyping(false));
+    // user online
+    socket.emit("user-online", user);
   }, []);
 
 

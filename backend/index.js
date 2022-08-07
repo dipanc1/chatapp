@@ -1,18 +1,23 @@
 const express = require("express");
 const cors = require("cors");
-const bodyParser = require("body-parser");
+const _ = require("lodash");
+const path = require("path");
 const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+
 const userRoute = require("./Router/users")
 const testRouter = require("./Router/testRouter")
 const conversationRoute = require("./Router/conversation")
 const messageRoute = require("./Router/messages")
 const meetingRoute = require("./Router/meetings")
+
 const { mongo_url } = require("./config/mongo_auth");
+
 const { protect } = require("./middleware/authMiddleware");
-const _ = require("lodash");
-const path = require("path");
+
 const User = require("./models/User");
 const Chat = require("./models/Conversation");
+
 const app = express();
 
 app.use(
@@ -60,18 +65,22 @@ io.on("connection", (socket) => {
 
     //user online update in database and save socket id
     socket.on("user-online", (userData) => {
-        // console.log(userData)
-        User.findByIdAndUpdate(userData._id, {
-            $set: {
-                socketId: socket.id,
-                isOnline: true,
-            },
-        })
-            .then((user) => {
-                // socket.broadcast.emit("user-online", user);
-                console.log("User online");
+        if (userData) {
+            // console.log(userData)
+            User.findByIdAndUpdate(userData._id, {
+                $set: {
+                    socketId: socket.id,
+                    isOnline: true,
+                },
             })
-            .catch(err => console.log("Online ",err))
+                .then((user) => {
+                    // socket.broadcast.emit("user-online", user);
+                    console.log("User online");
+                })
+                .catch(err => console.log("Online ", err))
+        } else {
+            console.log("User not found")
+        }
     });
 
     // if socket disconnect, update database and set isOnline to false
@@ -79,19 +88,23 @@ io.on("connection", (socket) => {
         // console.log(socket.id, "disconnected");
         User.findOne({ socketId: socket.id })
             .then((user) => {
-                User.findByIdAndUpdate(user._id, {
-                    $set: {
-                        isOnline: false,
-                        socketId: null,
-                    },
-                })
-                    .then((user) => {
-                        // socket.broadcast.emit("user-offline", user);
-                        console.log("User offline");
+                if (user) {
+                    User.findByIdAndUpdate(user._id, {
+                        $set: {
+                            isOnline: false,
+                            socketId: null,
+                        },
                     })
-                    .catch((err) => {
-                        console.log(err);
-                    });
+                        .then((user) => {
+                            // socket.broadcast.emit("user-offline", user);
+                            console.log("User offline");
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        });
+                } else {
+                    console.log("User not found");
+                }
             })
             .catch(err => console.log(err))
     });

@@ -1,12 +1,12 @@
 import { DeleteIcon } from '@chakra-ui/icons';
-import { AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Avatar, Box, Divider, Flex, Tag, TagCloseButton, TagLabel, Text } from '@chakra-ui/react';
+import { AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Avatar, Box, Divider, Flex, Tag, Text } from '@chakra-ui/react';
 import { BsPerson, BsTelephone } from 'react-icons/bs';
 
 const ChatOnline = ({ stream, id, user1, handleFunction }) => {
     const user = JSON.parse(localStorage.getItem('user'));
 
     return (
-        <AccordionItem key={id} minWidth={stream ? '19vw' :'12vw'}>
+        <AccordionItem key={id} minWidth={stream ? '19vw' : '12vw'}>
             <h2>
                 <AccordionButton
                     backgroundColor={'selectSecondaryColor'}
@@ -48,11 +48,12 @@ const ChatOnline = ({ stream, id, user1, handleFunction }) => {
                     <Text as='samp'>
                         {user1.number}
                     </Text>
-                    <Divider orientation='horizontal' color={'#000000'} my={'2'} />
+                    <Divider orientation='horizontal' color={'#000000'}
+                        my={'2'}
+                    />
                     {user._id === user1._id ?
                         null :
                         <>
-
                             <Text cursor={'pointer'} color={'errorColor'} as='samp' onClick={handleFunction}>
                                 <DeleteIcon />  Remove from group
                             </Text>

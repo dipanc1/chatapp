@@ -20,7 +20,6 @@ export const MembersComponent = ({ fetchAgain, setFetchAgain }) => {
   const [searchResults, setSearchResults] = React.useState([]);
   const [renameLoading, setRenameLoading] = React.useState(false);
   const [loading, setLoading] = React.useState(false)
-  const [transformmm, setTransformmm] = React.useState(false);
   const toast = useToast();
   const { selectedChat, dispatch, stream } = React.useContext(AppContext);
   const user = JSON.parse(localStorage.getItem('user'));
@@ -338,8 +337,7 @@ export const MembersComponent = ({ fetchAgain, setFetchAgain }) => {
                               key={user._id}
                               onClick={() => handleAddUser(user._id)}
                             >
-                              <UserListItem user={user}
-                              />
+                              <UserListItem user={user} />
                             </Box>
                           ))}
                       </ModalBody>
@@ -403,7 +401,6 @@ export const MembersComponent = ({ fetchAgain, setFetchAgain }) => {
           </Box>
         </>
       )
-
     )
       :
       (<Box

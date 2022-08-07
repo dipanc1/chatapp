@@ -26,7 +26,7 @@ const Login = ({ setUser }) => {
         }
         try {
             const res = await axios.post(`${backend_url}/users/login`, user);
-            console.log("working!!", res.data)
+            // console.log("working!!", res.data)
             const jsonValue = JSON.stringify(res.data)
             await AsyncStorage.setItem('user', jsonValue)
             setUser(res.data)
