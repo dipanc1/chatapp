@@ -20,7 +20,7 @@ const UserSchema = new mongoose.Schema({
     },
     pic: {
         type: String,
-        required: true,
+        required: false,
         default: "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"
     },
     isAdmin: {

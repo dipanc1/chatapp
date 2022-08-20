@@ -296,7 +296,7 @@ const Register = () => {
                                         </InputGroup>
                                     </FormControl>
 
-                                    <FormControl id="picture" isRequired>
+                                    <FormControl id="picture">
                                         <FormLabel>Upload Your Picture</FormLabel>
                                         <Input type="file" accept='image/*' onChange={(e) =>
                                             postDetails(e.target.files[0])
