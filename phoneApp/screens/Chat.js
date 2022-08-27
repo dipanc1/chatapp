@@ -30,15 +30,22 @@ const Chat = () => {
     return (
         <>
             <Navbar />
-            <Searchbar />
+            <Searchbar placeholder={"Search People or Groups"}/>
             <NavigationContainer>
                 <Tab.Navigator {...{ screenOptions, sceneContainerStyle }}>
-                    <Tab.Screen name="Conversations">
-                        {props => <Conversations {...props} />}
-                    </Tab.Screen>
-                    <Tab.Screen name="Groups">
-                        {props => <Groups {...props} />}
-                    </Tab.Screen>
+                    <Tab.Screen
+                        name="Conversations"
+                        component={Conversations}
+                    />
+                    {/* {props => <Conversations {...props} />}
+                    </Tab.Screen> */}
+                    <Tab.Screen
+                        name="Groups"
+                        component={Groups}
+                        screenOptions={{ presentation: 'modal' }}
+                    />
+                    {/* {props => <Groups {...props} />} 
+                     </Tab.Screen> */}
                 </Tab.Navigator>
             </NavigationContainer>
         </>

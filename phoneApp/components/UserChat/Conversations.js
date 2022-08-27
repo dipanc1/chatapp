@@ -1,5 +1,7 @@
 import React from 'react'
 import { Avatar, Box, FlatList, HStack, Spacer, Text, VStack } from 'native-base'
+import Chatbox from './Chatbox'
+import UserListItem from '../UserItems/UserListItem'
 
 const Conversations = () => {
   const data = [{
@@ -33,36 +35,17 @@ const Conversations = () => {
     recentText: "I will call today.",
     avatarUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSr01zI37DYuR8bMV5exWQBSw28C1v_71CAh8d7GP1mplcmTgQA6Q66Oo--QedAN1B4E1k&usqp=CAU"
   }]
+  
   return (
-    <FlatList data={data} renderItem={({
-      item
-    }) => <Box borderBottomWidth="1" borderBottomColor={'primary.100'} p={'3'} mx={'4'}>
-        <HStack space={[2, 3]} justifyContent="space-between">
-          <Avatar size="48px" source={{
-            uri: item.avatarUrl
-          }}>
-            <Avatar.Badge bg="green.500" />
-          </Avatar>
-          <VStack>
-            <Text _dark={{
-              color: "warmGray.50"
-            }} color="coolGray.800" bold>
-              {item.fullName}
-            </Text>
-            <Text color="coolGray.600" _dark={{
-              color: "warmGray.200"
-            }}>
-              {item.recentText}
-            </Text>
-          </VStack>
-          <Spacer />
-          <Text fontSize="xs" _dark={{
-            color: "warmGray.50"
-          }} color="coolGray.800" alignSelf="flex-start">
-            {item.timeStamp}
-          </Text>
-        </HStack>
-      </Box>} keyExtractor={item => item.id} />
+    <FlatList data={data}
+      renderItem=
+      {
+        ({ item }) =>
+          <UserListItem item={item} />
+      }
+      keyExtractor={item => item.id} />
+
+    // <Chatbox />
   )
 }
 

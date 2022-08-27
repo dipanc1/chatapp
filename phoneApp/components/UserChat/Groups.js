@@ -1,5 +1,7 @@
 import React from 'react'
-import { Avatar, Box, FlatList, HStack, Spacer, Text, VStack } from 'native-base'
+import { Avatar, Box, FlatList, Flex, HStack, Spacer, Text, VStack } from 'native-base'
+import Members from './Members'
+import UserListItem from '../UserItems/UserListItem'
 
 const Groups = () => {
   const data = [{
@@ -7,57 +9,37 @@ const Groups = () => {
     fullName: "Aafreen Khan",
     timeStamp: "12:47 PM",
     recentText: "Good Day!",
-    avatarUrl: "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
   }, {
     id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
     fullName: "Sujitha Mathur",
     timeStamp: "11:11 PM",
     recentText: "Cheer up, there!",
-    avatarUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyEaZqT3fHeNrPGcnjLLX1v_W4mvBlgpwxnA&usqp=CAU"
   }, {
     id: "58694a0f-3da1-471f-bd96-145571e29d72",
     fullName: "Anci Barroco",
     timeStamp: "6:22 PM",
     recentText: "Good Day!",
-    avatarUrl: "https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg"
   }, {
     id: "68694a0f-3da1-431f-bd56-142371e29d72",
     fullName: "Aniket Kumar",
     timeStamp: "8:56 PM",
     recentText: "All the best",
-    avatarUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSr01zI37DYuR8bMV5exWQBSw28C1v_71CAh8d7GP1mplcmTgQA6Q66Oo--QedAN1B4E1k&usqp=CAU"
   }, {
     id: "28694a0f-3da1-471f-bd96-142456e29d72",
     fullName: "Kiara",
     timeStamp: "12:47 PM",
     recentText: "I will call today.",
-    avatarUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSr01zI37DYuR8bMV5exWQBSw28C1v_71CAh8d7GP1mplcmTgQA6Q66Oo--QedAN1B4E1k&usqp=CAU"
   }]
+  
   return (
-    <FlatList data={data} renderItem={({
-      item
-    }) => <Box borderBottomWidth="1" borderBottomColor={'primary.100'} p={'3'} mx={'4'}>
-        <HStack space={[2, 3]} justifyContent="space-between">
-          <VStack>
-            <Text _dark={{
-              color: "warmGray.50"
-            }} color="coolGray.800" bold>
-              {item.fullName}
-            </Text>
-            <Text color="coolGray.600" _dark={{
-              color: "warmGray.200"
-            }}>
-              {item.recentText}
-            </Text>
-          </VStack>
-          <Spacer />
-          <Text fontSize="xs" _dark={{
-            color: "warmGray.50"
-          }} color="coolGray.800" alignSelf="flex-start">
-            {item.timeStamp}
-          </Text>
-        </HStack>
-      </Box>} keyExtractor={item => item.id} />
+    // <FlatList data={data} renderItem={({
+    //   item
+    // }) =>
+    //   <Flex justifyContent={'flex-start'} p={'2'}>
+    //     <UserListItem item={item} />
+    //   </Flex>
+    // } keyExtractor={item => item.id} />
+    <Members />
   )
 }
 

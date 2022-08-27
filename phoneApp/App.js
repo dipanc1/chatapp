@@ -61,8 +61,9 @@ const newColorTheme = {
     500: '#737373',
     600: '#2E354B',
     700: '#ff4343',
+    800: '#3CC4B7',
     900: 'grey.900',
-  }
+  },
 };
 
 const theme = extendTheme({ colors: newColorTheme });
