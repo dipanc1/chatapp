@@ -64,6 +64,9 @@ const newColorTheme = {
     800: '#3CC4B7',
     900: 'grey.900',
   },
+  secondary: {
+    100: '#9F85F7',
+  }
 };
 
 const theme = extendTheme({ colors: newColorTheme });
@@ -71,16 +74,22 @@ const Stack = createNativeStackNavigator();
 
 
 const App = () => {
+
+  React.useEffect(async () => {
+    const jsonValue = await AsyncStorage.getItem('user')
+    return jsonValue != null ? JSON.parse(jsonValue) : null;
+  }, []);
+
   return (
     <NativeBaseProvider theme={theme}>
       <PhoneAppContextProvider>
-        {/* <NavigationContainer>
+        <NavigationContainer>
           <Stack.Navigator intialRouteName="Login">
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Register" component={Register} />
           </Stack.Navigator>
-        </NavigationContainer> */}
-        <Chat />
+        </NavigationContainer>
+        {/* <Chat /> */}
       </PhoneAppContextProvider>
     </NativeBaseProvider>
   );

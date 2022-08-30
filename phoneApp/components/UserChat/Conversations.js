@@ -37,15 +37,15 @@ const Conversations = () => {
   }]
   
   return (
-    <FlatList data={data}
-      renderItem=
-      {
-        ({ item }) =>
-          <UserListItem item={item} />
-      }
-      keyExtractor={item => item.id} />
+    // <FlatList data={data}
+    //   renderItem=
+    //   {
+    //     ({ item }) =>
+    //       <UserListItem item={item} />
+    //   }
+    //   keyExtractor={item => item.id} />
 
-    // <Chatbox />
+    <Chatbox />
   )
 }
 
