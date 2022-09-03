@@ -1,51 +1,60 @@
 import React from 'react'
-import { Avatar, Box, FlatList, HStack, Spacer, Text, VStack } from 'native-base'
+import { Avatar, Box, FlatList, HStack, ScrollView, Spacer, Text, VStack } from 'native-base'
 import Chatbox from './Chatbox'
 import UserListItem from '../UserItems/UserListItem'
+import { PhoneAppContext } from '../../context/PhoneAppContext'
+import Conversation from '../Miscellaneous/Conversation'
+import { TouchableOpacity } from 'react-native'
 
-const Conversations = () => {
-  const data = [{
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    fullName: "Aafreen Khan",
-    timeStamp: "12:47 PM",
-    recentText: "Good Day!",
-    avatarUrl: "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-  }, {
-    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-    fullName: "Sujitha Mathur",
-    timeStamp: "11:11 PM",
-    recentText: "Cheer up, there!",
-    avatarUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyEaZqT3fHeNrPGcnjLLX1v_W4mvBlgpwxnA&usqp=CAU"
-  }, {
-    id: "58694a0f-3da1-471f-bd96-145571e29d72",
-    fullName: "Anci Barroco",
-    timeStamp: "6:22 PM",
-    recentText: "Good Day!",
-    avatarUrl: "https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg"
-  }, {
-    id: "68694a0f-3da1-431f-bd56-142371e29d72",
-    fullName: "Aniket Kumar",
-    timeStamp: "8:56 PM",
-    recentText: "All the best",
-    avatarUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSr01zI37DYuR8bMV5exWQBSw28C1v_71CAh8d7GP1mplcmTgQA6Q66Oo--QedAN1B4E1k&usqp=CAU"
-  }, {
-    id: "28694a0f-3da1-471f-bd96-142456e29d72",
-    fullName: "Kiara",
-    timeStamp: "12:47 PM",
-    recentText: "I will call today.",
-    avatarUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSr01zI37DYuR8bMV5exWQBSw28C1v_71CAh8d7GP1mplcmTgQA6Q66Oo--QedAN1B4E1k&usqp=CAU"
-  }]
-  
+const Conversations = ({ fetchAgain, setFetchAgain, conversations, user, searchResultsUsers, search, setSearch }) => {
+  const { dispatch, selectedChat } = React.useContext(PhoneAppContext);
+
+  // add user to conversation
+  const accessChat = async (userId) => {
+    // console.log(userId);
+    try {
+      // setLoading(true);
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.token}`
+        }
+      }
+      const { data } = await axios.post(`${backend_url}/conversation`, { userId }, config);
+
+      dispatch({ type: 'SET_SELECTED_CHAT', payload: data })
+      // console.log(data);
+      // setLoading(false);
+      setSearch('');
+      // setFetchAgain(!fetchAgain);
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
-    // <FlatList data={data}
-    //   renderItem=
-    //   {
-    //     ({ item }) =>
-    //       <UserListItem item={item} />
-    //   }
-    //   keyExtractor={item => item.id} />
+    selectedChat && !selectedChat?.isGroupChat
+      ?
+      <Chatbox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} user={user} />
+      :
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {search.length > 0 ?
+          searchResultsUsers?.map((user, index) => (
+            <TouchableOpacity key={user?._id} onPress={
+              () => accessChat(user?._id)
+            }>
+              <UserListItem user={user} />
+            </TouchableOpacity>
+          ))
+          : conversations.map((chat, index) => (
+            <TouchableOpacity key={chat?._id} onPress={
+              () => dispatch({ type: 'SET_SELECTED_CHAT', payload: chat })
+            }>
+              <Conversation user={user} chat={chat} />
+            </TouchableOpacity>
+          ))}
+      </ScrollView>
 
-    <Chatbox />
   )
 }
 

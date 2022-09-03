@@ -1,9 +1,9 @@
 import { Avatar, Button, Modal, Text, VStack } from 'native-base';
 import React from 'react'
 
-const ProfileModal = ({ showModal, setShowModal }) => {
+const ProfileModal = ({ user, modalVisible, setModalVisible }) => {
   return (
-    <Modal isOpen={showModal} onClose={() => setShowModal(false)} _backdrop={{
+    <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)} _backdrop={{
       _dark: {
         bg: "coolGray.800"
       },
@@ -15,18 +15,18 @@ const ProfileModal = ({ showModal, setShowModal }) => {
         <Modal.Body>
           <VStack justifyContent={'space-between'} alignItems={'center'}>
             <Avatar bg="purple.600" alignSelf="center" size="2xl" source={{
-              uri: "https://images.unsplash.com/photo-1510771463146-e89e6e86560e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=627&q=80"
+              uri: user.pic
             }}>
-              RB
+              {user.username}
             </Avatar>
-            <Text fontSize={'md'} color={'primary.600'} mt="2">Rohan Bhatt</Text>
-            <Text fontSize={'md'} color={'primary.600'} mt="2"> Phone Number: +91-9888888888</Text>
+            <Text fontSize={'md'} color={'primary.600'} mt="2">{user.username}</Text>
+            <Text fontSize={'md'} color={'primary.600'} mt="2"> Phone Number: {user.number}</Text>
           </VStack>
         </Modal.Body>
         <Modal.Footer>
           <Button.Group space={2}>
             <Button bg={'primary.300'} onPress={() => {
-              setShowModal(false);
+              setModalVisible(false);
             }}>
               Close
             </Button>

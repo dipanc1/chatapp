@@ -5,10 +5,27 @@ import Groups from '../components/UserChat/Groups'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { NavigationContainer } from '@react-navigation/native'
 import Searchbar from '../components/Miscellaneous/Searchbar';
+import axios from 'axios';
+import { backend_url } from '../production';
+import { PhoneAppContext } from '../context/PhoneAppContext';
 
 const Tab = createMaterialTopTabNavigator();
 
-const Chat = () => {
+const Chat = ({ user }) => {
+    const { chats, dispatch, selectedChat } = React.useContext(PhoneAppContext);
+    const [conversations, setConversations] = React.useState([])
+    const [groupConversations, setGroupConversations] = React.useState([])
+    const [search, setSearch] = React.useState('')
+    const [searchResultsUsers, setSearchResultsUsers] = React.useState([])
+    const [searchResultsGroups, setSearchResultsGroups] = React.useState([])
+    const [loading, setLoading] = React.useState(false)
+    const [fetchAgain, setFetchAgain] = React.useState(false)
+
+    React.useEffect(() => {
+        fetchChats();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [fetchAgain])
+
     const screenOptions = {
         unmountOnBlur: false,
         headerShown: false,
@@ -27,25 +44,70 @@ const Chat = () => {
         backgroundColor: '#F5F7FB',
     };
 
+    // search bar to search for users
+    const handleSearch = async (e) => {
+        setSearch(e)
+        try {
+            // setLoading(true);
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user.token}`
+                }
+            }
+            const { data } = await axios.get(`${backend_url}/users?search=${search}`, config)
+            // console.log(data);
+            setLoading(false);
+            setSearchResultsUsers(data.users);
+            setSearchResultsGroups(data.groups);
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    // fetch all conversations
+    const fetchChats = async () => {
+        try {
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user.token}`
+                }
+            }
+            const { data } = await axios.get(`${backend_url}/conversation`, config);
+
+            // console.log("DATA =====", data);
+            // console.log(groupConversations);
+
+            setConversations(data.filter(friend => !friend.isGroupChat));
+            setGroupConversations(data.filter(friend => friend.isGroupChat && friend.chatName));
+
+            if (!chats.find(chat => chat._id === data.map(datas => datas._id))) {
+                dispatch({ type: 'SET_CHATS', payload: data })
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     return (
         <>
-            <Navbar />
-            <Searchbar placeholder={"Search People or Groups"}/>
+            <Navbar user={user} />
+            <Searchbar search={search} handleSearch={handleSearch} placeholder={"Search People or Groups"} />
             <NavigationContainer>
                 <Tab.Navigator {...{ screenOptions, sceneContainerStyle }}>
                     <Tab.Screen
                         name="Conversations"
-                        component={Conversations}
-                    />
-                    {/* {props => <Conversations {...props} />}
-                    </Tab.Screen> */}
+                    >
+                        {props => <Conversations  {...props} user={user} conversations={conversations} search={search} setSearch={setSearch} searchResultsUsers={searchResultsUsers} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+                    </Tab.Screen>
                     <Tab.Screen
                         name="Groups"
-                        component={Groups}
                         screenOptions={{ presentation: 'modal' }}
-                    />
-                    {/* {props => <Groups {...props} />} 
-                     </Tab.Screen> */}
+                    >
+                        {props => <Groups {...props} user={user} groupConversations={groupConversations} search={search} setSearch={setSearch} searchResultsGroups={searchResultsGroups} />}
+                    </Tab.Screen>
                 </Tab.Navigator>
             </NavigationContainer>
         </>

@@ -1,23 +1,26 @@
 import { Avatar, Box, Flex, HStack, Text } from 'native-base'
 import React from 'react'
+import { PhoneAppContext } from '../../context/PhoneAppContext';
+import { format } from 'timeago.js';
 
-const Message = () => {
+const Message = ({ messages, own, sameSender, sameTime }) => {
+    const { selectedChat } = React.useContext(PhoneAppContext);
     return (
-        <Flex>
+        selectedChat?._id === messages?.chat._id ? <Flex>
             <HStack justifyContent={'space-between'} alignItems={'center'} >
-                <Avatar alignSelf="center" size="md" source={{
-                    uri: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
+                {sameSender && <Avatar alignSelf="center" size="md" source={{
+                    uri: messages.sender.pic
                 }}>
                     AJ
-                </Avatar>
+                </Avatar>}
                 <Flex m={'5'} width={'100%'}>
-                    <Text fontSize={'xs'}>gregeg</Text>
-                    <Box rounded={'lg'} p={'2'} bg={'primary.100'}>
-                        <Text fontSize={'lg'}>lorem trjejitniujntreuni</Text>
+                    {!sameTime && <Text fontSize={'xs'}>{format(messages.createdAt)}</Text>}
+                    <Box rounded={'lg'} p={'2'} marginRight={own ? '0' : '10'} marginLeft={own ? '10' : '0'} bg={own ? 'primary.400' : 'primary.200'}>
+                        <Text style={{ color: own ? '#fff' : 'primary.600' }} color={'#fff'} fontSize={'lg'}>{messages.content}</Text>
                     </Box>
                 </Flex>
             </HStack>
-        </Flex>
+        </Flex> : null
     )
 }
 

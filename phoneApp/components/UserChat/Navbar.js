@@ -2,10 +2,12 @@ import React, { useState } from 'react'
 import { Avatar, Box, Center, HStack, Icon, IconButton, StatusBar, Text } from 'native-base'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import ProfileModal from '../UserModals/ProfileModal';
+import NavbarModal from '../UserModals/NavbarModal';
 
 
-const Navbar = () => {
+const Navbar = ({ user }) => {
     const [showModal, setShowModal] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
 
     return (
         <>
@@ -23,13 +25,14 @@ const Navbar = () => {
                         <IconButton icon={<Icon size="xl" as={MaterialIcons} name="notifications" color="black" />} />
                         <IconButton icon={
                             <Avatar bg="green.500" alignSelf="center" size="sm" source={{
-                                uri: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
+                                uri: user.pic
                             }} />
                         } onPress={() => setShowModal(true)} />
                     </HStack>
                 </HStack>
             </Center>
-            <ProfileModal showModal={showModal} setShowModal={setShowModal} />
+            <NavbarModal user={user} showModal={showModal} setShowModal={setShowModal} setModalVisible={setModalVisible}/>
+            <ProfileModal user={user} modalVisible={modalVisible} setModalVisible={setModalVisible} />
         </>
     )
 }

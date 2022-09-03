@@ -5,8 +5,10 @@ import Feather from 'react-native-vector-icons/Feather';
 import axios from 'axios';
 import { backend_url } from '../production';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { PhoneAppContext } from '../context/PhoneAppContext';
 
 const Login = ({ navigation }) => {
+    const { dispatch } = React.useContext(PhoneAppContext);
     const [username, setUsername] = React.useState('')
     const [password, setPassword] = React.useState('')
     const toast = useToast();
@@ -27,9 +29,9 @@ const Login = ({ navigation }) => {
         }
         try {
             const res = await axios.post(`${backend_url}/users/login`, user);
-            console.log("working!!", res.data)
             const jsonValue = JSON.stringify(res.data)
             await AsyncStorage.setItem('user', jsonValue)
+            setUser(res.data)
         } catch (err) {
             // add toast or alert
             alert("Invalid username or password")
@@ -39,7 +41,7 @@ const Login = ({ navigation }) => {
 
     return (
         <Flex flex={1} align={'center'} justify={'center'} position={'relative'} bg={"primary.100"}>
-            <Box py={'12'} rounded={'lg'} w={'80'} height={'xl'} display={'flex'} flexDirection={'column'} justifyContent={'space-between'} alignItems={'center'} bg={'white.100'}>
+            <Box py={'12'} rounded={'lg'} w={'80'} height={'xl'} display={'flex'} flexDirection={'column'} justifyContent={'space-between'} alignItems={'center'} bg={'#fff'}>
                 <Heading color={'primary.600'} fontSize={'4xl'}>Login</Heading>
                 <Box display={'flex'} justifyContent={'center'} alignItems={'center'} w={'48'}>
                     <Text color={'primary.900'}>Login to you account and get</Text>

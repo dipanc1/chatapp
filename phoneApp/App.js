@@ -14,6 +14,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './screens/Login';
 import Register from './screens/Register';
 import Chat from './screens/Chat';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const newColorTheme = {
   text: {
@@ -74,22 +75,44 @@ const Stack = createNativeStackNavigator();
 
 
 const App = () => {
+  const [user, setUser] = React.useState(null);
 
-  React.useEffect(async () => {
-    const jsonValue = await AsyncStorage.getItem('user')
-    return jsonValue != null ? JSON.parse(jsonValue) : null;
+  React.useEffect(() => {
+    const getUserDetails = async () => {
+      try {
+        const jsonValue = await AsyncStorage.getItem('user')
+        return jsonValue != null ? JSON.parse(jsonValue) : null
+      } catch (e) {
+        // read error
+        console.log(e)
+      }
+
+      console.log('Done.')
+    }
+    console.log(getUserDetails())
+    getUserDetails().then(res => {
+      setUser(res)
+    });
+
   }, []);
 
   return (
     <NativeBaseProvider theme={theme}>
       <PhoneAppContextProvider>
-        <NavigationContainer>
-          <Stack.Navigator intialRouteName="Login">
-            <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="Register" component={Register} />
-          </Stack.Navigator>
-        </NavigationContainer>
-        {/* <Chat /> */}
+        {user ?
+          <Chat user={user} />
+          :
+          <NavigationContainer>
+            <Stack.Navigator intialRouteName="Login">
+              <Stack.Screen name="Login">
+                {props => <Login {...props} setUser={setUser} />}
+              </Stack.Screen>
+              <Stack.Screen name="Register">
+                {props => <Register {...props} />}
+              </Stack.Screen>
+            </Stack.Navigator>
+          </NavigationContainer>
+        }
       </PhoneAppContextProvider>
     </NativeBaseProvider>
   );

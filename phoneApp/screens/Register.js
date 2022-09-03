@@ -189,7 +189,7 @@ const Register = ({ navigation }) => {
 
     return (
         <Flex flex={1} align={'center'} justify={'center'} position={'relative'} bg={"primary.100"}>
-            <Box py={'8'} rounded={'lg'} w={'80'} height={'xl'} display={'flex'} flexDirection={'column'} justifyContent={'space-between'} alignItems={'center'} bg={'white.100'}>
+            <Box py={'8'} rounded={'lg'} w={'80'} height={'xl'} display={'flex'} flexDirection={'column'} justifyContent={'space-between'} alignItems={'center'} bg={'#fff'}>
                 <Heading color={'primary.600'} fontSize={'4xl'}>
                     Register
                     {/* Enter OTP */}

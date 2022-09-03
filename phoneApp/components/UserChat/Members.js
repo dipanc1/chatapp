@@ -4,13 +4,13 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Participants from '../Miscellaneous/Participants';
 import Settings from '../Miscellaneous/Settings';
-import ChatMembers from '../Miscellaneous/ChatMembers';
+import Chatbox from './Chatbox';
 
 const Tab = createMaterialTopTabNavigator();
 
 //TODO: Change color of the tab bar
 
-const Members = () => {
+const Members = ({ user }) => {
   const screenOptions = {
     unmountOnBlur: false,
     headerShown: false,
@@ -33,16 +33,19 @@ const Members = () => {
     <Tab.Navigator {...{ screenOptions, sceneContainerStyle }}>
       <Tab.Screen
         name="Chat"
-        component={ChatMembers}
-      />
+      >
+        {props => <Chatbox {...props} user={user} />}
+      </Tab.Screen>
       <Tab.Screen
         name="Participants"
-        component={Participants}
-      />
+      >
+        {props => <Participants {...props} user={user} />}
+      </Tab.Screen>
       <Tab.Screen
         name="Settings"
-        component={Settings}
-      />
+      >
+        {props => <Settings {...props} user={user} />}
+      </Tab.Screen>
     </Tab.Navigator>
   )
 }

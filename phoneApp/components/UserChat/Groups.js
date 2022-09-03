@@ -1,56 +1,75 @@
 import React, { useState } from 'react'
-import { Avatar, Box, FlatList, Flex, HStack, IconButton, Spacer, Text, VStack } from 'native-base'
+import { Avatar, Box, FlatList, Flex, HStack, IconButton, ScrollView, Spacer, Text, VStack } from 'native-base'
 import Members from './Members'
-import UserListItem from '../UserItems/UserListItem'
+import axios from 'axios'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import GroupChatModal from '../UserModals/GroupChatModal'
+import GroupListItem from '../UserItems/GroupListItem'
+import { TouchableOpacity } from 'react-native'
+import { PhoneAppContext } from '../../context/PhoneAppContext'
+import { backend_url } from '../../production'
 
-const Groups = () => {
+const Groups = ({ user, groupConversations, searchResultsGroups, search, setSearch }) => {
   const [showModal, setShowModal] = useState(false);
+  const { dispatch, selectedChat } = React.useContext(PhoneAppContext)
 
-  const data = [{
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    fullName: "Aafreen Khan",
-    timeStamp: "12:47 PM",
-    recentText: "Good Day!",
-  }, {
-    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-    fullName: "Sujitha Mathur",
-    timeStamp: "11:11 PM",
-    recentText: "Cheer up, there!",
-  }, {
-    id: "58694a0f-3da1-471f-bd96-145571e29d72",
-    fullName: "Anci Barroco",
-    timeStamp: "6:22 PM",
-    recentText: "Good Day!",
-  }, {
-    id: "68694a0f-3da1-431f-bd56-142371e29d72",
-    fullName: "Aniket Kumar",
-    timeStamp: "8:56 PM",
-    recentText: "All the best",
-  }, {
-    id: "28694a0f-3da1-471f-bd96-142456e29d72",
-    fullName: "Kiara",
-    timeStamp: "12:47 PM",
-    recentText: "I will call today.",
-  }]
+  const handleAddUser = async (user1, groupId) => {
+    const res = searchResultsGroups.map(group => group.users).includes(user1);
+    if (res) {
+      alert('User already in chat')
+    }
+    try {
+      // setLoading(true);
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.put(
+        `${backend_url}/conversation/groupadd`,
+        {
+          chatId: groupId,
+          userId: user1,
+        },
+        config
+      );
+      // console.log(data);
+      dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
+      // setFetchAgain(!fetchAgain);
+      // setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+    setSearch('');
+
+  }
 
   return (
     <>
-      <FlatList position={'relative'} data={data} renderItem={({
-        item
-      }) =>
-        <Flex justifyContent={'flex-start'} p={'2'}>
-          <UserListItem item={item} />
-        </Flex>
-      } keyExtractor={item => item.id} />
+      {selectedChat && selectedChat?.isGroupChat ?
+        <Members user={user} />
+        :
+        <>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            {(search.length > 0 ? searchResultsGroups : groupConversations)?.map((group, index) => (
+              <TouchableOpacity key={group._id} onPress={() => {
+                searchResultsGroups ?
+                  handleAddUser(user._id, group._id)
+                  : dispatch({ type: 'SET_SELECTED_CHAT', payload: group })
+              }}>
+                <Flex justifyContent={'flex-start'} p={'2'}>
+                  <GroupListItem group={group} />
+                </Flex>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
 
-      {/* <Members /> */}
 
-      <Box position={'absolute'} bottom={'5'} right={'5'}>
-        <IconButton onPress={() => setShowModal(true)} colorScheme={'cyan'} size={'md'} variant={"outline"} _icon={{ as: MaterialIcons, name: "add", size: "lg" }} />
-      </Box>
-      <GroupChatModal showModal={showModal} setShowModal={setShowModal} />
+          <Box position={'absolute'} bottom={'5'} right={'5'}>
+            <IconButton onPress={() => setShowModal(true)} colorScheme={'cyan'} size={'md'} variant={"outline"} _icon={{ as: MaterialIcons, name: "add", size: "lg" }} />
+          </Box>
+          <GroupChatModal showModal={showModal} setShowModal={setShowModal} />
+        </>}
     </>
   )
 }

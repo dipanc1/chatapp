@@ -1,9 +1,12 @@
 import { Button, FlatList, Flex, HStack, Text, VStack } from 'native-base'
 import React from 'react'
+import { PhoneAppContext } from '../../context/PhoneAppContext'
 import UserListItem from '../UserItems/UserListItem'
 import Searchbar from './Searchbar'
 
 const Participants = () => {
+
+  const { dispatch, selectedChat } = React.useContext(PhoneAppContext);
 
   const data = [{
     id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
@@ -20,11 +23,13 @@ const Participants = () => {
   }]
 
   return (
-    <Flex bg={'white'} flex={1}>
+    <Flex bg={'#fff'} flex={1}>
 
       <HStack my={'2'} alignItems={'center'} justifyContent={'space-around'}>
-        <Text color={'#2E354B'}>2 Members</Text>
-        <Button variant={'ghost'} colorScheme={'cyan'}>Add</Button>
+        <Text color={'#2E354B'}>{selectedChat?.users.length} Members</Text>
+        <Button onPress={
+          () => dispatch({ type: 'SET_SELECTED_CHAT', payload: null })
+        } variant={'ghost'} colorScheme={'cyan'}>Back To Groups</Button>
       </HStack>
 
       <VStack p={'5'}>

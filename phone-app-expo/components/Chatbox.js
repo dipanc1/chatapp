@@ -11,7 +11,7 @@ import { format } from 'timeago.js'
 import { FontAwesome5, Feather, Entypo } from '@expo/vector-icons';
 import { io } from 'socket.io-client';
 
-const ENDPOINT = `${backend_url}`;
+const ENDPOINT = backend_url;
 var socket, selectedChatCompare;
 
 const Chatbox = ({ fetchAgain, setFetchAgain, user, setMembers }) => {
