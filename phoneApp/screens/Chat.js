@@ -91,6 +91,8 @@ const Chat = ({ user }) => {
         }
     }
 
+    //TODO: SOCKETS!!!
+
     return (
         <>
             <Navbar user={user} />

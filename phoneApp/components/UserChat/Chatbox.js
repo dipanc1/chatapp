@@ -18,6 +18,8 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
     const [profile, setProfile] = React.useState(null);
     const [messages, setMessages] = React.useState([]);
     const [loading, setLoading] = React.useState(false);
+    const [typing, setTyping] = React.useState(false);
+    const [isTyping, setIsTyping] = React.useState(false);
 
     React.useEffect(() => {
         try {
@@ -74,11 +76,33 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
         }
     }
 
+    const typingHandler = (e) => {
+        setNewMessage(e);
+
+        // typing indicator logic
+        // if (!socketConnected) return;
+
+        if (!typing) {
+            setTyping(true);
+            // socket.emit("typing", selectedChat._id);
+        }
+        let lastTypingTime = new Date().getTime();
+        var typingTimer = 1500;
+        setTimeout(() => {
+            var timeNow = new Date().getTime();
+            var timeElapsed = timeNow - lastTypingTime;
+            if (timeElapsed >= typingTimer && typing) {
+                // socket.emit("stop typing", selectedChat._id);
+                setTyping(false);
+            }
+        }, typingTimer);
+    }
+
     return (
         <Flex bg={'#fff'} p={2} mx={'4'} flex={'1'}>
             {/* TOP PART  */}
             <HStack justifyContent={'space-between'} alignItems={'center'} h={'16'}>
-                <Text style={{color:'primary.600'}} fontWeight={'bold'} fontSize={'lg'} mx={'10'}>
+                <Text style={{ color: 'primary.600' }} fontWeight={'bold'} fontSize={'lg'} mx={'10'}>
                     {selectedChat?.isGroupChat ? selectedChat?.chatName : profile?.username}
                 </Text>
                 <IconButton onPress={() => dispatch({ type: 'SET_SELECTED_CHAT', payload: null })} icon={<MaterialIcons name="keyboard-arrow-down" size={24} color={'black'} />} />
@@ -110,7 +134,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
 
             {/* BOTTOM PART */}
             <HStack alignItems={'center'} justifyContent={'space-between'} h={'16'}>
-                <Input value={newMessage} outlineColor={'primary.400'} bg={'primary.200'} w={'72'} placeholder={'Type a message'} />
+                <Input value={newMessage} outlineColor={'primary.400'} bg={'primary.200'} w={'72'} placeholder={'Type a message'} onChangeText={typingHandler} />
                 <IconButton onPress={newMessage !== "" ? sendMessage : null} bg={'primary.300'} icon={<MaterialIcons name="send" size={24} color={'#fff'} />} />
             </HStack>
 

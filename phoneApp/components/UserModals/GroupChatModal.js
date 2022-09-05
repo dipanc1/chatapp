@@ -1,7 +1,55 @@
-import { Avatar, Button, FormControl, Input, Modal, Text, VStack } from 'native-base';
+import axios from 'axios';
+import { Avatar, Badge, Button, FormControl, Input, Modal, ScrollView, Text, View, VStack } from 'native-base';
 import React from 'react'
+import { TouchableOpacity } from 'react-native';
+import { PhoneAppContext } from '../../context/PhoneAppContext';
+import { backend_url } from '../../production';
+import Searchbar from '../Miscellaneous/Searchbar';
+import UserListItem from '../UserItems/UserListItem';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-const GroupChatModal = ({ showModal, setShowModal }) => {
+const GroupChatModal = ({ user, showModal, setShowModal }) => {
+  const { dispatch, chats } = React.useContext(PhoneAppContext);
+  const [groupChatName, setGroupChatName] = React.useState();
+  const [selectedUsers, setSelectedUsers] = React.useState([]);
+  const [search, setSearch] = React.useState('');
+  const [searchResults, setSearchResults] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
+
+  const handleSearch = async (query) => {
+    setSearch(query)
+    if (!query) {
+      return;
+    }
+    try {
+      setLoading(true);
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.token}`
+        }
+      }
+      const { data } = await axios.get(`${backend_url}/users?search=${search}`, config)
+      // console.log(data.users);
+      setLoading(false);
+      setSearchResults(data.users);
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleGroup = (userToAdd) => {
+    if (selectedUsers.includes(userToAdd)) {
+      alert('already added');
+    } else {
+      setSelectedUsers([...selectedUsers, userToAdd])
+    }
+  }
+
+  const handleDelete = (userToDelete) => {
+    setSelectedUsers(selectedUsers.filter(user => user._id !== userToDelete._id))
+  }
+
   return (
     <Modal isOpen={showModal} onClose={() => setShowModal(false)} _backdrop={{
       _dark: {
@@ -20,8 +68,27 @@ const GroupChatModal = ({ showModal, setShowModal }) => {
             </FormControl>
             <FormControl>
               <FormControl.Label>Add Users</FormControl.Label>
-              <Input variant={'filled'} color={'primary.900'} placeholder="Search users" />
+              <Input variant={'filled'} color={'primary.900'} placeholder="Search users" search={search} setSearch={setSearch} onChangeText={text => handleSearch(text)} />
             </FormControl>
+
+            {selectedUsers.map(user =>
+              <Badge bgColor={'#3cc4b7'}>
+                <Text>
+                  {user.username}
+                  <MaterialIcons name="close" size={20} color="#fff" onPress={() => handleDelete(user)} />
+                </Text>
+              </Badge>
+            )}
+
+            <ScrollView maxH={'32'}>
+              {searchResults?.map((user, index) => (
+                <TouchableOpacity key={user._id} onPress={() => handleGroup(user)}>
+                  <UserListItem
+                    user={user}
+                  />
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
 
             <Button rounded={'lg'} bg={'primary.300'} w={'100%'} onPress={() => setShowModal(false)}>
               Create
