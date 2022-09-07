@@ -8,6 +8,7 @@
 #### Group chat picture add
 #### Confirmation while leaving group and other operations
 #### Send broadcast active or not
+#### Show Image while before uploading
 
 ### Phone App
 

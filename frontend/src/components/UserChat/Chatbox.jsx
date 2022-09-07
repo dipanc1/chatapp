@@ -18,7 +18,7 @@ var selectedChatCompare;
 export const ChatBoxComponent = ({ meetingId, selectedChat, fetchAgain, setFetchAgain, user, toast }) => {
   const socket = React.useContext(SocketContext);
   // console.log("HBBHBKJNJ",socket)
-  const { notification, dispatch, stream } = React.useContext(AppContext);
+  const { notification, dispatch } = React.useContext(AppContext);
   const [messages, setMessages] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [newMessage, setNewMessage] = React.useState("");

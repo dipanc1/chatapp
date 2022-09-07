@@ -1,25 +1,52 @@
 import axios from 'axios'
 import { Box, Button, Flex, HStack, Icon, IconButton, Input, ScrollView, Text, VStack } from 'native-base'
 import React from 'react'
+import Lottie from 'lottie-react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { PhoneAppContext } from '../../context/PhoneAppContext'
 import Message from '../Miscellaneous/Message'
 import { backend_url } from '../../production'
 import { format } from 'timeago.js'
+import { SocketContext } from '../../context/socketContext'
+import animation from '../../assets/animation.json'
 
-const ENDPOINT = `${backend_url}`;
-var socket, selectedChatCompare;
+var selectedChatCompare;
 
 const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
+    const socket = React.useContext(SocketContext);
     const { dispatch, selectedChat } = React.useContext(PhoneAppContext);
     const scrollViewRef = React.useRef();
-
+    const [socketConnected, setSocketConnected] = React.useState(false);
     const [newMessage, setNewMessage] = React.useState();
     const [profile, setProfile] = React.useState(null);
     const [messages, setMessages] = React.useState([]);
     const [loading, setLoading] = React.useState(false);
     const [typing, setTyping] = React.useState(false);
     const [isTyping, setIsTyping] = React.useState(false);
+
+    React.useEffect(() => {
+        socket.emit("setup", user);
+        socket.on("connected", () => setSocketConnected(true));
+        socket.on("typing", () => setIsTyping(true));
+        socket.on("stop typing", () => setIsTyping(false));
+        // user online
+        socket.emit("user-online", user);
+    }, []);
+
+    React.useEffect(() => {
+        socket.on("message received", (newMessageReceived) => {
+            if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
+                if (!notification.includes(newMessageReceived)) {
+                    dispatch({ type: 'SET_NOTIFICATION', payload: [newMessageReceived] });
+                    //   console.log(newMessageReceived);
+                    setFetchAgain(!fetchAgain);
+                }
+            } else {
+                setMessages([...messages, newMessageReceived]);
+            }
+        })
+    });
+
 
     React.useEffect(() => {
         try {
@@ -47,14 +74,15 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
             const { data } = await axios.get(`${backend_url}/message/${selectedChat._id}`, config);
             setMessages(data);
             setLoading(false);
-            // socket.emit('join chat', selectedChat._id);
+            socket.emit('join chat', selectedChat._id);
         } catch (error) {
+            //TODO: ADD ALERTS
             console.log(error);
         }
     }
 
     const sendMessage = async (event) => {
-        // socket.emit("stop typing", selectedChat._id);
+        socket.emit("stop typing", selectedChat._id);
         try {
             const config = {
                 headers: {
@@ -68,7 +96,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
                 chatId: selectedChat._id
             }, config);
 
-            // socket.emit("new message", data);
+            socket.emit("new message", data);
             setMessages([...messages, data]);
             // console.log(data);
         } catch (error) {
@@ -80,11 +108,11 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
         setNewMessage(e);
 
         // typing indicator logic
-        // if (!socketConnected) return;
+        if (!socketConnected) return;
 
         if (!typing) {
             setTyping(true);
-            // socket.emit("typing", selectedChat._id);
+            socket.emit("typing", selectedChat._id);
         }
         let lastTypingTime = new Date().getTime();
         var typingTimer = 1500;
@@ -92,7 +120,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
             var timeNow = new Date().getTime();
             var timeElapsed = timeNow - lastTypingTime;
             if (timeElapsed >= typingTimer && typing) {
-                // socket.emit("stop typing", selectedChat._id);
+                socket.emit("stop typing", selectedChat._id);
                 setTyping(false);
             }
         }, typingTimer);
@@ -129,6 +157,13 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
                             sameTime={(i < messages.length - 1) && format(messages[i].createdAt) === format(messages[i + 1].createdAt)}
                         />
                     ))}
+                    {isTyping ? (
+                        <View>
+                            <Lottie source={animation} autoPlay loop/>
+                        </View>
+                    ) : (
+                        <></>
+                    )}
                 </ScrollView>
             </Box>
 

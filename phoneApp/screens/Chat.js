@@ -8,6 +8,7 @@ import Searchbar from '../components/Miscellaneous/Searchbar';
 import axios from 'axios';
 import { backend_url } from '../production';
 import { PhoneAppContext } from '../context/PhoneAppContext';
+import { SocketContextProvider } from '../context/socketContext';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -91,10 +92,9 @@ const Chat = ({ user }) => {
         }
     }
 
-    //TODO: SOCKETS!!!
 
     return (
-        <>
+        <SocketContextProvider>
             <Navbar user={user} />
             <Searchbar search={search} handleSearch={handleSearch} placeholder={"Search People or Groups"} />
             <NavigationContainer>
@@ -112,7 +112,7 @@ const Chat = ({ user }) => {
                     </Tab.Screen>
                 </Tab.Navigator>
             </NavigationContainer>
-        </>
+        </SocketContextProvider>
     )
 }
 

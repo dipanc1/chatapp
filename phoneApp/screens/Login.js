@@ -7,8 +7,7 @@ import { backend_url } from '../production';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PhoneAppContext } from '../context/PhoneAppContext';
 
-const Login = ({ navigation }) => {
-    const { dispatch } = React.useContext(PhoneAppContext);
+const Login = ({ navigation, setUser }) => {
     const [username, setUsername] = React.useState('')
     const [password, setPassword] = React.useState('')
     const toast = useToast();
