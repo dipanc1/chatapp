@@ -362,7 +362,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
                 </Box>
 
               }
-              {/* for mobile yet to edit  */}
+              {/*TODO: for mobile yet to edit  */}
               <Flex
                 display={['block', 'none', 'none', 'none']}
               >

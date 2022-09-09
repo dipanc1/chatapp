@@ -17,12 +17,11 @@ const Participants = ({ user }) => {
         <Text color={'#2E354B'}>{selectedChat?.users.length} Members</Text>
         <Button onPress={
           () => dispatch({ type: 'SET_SELECTED_CHAT', payload: null })
-        } variant={'ghost'} colorScheme={'cyan'}>Back To Groups</Button>
+        } variant={'ghost'} colorScheme={'cyan'}>Add</Button>
+        {/* TODO: ADD ADD USER MODAL */}
       </HStack>
 
       <VStack p={'5'}>
-
-        <Searchbar placeholder={"Search User"} />
 
         <ScrollView>
           {selectedChat.isGroupChat && selectedChat?.users.map(u =>

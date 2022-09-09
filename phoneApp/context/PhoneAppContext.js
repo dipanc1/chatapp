@@ -6,7 +6,8 @@ const INITIAL_STATE = {
   selectedChat: null,
   chats: [],
   notification: [],
-  user: null
+  stream: false,
+  fullScreen: false,
 };
 
 export const PhoneAppContext = createContext(INITIAL_STATE);
@@ -21,7 +22,8 @@ export const PhoneAppContextProvider = ({ children }) => {
         selectedChat: state.selectedChat,
         chats: state.chats,
         notification: state.notification,
-        user: state.user,
+        stream: state.stream,
+        fullScreen: state.fullScreen,
         dispatch
       }}>
       {children}

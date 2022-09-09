@@ -9,11 +9,13 @@ import axios from 'axios';
 import { backend_url } from '../production';
 import { PhoneAppContext } from '../context/PhoneAppContext';
 import { SocketContextProvider } from '../context/socketContext';
+import Streaming from '../components/Miscellaneous/Streaming';
+import Members from '../components/UserChat/Members';
 
 const Tab = createMaterialTopTabNavigator();
 
 const Chat = ({ user }) => {
-    const { chats, dispatch, selectedChat } = React.useContext(PhoneAppContext);
+    const { chats, dispatch, stream, fullScreen } = React.useContext(PhoneAppContext);
     const [conversations, setConversations] = React.useState([])
     const [groupConversations, setGroupConversations] = React.useState([])
     const [search, setSearch] = React.useState('')
@@ -95,22 +97,33 @@ const Chat = ({ user }) => {
 
     return (
         <SocketContextProvider>
-            <Navbar user={user} />
-            <Searchbar search={search} handleSearch={handleSearch} placeholder={"Search People or Groups"} />
             <NavigationContainer>
-                <Tab.Navigator {...{ screenOptions, sceneContainerStyle }}>
-                    <Tab.Screen
-                        name="Conversations"
-                    >
-                        {props => <Conversations  {...props} user={user} conversations={conversations} search={search} setSearch={setSearch} searchResultsUsers={searchResultsUsers} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
-                    </Tab.Screen>
-                    <Tab.Screen
-                        name="Groups"
-                        screenOptions={{ presentation: 'modal' }}
-                    >
-                        {props => <Groups {...props} user={user} groupConversations={groupConversations} search={search} setSearch={setSearch} searchResultsGroups={searchResultsGroups} />}
-                    </Tab.Screen>
-                </Tab.Navigator>
+
+                <Navbar user={user} />
+                {stream ?
+                    <>
+                        <Streaming />
+                        {!fullScreen && <Members user={user} />}
+                    </>
+                    :
+                    <>
+                        <Searchbar search={search} handleSearch={handleSearch} placeholder={"Search People or Groups"} />
+
+                        <Tab.Navigator {...{ screenOptions, sceneContainerStyle }}>
+                            <Tab.Screen
+                                name="Conversations"
+                            >
+                                {props => <Conversations  {...props} user={user} conversations={conversations} search={search} setSearch={setSearch} searchResultsUsers={searchResultsUsers} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+                            </Tab.Screen>
+                            <Tab.Screen
+                                name="Groups"
+                                screenOptions={{ presentation: 'modal' }}
+                            >
+                                {props => <Groups {...props} user={user} groupConversations={groupConversations} search={search} setSearch={setSearch} searchResultsGroups={searchResultsGroups} />}
+                            </Tab.Screen>
+                        </Tab.Navigator>
+                    </>
+                }
             </NavigationContainer>
         </SocketContextProvider>
     )

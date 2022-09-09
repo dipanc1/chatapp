@@ -20,10 +20,15 @@ const PhoneAppReducer = (state, action) => {
                 ...state,
                 notification: action.payload
             };
-        case "SET_USER":
+        case "SET_STREAM":
             return {
                 ...state,
-                user: action.payload
+                stream: !state.stream
+            };
+        case "SET_FULLSCREEN":
+            return {
+                ...state,
+                fullScreen: !state.fullScreen
             };
         default:
             return state;
