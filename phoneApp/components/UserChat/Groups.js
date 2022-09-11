@@ -9,8 +9,9 @@ import { TouchableOpacity } from 'react-native'
 import { PhoneAppContext } from '../../context/PhoneAppContext'
 import { backend_url } from '../../production'
 
-const Groups = ({ user, groupConversations, searchResultsGroups, search, setSearch }) => {
+const Groups = ({ user, groupConversations, searchResultsGroups, search, setSearch, fetchAgain, setFetchAgain }) => {
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false)
   const { dispatch, selectedChat } = React.useContext(PhoneAppContext)
 
   const handleAddUser = async (user1, groupId) => {
@@ -19,7 +20,7 @@ const Groups = ({ user, groupConversations, searchResultsGroups, search, setSear
       alert('User already in chat')
     }
     try {
-      // setLoading(true);
+      setLoading(true);
       const config = {
         headers: {
           Authorization: `Bearer ${user.token}`,
@@ -35,8 +36,8 @@ const Groups = ({ user, groupConversations, searchResultsGroups, search, setSear
       );
       // console.log(data);
       dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
-      // setFetchAgain(!fetchAgain);
-      // setLoading(false);
+      setFetchAgain(!fetchAgain);
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -47,7 +48,7 @@ const Groups = ({ user, groupConversations, searchResultsGroups, search, setSear
   return (
     <>
       {selectedChat && selectedChat?.isGroupChat ?
-        <Members user={user} />
+        <Members user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
         :
         <>
           <ScrollView showsVerticalScrollIndicator={false}>
@@ -68,7 +69,7 @@ const Groups = ({ user, groupConversations, searchResultsGroups, search, setSear
           <Box position={'absolute'} bottom={'5'} right={'5'}>
             <IconButton onPress={() => setShowModal(true)} colorScheme={'cyan'} size={'md'} variant={"outline"} _icon={{ as: MaterialIcons, name: "add", size: "lg" }} />
           </Box>
-          <GroupChatModal showModal={showModal} setShowModal={setShowModal} user={user}/>
+          <GroupChatModal showModal={showModal} setShowModal={setShowModal} user={user} />
         </>}
     </>
   )

@@ -30,11 +30,11 @@ const Streaming = () => {
             {/* BOTTOM PART */}
             <HStack flex={'3'} mx={'2'} justifyContent={'space-between'}>
                 <Flex justifyContent={'center'} alignItems={'center'}>
-                    <IconButton onPress={() => setToggle(true)} bg={'primary.200'} icon={<MaterialIcons name={toggle ? "volume-up" : "volume-off"} size={24} color="#9F85F7" />} />
+                    <IconButton onPress={() => setToggle(!toggle)} bg={'primary.200'} icon={<MaterialIcons name={toggle ? "volume-up" : "volume-off"} size={24} color="#9F85F7" />} />
                     <Text>Volume</Text>
                 </Flex>
                 <Flex justifyContent={'center'} alignItems={'center'}>
-                    <IconButton onPress={() => setToggle(true)} bg={'primary.200'} icon={<MaterialIcons name={toggle ? "mic" : "mic-off"} size={24} color="#EFAA86" />} />
+                    <IconButton onPress={() => setToggle(!toggle)} bg={'primary.200'} icon={<MaterialIcons name={toggle ? "mic" : "mic-off"} size={24} color="#EFAA86" />} />
                     <Text>Mute</Text>
                 </Flex>
                 <Flex justifyContent={'center'} alignItems={'center'}>

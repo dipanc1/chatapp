@@ -8,10 +8,8 @@ import Searchbar from '../Miscellaneous/Searchbar';
 import UserListItem from '../UserItems/UserListItem';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-const AddModal = ({ user, showModal, setShowModal }) => {
-  const { dispatch, chats } = React.useContext(PhoneAppContext);
-  const [groupChatName, setGroupChatName] = React.useState();
-  const [selectedUsers, setSelectedUsers] = React.useState([]);
+const AddModal = ({ user, showModal, setShowModal, fetchAgain, setFetchAgain }) => {
+  const { dispatch, selectedChat } = React.useContext(PhoneAppContext);
   const [search, setSearch] = React.useState('');
   const [searchResults, setSearchResults] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
@@ -38,16 +36,40 @@ const AddModal = ({ user, showModal, setShowModal }) => {
     }
   }
 
-  const handleGroup = (userToAdd) => {
-    if (selectedUsers.includes(userToAdd)) {
-      alert('already added');
-    } else {
-      setSelectedUsers([...selectedUsers, userToAdd])
+  const handleAddUser = async (user1) => {
+    if (selectedChat.groupAdmin._id !== user._id) {
+      return alert("You are not the admin")
     }
-  }
+    if (selectedChat.users.map(user => user._id).includes(user1)) {
+      return alert('User already in chat')
+    }
+    try {
+      setLoading(true);
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.put(
+        `${backend_url}/conversation/groupadd`,
+        {
+          chatId: selectedChat._id,
+          userId: user1,
+        },
+        config
+      );
+      // console.log(data);
+      dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
+      setFetchAgain(!fetchAgain);
+      setLoading(false);
+      setShowModal(false);
+      setSearchResults([])
+      alert('User added to chat');
+    } catch (error) {
+      console.log(error);
+    }
+    setSearch('');
 
-  const handleDelete = (userToDelete) => {
-    setSelectedUsers(selectedUsers.filter(user => user._id !== userToDelete._id))
   }
 
   return (
@@ -60,29 +82,16 @@ const AddModal = ({ user, showModal, setShowModal }) => {
       <Modal.Content maxWidth="350" maxH="800">
         <Modal.Body>
           <VStack space={4} alignItems={'center'}>
-            <Text color={'primary.600'} fontSize={'2xl'} bold>Create a new Group</Text>
-            <Text color={'primary.600'}>You can add any users to this group</Text>
+            <Text color={'primary.600'} fontSize={'2xl'} bold>User Search</Text>
+            <Text color={'primary.600'}>Search for a person to add in group</Text>
             <FormControl>
-              <FormControl.Label>Add Member</FormControl.Label>
-              <Input variant={'filled'} color={'primary.900'} placeholder="Group name" />
-            </FormControl>
-            <FormControl>
-              <FormControl.Label>Add Users</FormControl.Label>
+              <FormControl.Label>Add a Member</FormControl.Label>
               <Input variant={'filled'} color={'primary.900'} placeholder="Search users" search={search} setSearch={setSearch} onChangeText={text => handleSearch(text)} />
             </FormControl>
 
-            {selectedUsers.map(user =>
-              <Badge bgColor={'#3cc4b7'}>
-                <Text>
-                  {user.username}
-                  <MaterialIcons name="close" size={20} color="#fff" onPress={() => handleDelete(user)} />
-                </Text>
-              </Badge>
-            )}
-
             <ScrollView maxH={'32'}>
               {searchResults?.map((user, index) => (
-                <TouchableOpacity key={user._id} onPress={() => handleGroup(user)}>
+                <TouchableOpacity key={user._id} onPress={() => handleAddUser(user._id)}>
                   <UserListItem
                     user={user}
                   />
@@ -90,9 +99,6 @@ const AddModal = ({ user, showModal, setShowModal }) => {
               ))}
             </ScrollView>
 
-            <Button rounded={'lg'} bg={'primary.300'} w={'100%'} onPress={() => setShowModal(false)}>
-              Create
-            </Button>
             <Button variant={'outline'} colorScheme="violet" rounded={'lg'} w={'100%'} onPress={() => setShowModal(false)}>
               Cancel
             </Button>

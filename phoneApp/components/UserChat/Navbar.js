@@ -5,7 +5,7 @@ import ProfileModal from '../UserModals/ProfileModal';
 import NavbarModal from '../UserModals/NavbarModal';
 
 
-const Navbar = ({ user }) => {
+const Navbar = ({ user, fetchAgain, setFetchAgain }) => {
     const [showModal, setShowModal] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
 
@@ -14,13 +14,10 @@ const Navbar = ({ user }) => {
             <Center>
                 <StatusBar bg="primary.200" barStyle="light-content" />
                 <Box safeAreaTop bg="primary.200" />
-                <HStack bg="primary.200" px="1" py="3" justifyContent="space-between" alignItems="center" w="100%">
-                    <HStack alignItems="center">
-                        <IconButton icon={<Icon size="xl" as={MaterialIcons} name="menu" color="black" />} />
-                        <Text color="black" fontSize="20" fontWeight="bold">
-                            ChatApp
-                        </Text>
-                    </HStack>
+                <HStack bg="primary.200" px="3" py="3" justifyContent="space-between" alignItems="center" w="100%">
+                    <Text color="black" fontSize="20" fontWeight="bold">
+                        ChatApp
+                    </Text>
                     <HStack alignItems="center">
                         <IconButton icon={<Icon size="xl" as={MaterialIcons} name="notifications" color="black" />} />
                         <IconButton icon={
@@ -31,7 +28,7 @@ const Navbar = ({ user }) => {
                     </HStack>
                 </HStack>
             </Center>
-            <NavbarModal user={user} showModal={showModal} setShowModal={setShowModal} setModalVisible={setModalVisible}/>
+            <NavbarModal setFetchAgain={setFetchAgain} fetchAgain={fetchAgain} user={user} showModal={showModal} setShowModal={setShowModal} setModalVisible={setModalVisible} />
             <ProfileModal user={user} modalVisible={modalVisible} setModalVisible={setModalVisible} />
         </>
     )

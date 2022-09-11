@@ -20,7 +20,7 @@ const ProfileModal = ({ user, modalVisible, setModalVisible }) => {
               {user.username}
             </Avatar>
             <Text fontSize={'md'} color={'primary.600'} mt="2">{user.username}</Text>
-            <Text fontSize={'md'} color={'primary.600'} mt="2"> Phone Number: {user.number}</Text>
+            <Text fontSize={'md'} color={'primary.600'} mt="2"> Phone Number: +{user.number}</Text>
           </VStack>
         </Modal.Body>
         <Modal.Footer>

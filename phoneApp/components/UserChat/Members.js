@@ -10,7 +10,7 @@ const Tab = createMaterialTopTabNavigator();
 
 //TODO: Change color of the tab bar
 
-const Members = ({ user }) => {
+const Members = ({ user, fetchAgain, setFetchAgain }) => {
   const screenOptions = {
     unmountOnBlur: false,
     headerShown: false,
@@ -39,12 +39,12 @@ const Members = ({ user }) => {
       <Tab.Screen
         name="Participants"
       >
-        {props => <Participants {...props} user={user} />}
+        {props => <Participants {...props} user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
       </Tab.Screen>
       <Tab.Screen
         name="Settings"
       >
-        {props => <Settings {...props} user={user} />}
+        {props => <Settings {...props} user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
       </Tab.Screen>
     </Tab.Navigator>
   )

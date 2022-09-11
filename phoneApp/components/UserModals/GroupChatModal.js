@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Avatar, Badge, Button, FormControl, Input, Modal, ScrollView, Text, View, VStack } from 'native-base';
+import { Avatar, Badge, Button, FormControl, HStack, Input, Modal, ScrollView, Text, View, VStack } from 'native-base';
 import React from 'react'
 import { TouchableOpacity } from 'react-native';
 import { PhoneAppContext } from '../../context/PhoneAppContext';
@@ -10,7 +10,6 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const GroupChatModal = ({ user, showModal, setShowModal }) => {
   const { dispatch, chats } = React.useContext(PhoneAppContext);
-  const [groupChatName, setGroupChatName] = React.useState();
   const [selectedUsers, setSelectedUsers] = React.useState([]);
   const [search, setSearch] = React.useState('');
   const [searchResults, setSearchResults] = React.useState([]);
@@ -71,14 +70,16 @@ const GroupChatModal = ({ user, showModal, setShowModal }) => {
               <Input variant={'filled'} color={'primary.900'} placeholder="Search users" search={search} setSearch={setSearch} onChangeText={text => handleSearch(text)} />
             </FormControl>
 
-            {selectedUsers.map(user =>
-              <Badge bgColor={'#3cc4b7'}>
-                <Text>
-                  {user.username}
-                  <MaterialIcons name="close" size={20} color="#fff" onPress={() => handleDelete(user)} />
-                </Text>
-              </Badge>
-            )}
+            <HStack space={'1'} flexWrap={'wrap'}>
+              {selectedUsers.map(user =>
+                <Badge my={'1'} bgColor={'#3cc4b7'}>
+                  <Text>
+                    {user.username}
+                    <MaterialIcons name="close" size={20} color="#fff" onPress={() => handleDelete(user)} />
+                  </Text>
+                </Badge>
+              )}
+            </HStack>
 
             <ScrollView maxH={'32'}>
               {searchResults?.map((user, index) => (
@@ -93,7 +94,11 @@ const GroupChatModal = ({ user, showModal, setShowModal }) => {
             <Button rounded={'lg'} bg={'primary.300'} w={'100%'} onPress={() => setShowModal(false)}>
               Create
             </Button>
-            <Button variant={'outline'} colorScheme="violet" rounded={'lg'} w={'100%'} onPress={() => setShowModal(false)}>
+            <Button variant={'outline'} colorScheme="violet" rounded={'lg'} w={'100%'} onPress={() => {
+              setShowModal(false)
+              setSelectedUsers([])
+              setSearchResults([])
+            }}>
               Cancel
             </Button>
           </VStack>

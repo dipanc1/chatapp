@@ -14,7 +14,7 @@ import Members from '../components/UserChat/Members';
 
 const Tab = createMaterialTopTabNavigator();
 
-const Chat = ({ user }) => {
+const Chat = ({ user, fetchAgain, setFetchAgain }) => {
     const { chats, dispatch, stream, fullScreen } = React.useContext(PhoneAppContext);
     const [conversations, setConversations] = React.useState([])
     const [groupConversations, setGroupConversations] = React.useState([])
@@ -22,7 +22,6 @@ const Chat = ({ user }) => {
     const [searchResultsUsers, setSearchResultsUsers] = React.useState([])
     const [searchResultsGroups, setSearchResultsGroups] = React.useState([])
     const [loading, setLoading] = React.useState(false)
-    const [fetchAgain, setFetchAgain] = React.useState(false)
 
     React.useEffect(() => {
         fetchChats();
@@ -99,7 +98,7 @@ const Chat = ({ user }) => {
         <SocketContextProvider>
             <NavigationContainer>
 
-                <Navbar user={user} />
+                <Navbar user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
                 {stream ?
                     <>
                         <Streaming />
@@ -119,7 +118,7 @@ const Chat = ({ user }) => {
                                 name="Groups"
                                 screenOptions={{ presentation: 'modal' }}
                             >
-                                {props => <Groups {...props} user={user} groupConversations={groupConversations} search={search} setSearch={setSearch} searchResultsGroups={searchResultsGroups} />}
+                                {props => <Groups {...props} user={user} groupConversations={groupConversations} search={search} setSearch={setSearch} searchResultsGroups={searchResultsGroups} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
                             </Tab.Screen>
                         </Tab.Navigator>
                     </>

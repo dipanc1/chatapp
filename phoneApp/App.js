@@ -76,6 +76,7 @@ const Stack = createNativeStackNavigator();
 
 const App = () => {
   const [user, setUser] = React.useState(null);
+  const [fetchAgain, setFetchAgain] = React.useState(false)
 
   React.useEffect(() => {
     const getUserDetails = async () => {
@@ -89,18 +90,17 @@ const App = () => {
 
       console.log('Done.')
     }
-    console.log(getUserDetails())
     getUserDetails().then(res => {
       setUser(res)
     });
 
-  }, []);
+  }, [fetchAgain]);
 
   return (
     <NativeBaseProvider theme={theme}>
       <PhoneAppContextProvider>
         {user ?
-          <Chat user={user} />
+          <Chat user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
           :
           <NavigationContainer>
             <Stack.Navigator intialRouteName="Login">
