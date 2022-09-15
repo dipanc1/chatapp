@@ -247,24 +247,14 @@ const Streaming = ({ meetingId, setFetchAgain }) => {
                 </Box>
             ) : (
                 <Box display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
-                    {!streamExists ?
-                        <>
-                            <Text my={'3'}>
-                                Create the meeting for the Others to join
-                            </Text>
-                            <Button color={'whiteColor'} bg={'buttonPrimaryColor'} onClick={joinMeeting}>Create a Meeting</Button>
-                        </>
-                        :
-                        <>
-                            <Text my={'3'}>
-                                Join the already going on meeting
-                            </Text>
-                            <Button color={'whiteColor'} bg={'buttonPrimaryColor'} onClick={joinMeeting}>Join</Button>
-                        </>
-                    }
-                </Box>
-            )}
-        </Box>
+
+                    <Text my={'3'}>
+                        {!streamExists ? 'Create the meeting for the Others to join' : 'Join the already going on meeting'}
+                    </Text>
+                    <Button color={'whiteColor'} bg={'buttonPrimaryColor'} onClick={joinMeeting}>{!streamExists ? 'Create Meeting' : 'Join Meeting'}</Button>
+                </Box>)
+            }
+        </Box >
     )
 }
 

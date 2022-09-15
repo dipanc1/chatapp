@@ -166,6 +166,7 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
                                 placeholder="Chat Name"
                                 mb={3}
                                 onChange={(e) => setGroupChatName(e.target.value)}
+                                focusBorderColor='#9F85F7'
                             />
                         </FormControl>
                         <FormControl>
@@ -173,6 +174,7 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
                                 placeholder="Add Users eg: Dipan, Abhishek, Vikram"
                                 mb={1}
                                 onChange={(e) => handleSearch(e.target.value)}
+                                focusBorderColor='#9F85F7'
                             />
                         </FormControl>
                         <Box w="100%" d="flex" flexWrap="wrap">
@@ -196,8 +198,8 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
                             </Box>
                         ) :
                             <Box
-                            maxHeight={'48'}
-                            overflowY={'scroll'}
+                                maxHeight={'48'}
+                                overflowY={'scroll'}
                             >
                                 {searchResults.map((user) => (
                                     <Box

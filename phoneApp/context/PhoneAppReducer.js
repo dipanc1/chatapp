@@ -30,6 +30,11 @@ const PhoneAppReducer = (state, action) => {
                 ...state,
                 fullScreen: !state.fullScreen
             };
+        case "SET_STREAMEXISTS":
+            return {
+                ...state,
+                streamExists: !state.streamExists
+            };
         default:
             return state;
     }

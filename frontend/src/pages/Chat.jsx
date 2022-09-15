@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import { useNavigate } from "react-router-dom";
 import { Box } from '@chakra-ui/react'
 import Navbar from '../components/UserChat/Navbar'

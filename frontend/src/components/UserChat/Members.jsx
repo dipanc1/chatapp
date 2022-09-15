@@ -309,6 +309,7 @@ export const MembersComponent = ({ fetchAgain, setFetchAgain }) => {
                         <Input
                           value={search}
                           placeholder="Search Member" onChange={handleSearch}
+                          focusBorderColor='#9F85F7'
                         />
                         {loading
                           ?
@@ -343,7 +344,7 @@ export const MembersComponent = ({ fetchAgain, setFetchAgain }) => {
                       </ModalBody>
 
                       <ModalFooter>
-                        <Button colorScheme='blue' mr={3} onClick={onClose}>
+                        <Button backgroundColor={'buttonPrimaryColor'} color={'white'} mr={3} onClick={onClose}>
                           Close
                         </Button>
                       </ModalFooter>

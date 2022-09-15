@@ -15,7 +15,6 @@ const NavbarModal = ({ fetchAgain, setFetchAgain, showModal, setShowModal, setMo
         AsyncStorage.removeItem('user')
         setFetchAgain(!fetchAgain)
     }
-    //TODO: LOGOUT BUTTON FUNCTIONALITY
 
     return (
         <Modal isOpen={showModal} onClose={() => setShowModal(false)} avoidKeyboard>

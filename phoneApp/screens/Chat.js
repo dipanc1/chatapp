@@ -11,6 +11,7 @@ import { PhoneAppContext } from '../context/PhoneAppContext';
 import { SocketContextProvider } from '../context/socketContext';
 import Streaming from '../components/Miscellaneous/Streaming';
 import Members from '../components/UserChat/Members';
+import { MeetingProvider, MeetingConsumer } from '@videosdk.live/react-sdk';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -22,6 +23,8 @@ const Chat = ({ user, fetchAgain, setFetchAgain }) => {
     const [searchResultsUsers, setSearchResultsUsers] = React.useState([])
     const [searchResultsGroups, setSearchResultsGroups] = React.useState([])
     const [loading, setLoading] = React.useState(false)
+    const [meetingId, setMeetingId] = React.useState(null);
+    const [token, setToken] = React.useState(null);
 
     React.useEffect(() => {
         fetchChats();
@@ -93,6 +96,55 @@ const Chat = ({ user, fetchAgain, setFetchAgain }) => {
         }
     }
 
+    React.useEffect(() => {
+        const getToken = async () => {
+            try {
+                const response = await fetch(`${backend_url}/meetings/get-token`, {
+                    method: "GET",
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                    },
+                });
+                const { token } = await response.json();
+                setToken(token);
+            } catch (e) {
+                console.log(e);
+            }
+        };
+        getToken();
+    }, [])
+
+    const getMeetingId = async (token) => {
+        try {
+            const VIDEOSDK_API_ENDPOINT = `${backend_url}/meetings/create-meeting`;
+            const options = {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ token, region: "in002" }),
+            };
+            const response = await fetch(VIDEOSDK_API_ENDPOINT, options)
+                .then(async (result) => {
+                    const { meetingId } = await result.json();
+                    return meetingId;
+                })
+                .catch((error) => console.log("error", error));
+            return response;
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
+
+    const getMeetingAndToken = async (id) => {
+        const meetingId =
+            id == null ? await getMeetingId(token) : id;
+        setMeetingId(meetingId);
+        console.warn("CHATTTTTTTT APP entry", meetingId, typeof meetingId)
+    };
+
 
     return (
         <SocketContextProvider>
@@ -100,10 +152,22 @@ const Chat = ({ user, fetchAgain, setFetchAgain }) => {
 
                 <Navbar user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
                 {stream ?
-                    <>
-                        <Streaming />
+                    <MeetingProvider
+                        config={{
+                            meetingId,
+                            micEnabled: false,
+                            webcamEnabled: true,
+                            name: user.username
+                        }}
+                        token={token}
+                    >
+                        <MeetingConsumer>
+                            {() =>
+                                <Streaming user={user} meetingId={meetingId} setFetchAgain={setFetchAgain} />
+                            }
+                        </MeetingConsumer>
                         {!fullScreen && <Members user={user} />}
-                    </>
+                    </MeetingProvider>
                     :
                     <>
                         <Searchbar search={search} handleSearch={handleSearch} placeholder={"Search People or Groups"} />
@@ -118,7 +182,7 @@ const Chat = ({ user, fetchAgain, setFetchAgain }) => {
                                 name="Groups"
                                 screenOptions={{ presentation: 'modal' }}
                             >
-                                {props => <Groups {...props} user={user} groupConversations={groupConversations} search={search} setSearch={setSearch} searchResultsGroups={searchResultsGroups} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+                                {props => <Groups {...props} user={user} groupConversations={groupConversations} search={search} setSearch={setSearch} searchResultsGroups={searchResultsGroups} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} getMeetingAndToken={getMeetingAndToken} />}
                             </Tab.Screen>
                         </Tab.Navigator>
                     </>

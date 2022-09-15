@@ -13,7 +13,7 @@ import StreamModal from '../UserModals/StreamModal'
 
 var selectedChatCompare;
 
-const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
+const Chatbox = ({ fetchAgain, setFetchAgain, user, getMeetingAndToken }) => {
     const socket = React.useContext(SocketContext);
     const { dispatch, selectedChat, stream } = React.useContext(PhoneAppContext);
     const scrollViewRef = React.useRef();
@@ -188,7 +188,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
 
             </Flex>
 
-            <StreamModal open={open} setOpen={setOpen} />
+            <StreamModal user={user} getMeetingAndToken={getMeetingAndToken} open={open} setOpen={setOpen} />
         </>
 
     )
