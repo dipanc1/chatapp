@@ -116,6 +116,7 @@ const Chat = ({ user, fetchAgain, setFetchAgain }) => {
     }, [])
 
     const getMeetingId = async (token) => {
+        console.warn(token);
         try {
             const VIDEOSDK_API_ENDPOINT = `${backend_url}/meetings/create-meeting`;
             const options = {

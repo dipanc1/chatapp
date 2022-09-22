@@ -1,6 +1,6 @@
 const router = require("express").Router();
-const { accoutnSID, authToken, serviceSID } = require("../config/otp_auth")
-const client = require("twilio")(accoutnSID, authToken);
+const { accountSID, authToken, serviceSID } = require("../config/otp_auth")
+const client = require("twilio")(accountSID, authToken);
 
 router.post("/mobile", (req, res) => {
     console.log("number", req.body.number);
@@ -13,6 +13,10 @@ router.post("/mobile", (req, res) => {
         .then((resp) => {
             console.log("response", resp);
             res.status(200).json(resp);
+        })
+        .catch((err) => {
+            console.log("err", err);
+            res.status(500).json(err);
         });
 });
 
@@ -29,9 +33,9 @@ router.post("/otp", (req, res) => {
         .then((resp) => {
             console.log("otp res", resp);
             if (resp.valid) {
-                res.json({ resp, message: "Welcome" });
+                res.json({ message: "Welcome" });
             }
-            res.json({ resp, message: "Expire Otp" });
+            res.json({ message: "Expire Otp" });
         });
 });
 

@@ -86,7 +86,7 @@ const VideoComponent = (props) => {
     const videoStream = React.useMemo(() => {
         if (webcamOn) {
             const mediaStream = new MediaStream();
-            mediaStream.addTrack(webcamStream.track);
+            mediaStream.addTrack([webcamStream.track]);
             return mediaStream;
         }
     }, [webcamStream, webcamOn]);
@@ -95,7 +95,7 @@ const VideoComponent = (props) => {
         if (micRef.current) {
             if (micOn) {
                 const mediaStream = new MediaStream();
-                mediaStream.addTrack(micStream.track);
+                mediaStream.addTrack([micStream.track]);
 
                 micRef.current.srcObject = mediaStream;
                 micRef.current

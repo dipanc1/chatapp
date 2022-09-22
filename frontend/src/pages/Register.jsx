@@ -1,7 +1,5 @@
 import React from 'react'
 import 'react-phone-number-input/style.css'
-import PhoneInput from 'react-phone-number-input'
-import { ResendOTP } from "otp-input-react";
 import validator from 'validator'
 import axios from 'axios';
 import { AppContext } from '../context/AppContext';
@@ -14,21 +12,27 @@ import {
     FormControl,
     FormLabel,
     Input,
-    InputGroup,
-    InputRightElement,
     Stack,
     Button,
     Heading,
     Text,
     useColorModeValue,
-    PinInput,
-    PinInputField,
     useToast,
+    InputGroup,
+    InputLeftElement,
+    Avatar,
+    IconButton,
 } from '@chakra-ui/react';
-import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import { AiOutlineUser } from 'react-icons/ai';
+import { FiUpload } from 'react-icons/fi';
+import { ResendOTP } from "otp-input-react";
+import PhoneNumber from '../components/Miscellaneous/PhoneNumber';
+import Otp from '../components/Miscellaneous/Otp';
+import Password from '../components/Miscellaneous/Password';
 
 const Register = () => {
     const { dispatch } = React.useContext(AppContext);
+
     const [verify, setVerify] = React.useState(true);
     const [otp, setOtp] = React.useState(true);
     const [OTP, setOTP] = React.useState("");
@@ -36,21 +40,21 @@ const Register = () => {
     const [number, setNumber] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [confirmPassword, setConfirmPassword] = React.useState('');
-    const [showPassword, setShowPassword] = React.useState(false);
     const [pic, setPic] = React.useState('')
+    const [selectedImage, setSelectedImage] = React.useState(null);
     const [loading, setLoading] = React.useState(false)
 
     const number1 = React.useContext(AppContext)
     let navigate = useNavigate();
     const toast = useToast();
 
+    const fileInputRef = React.createRef();
+
     const cloudName = 'dipanc1';
     const apiUrlMobile = `${backend_url}/mobile`;
     const apiUrlOtp = `${backend_url}/otp`;
     const apiUrlRegister = `${backend_url}/users/register`;
     const pictureUpload = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
-
-
 
     const handleUsername = (e) => {
         setUsername(e.target.value);
@@ -64,7 +68,7 @@ const Register = () => {
         setConfirmPassword(e.target.value);
     }
 
-    const postDetails = (pics) => {
+    const postDetails = async (pics) => {
         setLoading(true)
         if (pics === undefined) {
             setPic('')
@@ -81,7 +85,7 @@ const Register = () => {
             formData.append('api_key', '835688546376544')
             formData.append('file', pics);
             formData.append('upload_preset', 'chat-app');
-            axios.post(pictureUpload, formData)
+            await axios.post(pictureUpload, formData)
                 .then(res => {
                     // console.log(res);
                     setPic(res.data.url.toString());
@@ -109,9 +113,9 @@ const Register = () => {
         }
     }
 
-    const handleRegister = (e) => {
-        // console.log(pic);
+    const handleRegister = async (e) => {
         e.preventDefault();
+        setLoading(true)
         if (password !== confirmPassword) {
             toast({
                 title: "Error",
@@ -122,19 +126,20 @@ const Register = () => {
             });
             return
         } else {
-            axios.post(apiUrlRegister, {
+            await postDetails(selectedImage);
+            await axios.post(apiUrlRegister, {
                 number1: number1,
                 username: username,
                 password: password,
                 pic: pic
             })
                 .then(res => {
-                    // console.log(res.data);
+                    setLoading(false)
                     localStorage.setItem("user", JSON.stringify(res.data));
                     navigate('/');
                 })
                 .catch(err => {
-                    // console.log(err);
+                    setLoading(false)
                     toast({
                         title: "Error",
                         description: "Please enter valid details",
@@ -145,6 +150,25 @@ const Register = () => {
                 })
         }
     }
+
+    const imageChange = (e) => {
+        if (e.target.files && e.target.files.length > 0) {
+            setSelectedImage(e.target.files[0]);
+        }
+    }
+
+
+    const renderButton = (buttonProps) => {
+        return <Button mt={'3'} size="lg"
+            bg={'buttonPrimaryColor'}
+            color={'white'}
+            _hover={{
+                bg: 'backgroundColor',
+                color: 'text'
+            }} style={{ cursor: buttonProps.remainingTime !== 0 && 'not-allowed' }} {...buttonProps}>{buttonProps.remainingTime !== 0 ? `${buttonProps.remainingTime} seconds remaining` : "Resend"}</Button>;
+    };
+
+    const renderTime = () => React.Fragment;
 
     const handleVerify = () => {
         if (number === '') {
@@ -193,7 +217,7 @@ const Register = () => {
             setTimeout(() => {
                 axios.post(apiUrlOtp, { OTP, number1 }).then((res) => {
                     // console.log(res)
-                    if (res.data.resp.valid) {
+                    if (res.data.message === "Welcome") {
                         setOtp(false)
                     } else {
                         setOtp(true);
@@ -209,18 +233,6 @@ const Register = () => {
             }, 1000);
         }
     }
-
-    const renderButton = (buttonProps) => {
-        return <Button mt={'3'} size="lg"
-            bg={'buttonPrimaryColor'}
-            color={'white'}
-            _hover={{
-                bg: 'backgroundColor',
-                color: 'text'
-            }} style={{ cursor: buttonProps.remainingTime !== 0 && 'not-allowed' }} {...buttonProps}>{buttonProps.remainingTime !== 0 ? `${buttonProps.remainingTime} seconds remaining` : "Resend"}</Button>;
-    };
-
-    const renderTime = () => React.Fragment;
 
     return (
         <Flex
@@ -251,72 +263,65 @@ const Register = () => {
                     <Stack spacing={10}>
                         <form>
                             {verify &&
-                                <FormControl id="number" isRequired>
-                                    <FormLabel>Phone Number</FormLabel>
-                                    <PhoneInput
-                                        international
-                                        defaultCountry="IN"
-                                        value={number}
-                                        onChange={setNumber} />
-                                </FormControl>}
+                                <PhoneNumber number={number} setNumber={setNumber} />
+                            }
                             {!otp &&
-                                <>
+                                <Flex justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
+
+                                    <Flex justifyContent={''} alignItems={'flex-end'} flexDirection={'row'}>
+                                        <Avatar
+                                            size={'xl'}
+                                            src={selectedImage ? URL.createObjectURL(selectedImage) : "https://bit.ly/broken-link"}
+                                            alt={'Avatar Alt'}
+                                        />
+                                        <IconButton
+                                            aria-label="upload picture"
+                                            icon={<FiUpload />}
+                                            onClick={() => fileInputRef.current.click()}
+                                            size="xs"
+                                            colorScheme="teal"
+                                            variant="outline"
+                                            mt={'3'}
+                                        />
+                                        <input
+                                            type="file"
+                                            ref={fileInputRef}
+                                            onChange={imageChange}
+                                            style={{ display: 'none' }}
+                                        />
+                                    </Flex>
+
+
                                     <FormControl id="username" isRequired>
                                         <FormLabel>User Name</FormLabel>
-                                        <Input type="text" id="username" name='username' value={username} placeholder='Enter User Name' maxLength={20} minLength={2} onChange={handleUsername} />
-                                    </FormControl>
-                                    <FormControl id="password" isRequired>
-                                        <FormLabel>Password</FormLabel>
                                         <InputGroup>
-                                            <Input type={showPassword ? 'text' : 'password'} id="password" name='password' placeholder='Enter Password' value={password} minLength={8} onChange={handlePassword} />
-                                            <InputRightElement h={'full'}>
-                                                <Button
-                                                    variant={'ghost'}
-                                                    onClick={() =>
-                                                        setShowPassword((showPassword) => !showPassword)
-                                                    }>
-                                                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                                                </Button>
-                                            </InputRightElement>
-                                        </InputGroup>
-                                    </FormControl>
-                                    <FormControl id="confirmpassword" isRequired>
-                                        <FormLabel>Confirm Password</FormLabel>
-                                        <InputGroup>
-                                            <Input type={showPassword ? 'text' : 'password'} id="confirmpassword" name='confirmpassword' placeholder='Confirm Password' value={confirmPassword} onChange={handleConfirmPassword} />
-                                            <InputRightElement h={'full'}>
-                                                <Button
-                                                    variant={'ghost'}
-                                                    onClick={() =>
-                                                        setShowPassword((showPassword) => !showPassword)
-                                                    }>
-                                                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                                                </Button>
-                                            </InputRightElement>
+                                            <InputLeftElement
+                                                pointerEvents='none'
+                                                children={<AiOutlineUser color='greyTextColor' />}
+                                            />
+                                            <Input
+                                                focusBorderColor='#9F85F7'
+                                                type="text" id="username"
+                                                name='username'
+                                                value={username}
+                                                placeholder='Enter User Name'
+                                                maxLength={20}
+                                                minLength={2}
+                                                onChange={handleUsername}
+                                            />
                                         </InputGroup>
                                     </FormControl>
 
-                                    <FormControl id="picture">
-                                        <FormLabel>Upload Your Picture</FormLabel>
-                                        <Input type="file" accept='image/*' onChange={(e) =>
-                                            postDetails(e.target.files[0])
-                                        } />
-                                    </FormControl>
+                                    <Password password={password} confirmPassword={confirmPassword} handleConfirmPassword={handleConfirmPassword} handlePassword={handlePassword} />
 
-                                </>
+                                </Flex>
                             }
                             {(!verify && otp) &&
-                                <FormControl>
-                                    <PinInput onChange={handleOtp} value={OTP} otp>
-                                        <PinInputField />
-                                        <PinInputField />
-                                        <PinInputField />
-                                        <PinInputField />
-                                        <PinInputField />
-                                    </PinInput>
+                                <>
+                                    <Otp OTP={OTP} handleOtp={handleOtp} />
                                     <ResendOTP renderButton={renderButton} renderTime={renderTime} maxTime={120} onClick={handleVerify} />
+                                </>
 
-                                </FormControl>
                             }
                             <Stack spacing={10} pt={8}>
                                 {verify ?
@@ -338,8 +343,9 @@ const Register = () => {
                                     <Button
                                         type="submit"
                                         onClick={handleRegister}
-                                        disabled={!(password === confirmPassword && username.length !== 0 && password.length >= 8 && pic.length !== 0)}
-                                        loadingText={loading && "Submitting"}
+                                        disabled={!(password === confirmPassword && username.length !== 0 && password.length >= 8) || loading}
+                                        isLoading={loading}
+                                        loadingText={"Registering"}
                                         size="lg"
                                         bg={'buttonPrimaryColor'}
                                         color={'white'}

@@ -7,7 +7,6 @@ import GroupChat from '../Miscellaneous/GroupChat'
 import GroupChatModal from '../UserModals/GroupChatModal'
 import GroupListItem from '../UserItems/GroupListItem'
 import UserListItem from '../UserItems/UserListItem'
-import { motion } from "framer-motion"
 import {
     Input,
     Text,
@@ -311,7 +310,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                 ))
 
                 }
-                {conversations.length === 0 ?
+                {conversations.length === 0 && !loading && search.length === 0 ?
                     <Box
                         initial="hidden"
                         animate="visible"
@@ -443,7 +442,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                     </Box>
                                 ))
                 }
-                {groupConversations.length === 0
+                {groupConversations.length === 0 && !loading && search.length === 0
                     ?
                     <Box
                         initial="hidden"

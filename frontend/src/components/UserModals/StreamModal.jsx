@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react'
-import AgoraUIKit, { layout } from 'agora-react-uikit';
 import { AppContext } from '../../context/AppContext';
 import { AiOutlineVideoCamera } from 'react-icons/ai'
 import {
@@ -15,7 +14,6 @@ import {
     ModalFooter,
     useDisclosure
 } from '@chakra-ui/react'
-import { useMeeting } from '@videosdk.live/react-sdk';
 import axios from 'axios';
 import { backend_url } from '../../production';
 

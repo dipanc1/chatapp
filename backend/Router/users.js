@@ -5,6 +5,8 @@ const bcrypt = require("bcrypt");
 const asyncHandler = require("express-async-handler");
 const { protect } = require("../middleware/authMiddleware");
 const Chat = require("../models/Conversation");
+const { accountSID, authToken, serviceSID } = require("../config/otp_auth")
+const client = require("twilio")(accountSID, authToken);
 
 
 // register
@@ -116,6 +118,78 @@ router.get("/", protect, async (req, res) => {
         res.status(500).json(err)
         console.log(err)
     }
-})
+});
+
+// forget password check phone number and send otp
+router.post("/forget-password-check-number", async (req, res) => {
+    try {
+        const user = await User.findOne({ number: req.body.number })
+        if (!user) {
+            return res.status(400).json({
+                message: "User not found"
+            })
+        }
+        client.verify
+            .services(serviceSID)
+            .verifications.create({
+                to: `${req.body.number}`,
+                channel: "sms",
+            })
+            .then((data) => {
+                res.status(200).json({
+                    message: "OTP sent",
+                })
+            })
+    } catch (err) {
+        res.status(500).json({
+            message: "Something went wrong",
+        })
+        console.log(err)
+    }
+});
+
+// forget password check otp and change password
+router.post("/forget-password-check-otp-change-password", async (req, res) => {
+    try {
+        const user = await User.findOne({ number: `${req.body.number}` })
+        if (!user) {
+            return res.status(400).json({
+                message: "User not found"
+            })
+        }
+        client.verify
+            .services(serviceSID)
+            .verificationChecks.create({
+                to: `${req.body.number}`,
+                code: req.body.otp,
+            })
+            .then(async (data) => {
+                if (data.valid) {
+                    const salt = await bcrypt.genSalt(10)
+                    const hashedPassword = await bcrypt.hash(req.body.password, salt)
+                    user.password = hashedPassword
+                    await user.save()
+                    res.status(200).json({
+                        message: "Password changed",
+                    })
+                } else {
+                    res.status(400).json({
+                        message: "OTP not valid",
+                    })
+                }
+            })
+            .catch((err) => {
+                res.status(400).json({
+                    message: "OTP not valid",
+                })
+            })
+    } catch (err) {
+        res.status(500).json({
+            message: "Something went wrong",
+        })
+        console.log(err)
+    }
+});
+
 
 module.exports = router;

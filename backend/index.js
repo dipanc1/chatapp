@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 
 const userRoute = require("./Router/users")
-const testRouter = require("./Router/testRouter")
+const otpRoute = require("./Router/otp")
 const conversationRoute = require("./Router/conversation")
 const messageRoute = require("./Router/messages")
 const meetingRoute = require("./Router/meetings")
@@ -16,7 +16,6 @@ const { mongo_url } = require("./config/mongo_auth");
 const { protect } = require("./middleware/authMiddleware");
 
 const User = require("./models/User");
-const Chat = require("./models/Conversation");
 
 const app = express();
 
@@ -37,7 +36,7 @@ mongoose.connect(
 );
 
 app.use(bodyParser.json());
-app.use("/", testRouter)
+app.use("/", otpRoute)
 app.use("/users", userRoute);
 app.use("/conversation", protect, conversationRoute);
 app.use("/message", protect, messageRoute);
