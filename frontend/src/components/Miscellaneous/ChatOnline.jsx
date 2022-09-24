@@ -46,7 +46,7 @@ const ChatOnline = ({ stream, id, user1, handleFunction }) => {
 
                     <BsTelephone />
                     <Text as='samp'>
-                        {user1.number}
+                        +{user1.number}
                     </Text>
                     <Divider orientation='horizontal' color={'#000000'}
                         my={'2'}

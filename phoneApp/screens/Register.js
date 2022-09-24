@@ -63,7 +63,7 @@ const Register = ({ navigation }) => {
                 axios.post(apiUrlOtp, { OTP, number1 })
                     .then((res) => {
                         console.log(res)
-                        if (res.data.resp.valid) {
+                        if (res.data.message === "Welcome") {
                             setOtp(false)
                         } else {
                             setOtp(true);
@@ -327,8 +327,8 @@ const Register = ({ navigation }) => {
                             <Text color={'primary.300'}>Resend Code</Text>
                         </Box>
                     }
-                    {!otp && (password === confirmPassword) && (username.length !== 0) && (password.length >= 8) &&
-                        <Button onPress={handleRegister} rounded={'lg'} mt="2" bgColor="primary.300">
+                    {!otp &&
+                        <Button disabled={password === confirmPassword && username.length !== 0 && password.length >= 8} onPress={handleRegister} rounded={'lg'} mt="2" bgColor="primary.300">
                             Register
                         </Button>
                     }

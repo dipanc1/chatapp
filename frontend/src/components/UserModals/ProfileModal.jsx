@@ -66,7 +66,7 @@ const ProfileModal = ({ user, children }) => {
                         <Text
                             fontSize={{ base: "28px", md: "30px" }}
                         >
-                            Phone Number: {user.number}
+                            Phone Number: +{user.number}
                         </Text>
                     </ModalBody>
                     <ModalFooter>

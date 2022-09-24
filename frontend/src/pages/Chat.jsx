@@ -134,7 +134,7 @@ const Chat = () => {
             </SocketContextProvider>
           </>
         }
-        <Box flex={stream ? '3' : ['0', '2', '2', '2']}>
+        <Box flex={stream && token && meetingId ? '3' : ['0', '2', '2', '2']}>
           {user && <Members fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
         </Box>
       </Box>

@@ -72,7 +72,7 @@ const GroupChatModal = ({ user, showModal, setShowModal }) => {
 
             <HStack space={'1'} flexWrap={'wrap'}>
               {selectedUsers.map(user =>
-                <Badge my={'1'} bgColor={'#3cc4b7'}>
+                <Badge key={user._id} my={'1'} bgColor={'#3cc4b7'}>
                   <Text>
                     {user.username}
                     <MaterialIcons name="close" size={20} color="#fff" onPress={() => handleDelete(user)} />

@@ -116,7 +116,7 @@ const Chat = ({ user, fetchAgain, setFetchAgain }) => {
     }, [])
 
     const getMeetingId = async (token) => {
-        console.warn(token);
+        console.warn("Token ::: >>>", token);
         try {
             const VIDEOSDK_API_ENDPOINT = `${backend_url}/meetings/create-meeting`;
             const options = {
@@ -143,7 +143,7 @@ const Chat = ({ user, fetchAgain, setFetchAgain }) => {
         const meetingId =
             id == null ? await getMeetingId(token) : id;
         setMeetingId(meetingId);
-        console.warn("CHATTTTTTTT APP entry", meetingId, typeof meetingId)
+        console.warn("Meeting Id ::: >>>", meetingId, typeof meetingId)
     };
 
 

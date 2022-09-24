@@ -44,7 +44,7 @@ app.use("/meetings", meetingRoute);
 
 const PORT = process.env.PORT || "8000";
 const server = app.listen(PORT, () => {
-    console.log(`Port running on http://localhost:${PORT} `);
+    console.log(`Server running on http://localhost:${PORT} `);
 });
 
 const io = require("socket.io")(server, {

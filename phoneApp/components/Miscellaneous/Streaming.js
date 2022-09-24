@@ -37,7 +37,7 @@ function Controls({ setFetchAgain, user, selectedChat, dispatch }) {
                 chatId: selectedChat._id
             }
             const result = await axios.put(`${backend_url}/conversation/stop-stream`, { data }, config);
-            console.warn(result, "result");
+            // console.warn(result, "result");
             if (result) {
                 dispatch({ type: 'SET_STREAM', payload: false })
             } else {
@@ -52,7 +52,7 @@ function Controls({ setFetchAgain, user, selectedChat, dispatch }) {
     return (
         <HStack flex={'3'} mx={'2'} justifyContent={'space-between'}>
             <Flex justifyContent={'center'} alignItems={'center'}>
-                <IconButton onPress={webcamToggle} bg={'primary.200'} icon={<MaterialIcons name={webcamOn ? "camera-front" : "camera-rear"} size={24} color="#9F85F7" />} />
+                <IconButton onPress={webcamToggle} bg={'primary.200'} icon={<MaterialIcons name={webcamOn ? "videocam" : "videocam-off"} size={24} color="#9F85F7" />} />
                 <Text>{webcamOn ? 'Front Cam' : 'Rear Cam'}</Text>
             </Flex>
 
@@ -76,17 +76,18 @@ function Controls({ setFetchAgain, user, selectedChat, dispatch }) {
     )
 }
 
-const VideoComponent = (props) => {
-    console.warn("PARTICIPANTSS", props.participantId)
+const VideoComponent = ({ participantId }) => {
+    console.warn("Participants Id ::: == >>>", participantId)
     const micRef = React.useRef(null);
     const { webcamStream, micStream, webcamOn, micOn } = useParticipant(
-        props.participantId
+        participantId
     );
 
     const videoStream = React.useMemo(() => {
         if (webcamOn) {
             const mediaStream = new MediaStream();
             mediaStream.addTrack([webcamStream.track]);
+            console.log("webcamStream", webcamStream);
             return mediaStream;
         }
     }, [webcamStream, webcamOn]);
@@ -111,14 +112,15 @@ const VideoComponent = (props) => {
 
 
     return (
-        <Flex key={props.participantId} flex={'8'} justifyContent={'center'} alignItems={'center'} bg={'primary.200'} m={'5'}>
+        <Flex key={participantId} flex={'8'} justifyContent={'center'} alignItems={'center'} bg={'primary.200'} m={'5'}>
             {micOn && micRef && <audio ref={micRef} autoPlay />}
-
-            <RTCView
-                objectFit="cover"
-                style={{ width: '100%', height: '100%' }}
-                streamURL={videoStream && videoStream.toURL()}
-            />
+            {webcamOn ?
+                <RTCView
+                    objectFit="cover"
+                    style={{ width: '100%', height: '100%' }}
+                    streamURL={videoStream && videoStream.toURL()}
+                />
+                : null}
         </Flex>
     )
 }
@@ -126,8 +128,9 @@ const VideoComponent = (props) => {
 const Streaming = ({ meetingId, setFetchAgain, user }) => {
     const { dispatch, streamExists, selectedChat } = React.useContext(PhoneAppContext);
     const [joined, setJoined] = React.useState(false);
-    const { join } = useMeeting();
-    const { participants } = useMeeting();
+    const { join, participants } = useMeeting({});
+    const participantsArrId = [...participants.keys()]; // Add this line
+    console.warn("Participants ID Array ::: >>>", participantsArrId);
 
     const joinMeeting = async () => {
         setJoined(true);
@@ -144,7 +147,7 @@ const Streaming = ({ meetingId, setFetchAgain, user }) => {
                 }
             }
             const { result } = await axios.put(`${backend_url}/conversation/stream`, { data }, config);
-            console.log(result);
+            console.warn(result, "result");
 
         } catch (error) {
             console.log(error);
@@ -158,7 +161,7 @@ const Streaming = ({ meetingId, setFetchAgain, user }) => {
                     {/* Name */}
                     <HStack flex={'2'} alignItems={'center'} justifyContent={'space-between'} my={'1'} mx={'5'}>
                         <VStack>
-                            <Text>Group Name</Text>
+                            <Text>Group Name: {selectedChat?.chatName}</Text>
                             <Text>Host:</Text>
                         </VStack>
                         <HStack alignItems={'center'}>
@@ -168,7 +171,7 @@ const Streaming = ({ meetingId, setFetchAgain, user }) => {
                         </HStack>
                     </HStack>
                     {/* Video  */}
-                    {[participants.keys()].map((participantId) => (
+                    {participantsArrId.map((participantId) => (
                         <VideoComponent participantId={participantId} />
                     ))}
                     {/* Controls */}

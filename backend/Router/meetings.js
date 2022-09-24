@@ -20,7 +20,7 @@ router.get("/get-token", (req, res) => {
 });
 
 //
-router.post("/create-meeting/", (req, res) => {
+router.post("/create-meeting", (req, res) => {
     // console.log(req.body);
     const { token, region } = req.body;
     const url = `${process.env.VIDEOSDK_API_ENDPOINT}/api/meetings`;
@@ -32,6 +32,7 @@ router.post("/create-meeting/", (req, res) => {
 
     axios(url, options)
         .then((response) => {
+            console.log(response.data);
             res.json(response.data);
         }).catch((error) => {
             res.json(error);

@@ -48,21 +48,35 @@ const Groups = ({ user, groupConversations, searchResultsGroups, search, setSear
   return (
     <>
       {selectedChat && selectedChat?.isGroupChat ?
-        <Members user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} getMeetingAndToken={getMeetingAndToken}/>
+        <Members user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} getMeetingAndToken={getMeetingAndToken} />
         :
         <>
           <ScrollView showsVerticalScrollIndicator={false}>
-            {(search.length > 0 ? searchResultsGroups : groupConversations)?.map((group, index) => (
-              <TouchableOpacity key={group._id} onPress={() => {
-                searchResultsGroups ?
-                  handleAddUser(user._id, group._id)
-                  : dispatch({ type: 'SET_SELECTED_CHAT', payload: group })
-              }}>
-                <Flex justifyContent={'flex-start'} p={'2'}>
-                  <GroupListItem group={group} />
-                </Flex>
-              </TouchableOpacity>
-            ))}
+            {
+              (search.length > 0 ?
+                searchResultsGroups.map((group, index) => (
+                  <TouchableOpacity key={group._id}
+                    onPress={() => handleAddUser(user._id, group._id)}>
+                    <Flex justifyContent={'flex-start'} p={'2'}>
+                      <GroupListItem group={group} />
+                    </Flex>
+                  </TouchableOpacity>
+                ))
+                :
+                groupConversations.map((group, index) => (
+                  <TouchableOpacity key={group._id}
+                    onPress={() => dispatch({ type: 'SET_SELECTED_CHAT', payload: group })}>
+                    <Flex justifyContent={'flex-start'} p={'2'}>
+                      <GroupListItem group={group} />
+                    </Flex>
+                  </TouchableOpacity>
+                ))
+              )
+            }
+
+
+
+
           </ScrollView>
 
 
