@@ -53,7 +53,7 @@ function Controls({ setFetchAgain, user, selectedChat, dispatch }) {
         <HStack flex={'3'} mx={'2'} justifyContent={'space-between'}>
             <Flex justifyContent={'center'} alignItems={'center'}>
                 <IconButton onPress={webcamToggle} bg={'primary.200'} icon={<MaterialIcons name={webcamOn ? "videocam" : "videocam-off"} size={24} color="#9F85F7" />} />
-                <Text>{webcamOn ? 'Front Cam' : 'Rear Cam'}</Text>
+                <Text>{webcamOn ? 'Camera On' : 'Camera Off'}</Text>
             </Flex>
 
             <Flex justifyContent={'center'} alignItems={'center'}>
@@ -77,48 +77,28 @@ function Controls({ setFetchAgain, user, selectedChat, dispatch }) {
 }
 
 const VideoComponent = ({ participantId }) => {
-    console.warn("Participants Id ::: == >>>", participantId)
+    // console.warn("Participants Id ::: == >>>", participantId)
     const micRef = React.useRef(null);
     const { webcamStream, micStream, webcamOn, micOn } = useParticipant(
         participantId
     );
+    console.log(webcamOn);
 
     const videoStream = React.useMemo(() => {
         if (webcamOn) {
-            const mediaStream = new MediaStream();
-            mediaStream.addTrack([webcamStream.track]);
-            console.log("webcamStream", webcamStream);
+            const mediaStream = new MediaStream([webcamStream?.track])
+            // console.warn("webcamStream", webcamStream);
             return mediaStream;
         }
     }, [webcamStream, webcamOn]);
 
-    React.useEffect(() => {
-        if (micRef.current) {
-            if (micOn) {
-                const mediaStream = new MediaStream();
-                mediaStream.addTrack([micStream.track]);
-
-                micRef.current.srcObject = mediaStream;
-                micRef.current
-                    .play()
-                    .catch((error) =>
-                        console.error("videoElem.current.play() failed", error)
-                    );
-            } else {
-                micRef.current.srcObject = null;
-            }
-        }
-    }, [micStream, micOn]);
-
-
     return (
         <Flex key={participantId} flex={'8'} justifyContent={'center'} alignItems={'center'} bg={'primary.200'} m={'5'}>
-            {micOn && micRef && <audio ref={micRef} autoPlay />}
             {webcamOn ?
                 <RTCView
                     objectFit="cover"
                     style={{ width: '100%', height: '100%' }}
-                    streamURL={videoStream && videoStream.toURL()}
+                    streamURL={webcamOn && videoStream && videoStream.toURL()}
                 />
                 : null}
         </Flex>
@@ -130,7 +110,7 @@ const Streaming = ({ meetingId, setFetchAgain, user }) => {
     const [joined, setJoined] = React.useState(false);
     const { join, participants } = useMeeting({});
     const participantsArrId = [...participants.keys()]; // Add this line
-    console.warn("Participants ID Array ::: >>>", participantsArrId);
+    // console.warn("Participants ID Array ::: >>>", participantsArrId);
 
     const joinMeeting = async () => {
         setJoined(true);
@@ -150,7 +130,7 @@ const Streaming = ({ meetingId, setFetchAgain, user }) => {
             console.warn(result, "result");
 
         } catch (error) {
-            console.log(error);
+            console.log("Error", error);
         }
     };
 

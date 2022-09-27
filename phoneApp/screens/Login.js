@@ -10,6 +10,7 @@ import { PhoneAppContext } from '../context/PhoneAppContext';
 const Login = ({ navigation, setUser }) => {
     const [username, setUsername] = React.useState('')
     const [password, setPassword] = React.useState('')
+    const [loading, setLoading] = React.useState(false)
     const toast = useToast();
 
     const handleName = e => {
@@ -22,19 +23,22 @@ const Login = ({ navigation, setUser }) => {
 
 
     const handleSubmit = async () => {
+        setLoading(true)
         const user = {
             username: username,
             password: password
         }
         try {
             const res = await axios.post(`${backend_url}/users/login`, user);
+            await setUser(res.data)
             const jsonValue = JSON.stringify(res.data)
             await AsyncStorage.setItem('user', jsonValue)
-            setUser(res.data)
+            setLoading(false)
         } catch (err) {
             // add toast or alert
             alert("Invalid username or password")
             console.log("ERROR:", err)
+            setLoading(false)
         }
     }
 
@@ -99,6 +103,8 @@ const Login = ({ navigation, setUser }) => {
                     </Link>
                     <Button
                         onPressIn={handleSubmit}
+                        isLoading={loading}
+                        isLoadingText="Signing in..."
                         _disabled={{
                             opacity: 0.5
                         }}

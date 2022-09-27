@@ -127,7 +127,7 @@ const Register = () => {
             return
         } else {
             await postDetails(selectedImage);
-            await axios.post(apiUrlRegister, {
+            pic.length > 0 && await axios.post(apiUrlRegister, {
                 number1: number1,
                 username: username,
                 password: password,

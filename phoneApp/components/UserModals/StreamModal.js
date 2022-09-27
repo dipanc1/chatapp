@@ -22,7 +22,7 @@ const StreamModal = ({ user, open, setOpen, getMeetingAndToken }) => {
         if (data) {
             dispatch({ type: 'SET_STREAMEXISTS', payload: true });
         }
-        console.warn("STREAM MODAL which is joinscreen", data, "MEETING ID", meetingId);
+        // console.warn("STREAM MODAL which is joinscreen", data, "MEETING ID", meetingId);
         await getMeetingAndToken(data);
         setOpen(false);
         dispatch({ type: 'SET_STREAM', payload: true });

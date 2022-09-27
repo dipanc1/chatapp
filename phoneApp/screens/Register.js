@@ -77,73 +77,35 @@ const Register = ({ navigation }) => {
         }
     }
 
-    // const pickImage = async () => {
-    //     let result = await ImagePicker.launchImageLibraryAsync({
-    //         allowsEditing: true,
-    //         // aspect: [4, 3],
-    //         base64: true
-    //     });
-    //     setLoading(true)
-    //     if (!result.cancelled) {
-    //         setPic({ image: result.uri })
-
-    //         let base64Img = `data:image/jpg;base64,${result.base64}`
-
-
-    //         let data = {
-    //             "file": base64Img,
-    //             "upload_preset": "",
-    //             'api_key': ''
-    //         }
-
-    //         fetch(apiUrl, {
-    //             body: JSON.stringify(data),
-    //             headers: {
-    //                 'content-type': 'application/json'
-    //             },
-    //             method: 'POST',
-    //         }).then(async r => {
-    //             let data = await r.json()
-    //             console.log(data.secure_url)
-    //             setLoading(false)
-    //             return data.secure_url
-    //         }).catch(err => {
-    //             console.log(err)
-    //             setLoading(false)
-    //         })
-    //     }
-
-    // }
-
     const pickImage = async () => {
         const options = {
-            includeBase64: true,
+            // includeBase64: true,
             mediaType: 'photo',
-            saveToPhotos: true,
+            // saveToPhotos: true,
         };
         await launchImageLibrary(options, (response) => {
 
-            console.log('Response = ', response);
-            if (response.didCancel) {
+            console.log('Response = ', response.assets.map((item) => item));
+            const res = response.assets.map((item) => item);
+            if (res.didCancel) {
                 console.log('User cancelled image picker');
-            } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
+            } else if (res.error) {
+                console.log('ImagePicker Error: ', res.error);
             } else {
-                const uri = response.uri;
-                const type = response.type;
-                const name = response.fileName;
+                const uri = res.uri;
+                const type = res.type;
+                const name = res.fileName;
                 const source = {
                     uri,
                     type,
                     name,
                 }
-                cloudinaryUpload(source)
+                cloudinaryUpload(uri)
             }
         });
 
     }
     const cloudinaryUpload = (photo) => {
-        //Add your cloud name
         let apiUrl = pictureUpload;
         const data = new FormData()
         data.append('file', photo)
@@ -161,9 +123,11 @@ const Register = ({ navigation }) => {
     }
 
     const handleRegister = () => {
+        setLoading(true)
         if (password !== confirmPassword) {
             setError(true);
             setErrorMessage('Passwords do not match');
+            setLoading(false)
             return
 
         } else {
@@ -171,17 +135,18 @@ const Register = ({ navigation }) => {
                 username: username,
                 number1: number1,
                 password: password,
-                pic: pic.image
+                pic: pic
             }
             axios.post(apiUrlRegister, details)
                 .then(res => {
                     console.log(res.data);
-                    // const jsonValue = JSON.stringify(res.data)
-                    // AsyncStorage.setItem('user', jsonValue)
+                    setLoading(false);
+                    navigation.navigate('Login');
                 })
                 .catch(err => {
                     console.log(err);
                     setError(true);
+                    setLoading(false);
                     setErrorMessage('Please enter valid details');
                 })
         }
@@ -192,7 +157,6 @@ const Register = ({ navigation }) => {
             <Box py={'8'} rounded={'lg'} w={'80'} height={'xl'} display={'flex'} flexDirection={'column'} justifyContent={'space-between'} alignItems={'center'} bg={'#fff'}>
                 <Heading color={'primary.600'} fontSize={'4xl'}>
                     Register
-                    {/* Enter OTP */}
                 </Heading>
                 <Box display={'flex'} justifyContent={'center'} alignItems={'center'} w={'48'}>
                     {verify &&
@@ -328,7 +292,15 @@ const Register = ({ navigation }) => {
                         </Box>
                     }
                     {!otp &&
-                        <Button disabled={password === confirmPassword && username.length !== 0 && password.length >= 8} onPress={handleRegister} rounded={'lg'} mt="2" bgColor="primary.300">
+                        <Button
+                            disabled={password === confirmPassword && username.length !== 0 && password.length >= 8} 
+                            isLoading={loading}
+                            isLoadingText="Registering"
+                            onPress={handleRegister}
+                            rounded={'lg'}
+                            mt="2"
+                            bgColor="primary.300"
+                        >
                             Register
                         </Button>
                     }

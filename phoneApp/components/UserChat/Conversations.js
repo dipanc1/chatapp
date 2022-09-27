@@ -26,7 +26,7 @@ const Conversations = ({ fetchAgain, setFetchAgain, conversations, user, searchR
       // console.log(data);
       // setLoading(false);
       setSearch('');
-      // setFetchAgain(!fetchAgain);
+      setFetchAgain(!fetchAgain);
     } catch (error) {
       console.log(error)
     }
