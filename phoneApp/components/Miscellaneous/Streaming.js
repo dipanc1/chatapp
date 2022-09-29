@@ -6,22 +6,46 @@ import { RTCView, useMeeting, useParticipant } from '@videosdk.live/react-native
 import axios from 'axios'
 import { backend_url } from '../../production'
 
-function Controls({ setFetchAgain, user, selectedChat, dispatch }) {
+function Controls({ fetchAgain, setFetchAgain, user }) {
+    const { dispatch, selectedChat } = React.useContext(PhoneAppContext);
     const [micOn, setMicOn] = React.useState(true);
-    const { leave, toggleMic, toggleWebcam } = useMeeting();
+    const { leave, toggleMic, toggleWebcam, getWebcams, changeWebcam } = useMeeting();
     const [webcamOn, setWebcamOn] = React.useState(false);
+    const [flipWebcam, setFlipWebcam] = React.useState(false);
+
+    let webcams;
 
     const micToggle = () => {
         setMicOn(!micOn);
         toggleMic();
     }
 
-
     const webcamToggle = () => {
         setWebcamOn(!webcamOn);
         toggleWebcam();
     }
 
+    React.useEffect(() => {
+        const handleGetWebcams = async () => {
+            webcams = await getWebcams();
+            console.warn("Webcams", webcams);
+            return webcams;
+        }
+        handleGetWebcams();
+    })
+
+
+    const handleChangeWebcam = () => {
+        if (webcams) {
+            const { deviceId } = webcams[0];
+
+            changeWebcam(deviceId);
+            setFlipWebcam(!flipWebcam);
+        }
+        else {
+            alert("No other webcam available");
+        }
+    };
 
     const endStream = async () => {
         leave();
@@ -37,9 +61,10 @@ function Controls({ setFetchAgain, user, selectedChat, dispatch }) {
                 chatId: selectedChat._id
             }
             const result = await axios.put(`${backend_url}/conversation/stop-stream`, { data }, config);
-            // console.warn(result, "result");
+            console.warn(result, "result");
             if (result) {
                 dispatch({ type: 'SET_STREAM', payload: false })
+                setFetchAgain(!fetchAgain);
             } else {
                 console.log("error");
             }
@@ -54,6 +79,11 @@ function Controls({ setFetchAgain, user, selectedChat, dispatch }) {
             <Flex justifyContent={'center'} alignItems={'center'}>
                 <IconButton onPress={webcamToggle} bg={'primary.200'} icon={<MaterialIcons name={webcamOn ? "videocam" : "videocam-off"} size={24} color="#9F85F7" />} />
                 <Text>{webcamOn ? 'Camera On' : 'Camera Off'}</Text>
+            </Flex>
+
+            <Flex justifyContent={'center'} alignItems={'center'}>
+                <IconButton onPress={handleChangeWebcam} bg={'primary.200'} icon={<MaterialIcons name={flipWebcam ? "camera-rear" : "camera-front"} size={24} color="#9F85F7" />} />
+                <Text>{flipWebcam ? 'Rear Camera' : 'Front Camera'}</Text>
             </Flex>
 
             <Flex justifyContent={'center'} alignItems={'center'}>
@@ -77,35 +107,26 @@ function Controls({ setFetchAgain, user, selectedChat, dispatch }) {
 }
 
 const VideoComponent = ({ participantId }) => {
-    // console.warn("Participants Id ::: == >>>", participantId)
-    const micRef = React.useRef(null);
-    const { webcamStream, micStream, webcamOn, micOn } = useParticipant(
+    console.warn("Participants Id ::: == >>>", participantId)
+    const { webcamStream, webcamOn } = useParticipant(
         participantId
     );
-    console.log(webcamOn);
-
-    const videoStream = React.useMemo(() => {
-        if (webcamOn) {
-            const mediaStream = new MediaStream([webcamStream?.track])
-            // console.warn("webcamStream", webcamStream);
-            return mediaStream;
-        }
-    }, [webcamStream, webcamOn]);
+    console.warn("Webcam Stream ::: == >>>", webcamStream)
 
     return (
         <Flex key={participantId} flex={'8'} justifyContent={'center'} alignItems={'center'} bg={'primary.200'} m={'5'}>
-            {webcamOn ?
+            {webcamOn && webcamStream ?
                 <RTCView
                     objectFit="cover"
                     style={{ width: '100%', height: '100%' }}
-                    streamURL={webcamOn && videoStream && videoStream.toURL()}
+                    streamURL={new MediaStream([webcamStream?.track]).toURL()}
                 />
                 : null}
         </Flex>
     )
 }
 
-const Streaming = ({ meetingId, setFetchAgain, user }) => {
+const Streaming = ({ meetingId, fetchAgain, setFetchAgain, user }) => {
     const { dispatch, streamExists, selectedChat } = React.useContext(PhoneAppContext);
     const [joined, setJoined] = React.useState(false);
     const { join, participants } = useMeeting({});
@@ -155,7 +176,7 @@ const Streaming = ({ meetingId, setFetchAgain, user }) => {
                         <VideoComponent participantId={participantId} />
                     ))}
                     {/* Controls */}
-                    <Controls setFetchAgain={setFetchAgain} user={user} selectedChat={selectedChat} dispatch={dispatch} />
+                    <Controls fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} user={user} selectedChat={selectedChat} dispatch={dispatch} />
                 </>
                 :
                 <Flex flex={'1'} justifyContent={'center'} alignItems={'center'} direction={'column'}>

@@ -164,7 +164,7 @@ const Chat = ({ user, fetchAgain, setFetchAgain }) => {
                     >
                         <MeetingConsumer>
                             {() =>
-                                <Streaming user={user} meetingId={meetingId} setFetchAgain={setFetchAgain} />
+                                <Streaming fetchAgain={fetchAgain} user={user} meetingId={meetingId} setFetchAgain={setFetchAgain} />
                             }
                         </MeetingConsumer>
                         {!fullScreen && <Members user={user} />}
