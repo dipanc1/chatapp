@@ -11,31 +11,6 @@ import { MeetingConsumer, MeetingProvider } from '@videosdk.live/react-sdk';
 import { SocketContextProvider } from '../context/socketContext';
 import { backend_url } from '../production';
 
-// /** This API is for validate the meeting id  */
-// /** Not require to call this API after create meeting API  */
-// const validateMeeting = async (token, meetingId) => {
-//   try {
-//     const VIDEOSDK_API_ENDPOINT = `${backend_url}/meetings/validate-meeting/${meetingId}`;
-//     const options = {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({ token }),
-//     };
-//     const response = await fetch(VIDEOSDK_API_ENDPOINT, options)
-//       .then(async (result) => {
-//         const { meetingId } = await result.json();
-//         return meetingId;
-//       })
-//       .catch((error) => console.log("error", error));
-//     return response;
-//   } catch (e) {
-//     console.log(e);
-//   }
-// };
-
-// const validatedMeetingId = await validateMeeting(token, "provided-meeting-id");
 
 const Chat = () => {
   const user = JSON.parse(localStorage.getItem('user'));

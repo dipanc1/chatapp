@@ -12,6 +12,7 @@ function Controls({ fetchAgain, setFetchAgain, user }) {
     const { leave, toggleMic, toggleWebcam, getWebcams, changeWebcam } = useMeeting();
     const [webcamOn, setWebcamOn] = React.useState(false);
     const [flipWebcam, setFlipWebcam] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
 
     let webcams;
 
@@ -28,17 +29,16 @@ function Controls({ fetchAgain, setFetchAgain, user }) {
     React.useEffect(() => {
         const handleGetWebcams = async () => {
             webcams = await getWebcams();
-            console.warn("Webcams", webcams);
+            // console.warn("Webcams", webcams);
             return webcams;
         }
         handleGetWebcams();
     })
 
-
     const handleChangeWebcam = () => {
         if (webcams) {
-            const { deviceId } = webcams[0];
-
+            const { deviceId } = webcams[!flipWebcam ? 1 : 0];
+            // console.warn("Device ID ", deviceId);
             changeWebcam(deviceId);
             setFlipWebcam(!flipWebcam);
         }
@@ -48,8 +48,7 @@ function Controls({ fetchAgain, setFetchAgain, user }) {
     };
 
     const endStream = async () => {
-        leave();
-
+        setLoading(true);
         try {
             const config = {
                 headers: {
@@ -63,13 +62,18 @@ function Controls({ fetchAgain, setFetchAgain, user }) {
             const result = await axios.put(`${backend_url}/conversation/stop-stream`, { data }, config);
             console.warn(result, "result");
             if (result) {
+                setLoading(false);
                 dispatch({ type: 'SET_STREAM', payload: false })
+                dispatch({ type: 'SET_STREAMEXISTS', payload: false });
+                leave();
                 setFetchAgain(!fetchAgain);
             } else {
+                setLoading(false);
                 console.log("error");
             }
 
         } catch (error) {
+            setLoading(false);
             console.log(error);
         }
     }
@@ -77,29 +81,29 @@ function Controls({ fetchAgain, setFetchAgain, user }) {
     return (
         <HStack flex={'3'} mx={'2'} justifyContent={'space-between'}>
             <Flex justifyContent={'center'} alignItems={'center'}>
-                <IconButton onPress={webcamToggle} bg={'primary.200'} icon={<MaterialIcons name={webcamOn ? "videocam" : "videocam-off"} size={24} color="#9F85F7" />} />
+                <IconButton disabled={loading} onPress={webcamToggle} bg={'primary.200'} icon={<MaterialIcons name={webcamOn ? "videocam" : "videocam-off"} size={24} color="#9F85F7" />} />
                 <Text>{webcamOn ? 'Camera On' : 'Camera Off'}</Text>
             </Flex>
 
             <Flex justifyContent={'center'} alignItems={'center'}>
-                <IconButton onPress={handleChangeWebcam} bg={'primary.200'} icon={<MaterialIcons name={flipWebcam ? "camera-rear" : "camera-front"} size={24} color="#9F85F7" />} />
+                <IconButton disabled={loading} onPress={handleChangeWebcam} bg={'primary.200'} icon={<MaterialIcons name={flipWebcam ? "camera-rear" : "camera-front"} size={24} color="#9F85F7" />} />
                 <Text>{flipWebcam ? 'Rear Camera' : 'Front Camera'}</Text>
             </Flex>
 
             <Flex justifyContent={'center'} alignItems={'center'}>
-                <IconButton onPress={() => micToggle()} bg={'primary.200'} icon={<MaterialIcons name={micOn ? "mic" : "mic-off"} size={24} color="#EFAA86" />} />
+                <IconButton disabled={loading} onPress={() => micToggle()} bg={'primary.200'} icon={<MaterialIcons name={micOn ? "mic" : "mic-off"} size={24} color="#EFAA86" />} />
                 <Text>{micOn ? 'Unmute' : 'Mute'}</Text>
             </Flex>
 
             <Flex justifyContent={'center'} alignItems={'center'}>
-                <IconButton onPress={
+                <IconButton disabled={loading} onPress={
                     () => { dispatch({ type: 'SET_FULLSCREEN', payload: true }) }
                 } bg={'primary.200'} icon={<MaterialIcons name="fullscreen" size={24} color="#EFAA86" />} />
                 <Text>Full Screen</Text>
             </Flex>
 
             <Flex justifyContent={'center'} alignItems={'center'}>
-                <IconButton onPress={endStream} bg={'primary.200'} icon={<MaterialIcons name="cancel-presentation" size={24} color="#ff4343" />} />
+                <IconButton disabled={loading} onPress={endStream} bg={'primary.200'} icon={<MaterialIcons name="cancel-presentation" size={24} color="#ff4343" />} />
                 <Text>Leave</Text>
             </Flex>
         </HStack>
@@ -107,11 +111,11 @@ function Controls({ fetchAgain, setFetchAgain, user }) {
 }
 
 const VideoComponent = ({ participantId }) => {
-    console.warn("Participants Id ::: == >>>", participantId)
+    // console.warn("Participants Id ::: == >>>", participantId)
     const { webcamStream, webcamOn } = useParticipant(
         participantId
     );
-    console.warn("Webcam Stream ::: == >>>", webcamStream)
+    // console.warn("Webcam Stream ::: == >>>", webcamStream)
 
     return (
         <Flex key={participantId} flex={'8'} justifyContent={'center'} alignItems={'center'} bg={'primary.200'} m={'5'}>
