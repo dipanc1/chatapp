@@ -1,4 +1,4 @@
-import './App.scss';
+import './global-styles.scss';
 import { Routes, Route } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import Login from './pages/Login'
@@ -11,7 +11,7 @@ import NotFound from './pages/NotFound';
 function App() {
 
   return (
-    <div className="app">
+    <div>
       <AnimatePresence exitBeforeEnter initial={false}>
         <Routes>
           <Route path="/" element={<Login />} />

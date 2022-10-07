@@ -56,14 +56,14 @@ const Navbar = ({ fetchAgain, setFetchAgain }) => {
 
   const handleLogout = () => {
     localStorage.removeItem('user');
-    // navigate('/');
+    navigate('/');
     window.location.reload();
   }
 
   return (
     <>
       <Box px={4}>
-        <Flex h={'14'} alignItems={'center'} justifyContent={'space-between'}>
+        <Flex h={'60px'} alignItems={'center'} justifyContent={'space-between'}>
           <Box>
             <Text display={['none', 'none', 'none', 'block']} cursor={'default'} fontWeight={'bold'} fontSize={'3xl'}>
               Logo

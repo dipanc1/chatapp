@@ -9,15 +9,18 @@ import { AppContext } from '../context/AppContext';
 import Streaming from '../components/Miscellaneous/Streaming';
 import { MeetingConsumer, MeetingProvider } from '@videosdk.live/react-sdk';
 import { SocketContextProvider } from '../context/socketContext';
-import { backend_url } from '../production';
+import { backend_url } from '../baseApi';
 
 
 const Chat = () => {
   const user = JSON.parse(localStorage.getItem('user'));
+
   const { stream } = useContext(AppContext);
+
   const [fetchAgain, setFetchAgain] = React.useState(false)
   const [meetingId, setMeetingId] = React.useState(null);
   const [token, setToken] = React.useState(null);
+
   let navigate = useNavigate();
 
   React.useEffect(() => {
@@ -77,9 +80,9 @@ const Chat = () => {
 
   return (
     <>
-      {user && <Navbar fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
-      <Box display={'flex'} bg={'backgroundColor'} height={'calc(100vh - 14)'}>
-        {stream && token && meetingId ?
+      {user.token && <Navbar fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+      <Box display={'flex'} bg={'backgroundColor'} height={'calc(100vh - 60px)'}>
+        {(stream && token && meetingId) ?
           <MeetingProvider
             config={{
               meetingId,
@@ -87,7 +90,7 @@ const Chat = () => {
               webcamEnabled: true,
               name: user.username
             }}
-          token={token}
+            token={token}
           >
             <MeetingConsumer>
               {() =>
@@ -100,17 +103,17 @@ const Chat = () => {
           :
           <>
             <Box flex={['0', '2', '2', '2']}>
-              {user && <Conversations fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+              {user.token && <Conversations fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
             </Box>
             <SocketContextProvider>
               <Box flex={['12', '7.5', '7.5', '7.5']}>
-                {user && <Chatbox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} getMeetingAndToken={getMeetingAndToken} />}
+                {user.token && <Chatbox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} getMeetingAndToken={getMeetingAndToken} />}
               </Box>
             </SocketContextProvider>
           </>
         }
-        <Box flex={stream && token && meetingId ? '3' : ['0', '2', '2', '2']}>
-          {user && <Members fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+        <Box flex={(stream && token && meetingId) ? '3' : ['0', '2.5', '2.5', '2.5']}>
+          {user.token && <Members fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
         </Box>
       </Box>
     </>

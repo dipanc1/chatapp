@@ -3,7 +3,7 @@ import ChatOnline from '../Miscellaneous/ChatOnline'
 import { AppContext } from '../../context/AppContext'
 import axios from 'axios'
 import UserListItem from '../UserItems/UserListItem'
-import { backend_url } from '../../production'
+import { backend_url } from '../../baseApi'
 import { HiUserRemove } from 'react-icons/hi'
 import {
   Accordion,
@@ -88,7 +88,7 @@ export const MembersComponent = ({ fetchAgain, setFetchAgain }) => {
       });
     }
     if (selectedChat.groupAdmin._id !== user._id) {
-      toast({
+      return toast({
         title: "Error Occured!",
         description: "You are not the admin of this group chat",
         status: "error",
@@ -426,7 +426,7 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
 
   return (
     <Box
-      height={'628px'}
+      height={'85vh'}
       width={'98%'}
       bg={'whiteColor'}
       p={'1.5'}

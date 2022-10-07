@@ -5,7 +5,7 @@ import axios from 'axios';
 import { AppContext } from '../context/AppContext';
 import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
-import { backend_url } from '../production';
+import { backend_url } from '../baseApi';
 import {
     Flex,
     Box,

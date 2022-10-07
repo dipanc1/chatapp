@@ -44,7 +44,7 @@ const ProfileModal = ({ user, children }) => {
                     boxShadow={'lg'}
                 >
                     <ModalHeader
-                        fontSize="40px"
+                        fontSize="30px"
                         d="flex"
                         justifyContent="center"
                     >
@@ -53,8 +53,8 @@ const ProfileModal = ({ user, children }) => {
                     <ModalCloseButton />
                     <ModalBody
                         display={'flex'}
-                        alignItems="center"
-                        justifyContent="center"
+                        alignItems={'center'}
+                        justifyContent={'center'}
                         flexDirection={'column'}
                     >
                         <Image
@@ -64,7 +64,8 @@ const ProfileModal = ({ user, children }) => {
                             alt={user.name}
                         />
                         <Text
-                            fontSize={{ base: "28px", md: "30px" }}
+                            fontSize={{ md: "20px" }}
+                            my={4}
                         >
                             Phone Number: +{user.number}
                         </Text>

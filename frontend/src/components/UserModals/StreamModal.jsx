@@ -15,16 +15,21 @@ import {
     useDisclosure
 } from '@chakra-ui/react'
 import axios from 'axios';
-import { backend_url } from '../../production';
+import { backend_url } from '../../baseApi';
+import Lottie from 'lottie-react';
+import animationData from '../../animations/red-dot.json';
 
 
-const StreamModal = ({ children, getMeetingAndToken }) => {
-    const user = JSON.parse(localStorage.getItem('user'))
-    const { isOpen, onOpen, onClose } = useDisclosure()
+const StreamModal = ({ children, getMeetingAndToken, admin }) => {
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    const { isOpen, onOpen, onClose } = useDisclosure();
+
     const { selectedChat, dispatch } = useContext(AppContext);
+
     const [disabled, setDisabled] = useState(false)
     const [meetingId, setMeetingId] = useState(null);
-    
+
     const startMeeting = async () => {
         setDisabled(true);
         const config = {
@@ -35,9 +40,6 @@ const StreamModal = ({ children, getMeetingAndToken }) => {
         }
         const { data } = await axios.get(`${backend_url}/conversation/streaming/${selectedChat._id}`, config);
         setMeetingId(data);
-        if (data) {
-            dispatch({ type: 'SET_STREAMEXISTS', payload: true });
-        }
         console.warn("STREAM MODAL which is joinscreen", data, "MEETING ID", meetingId);
         await getMeetingAndToken(data);
         onClose();
@@ -51,7 +53,20 @@ const StreamModal = ({ children, getMeetingAndToken }) => {
             <>
                 <Button onClick={() => {
                     onOpen();
-                }}>
+                }}>{
+                        !admin &&
+                        <Lottie
+                            loop={true}
+                            style={{
+                                position: 'absolute',
+                                top: '4px',
+                                right: '4px',
+                                width: '10px',
+                                height: '10px'
+                            }}
+                            animationData={animationData}
+                        />
+                    }
                     <AiOutlineVideoCamera />
                 </Button>
 
@@ -61,12 +76,12 @@ const StreamModal = ({ children, getMeetingAndToken }) => {
                         <ModalHeader>
                             {'  '}
                         </ModalHeader>
-                        <ModalBody minHeight={'48'} display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'space-between'} >
+                        <ModalBody minHeight={'48'} display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'space-between'}>
                             <Heading>
-                                Share the Video?
+                                {admin ? 'Share the Video?' : 'Join the Video?'}
                             </Heading>
                             <Text fontSize='xl'>
-                                You can share you screen with the members present in this group.
+                                {admin ? 'You can share you screen with the members present in this group.' : 'You can join the video call with the members present in this group.'}
                             </Text>
                             <Flex>
                                 <Button color='buttonPrimaryColor' variant='outline' mr={3} onClick={onClose}>
@@ -74,7 +89,7 @@ const StreamModal = ({ children, getMeetingAndToken }) => {
                                 </Button>
                                 <Button disabled={disabled} color={'whiteColor'} variant='solid' bg='buttonPrimaryColor'
                                     onClick={startMeeting}
-                                >Share</Button>
+                                >{admin ? 'Share' : 'Join'}</Button>
                             </Flex>
                         </ModalBody>
                         <ModalFooter>

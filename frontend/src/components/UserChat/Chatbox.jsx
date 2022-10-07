@@ -8,7 +8,7 @@ import animationData from '../../animations/typing.json'
 import DetailsModal from '../UserModals/DetailsModal'
 import { format } from 'timeago.js'
 import StreamModal from '../UserModals/StreamModal'
-import { backend_url } from '../../production'
+import { backend_url } from '../../baseApi'
 import { Avatar, AvatarBadge, Box, Button, Divider, Flex, Image, Input, Spinner, Text, useToast } from '@chakra-ui/react'
 import { FiSend } from 'react-icons/fi'
 
@@ -17,7 +17,7 @@ var selectedChatCompare;
 
 export const ChatBoxComponent = ({ meetingId, selectedChat, fetchAgain, setFetchAgain, user, toast }) => {
   const socket = React.useContext(SocketContext);
-  // console.log("HBBHBKJNJ",socket)
+  // console.log("Socket ::: >>>",socket)
   const { notification, dispatch } = React.useContext(AppContext);
   const [messages, setMessages] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
@@ -32,7 +32,6 @@ export const ChatBoxComponent = ({ meetingId, selectedChat, fetchAgain, setFetch
     socket.on("connected", () => setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
     socket.on("stop typing", () => setIsTyping(false));
-    // user online
     socket.emit("user-online", user);
   }, []);
 
@@ -216,7 +215,7 @@ export const ChatBoxComponent = ({ meetingId, selectedChat, fetchAgain, setFetch
         display={'flex'}
         alignItems={'center'}
         justifyContent={'space-between'}
-        my={6}
+        my={'6'}
       >
         <Input
           mr={'10px'}
@@ -244,10 +243,16 @@ export const ChatBoxComponent = ({ meetingId, selectedChat, fetchAgain, setFetch
 
 const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) => {
   const user = JSON.parse(localStorage.getItem('user'));
+
+  const [meetingIdExists, setMeetingIdExists] = React.useState(false);
   const [online, setOnline] = React.useState(false);
   const [profile, setProfile] = React.useState(null);
-  const toast = useToast();
+
   const { selectedChat } = React.useContext(AppContext);
+
+  const toast = useToast();
+
+  const admin = selectedChat?.isGroupChat && selectedChat?.groupAdmin._id === user._id;
 
   const CheckOnlineStatus = async (friendId) => {
     try {
@@ -263,6 +268,31 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
       console.log(error);
     }
   }
+
+  React.useEffect(() => {
+    if (selectedChat?.isGroupChat) {
+      try {
+        const checkStream = async () => {
+          const config = {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${user.token}`
+            }
+          }
+          const { data } = await axios.get(`${backend_url}/conversation/streaming/${selectedChat._id}`, config);
+          if (data) {
+            setMeetingIdExists(true)
+          } else {
+            setMeetingIdExists(false);
+          }
+        }
+        checkStream();
+      } catch (error) {
+        console.log(error);
+      }
+
+    }
+  }, [selectedChat])
 
 
   React.useEffect(() => {
@@ -282,7 +312,6 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
     if (selectedChat && !selectedChat.isGroupChat) {
       CheckOnlineStatus(selectedChat?.users.find(member => member._id !== user._id)._id);
     }
-    // console.log("fnsdjnfjdsnfj", selectedChat?.isGroupChat);
     selectedChatCompare = selectedChat;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedChat])
@@ -295,7 +324,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
 
   return (
     <Box
-      height={'628px'}
+      height={'85vh'}
       bg={'whiteColor'}
       p={'1.5'}
       my={'5'}
@@ -356,9 +385,9 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
                 </Text>
               </Box>
 
-              {selectedChat?.isGroupChat &&
+              {selectedChat?.isGroupChat && (admin || meetingIdExists) &&
                 <Box>
-                  <StreamModal getMeetingAndToken={getMeetingAndToken} />
+                  <StreamModal admin={admin} getMeetingAndToken={getMeetingAndToken} />
                 </Box>
 
               }

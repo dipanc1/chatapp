@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useContext, useState } from 'react';
 import { AppContext } from '../../context/AppContext';
-import { backend_url } from '../../production';
+import { backend_url } from '../../baseApi';
 import {
     Modal,
     ModalOverlay,

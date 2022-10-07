@@ -168,6 +168,9 @@ router.put("/stream", asyncHandler(async (req, res) => {
         },
     }).then((chat) => {
         console.log("streaming");
+        res.status(200).json({
+            message: "streaming",
+        });
     }).catch((err) => {
         console.log(err);
     });

@@ -1,6 +1,6 @@
 import React from "react";
 import { io } from "socket.io-client";
-import { backend_url } from "../production";
+import { backend_url } from "../baseApi";
 
 const ENDPOINT = backend_url;
 
