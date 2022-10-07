@@ -42,7 +42,7 @@ function VideoComponent(props) {
     const videoStream = useMemo(() => {
         if (webcamOn) {
             const mediaStream = new MediaStream();
-            mediaStream.addTrack(webcamStream.track);
+            webcamStream && mediaStream.addTrack(webcamStream.track);
             return mediaStream;
         }
     }, [webcamStream, webcamOn]);
@@ -51,7 +51,7 @@ function VideoComponent(props) {
         if (micRef.current) {
             if (micOn) {
                 const mediaStream = new MediaStream();
-                mediaStream.addTrack(micStream.track);
+                micStream && mediaStream.addTrack(micStream.track);
 
                 micRef.current.srcObject = mediaStream;
                 micRef.current
@@ -69,7 +69,7 @@ function VideoComponent(props) {
         <div key={props.participantId}>
             <Box>
                 {micOn && micRef && <audio ref={micRef} autoPlay />}
-                {webcamOn && (
+                {(webcamOn && videoStream) && (
                     <ReactPlayer
                         //
                         playsinline // very very imp prop
@@ -96,10 +96,14 @@ function VideoComponent(props) {
 
 function Controls({ admin, user, selectedChat, dispatch }) {
 
-    const toast = useToast();
+    const [micOn, setMicOn] = React.useState(true);
+    const [webcamOn, setWebcamOn] = React.useState(false);
+    const [fullscreenOn, setFullscreenOn] = React.useState(false);
 
     const [play] = useSound(joinSound);
     const [playLeave] = useSound(leaveSound);
+    
+    const toast = useToast();
 
     const { leave, toggleMic, toggleWebcam, end } = useMeeting({
         onParticipantJoined: (participant) => {
@@ -127,18 +131,14 @@ function Controls({ admin, user, selectedChat, dispatch }) {
         }
     });
 
-    const [micOn, setMicOn] = React.useState(true);
-    const [webcamOn, setWebcamOn] = React.useState(false);
-    const [fullscreenOn, setFullscreenOn] = React.useState(false);
-
     const micToggle = () => {
-        setMicOn(!micOn);
         toggleMic();
+        setMicOn(!micOn);
     }
 
     const webcamToggle = () => {
-        setWebcamOn(!webcamOn);
         toggleWebcam();
+        setWebcamOn(!webcamOn);
     }
 
 
@@ -184,9 +184,7 @@ function Controls({ admin, user, selectedChat, dispatch }) {
             <Flex width={'45%'} justify={'space-between'} flexDirection={'row'}>
                 <VStack>
                     <IconButton
-                        onClick={() => {
-                            micToggle();
-                        }}
+                        onClick={micToggle}
                         bg='whiteColor'
                         variant='solid'
                         color={'tomato'}
@@ -309,7 +307,7 @@ const Streaming = ({ meetingId, setFetchAgain }) => {
 
     return (
         <Box
-            height={'628px'}
+            height={'85vh'}
             p={'1.5'}
             my={'5'}
             mx={['5', '10', '10', '10']}

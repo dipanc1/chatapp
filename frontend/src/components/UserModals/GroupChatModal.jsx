@@ -187,7 +187,12 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
                             ))}
                         </Box>
                         {loading ? (
-                            <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
+                            <Box
+                                display={'flex'}
+                                alignItems={'center'}
+                                height={'48'}
+                                justifyContent={'center'}
+                            >
                                 <Spinner
                                     thickness='4px'
                                     speed='0.65s'
