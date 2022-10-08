@@ -1,7 +1,9 @@
 const router = require("express").Router();
+
 const User = require("../models/User");
+const Chat = require("../models/Conversation");
+
 const asyncHandler = require("express-async-handler");
-const Chat = require("../models/Conversation")
 
 
 //new conversation

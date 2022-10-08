@@ -1,14 +1,16 @@
 const router = require("express").Router();
+
 const axios = require("axios");
-require("dotenv").config();
 const jwt = require("jsonwebtoken");
+
+require("dotenv").config();
 
 //
 router.get("/get-token", (req, res) => {
     const API_KEY = process.env.VIDEOSDK_API_KEY;
     const SECRET_KEY = process.env.VIDEOSDK_SECRET_KEY;
 
-    const options = { expiresIn: "10m", algorithm: "HS256" };
+    const options = { expiresIn: "30d", algorithm: "HS256" };
 
     const payload = {
         apikey: API_KEY,

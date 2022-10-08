@@ -1,5 +1,6 @@
 const router = require("express").Router();
-const { accountSID, authToken, serviceSID } = require("../config/otp_auth")
+
+const { accountSID, authToken, serviceSID } = require("../config/otp_auth");
 const client = require("twilio")(accountSID, authToken);
 
 router.post("/mobile", (req, res) => {

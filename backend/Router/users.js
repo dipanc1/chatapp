@@ -1,12 +1,15 @@
 const router = require("express").Router();
-const generateToken = require("../config/generateToken");
-const User = require("../models/User");
+
 const bcrypt = require("bcrypt");
-const asyncHandler = require("express-async-handler");
+
+const generateToken = require("../config/generateToken");
 const { protect } = require("../middleware/authMiddleware");
-const Chat = require("../models/Conversation");
-const { accountSID, authToken, serviceSID } = require("../config/otp_auth")
+
+const { accountSID, authToken, serviceSID } = require("../config/otp_auth");
 const client = require("twilio")(accountSID, authToken);
+
+const Chat = require("../models/Conversation");
+const User = require("../models/User");
 
 
 // register
