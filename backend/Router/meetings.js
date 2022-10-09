@@ -5,8 +5,9 @@ const jwt = require("jsonwebtoken");
 
 require("dotenv").config();
 
-//
-router.get("/get-token", (req, res) => {
+const { protect } = require("../middleware/authMiddleware");
+
+router.get("/get-token", protect, (req, res) => {
     const API_KEY = process.env.VIDEOSDK_API_KEY;
     const SECRET_KEY = process.env.VIDEOSDK_SECRET_KEY;
 
@@ -21,7 +22,6 @@ router.get("/get-token", (req, res) => {
     res.json({ token });
 });
 
-//
 router.post("/create-meeting", (req, res) => {
     // console.log(req.body);
     const { token, region } = req.body;
@@ -41,7 +41,6 @@ router.post("/create-meeting", (req, res) => {
         });
 });
 
-//
 router.post("/validate-meeting/:meetingId", (req, res) => {
     const token = req.body.token;
     const meetingId = req.params.meetingId;

@@ -40,7 +40,7 @@ app.use("/", otpRoute)
 app.use("/users", userRoute);
 app.use("/conversation", protect, conversationRoute);
 app.use("/message", protect, messageRoute);
-app.use("/meetings", protect, meetingRoute);
+app.use("/meetings", meetingRoute);
 
 const PORT = process.env.PORT || "8000";
 const server = app.listen(PORT, () => {

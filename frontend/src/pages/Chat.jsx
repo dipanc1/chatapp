@@ -37,6 +37,7 @@ const Chat = () => {
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
           },
         });
         const { token } = await response.json();
