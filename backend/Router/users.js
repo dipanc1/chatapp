@@ -5,7 +5,12 @@ const bcrypt = require("bcrypt");
 const generateToken = require("../config/generateToken");
 const { protect } = require("../middleware/authMiddleware");
 
-const { accountSID, authToken, serviceSID } = require("../config/otp_auth");
+require("dotenv").config();
+
+const accountSID = process.env.OTP_ACCOUNT_SID;
+const authToken = process.env.OTP_AUTH_TOKEN;
+const serviceSID = process.env.OTP_SERVICE_SID;
+
 const client = require("twilio")(accountSID, authToken);
 
 const Chat = require("../models/Conversation");
@@ -37,7 +42,7 @@ router.post("/register", async (req, res) => {
             number: user.number,
             isAdmin: user.isAdmin,
             pic: user.pic,
-            token: generateToken(user._id),
+            token: generateToken(user._id)
         })
 
     } catch (err) {

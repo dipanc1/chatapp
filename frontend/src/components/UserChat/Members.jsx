@@ -14,7 +14,7 @@ import { GrUserAdd } from 'react-icons/gr'
 import { BsTelephone, BsPerson } from 'react-icons/bs'
 import { ChatBoxComponent } from './Chatbox'
 
-export const MembersComponent = ({ fetchAgain, setFetchAgain }) => {
+export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain }) => {
   const [groupChatName, setGroupChatName] = React.useState('');
   const [search, setSearch] = React.useState('');
   const [searchResults, setSearchResults] = React.useState([]);
@@ -213,11 +213,12 @@ export const MembersComponent = ({ fetchAgain, setFetchAgain }) => {
       selectedChat?.isGroupChat ? (
         <Tabs variant='unstyled' isFitted>
           <TabList>
-            {stream &&
+            {(token && meetingId && stream) &&
               <Tab _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>Chat</Tab>
             }
 
-            <Tab _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>Participants</Tab>
+            <Tab _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>{stream ? 'Participants' : 'Members'}</Tab>
+
             <Tab _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>Settings</Tab>
           </TabList>
 
@@ -225,7 +226,7 @@ export const MembersComponent = ({ fetchAgain, setFetchAgain }) => {
 
             {stream &&
               <TabPanel>
-                <ChatBoxComponent fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} selectedChat={selectedChat} user={user} toast={toast} />
+                <ChatBoxComponent height={'65vh'} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} selectedChat={selectedChat} user={user} toast={toast} />
               </TabPanel>}
 
             <TabPanel>
@@ -422,7 +423,7 @@ export const MembersComponent = ({ fetchAgain, setFetchAgain }) => {
   )
 }
 
-const Members = ({ fetchAgain, setFetchAgain }) => {
+const Members = ({ fetchAgain, setFetchAgain, token, meetingId }) => {
 
   return (
     <Box
@@ -436,7 +437,7 @@ const Members = ({ fetchAgain, setFetchAgain }) => {
       display={['none', 'none', 'none', 'block']}
       boxShadow={'dark-lg'}>
 
-      <MembersComponent fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+      <MembersComponent token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
 
     </Box>
   )

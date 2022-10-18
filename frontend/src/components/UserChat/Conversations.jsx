@@ -49,7 +49,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                 }
             }
             const { data } = await axios.get(`${backend_url}/users?search=${search}`, config)
-            console.warn("gorups,,,", data);
+            // console.warn("gorups,,,", data);
             setLoading(false);
             setSearchResultsUsers(data.users);
             setSearchResultsGroups(data.groups);
@@ -129,20 +129,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
     }
 
     const handleAddUser = async (user1, groupId) => {
-        const res = searchResultsGroups.map(group => group.users).includes(user1);
-        // console.log(user1)
-        // console.log(res);
-        if (res) {
-            // console.log("user already in chat")
-            toast({
-                title: "Error Occured!",
-                description: "User Already in Chat",
-                status: "error",
-                duration: 5000,
-                isClosable: true,
-                position: "bottom-left",
-            });
-        }
+        // TODO: check this
         try {
             setLoading(true);
             const config = {
@@ -158,7 +145,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                 },
                 config
             );
-            // console.log(data);
+
             dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
             setFetchAgain(!fetchAgain);
             setLoading(false);
@@ -166,12 +153,14 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
             // console.log(error);
             toast({
                 title: "Error Occured!",
-                description: "Failed to Add User to Group",
+                description: "User already exists in the group",
                 status: "error",
                 duration: 5000,
                 isClosable: true,
                 position: "bottom-left",
             });
+            setFetchAgain(!fetchAgain);
+            setLoading(false);
         }
         setSearch('');
 

@@ -1,6 +1,11 @@
 const router = require("express").Router();
 
-const { accountSID, authToken, serviceSID } = require("../config/otp_auth");
+require("dotenv").config();
+
+const accountSID = process.env.OTP_ACCOUNT_SID;
+const authToken = process.env.OTP_AUTH_TOKEN;
+const serviceSID = process.env.OTP_SERVICE_SID;
+
 const client = require("twilio")(accountSID, authToken);
 
 router.post("/mobile", (req, res) => {
@@ -13,11 +18,15 @@ router.post("/mobile", (req, res) => {
         })
         .then((resp) => {
             console.log("response", resp);
-            res.status(200).json(resp);
+            res.status(200).json({
+                message: "OTP sent successfully",
+            });
         })
         .catch((err) => {
             console.log("err", err);
-            res.status(500).json(err);
+            res.status(500).json({
+                message: "Error sending OTP",
+            });
         });
 });
 

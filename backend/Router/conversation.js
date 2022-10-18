@@ -126,6 +126,12 @@ router.put("/rename", asyncHandler(async (req, res) => {
 // adding in group
 router.put("/groupadd", asyncHandler(async (req, res) => {
     const { chatId, userId } = req.body;
+    
+    const isUser = await Chat.findOne({ _id: chatId, users: { $elemMatch: { $eq: userId } } });
+
+    if (isUser) {
+        return res.status(400).send("User is already in the group");
+    }
 
     const added = await Chat.findByIdAndUpdate(chatId, {
         $push: { users: userId }

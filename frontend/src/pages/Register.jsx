@@ -69,7 +69,6 @@ const Register = () => {
     }
 
     const postDetails = async (pics) => {
-        setLoading(true)
         if (pics === undefined) {
             setPic('')
             toast({
@@ -89,10 +88,8 @@ const Register = () => {
                 .then(res => {
                     // console.log(res);
                     setPic(res.data.url.toString());
-                    setLoading(false)
                 })
                 .catch(err => {
-                    setLoading(false)
                     toast({
                         title: "Error",
                         description: "Server error",
@@ -102,7 +99,6 @@ const Register = () => {
                     });
                 })
         } else {
-            setLoading(false)
             toast({
                 title: "Error",
                 description: "Please upload a picture",
@@ -127,7 +123,7 @@ const Register = () => {
             return
         } else {
             await postDetails(selectedImage);
-            pic.length > 0 && await axios.post(apiUrlRegister, {
+            pic.length > 10 && await axios.post(apiUrlRegister, {
                 number1: number1,
                 username: username,
                 password: password,
@@ -271,7 +267,7 @@ const Register = () => {
                                     <Flex justifyContent={''} alignItems={'flex-end'} flexDirection={'row'}>
                                         <Avatar
                                             size={'xl'}
-                                            src={selectedImage ? URL.createObjectURL(selectedImage) : "https://bit.ly/broken-link"}
+                                            src={selectedImage ? URL.createObjectURL(selectedImage) : ''}
                                             alt={'Avatar Alt'}
                                         />
                                         <IconButton
@@ -288,6 +284,7 @@ const Register = () => {
                                             ref={fileInputRef}
                                             onChange={imageChange}
                                             style={{ display: 'none' }}
+                                            required
                                         />
                                     </Flex>
 

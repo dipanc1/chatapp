@@ -1,7 +1,7 @@
 import axios from 'axios'
 import React from 'react'
 import { AppContext } from '../../context/AppContext'
-import { SocketContext } from '../../context/socketContext'
+import { SocketContext } from '../../context/SocketContext'
 import Message from '../Miscellaneous/Message'
 import Lottie from "lottie-react";
 import animationData from '../../animations/typing.json'
@@ -15,7 +15,7 @@ import { FiSend } from 'react-icons/fi'
 
 var selectedChatCompare;
 
-export const ChatBoxComponent = ({ meetingId, selectedChat, fetchAgain, setFetchAgain, user, toast }) => {
+export const ChatBoxComponent = ({ height, selectedChat, fetchAgain, setFetchAgain, user, toast }) => {
   const socket = React.useContext(SocketContext);
   // console.log("Socket ::: >>>",socket)
   const { notification, dispatch } = React.useContext(AppContext);
@@ -79,6 +79,7 @@ export const ChatBoxComponent = ({ meetingId, selectedChat, fetchAgain, setFetch
   const sendMessage = async (event) => {
     if (event.key === "Enter" || event.type === "click") {
       socket.emit("stop typing", selectedChat._id);
+      setNewMessage('');
       try {
         const config = {
           headers: {
@@ -86,12 +87,10 @@ export const ChatBoxComponent = ({ meetingId, selectedChat, fetchAgain, setFetch
             'Authorization': `Bearer ${user.token}`
           }
         };
-        setNewMessage('');
         const { data } = await axios.post(`${backend_url}/message`, {
           content: newMessage,
           chatId: selectedChat._id
         }, config);
-
         socket.emit("new message", data);
         setMessages([...messages, data]);
         // console.log(data);
@@ -157,7 +156,7 @@ export const ChatBoxComponent = ({ meetingId, selectedChat, fetchAgain, setFetch
         initial="hidden"
         animate="visible"
         variants={variants}
-        height={'md'}
+        height={height}
         overflowY={'scroll'}
       >
         {loading ?
@@ -215,7 +214,6 @@ export const ChatBoxComponent = ({ meetingId, selectedChat, fetchAgain, setFetch
         display={'flex'}
         alignItems={'center'}
         justifyContent={'space-between'}
-        my={'6'}
       >
         <Input
           mr={'10px'}
@@ -401,7 +399,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
             </Box>
 
             <Divider orientation='horizontal' />
-            <ChatBoxComponent setOnline={setOnline} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} user={user} toast={toast} selectedChat={selectedChat} meetingId={meetingId} />
+            <ChatBoxComponent height={'78%'} setOnline={setOnline} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} user={user} toast={toast} selectedChat={selectedChat} meetingId={meetingId} />
 
 
           </>)

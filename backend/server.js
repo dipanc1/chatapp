@@ -11,7 +11,7 @@ const conversationRoute = require("./Router/conversation")
 const messageRoute = require("./Router/messages")
 const meetingRoute = require("./Router/meetings")
 
-const { mongo_url } = require("./config/mongo_auth");
+require("dotenv").config();
 
 const { protect } = require("./middleware/authMiddleware");
 
@@ -25,8 +25,10 @@ app.use(
     })
 );
 
+const MONGO_URL = process.env.MONGO_STAGING_URI;
+
 mongoose.connect(
-    mongo_url, {
+    MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 },
@@ -94,8 +96,7 @@ io.on("connection", (socket) => {
                             socketId: null,
                         },
                     })
-                        .then((user) => {
-                            // socket.broadcast.emit("user-offline", user);
+                        .then(() => {
                             console.log("User offline");
                         })
                         .catch((err) => {

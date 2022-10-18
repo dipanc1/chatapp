@@ -11,7 +11,10 @@ router.get("/get-token", protect, (req, res) => {
     const API_KEY = process.env.VIDEOSDK_API_KEY;
     const SECRET_KEY = process.env.VIDEOSDK_SECRET_KEY;
 
-    const options = { expiresIn: "30d", algorithm: "HS256" };
+    const EXPIRES_IN = process.env.TOKEN_EXPIRES_IN;
+
+
+    const options = { expiresIn: EXPIRES_IN, algorithm: "HS256" };
 
     const payload = {
         apikey: API_KEY,

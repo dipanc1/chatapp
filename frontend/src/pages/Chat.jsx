@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { useNavigate } from "react-router-dom";
-import { Box } from '@chakra-ui/react'
+import { Box, useToast } from '@chakra-ui/react'
 import Navbar from '../components/UserChat/Navbar'
 import Conversations from '../components/UserChat/Conversations'
 import Chatbox from '../components/UserChat/Chatbox'
@@ -8,20 +8,33 @@ import Members from '../components/UserChat/Members'
 import { AppContext } from '../context/AppContext';
 import Streaming from '../components/Miscellaneous/Streaming';
 import { MeetingConsumer, MeetingProvider } from '@videosdk.live/react-sdk';
-import { SocketContextProvider } from '../context/socketContext';
+import { SocketContextProvider } from '../context/SocketContext';
 import { backend_url } from '../baseApi';
 
 
 const Chat = () => {
   const user = JSON.parse(localStorage.getItem('user'));
 
-  const { stream } = useContext(AppContext);
+  const { stream, selectedChat } = useContext(AppContext);
 
   const [fetchAgain, setFetchAgain] = React.useState(false)
   const [meetingId, setMeetingId] = React.useState(null);
   const [token, setToken] = React.useState(null);
 
+  const admin = selectedChat?.groupAdmin._id === user._id;
+
+  const toast = useToast();
   let navigate = useNavigate();
+
+  const errorToast = (message) => {
+    toast({
+      title: "Error",
+      description: message,
+      status: "error",
+      duration: 9000,
+      isClosable: true,
+    });
+  };
 
   React.useEffect(() => {
     if (!user) {
@@ -44,6 +57,7 @@ const Chat = () => {
         setToken(token);
       } catch (e) {
         console.log(e);
+        errorToast("Something went wrong");
       }
     };
     getToken();
@@ -64,10 +78,14 @@ const Chat = () => {
           const { meetingId } = await result.json();
           return meetingId;
         })
-        .catch((error) => console.log("error", error));
+        .catch((error) => {
+          console.log("error", error);
+          errorToast("Something went wrong");
+        });
       return response;
     } catch (e) {
       console.log(e);
+      errorToast("Something went wrong");
     }
   };
 
@@ -88,7 +106,7 @@ const Chat = () => {
             config={{
               meetingId,
               micEnabled: false,
-              webcamEnabled: true,
+              webcamEnabled: admin ? true : false,
               name: user.username
             }}
             token={token}
@@ -96,7 +114,7 @@ const Chat = () => {
             <MeetingConsumer>
               {() =>
                 <Box flex={'9'}>
-                  <Streaming meetingId={meetingId} setFetchAgain={setFetchAgain} />
+                  <Streaming admin={admin} meetingId={meetingId} setFetchAgain={setFetchAgain} />
                 </Box>
               }
             </MeetingConsumer>
@@ -114,7 +132,7 @@ const Chat = () => {
           </>
         }
         <Box flex={(stream && token && meetingId) ? '3' : ['0', '2.5', '2.5', '2.5']}>
-          {user.token && <Members fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+          {user.token && <Members token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
         </Box>
       </Box>
     </>
