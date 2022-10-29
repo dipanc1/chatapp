@@ -65,6 +65,7 @@ export const ChatBoxComponent = ({ height, selectedChat, fetchAgain, setFetchAga
       socket.emit('join chat', selectedChat._id);
     } catch (error) {
       // console.log(error);
+      setLoading(false);
       toast({
         title: "Error Occured!",
         description: "Failed to Load the Messages",
@@ -290,6 +291,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
       }
 
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedChat])
 
 
@@ -389,7 +391,6 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
                 </Box>
 
               }
-              {/*TODO: for mobile yet to edit  */}
               <Flex
                 display={['block', 'none', 'none', 'none']}
               >

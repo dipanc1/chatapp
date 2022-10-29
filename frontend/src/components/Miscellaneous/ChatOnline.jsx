@@ -1,5 +1,5 @@
 import { DeleteIcon } from '@chakra-ui/icons';
-import { AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Avatar, Box, Divider, Flex, Tag, Text } from '@chakra-ui/react';
+import { AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Avatar, Box, Divider, Flex, Text } from '@chakra-ui/react';
 import { BsPerson, BsTelephone } from 'react-icons/bs';
 
 const ChatOnline = ({ stream, id, user1, handleFunction }) => {
@@ -22,13 +22,16 @@ const ChatOnline = ({ stream, id, user1, handleFunction }) => {
                     <Box flex='1' textAlign='left'>
                         <Flex align={'center'}>
                             <Avatar
+                                // src={!stream && user1.pic}
                                 src={user1.pic}
                                 size={'lg'}
                                 name={user1.username}
                                 ml={-1}
                                 mr={2}
                             />
-                            {user1.username}
+                            {
+                                // stream ? user1 :
+                                    user1.username}
                         </Flex>
                     </Box>
                     <AccordionIcon />
@@ -41,23 +44,29 @@ const ChatOnline = ({ stream, id, user1, handleFunction }) => {
                 <Flex flexDir={'column'} alignItems={stream ? 'center' : ''}>
                     <BsPerson />
                     <Text as='samp'>
+                        {/* {stream ? user1 : user1.username} */}
                         {user1.username}
                     </Text>
+                    {!stream &&
+                        <>
+                            <BsTelephone /><Text as='samp'>
+                                +{user1.number}
+                            </Text>
+                        </>
+                    }
 
-                    <BsTelephone />
-                    <Text as='samp'>
-                        +{user1.number}
-                    </Text>
                     <Divider orientation='horizontal' color={'#000000'}
                         my={'2'}
                     />
-                    {user._id === user1._id ?
-                        null :
-                        <>
-                            <Text cursor={'pointer'} color={'errorColor'} as='samp' onClick={handleFunction}>
-                                <DeleteIcon />  Remove from group
-                            </Text>
-                        </>}
+                    {
+                        !stream && (user._id === user1._id ?
+                            null :
+                            <>
+                                <Text cursor={'pointer'} color={'errorColor'} as='samp' onClick={handleFunction}>
+                                    <DeleteIcon />  Remove from group
+                                </Text>
+                            </>)
+                    }
                 </Flex>
             </AccordionPanel>
         </AccordionItem>

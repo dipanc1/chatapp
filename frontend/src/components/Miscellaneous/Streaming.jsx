@@ -10,6 +10,7 @@ import { backend_url } from '../../baseApi';
 import useSound from 'use-sound';
 import joinSound from '../../sounds/join.mp3';
 import leaveSound from '../../sounds/leave.mp3';
+import Members from '../UserChat/Members';
 
 const videoPlayerStyle = {
     width: '100%',
@@ -35,9 +36,7 @@ const IconButtonGeneric = ({ icon, onClick, color }) => {
 }
 
 function VideoComponent(props) {
-    // console.warn("Participants ID ::: >>>", props.participantId);
-    const [loadingScreen, setLoadingScreen] = React.useState(true);
-
+    // console.log("Participants ID ::: >>>", props.participantId);
     const micRef = useRef(null);
 
     const { displayName, isActiveSpeaker, webcamStream, micStream, webcamOn, micOn } = useParticipant(
@@ -49,12 +48,6 @@ function VideoComponent(props) {
             // console.log('stream disabled', stream);
         }
     });
-
-    React.useEffect(() => {
-        setTimeout(() => {
-            setLoadingScreen(false);
-        }, 5000);
-    }, []);
 
     const videoStream = useMemo(() => {
         if (webcamOn) {
@@ -83,57 +76,40 @@ function VideoComponent(props) {
     }, [micStream, micOn]);
 
     return (
-        !loadingScreen ? (
-            <div key={props.participantId}>
-                <Box>
-                    {micOn && micRef && <audio ref={micRef} autoPlay />}
-                    {(webcamOn || videoStream) && (
-                        <ReactPlayer
-                            playsinline // very very imp prop
-                            pip={false}
-                            light={false}
-                            controls={true}
-                            muted={true}
-                            playing={true}
-                            url={videoStream}
-                            height={"70vh"}
-                            width={"100%"}
-                            style={videoPlayerStyle}
-                            onError={(err) => {
-                                console.log(err, "participant video error");
-                            }}
-                        />
-                    )}
-                </Box>
-            </div>
-        ) : (
-            <Box
-                height={'70vh'}
-                width={'60vw'}
-                p={'1.5'}
-                mx={['5', '10', '10', '10']}
-                borderRadius={'xl'}
-                display={'flex'}
-                alignItems={'center'}
-                justifyContent={'center'}
-                boxShadow={'dark-lg'}
-                bg={'whiteColor'}>
-                <Center>
-                    <Text fontSize="xxx-large" fontWeight="bold" color="black">
-                        Loading Video...
-                    </Text>
-                </Center>
+        <div key={props.participantId}>
+            <Box>
+                {micOn && micRef && <audio ref={micRef} autoPlay />}
+                {webcamOn && (
+                    <ReactPlayer
+                        playsinline // very very imp prop
+                        pip={false}
+                        light={false}
+                        controls={true}
+                        muted={true}
+                        playing={true}
+                        url={videoStream}
+                        height={"70vh"}
+                        width={"100%"}
+                        style={videoPlayerStyle}
+                        onError={(err) => {
+                            console.log(err, "participant video error");
+                        }}
+                    />
+                )}
             </Box>
-        )
+        </div>
     );
 }
 
-function Controls({ admin, user, selectedChat, dispatch, toast }) {
+function Controls({ admin, user, selectedChat, toast }) {
+    let timeOutId;
+    const { dispatch } = useContext(AppContext);
 
     const [micOn, setMicOn] = React.useState(true);
     const [webcamOn, setWebcamOn] = React.useState(false);
     const [fullscreenOn, setFullscreenOn] = React.useState(false);
     const [startRecordingState, setStartRecordingState] = React.useState(false);
+    const [adminLeft, setAdminLeft] = React.useState([]);
 
     const [play] = useSound(joinSound);
     const [playLeave] = useSound(leaveSound);
@@ -148,6 +124,11 @@ function Controls({ admin, user, selectedChat, dispatch, toast }) {
                 duration: 3000,
                 isClosable: true,
             });
+
+            if (participant.displayName === admin) {
+                setAdminLeft((prev) => [...prev, participant.displayName]);
+                timeOutId && clearTimeout(timeOutId);
+            }
         },
         onParticipantLeft: (participant) => {
             playLeave();
@@ -158,6 +139,14 @@ function Controls({ admin, user, selectedChat, dispatch, toast }) {
                 duration: 3000,
                 isClosable: true,
             });
+
+            if (participant.displayName === admin) {
+                setAdminLeft((prev) => [...prev, participant.displayName]);
+                timeOutId = setTimeout(() => {
+                    endStream();
+                }, 600000);
+            }
+
         },
         onRecordingStarted: () => {
             toast({
@@ -307,18 +296,16 @@ function Controls({ admin, user, selectedChat, dispatch, toast }) {
     );
 }
 
-const Streaming = ({ admin, meetingId, setFetchAgain }) => {
+const Streaming = ({ admin, meetingId, token, fetchAgain, setFetchAgain }) => {
     // console.warn("Streaming which is container", meetingId);
 
     const user = JSON.parse(localStorage.getItem('user'));
-
-    const { selectedChat, streamExists, dispatch } = useContext(AppContext);
+    const { selectedChat } = useContext(AppContext);
 
     const [joined, setJoined] = React.useState(false);
     const [meetingIdExists, setMeetingIdExists] = React.useState(false);
 
-    const { join } = useMeeting();
-    const { participants } = useMeeting();
+    const { participants, join } = useMeeting();    
 
     const toast = useToast();
 
@@ -338,7 +325,7 @@ const Streaming = ({ admin, meetingId, setFetchAgain }) => {
                     'Authorization': `Bearer ${user.token}`
                 }
             }
-            const { result } = await axios.put(`${backend_url}/conversation/stream`, { data }, config);
+            await axios.put(`${backend_url}/conversation/stream`, { data }, config);
             // console.log(result);
         } catch (error) {
             console.log(error);
@@ -376,60 +363,69 @@ const Streaming = ({ admin, meetingId, setFetchAgain }) => {
     }, []);
 
     return (
-        <Box
-            height={'85vh'}
-            p={'1.5'}
-            my={'5'}
-            mx={['5', '10', '10', '10']}
-            borderRadius={'xl'}
-            display={'flex'}
-            alignItems={'center'}
-            justifyContent={'center'}
-            boxShadow={joined ? '' : 'dark-lg'}
-            bg={joined ? '' : 'whiteColor'}
-        >
-            {joined ? (
-                <Box display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
-                    <VStack>
-                        <Text>Group Name: {selectedChat?.chatName.toUpperCase()}</Text>
-                        <Text>Host: {selectedChat?.groupAdmin?.username}</Text>
-                    </VStack>
-                    <Divider orientation='horizontal' />
-                    {[...participants.keys()].map((participantId) => (
-                        <VideoComponent participantId={participantId} />
-                    ))}
-                    <Divider orientation='horizontal' />
-                    <Controls toast={toast} admin={admin} user={user} selectedChat={selectedChat} dispatch={dispatch} />
-                </Box>
-            ) : (
-                <Box display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
-                    {(admin || meetingIdExists) ? (
-                        <>
-                            <Heading my={'5'}>
-                                {!meetingIdExists ? 'Create the meeting for the Others to join' : 'Join the already going on meeting'}
-                            </Heading>
-                            <Button my={'5'} color={'whiteColor'} bg={'buttonPrimaryColor'} onClick={joinMeeting}>{!meetingIdExists ? 'Create Meeting' : 'Join Meeting'}</Button>
-                            <Button color={'whiteColor'} bg={'errorColor'} onClick={() => {
-                                window.location.reload();
-                                setFetchAgain(true);
-                            }}>Go to Home Page</Button>
-                        </>
+        <>
+            <Box flex={'9'}>
+                <Box
+                    height={'85vh'}
+                    p={'1.5'}
+                    my={'5'}
+                    mx={['5', '10', '10', '10']}
+                    borderRadius={'xl'}
+                    display={'flex'}
+                    alignItems={'center'}
+                    justifyContent={'center'}
+                    boxShadow={joined ? '' : 'dark-lg'}
+                    bg={joined ? '' : 'whiteColor'}
+                >
+                    {joined ? (
+                        <Box display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
+                            <VStack>
+                                <Text>Group Name: {selectedChat?.chatName.toUpperCase()}</Text>
+                                <Text>Host: {selectedChat?.groupAdmin?.username}</Text>
+                            </VStack>
+                            <Divider orientation='horizontal' />
+                            {[...participants.keys()].map((participantId) => {
+                                return (
+                                    <VideoComponent admin={admin} participantId={participantId} />
+                                )
+                            })}
+                            <Divider orientation='horizontal' />
+                            <Controls toast={toast} admin={admin} user={user} selectedChat={selectedChat} />
+                        </Box>
                     ) : (
-                        <>
-                            <Heading my={'5'}>
-                                Waiting for the host to start the meeting
-                            </Heading>
+                        <Box display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
+                            {(admin || meetingIdExists) ? (
+                                <>
+                                    <Heading my={'5'}>
+                                        {!meetingIdExists ? 'Create the meeting for the Others to join' : 'Join the already going on meeting'}
+                                    </Heading>
+                                    <Button my={'5'} color={'whiteColor'} bg={'buttonPrimaryColor'} onClick={joinMeeting}>{!meetingIdExists ? 'Create Meeting' : 'Join Meeting'}</Button>
+                                    <Button color={'whiteColor'} bg={'errorColor'} onClick={() => {
+                                        window.location.reload();
+                                        setFetchAgain(true);
+                                    }}>Go to Home Page</Button>
+                                </>
+                            ) : (
+                                <>
+                                    <Heading my={'5'}>
+                                        Waiting for the host to start the meeting
+                                    </Heading>
 
-                            <Button color={'whiteColor'} bg={'errorColor'} onClick={() => {
-                                window.location.reload();
-                                setFetchAgain(true);
-                            }}>Leave</Button>
-                        </>
-                    )}
+                                    <Button color={'whiteColor'} bg={'errorColor'} onClick={() => {
+                                        window.location.reload();
+                                        setFetchAgain(true);
+                                    }}>Leave</Button>
+                                </>
+                            )}
 
-                </Box>)
-            }
-        </Box >
+                        </Box>)
+                    }
+                </Box>
+            </Box>
+            <Box flex={'3'}>
+                <Members token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+            </Box>
+        </>
     )
 }
 

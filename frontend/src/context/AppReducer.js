@@ -26,7 +26,7 @@ const AppReducer = (state, action) => {
                 stream: !state.stream
             };
         case "SET_STREAMEXISTS":
-            return{
+            return {
                 ...state,
                 streamExists: !state.streamExists
             }

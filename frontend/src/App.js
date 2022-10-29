@@ -6,7 +6,7 @@ import Chat from './pages/Chat'
 import Register from './pages/Register'
 import NotFound from './pages/NotFound';
 
-//TODO: add participant name and host name, delete console statements
+//TODO: delete console statements
 
 function App() {
 

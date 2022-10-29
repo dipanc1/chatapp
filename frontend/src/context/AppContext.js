@@ -7,7 +7,7 @@ const INITIAL_STATE = {
   chats: [],
   notification: [],
   stream: false,
-  streamExists: false
+  streamExists: false,
 };
 
 export const AppContext = createContext(INITIAL_STATE);

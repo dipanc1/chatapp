@@ -165,9 +165,9 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain }
         isClosable: true,
         position: "bottom-left",
       });
-      setFetchAgain(!fetchAgain);
       setRenameLoading(false);
       setGroupChatName('');
+      setFetchAgain(!fetchAgain);
     } catch (err) {
       toast({
         title: "Error Occured!",
@@ -212,51 +212,71 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain }
     selectedChat ? (
       selectedChat?.isGroupChat ? (
         <Tabs variant='unstyled' isFitted>
-          <TabList>
+          <TabList mt={['2', '0', '0', '0']}>
             {(token && meetingId && stream) &&
               <Tab _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>Chat</Tab>
             }
 
-            <Tab _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>{stream ? 'Participants' : 'Members'}</Tab>
+            {/* It is the tab heading which will be used below */}
+            {!stream && <Tab _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>{stream ? 'Participants' : 'Members'}</Tab>}
 
             <Tab _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>Settings</Tab>
           </TabList>
 
           <TabPanels>
 
+            {/* Chat Tab */}
             {stream &&
               <TabPanel>
                 <ChatBoxComponent height={'65vh'} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} selectedChat={selectedChat} user={user} toast={toast} />
-              </TabPanel>}
+              </TabPanel>
+            }
 
-            <TabPanel>
-              <Box>
-                <Text>
-                  {selectedChat?.users.length} members
-                </Text>
-              </Box>
-              <Box
-                display={'flex'}
-                flexDirection={'column'}
-                alignItems={'center'}
-                justifyContent={'center'}
-                minHeight={'10'}
-                maxHeight={'72vh'}
-                overflowY={'scroll'}
-                overflowX={'hidden'}
-              >
-                <Accordion allowToggle>
-                  {selectedChat?.users.map(u =>
-                    <ChatOnline
-                      stream={stream}
-                      key={u._id}
-                      user1={u}
-                      handleFunction={() => handleRemove(u)} />
-                  )}
-                </Accordion>
-              </Box>
-            </TabPanel>
+            {/* Participants/Members Tab
+            TODO: We will use it after we can get participants array working */}
+            {!stream &&
+              <TabPanel>
+                <Box>
+                  <Text>
+                    {/* {stream ? participantsArray.length : selectedChat?.users.length} {stream ? 'participants' : 'members'} */}
+                    {selectedChat?.users.length} members
+                  </Text>
+                </Box>
+                <Box
+                  display={'flex'}
+                  flexDirection={'column'}
+                  alignItems={'center'}
+                  justifyContent={'center'}
+                  minHeight={['72vh', '0', '0', '10']}
+                  maxHeight={'72vh'}
+                  overflowY={'scroll'}
+                  overflowX={'hidden'}
+                >
+                  <Accordion allowToggle>
+                    {
+                      // stream ?
+                      //   // check this
+                      //   participantsArray.map((participant, index) => (
+                      //     <ChatOnline
+                      //       stream={stream}
+                      //       key={participant}
+                      //       user1={participant}
+                      //       handleFunction={() => handleRemove(participant)}
+                      //     />
+                      //   )) :
+                      selectedChat?.users.map(u =>
+                        <ChatOnline
+                          stream={stream}
+                          key={u._id}
+                          user1={u}
+                          handleFunction={() => handleRemove(u)} />
+                      )}
+                  </Accordion>
+                </Box>
+              </TabPanel>
+            }
 
+            {/* Settings Tab */}
             <TabPanel>
               <Box
                 display={'flex'}
@@ -301,7 +321,8 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain }
                     Add Member
                   </Button>
 
-                  <Modal isOpen={isOpen} onClose={onClose}>
+                  {/* Add Member Modal */}
+                  <Modal size={['xs', 'xs', 'xl', 'lg']} isOpen={isOpen} onClose={onClose}>
                     <ModalOverlay />
                     <ModalContent>
                       <ModalHeader>Add Member</ModalHeader>
@@ -314,7 +335,14 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain }
                         />
                         {loading
                           ?
-                          <Box display={'flex'} alignItems={'center'} justifyContent={'center'} my={2}>
+                          <Box
+                            display={'flex'}
+                            alignItems={'center'}
+                            justifyContent={'center'}
+                            my={2}
+                            maxHeight={'48'}
+                            overflowY={'scroll'}
+                          >
                             <Spinner
                               thickness='4px'
                               speed='0.6s'
@@ -324,24 +352,29 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain }
                             />
                           </Box>
                           :
-                          search.length > 0 &&
-                          searchResults?.map(user => (
-                            <Box my={'2'}
-                              _hover={{
-                                background: '#b5cbfe',
-                                color: 'white',
-                              }}
-                              bg={'#E8E8E8'}
-                              p={2}
-                              cursor={'pointer'}
-                              mx={'2rem'}
-                              borderRadius="lg"
-                              key={user._id}
-                              onClick={() => handleAddUser(user._id)}
-                            >
-                              <UserListItem user={user} />
-                            </Box>
-                          ))}
+                          <Box maxHeight={'48'}
+                            overflowY={'scroll'}>
+                            {search.length > 0 &&
+                              searchResults?.map(user => (
+                                <Box
+                                  my={'2'}
+                                  _hover={{
+                                    background: '#b5cbfe',
+                                    color: 'white',
+                                  }}
+                                  bg={'#E8E8E8'}
+                                  p={2}
+                                  cursor={'pointer'}
+                                  mx={'2rem'}
+                                  borderRadius="lg"
+                                  key={user._id}
+                                  onClick={() => handleAddUser(user._id)}
+                                >
+                                  <UserListItem user={user} />
+                                </Box>
+                              ))}
+                          </Box>
+                        }
                       </ModalBody>
 
                       <ModalFooter>
@@ -364,6 +397,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain }
             </TabPanel>
 
           </TabPanels>
+
         </Tabs>
       ) : (
         <>

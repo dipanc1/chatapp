@@ -175,7 +175,7 @@ router.put("/stream", asyncHandler(async (req, res) => {
             meetingId: data.meetingId,
         },
     }).then((chat) => {
-        console.log("streaming");
+        // console.log("streaming");
         res.status(200).json({
             message: "streaming",
         });

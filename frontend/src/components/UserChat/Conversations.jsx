@@ -129,7 +129,6 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
     }
 
     const handleAddUser = async (user1, groupId) => {
-        // TODO: check this
         try {
             setLoading(true);
             const config = {
@@ -169,7 +168,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
     React.useEffect(() => {
         fetchChats();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [fetchAgain])
+    }, [fetchAgain, selectedChat])
 
     const variants = {
         open: { opacity: 1, y: 1 },

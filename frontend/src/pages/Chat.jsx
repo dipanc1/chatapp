@@ -37,7 +37,7 @@ const Chat = () => {
   };
 
   React.useEffect(() => {
-    if (!user) {
+    if (!user.token) {
       navigate('/');
     }
   }, [navigate, user]);
@@ -89,7 +89,6 @@ const Chat = () => {
     }
   };
 
-
   const getMeetingAndToken = async (id) => {
     const meetingId =
       id == null ? await getMeetingId(token) : id;
@@ -113,9 +112,7 @@ const Chat = () => {
           >
             <MeetingConsumer>
               {() =>
-                <Box flex={'9'}>
-                  <Streaming admin={admin} meetingId={meetingId} setFetchAgain={setFetchAgain} />
-                </Box>
+                <Streaming token={token} admin={admin} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
               }
             </MeetingConsumer>
           </MeetingProvider>
@@ -129,11 +126,11 @@ const Chat = () => {
                 {user.token && <Chatbox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} getMeetingAndToken={getMeetingAndToken} />}
               </Box>
             </SocketContextProvider>
+            <Box flex={['0', '2.5', '2.5', '2.5']}>
+              {user.token && <Members token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+            </Box>
           </>
         }
-        <Box flex={(stream && token && meetingId) ? '3' : ['0', '2.5', '2.5', '2.5']}>
-          {user.token && <Members token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
-        </Box>
       </Box>
     </>
   )

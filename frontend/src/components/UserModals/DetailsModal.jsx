@@ -1,137 +1,10 @@
 import { ViewIcon } from '@chakra-ui/icons';
 import { IconButton, Modal, ModalContent, ModalOverlay, useDisclosure } from '@chakra-ui/react';
-import axios from 'axios';
 import React from 'react';
-import { AppContext } from '../../context/AppContext';
-import { backend_url } from '../../baseApi';
-import ChatOnline from '../Miscellaneous/ChatOnline';
 import { MembersComponent } from '../UserChat/Members';
-import UserListItem from '../UserItems/UserListItem';
 
 const DetailsModal = ({ children, fetchAgain, setFetchAgain }) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const [show, setShow] = React.useState(false);
-    const [groupChatName, setGroupChatName] = React.useState('');
-    const [search, setSearch] = React.useState('');
-    const [searchResults, setSearchResults] = React.useState([]);
-    const [renameLoading, setRenameLoading] = React.useState(false);
-    const [loading, setLoading] = React.useState(false)
-    const [profile, setProfile] = React.useState(null);
-
-    const { selectedChat, dispatch } = React.useContext(AppContext);
-    const user = JSON.parse(localStorage.getItem('user'));
-
-
-    const handleRemove = async (user1) => {
-        if (selectedChat.groupAdmin._id !== user._id && user1._id !== user._id) {
-            return alert('You are not the admin of this group chat')
-        }
-        try {
-            setLoading(true);
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${user.token}`,
-                },
-            };
-            const { data } = await axios.put(
-                `${backend_url}/conversation/groupremove`,
-                {
-                    chatId: selectedChat._id,
-                    userId: user1._id,
-                },
-                config
-            );
-
-            user1._id === user._id ? dispatch({ type: 'SET_SELECTED_CHAT', payload: '' }) : dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
-            setFetchAgain(!fetchAgain);
-            setLoading(false);
-            alert('User removed from group chat');
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    const handleAddUser = async (user1) => {
-        if (selectedChat.users.find(u => u._id === user1._id)) {
-            alert("user already in chat")
-        }
-        if (selectedChat.groupAdmin._id !== user._id) {
-            alert("you are not the admin")
-        }
-        try {
-            setLoading(true);
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${user.token}`,
-                },
-            };
-            const { data } = await axios.put(
-                `${backend_url}/conversation/groupadd`,
-                {
-                    chatId: selectedChat._id,
-                    userId: user1._id,
-                },
-                config
-            );
-            console.log(data);
-            dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
-            setFetchAgain(!fetchAgain);
-            setLoading(false);
-        } catch (error) {
-            console.log(error);
-        }
-        setSearch('');
-
-    }
-
-    const handleRename = async () => {
-        if (!groupChatName) {
-            return
-        }
-
-        try {
-            setRenameLoading(true);
-            const config = {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user.token}`
-                }
-            }
-            const body = {
-                chatName: groupChatName,
-                chatId: selectedChat._id
-            }
-            const { data } = await axios.put(`${backend_url}/conversation/rename`, body, config)
-            dispatch({ type: 'SET_SELECTED_CHAT', payload: data })
-            setFetchAgain(!fetchAgain);
-            setRenameLoading(false);
-            setGroupChatName('');
-        } catch (err) {
-            console.log(err)
-            setRenameLoading(false);
-        }
-    }
-
-    const handleSearch = async (e) => {
-        setSearch(e.target.value);
-        setLoading(true);
-        try {
-
-            const config = {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user.token}`
-                }
-            }
-            const { data } = await axios.get(`${backend_url}/users?search=${search}`, config)
-            setSearchResults(data.users);
-            console.log(searchResults);
-            setLoading(false);
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
 
     return (
         children ?
@@ -145,7 +18,7 @@ const DetailsModal = ({ children, fetchAgain, setFetchAgain }) => {
                 />
 
                 <Modal
-                    size={['xs', 'md', 'md', 'md']}
+                    size={['xs', 'xs', 'xl', 'lg']}
                     isCentered
                     onClose={onClose}
                     isOpen={isOpen}
