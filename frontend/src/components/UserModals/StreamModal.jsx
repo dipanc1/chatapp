@@ -70,7 +70,9 @@ const StreamModal = ({ children, getMeetingAndToken, admin }) => {
                     <AiOutlineVideoCamera />
                 </Button>
 
-                <Modal isOpen={isOpen} onClose={onClose}>
+                <Modal
+                    size={['xs', 'md', 'md', 'md']}
+                    isOpen={isOpen} onClose={onClose}>
                     <ModalOverlay />
                     <ModalContent>
                         <ModalHeader>

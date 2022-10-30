@@ -21,7 +21,7 @@ const Chat = () => {
   const [meetingId, setMeetingId] = React.useState(null);
   const [token, setToken] = React.useState(null);
 
-  const admin = selectedChat?.groupAdmin._id === user._id;
+  const admin = selectedChat?.isGroupChat && selectedChat?.groupAdmin._id === user._id;
 
   const toast = useToast();
   let navigate = useNavigate();

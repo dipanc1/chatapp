@@ -364,7 +364,7 @@ const Streaming = ({ admin, meetingId, token, fetchAgain, setFetchAgain }) => {
 
     return (
         <>
-            <Box flex={'9'}>
+            <Box flex={['12','9','9','9']}>
                 <Box
                     height={'85vh'}
                     p={'1.5'}
@@ -422,7 +422,7 @@ const Streaming = ({ admin, meetingId, token, fetchAgain, setFetchAgain }) => {
                     }
                 </Box>
             </Box>
-            <Box flex={'3'}>
+            <Box flex={['0','3','3','3']}>
                 <Members token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
             </Box>
         </>
