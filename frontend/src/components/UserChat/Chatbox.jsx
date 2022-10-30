@@ -415,7 +415,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
             animate="visible"
             variants={variants}
           >
-            <Image src='./images/groupchat.jpg' />
+            <Image src='./images/chatmain.png' />
             <Text fontSize={['xl', 'xl', 'xl', '5xl']} color={'buttonPrimaryColor'}>
               Open a Conversation to Start a Chat
             </Text>
