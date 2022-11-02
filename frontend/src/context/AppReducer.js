@@ -30,6 +30,11 @@ const AppReducer = (state, action) => {
                 ...state,
                 streamExists: !state.streamExists
             }
+        case "SET_FULLSCREEN":
+            return {
+                ...state,
+                fullScreen: !state.fullScreen
+            };
         default:
             return state;
     }

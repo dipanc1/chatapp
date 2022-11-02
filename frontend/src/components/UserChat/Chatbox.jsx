@@ -18,7 +18,7 @@ var selectedChatCompare;
 export const ChatBoxComponent = ({ height, selectedChat, fetchAgain, setFetchAgain, user, toast }) => {
   const socket = React.useContext(SocketContext);
   // console.log("Socket ::: >>>",socket)
-  const { notification, dispatch } = React.useContext(AppContext);
+  const { notification, dispatch, fullScreen } = React.useContext(AppContext);
   const [messages, setMessages] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [newMessage, setNewMessage] = React.useState("");
@@ -218,7 +218,7 @@ export const ChatBoxComponent = ({ height, selectedChat, fetchAgain, setFetchAga
       >
         <Input
           mr={'10px'}
-          height={'66px'}
+          height={fullScreen ? '66px' : '35px'}
           bgColor={'#f3f7fc'}
           border={'none'}
           placeholder='Type Your Message...'
@@ -229,7 +229,7 @@ export const ChatBoxComponent = ({ height, selectedChat, fetchAgain, setFetchAga
         />
         <Button
           bg='buttonPrimaryColor'
-          size='lg'
+          size={fullScreen ? 'lg' : 'sm'}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={newMessage !== "" ? sendMessage : null}>
@@ -291,7 +291,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
       }
 
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedChat])
 
 

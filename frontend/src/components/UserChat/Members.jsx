@@ -15,15 +15,18 @@ import { BsTelephone, BsPerson } from 'react-icons/bs'
 import { ChatBoxComponent } from './Chatbox'
 
 export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain }) => {
+  const user = JSON.parse(localStorage.getItem('user'));
+
+  const { selectedChat, dispatch, stream, fullScreen } = React.useContext(AppContext);
+
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const toast = useToast();
+
   const [groupChatName, setGroupChatName] = React.useState('');
   const [search, setSearch] = React.useState('');
   const [searchResults, setSearchResults] = React.useState([]);
   const [renameLoading, setRenameLoading] = React.useState(false);
   const [loading, setLoading] = React.useState(false)
-  const toast = useToast();
-  const { selectedChat, dispatch, stream } = React.useContext(AppContext);
-  const user = JSON.parse(localStorage.getItem('user'));
-  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const handleRemove = async (user1) => {
     if (selectedChat.groupAdmin._id !== user._id && user1._id !== user._id) {
@@ -214,13 +217,13 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain }
         <Tabs variant='unstyled' isFitted>
           <TabList mt={['2', '0', '0', '0']}>
             {(token && meetingId && stream) &&
-              <Tab _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>Chat</Tab>
+              <Tab boxSize={fullScreen ? '10' : '1'} _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>Chat</Tab>
             }
 
             {/* It is the tab heading which will be used below */}
             {!stream && <Tab _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>{stream ? 'Participants' : 'Members'}</Tab>}
 
-            <Tab _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>Settings</Tab>
+            <Tab boxSize={fullScreen ? '10' : '1'} _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>Settings</Tab>
           </TabList>
 
           <TabPanels>
@@ -228,7 +231,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain }
             {/* Chat Tab */}
             {stream &&
               <TabPanel>
-                <ChatBoxComponent height={'65vh'} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} selectedChat={selectedChat} user={user} toast={toast} />
+                <ChatBoxComponent height={fullScreen ? '65vh' : '20vh'} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} selectedChat={selectedChat} user={user} toast={toast} />
               </TabPanel>
             }
 
@@ -284,7 +287,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain }
                 alignItems={'center'}
                 justifyContent={'flex-end'}
                 maxHeight={'sm'}
-                minHeight={'75vh'}
+                minHeight={fullScreen ? '75vh' : '20vh'}
               >
 
                 {renameLoading ?
@@ -301,7 +304,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain }
                     />
                   </Box>
                   :
-                  <Box display={'flex'} flexDirection={'column'} mx={'2'} mb={'36'}>
+                  <Box display={'flex'} flexDirection={'column'} mx={'2'} mb={fullScreen ? '36' : '2'}>
                     <Input
                       mr={'2'}
                       value={groupChatName}
@@ -309,7 +312,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain }
                       _placeholder={{ color: 'inherit' }}
                       onChange={(e) => setGroupChatName(e.target.value)}
                     />
-                    <Button mt={'4'} color={'white'} backgroundColor={'buttonPrimaryColor'} onClick={handleRename}>
+                    <Button size={fullScreen ? 'md' : 'sm'} mt={'4'} color={'white'} backgroundColor={'buttonPrimaryColor'} onClick={handleRename}>
                       Rename
                     </Button>
                   </Box>
@@ -317,7 +320,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain }
 
                 <Box my={'2'}>
 
-                  <Button onClick={onOpen} rightIcon={<GrUserAdd />} color={'buttonPrimaryColor'} variant='outline'>
+                  <Button size={fullScreen ? 'md' : 'sm'} onClick={onOpen} rightIcon={<GrUserAdd />} color={'buttonPrimaryColor'} variant='outline'>
                     Add Member
                   </Button>
 
@@ -340,7 +343,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain }
                             alignItems={'center'}
                             justifyContent={'center'}
                             my={2}
-                            maxHeight={'48'}
+                            maxHeight={fullScreen ? '48' : '8'}
                             overflowY={'scroll'}
                           >
                             <Spinner
@@ -352,7 +355,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain }
                             />
                           </Box>
                           :
-                          <Box maxHeight={'48'}
+                          <Box maxHeight={fullScreen ? '48' : '8'}
                             overflowY={'scroll'}>
                             {search.length > 0 &&
                               searchResults?.map(user => (
@@ -387,8 +390,8 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain }
 
                 </Box>
 
-                <Box my={'2'}>
-                  <Button onClick={() => handleRemove(user)} rightIcon={<HiUserRemove />} colorScheme='red' variant='outline'>
+                <Box my={fullScreen ? '2' : '0'}>
+                  <Button size={fullScreen ? 'md' : 'sm'} onClick={() => handleRemove(user)} rightIcon={<HiUserRemove />} colorScheme='red' variant='outline'>
                     Leave Group
                   </Button>
                 </Box>

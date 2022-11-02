@@ -1,10 +1,10 @@
 import React, { useContext } from 'react'
 import { useNavigate } from "react-router-dom";
-import { Box, useToast } from '@chakra-ui/react'
+import { Box, Flex, useToast } from '@chakra-ui/react'
 import Navbar from '../components/UserChat/Navbar'
 import Conversations from '../components/UserChat/Conversations'
 import Chatbox from '../components/UserChat/Chatbox'
-import Members from '../components/UserChat/Members'
+import Members, { MembersComponent } from '../components/UserChat/Members'
 import { AppContext } from '../context/AppContext';
 import Streaming from '../components/Miscellaneous/Streaming';
 import { MeetingConsumer, MeetingProvider } from '@videosdk.live/react-sdk';
@@ -112,7 +112,7 @@ const Chat = () => {
           >
             <MeetingConsumer>
               {() =>
-                <Streaming token={token} admin={admin} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+                <Streaming admin={admin} meetingId={meetingId} setFetchAgain={setFetchAgain} token={token} fetchAgain={fetchAgain} />
               }
             </MeetingConsumer>
           </MeetingProvider>
@@ -126,11 +126,11 @@ const Chat = () => {
                 {user.token && <Chatbox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} getMeetingAndToken={getMeetingAndToken} />}
               </Box>
             </SocketContextProvider>
-            <Box flex={['0', '2.5', '2.5', '2.5']}>
-              {user.token && <Members token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
-            </Box>
           </>
         }
+        <Box flex={(stream && token && meetingId) ? ['0', '3', '3', '3'] : ['0', '2.5', '2.5', '2.5']}>
+          {user.token && <Members token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+        </Box>
       </Box>
     </>
   )

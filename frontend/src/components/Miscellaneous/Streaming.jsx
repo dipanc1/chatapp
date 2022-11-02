@@ -10,7 +10,7 @@ import { backend_url } from '../../baseApi';
 import useSound from 'use-sound';
 import joinSound from '../../sounds/join.mp3';
 import leaveSound from '../../sounds/leave.mp3';
-import Members from '../UserChat/Members';
+import Members, { MembersComponent } from '../UserChat/Members';
 
 const videoPlayerStyle = {
     width: '100%',
@@ -21,7 +21,7 @@ const videoPlayerStyle = {
     boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.5)',
 };
 
-const IconButtonGeneric = ({ icon, onClick, color }) => {
+const IconButtonGeneric = ({ icon, onClick, color, size, display }) => {
     return (
         <IconButton
             bg='whiteColor'
@@ -31,15 +31,18 @@ const IconButtonGeneric = ({ icon, onClick, color }) => {
             fontSize='20px'
             onClick={onClick}
             icon={icon}
+            size={size}
+            display={display}
         />
     )
 }
 
 function VideoComponent(props) {
+    const { fullScreen } = useContext(AppContext);
     // console.log("Participants ID ::: >>>", props.participantId);
     const micRef = useRef(null);
 
-    const { displayName, isActiveSpeaker, webcamStream, micStream, webcamOn, micOn } = useParticipant(
+    const { displayName, isLocal, isActiveSpeaker, webcamStream, micStream, webcamOn, micOn } = useParticipant(
         props.participantId, {
         onStreamEnabled: (stream) => {
             // console.log('stream enabled', stream);
@@ -78,7 +81,7 @@ function VideoComponent(props) {
     return (
         <div key={props.participantId}>
             <Box>
-                {micOn && micRef && <audio ref={micRef} autoPlay />}
+                {micOn && micRef && <audio ref={micRef} autoPlay muted={isLocal} />}
                 {webcamOn && (
                     <ReactPlayer
                         playsinline // very very imp prop
@@ -88,7 +91,7 @@ function VideoComponent(props) {
                         muted={true}
                         playing={true}
                         url={videoStream}
-                        height={"70vh"}
+                        height={fullScreen ? "70vh" : '30vh'}
                         width={"100%"}
                         style={videoPlayerStyle}
                         onError={(err) => {
@@ -103,7 +106,7 @@ function VideoComponent(props) {
 
 function Controls({ admin, user, selectedChat, toast }) {
     let timeOutId;
-    const { dispatch } = useContext(AppContext);
+    const { dispatch, fullScreen } = useContext(AppContext);
 
     const [micOn, setMicOn] = React.useState(true);
     const [webcamOn, setWebcamOn] = React.useState(false);
@@ -180,6 +183,7 @@ function Controls({ admin, user, selectedChat, toast }) {
 
     const fullscreenToggle = () => {
         setFullscreenOn(!fullscreenOn);
+        dispatch({ type: "SET_FULLSCREEN" });
     }
 
     const endStream = async () => {
@@ -236,6 +240,8 @@ function Controls({ admin, user, selectedChat, toast }) {
                             onClick={micToggle}
                             color={'tomato'}
                             icon={micOn ? <BsMic /> : <BsMicMute />}
+                            size={'md'}
+                            display={'flex'}
                         />
                         <Text>
                             {micOn ? 'Mic On' : 'Mic Off'}
@@ -248,6 +254,8 @@ function Controls({ admin, user, selectedChat, toast }) {
                                 onClick={startRecordingState ? recordingStop : recordingStart}
                                 color={'tomato'}
                                 icon={startRecordingState ? <BsRecordCircle /> : <BsRecordCircleFill />}
+                                size={'md'}
+                                display={'flex'}
                             />
                             <Text>
                                 {startRecordingState ? 'Stop Recording' : 'Start Recording'}
@@ -259,8 +267,10 @@ function Controls({ admin, user, selectedChat, toast }) {
                                 onClick={fullscreenToggle}
                                 color={'tomato'}
                                 icon={fullscreenOn ? <BsFullscreen /> : <BsFullscreenExit />}
+                                size={fullScreen ? 'md' : 'sm'}
+                                display={['flex', 'none', 'none', 'none']}
                             />
-                            <Text>
+                            <Text display={['block', 'none', 'none', 'none']} fontSize={fullScreen ? '15' : '7'}>
                                 {fullscreenOn ? 'Full Screen' : 'Fit Screen'}
                             </Text>
                         </>
@@ -275,6 +285,8 @@ function Controls({ admin, user, selectedChat, toast }) {
                             onClick={webcamToggle}
                             color={'buttonPrimaryColor'}
                             icon={webcamOn ? <BsCameraVideo /> : <BsCameraVideoOff />}
+                            size={'md'}
+                            display={'flex'}
                         />
                         <Text>
                             {webcamOn ? 'Webcam On' : 'Webcam Off'}
@@ -285,8 +297,10 @@ function Controls({ admin, user, selectedChat, toast }) {
                         onClick={admin ? endStream : leaveStream}
                         color={'errorColor'}
                         icon={<AiOutlineCloseSquare />}
+                        size={fullScreen ? 'md' : 'sm'}
+                        display={'flex'}
                     />
-                    <Text>
+                    <Text fontSize={fullScreen ? '15' : '7'}>
                         {admin ? 'End' : 'Leave'}
                     </Text>
                 </VStack>
@@ -296,16 +310,16 @@ function Controls({ admin, user, selectedChat, toast }) {
     );
 }
 
-const Streaming = ({ admin, meetingId, token, fetchAgain, setFetchAgain }) => {
+const Streaming = ({ admin, meetingId, setFetchAgain, fetchAgain, token }) => {
     // console.warn("Streaming which is container", meetingId);
 
     const user = JSON.parse(localStorage.getItem('user'));
-    const { selectedChat } = useContext(AppContext);
+    const { selectedChat, fullScreen } = useContext(AppContext);
 
     const [joined, setJoined] = React.useState(false);
     const [meetingIdExists, setMeetingIdExists] = React.useState(false);
 
-    const { participants, join } = useMeeting();    
+    const { participants, join } = useMeeting();
 
     const toast = useToast();
 
@@ -364,11 +378,11 @@ const Streaming = ({ admin, meetingId, token, fetchAgain, setFetchAgain }) => {
 
     return (
         <>
-            <Box flex={['12','9','9','9']}>
+            <Box flex={['12', '9', '9', '9']}>
                 <Box
-                    height={'85vh'}
-                    p={'1.5'}
-                    my={'5'}
+                    height={fullScreen ? '85vh' : ''}
+                    p={fullScreen ? '1.5' : '0'}
+                    my={fullScreen ? '5' : '0'}
                     mx={['5', '10', '10', '10']}
                     borderRadius={'xl'}
                     display={'flex'}
@@ -391,6 +405,18 @@ const Streaming = ({ admin, meetingId, token, fetchAgain, setFetchAgain }) => {
                             })}
                             <Divider orientation='horizontal' />
                             <Controls toast={toast} admin={admin} user={user} selectedChat={selectedChat} />
+                            {!fullScreen && <Box
+                                width={'100%'}
+                                bg={'whiteColor'}
+                                p={'1.5'}
+                                my={'5'}
+                                borderRadius={'xl'}
+                                display={['flex', 'none', 'none', 'none']}
+                                boxShadow={'dark-lg'}>
+
+                                <MembersComponent token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+
+                            </Box>}
                         </Box>
                     ) : (
                         <Box display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
@@ -421,9 +447,6 @@ const Streaming = ({ admin, meetingId, token, fetchAgain, setFetchAgain }) => {
                         </Box>)
                     }
                 </Box>
-            </Box>
-            <Box flex={['0','3','3','3']}>
-                <Members token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
             </Box>
         </>
     )
