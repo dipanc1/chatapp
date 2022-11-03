@@ -68,47 +68,6 @@ const Register = () => {
         setConfirmPassword(e.target.value);
     }
 
-    const postDetails = async (pics) => {
-        if (pics === undefined) {
-            setPic('')
-            toast({
-                title: "Error",
-                description: "Please upload a picture",
-                status: "error",
-                duration: 9000,
-                isClosable: true,
-            });
-        }
-        if (pics.type === 'image/jpeg' || pics.type === 'image/png') {
-            const formData = new FormData();
-            formData.append('api_key', '835688546376544')
-            formData.append('file', pics);
-            formData.append('upload_preset', 'chat-app');
-            await axios.post(pictureUpload, formData)
-                .then(res => {
-                    // console.log(res);
-                    setPic(res.data.url.toString());
-                })
-                .catch(err => {
-                    toast({
-                        title: "Error",
-                        description: "Server error",
-                        status: "error",
-                        duration: 9000,
-                        isClosable: true,
-                    });
-                })
-        } else {
-            toast({
-                title: "Error",
-                description: "Please upload a picture",
-                status: "error",
-                duration: 9000,
-                isClosable: true,
-            });
-        }
-    }
-
     const handleRegister = async (e) => {
         e.preventDefault();
         setLoading(true)
@@ -122,37 +81,83 @@ const Register = () => {
             });
             return
         } else {
-            await postDetails(selectedImage);
-            pic.length > 10 && await axios.post(apiUrlRegister, {
-                number1: number1,
-                username: username,
-                password: password,
-                pic: pic
-            })
-                .then(res => {
-                    setLoading(false)
-                    localStorage.setItem("user", JSON.stringify(res.data));
-                    navigate('/');
+            if (selectedImage === null) {
+                await axios.post(apiUrlRegister, {
+                    number1: number1,
+                    username: username,
+                    password: password,
+                    pic: null
                 })
-                .catch(err => {
-                    setLoading(false)
-                    toast({
-                        title: "Error",
-                        description: "Please enter valid details",
-                        status: "error",
-                        duration: 9000,
-                        isClosable: true,
-                    });
-                })
+                    .then(res => {
+                        setLoading(false)
+                        localStorage.setItem("user", JSON.stringify(res.data));
+                        navigate('/');
+                    })
+                    .catch(err => {
+                        setLoading(false)
+                        toast({
+                            title: "Error",
+                            description: "Please enter valid details",
+                            status: "error",
+                            duration: 9000,
+                            isClosable: true,
+                        });
+                    })
+            } else {
+                const formData = new FormData();
+                formData.append('api_key', '835688546376544')
+                formData.append('file', selectedImage);
+                formData.append('upload_preset', 'chat-app');
+                await axios.post(pictureUpload, formData)
+                    .then(async res => {
+                        await axios.post(apiUrlRegister, {
+                            number1: number1,
+                            username: username,
+                            password: password,
+                            pic: res.data.url
+                        })
+                            .then(res => {
+                                setLoading(false)
+                                localStorage.setItem("user", JSON.stringify(res.data));
+                                navigate('/');
+                            })
+                            .catch(err => {
+                                setLoading(false)
+                                toast({
+                                    title: "Error",
+                                    description: "Please enter valid details",
+                                    status: "error",
+                                    duration: 9000,
+                                    isClosable: true,
+                                });
+                            })
+                    })
+                    .catch(err => {
+                        toast({
+                            title: "Error",
+                            description: "Server error",
+                            status: "error",
+                            duration: 9000,
+                            isClosable: true,
+                        });
+                    })
+            }
         }
     }
 
     const imageChange = (e) => {
-        if (e.target.files && e.target.files.length > 0) {
+        if (e.target.files && e.target.files.length > 0 && (e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/png')) {
             setSelectedImage(e.target.files[0]);
+        } else {
+            toast({
+                title: "Error",
+                description: "Please upload a picture",
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+            });
         }
     }
-
 
     const renderButton = (buttonProps) => {
         return <Button mt={'3'} size="lg"

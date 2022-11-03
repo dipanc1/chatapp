@@ -13,7 +13,8 @@ import {
     useDisclosure,
     Button,
     Image,
-    Text
+    Text,
+    Avatar
 } from '@chakra-ui/react'
 
 const ProfileModal = ({ user, children }) => {
@@ -57,12 +58,20 @@ const ProfileModal = ({ user, children }) => {
                         justifyContent={'center'}
                         flexDirection={'column'}
                     >
-                        <Image
-                            borderRadius="full"
-                            boxSize="250px"
-                            src={user.pic}
-                            alt={user.name}
-                        />
+                        {user.pic ? (
+                            <Image
+                                borderRadius="full"
+                                boxSize="250px"
+                                src={user.pic}
+                                alt={user.name}
+                            />
+                        ) : (
+                            <Avatar
+                                size='full'
+                                name={user.name}
+                                src={''}
+                            />
+                        )}
                         <Text
                             fontSize={{ md: "20px" }}
                             my={4}
