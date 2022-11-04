@@ -6,6 +6,7 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
+    "upgrade": "react-native upgrade",
     "test": "jest",
     "lint": "eslint ."
   },
@@ -20,7 +21,7 @@
     "lottie-react-native": "^5.1.4",
     "native-base": "^3.4.11",
     "react": "18.1.0",
-    "react-native": "0.70.0",
+    "react-native": "0.70.4",
     "react-native-gesture-handler": "^2.5.0",
     "react-native-image-picker": "^4.8.5",
     "react-native-otp-textinput": "^0.0.9",
