@@ -8,15 +8,22 @@ import Message from '../Miscellaneous/Message'
 import { backend_url } from '../../production'
 import { format } from 'timeago.js'
 import { SocketContext } from '../../context/socketContext'
-import animation from '../../assets/animation.json'
+import animation from '../../assets/typing.json'
+import animationData from '../../assets/red-dot.json';
 import StreamModal from '../UserModals/StreamModal'
 
 var selectedChatCompare;
 
 const Chatbox = ({ fetchAgain, setFetchAgain, user, getMeetingAndToken }) => {
+
     const socket = React.useContext(SocketContext);
+
     const { dispatch, selectedChat, stream } = React.useContext(PhoneAppContext);
+
     const scrollViewRef = React.useRef();
+
+    const [meetingIdExists, setMeetingIdExists] = React.useState(false);
+    const [online, setOnline] = React.useState(false);
     const [socketConnected, setSocketConnected] = React.useState(false);
     const [newMessage, setNewMessage] = React.useState();
     const [profile, setProfile] = React.useState(null);
@@ -25,6 +32,9 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user, getMeetingAndToken }) => {
     const [typing, setTyping] = React.useState(false);
     const [isTyping, setIsTyping] = React.useState(false);
     const [open, setOpen] = React.useState(false);
+
+    const admin = selectedChat?.isGroupChat && selectedChat?.groupAdmin._id === user._id;
+
 
     React.useEffect(() => {
         socket.emit("setup", user);
@@ -132,18 +142,61 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user, getMeetingAndToken }) => {
         setOpen(true);
     }
 
+    const CheckOnlineStatus = async (friendId) => {
+        try {
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${user.token}`,
+                },
+            };
+            const { data } = await axios.get(`${backend_url}/users/check-online/${friendId}`, config)
+            // console.log("DATAAAAAAAAAAAA", data);
+            setOnline(data.isOnline);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    React.useEffect(() => {
+        if (selectedChat?.isGroupChat) {
+            try {
+                const checkStream = async () => {
+                    const config = {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${user.token}`
+                        }
+                    }
+                    const { data } = await axios.get(`${backend_url}/conversation/streaming/${selectedChat._id}`, config);
+                    if (data) {
+                        setMeetingIdExists(true)
+                    } else {
+                        setMeetingIdExists(false);
+                    }
+                }
+                checkStream();
+            } catch (error) {
+                console.log(error);
+            }
+
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedChat])
+
     return (
         <>
             <Flex bg={'#fff'} p={2} mx={'4'} flex={1}>
                 {/* TOP PART  */}
                 {!stream &&
                     <HStack justifyContent={'space-between'} alignItems={'center'} h={'16'}>
+
                         <Text style={{ color: 'primary.600' }} fontWeight={'bold'} fontSize={'lg'} mx={'10'}>
                             {selectedChat?.isGroupChat ? selectedChat?.chatName : profile?.username}
                         </Text>
+
                         <IconButton onPress={() => dispatch({ type: 'SET_SELECTED_CHAT', payload: null })} icon={<MaterialIcons name="keyboard-arrow-down" size={24} color={'black'} />} />
 
-                        {selectedChat?.isGroupChat &&
+                        {selectedChat?.isGroupChat && (admin || meetingIdExists) &&
                             <IconButton onPress={handleStream} icon={<MaterialIcons name="videocam" size={24} color={'black'} />} />
                         }
 
@@ -188,7 +241,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user, getMeetingAndToken }) => {
 
             </Flex>
 
-            <StreamModal user={user} getMeetingAndToken={getMeetingAndToken} open={open} setOpen={setOpen} />
+            <StreamModal admin={admin} user={user} getMeetingAndToken={getMeetingAndToken} open={open} setOpen={setOpen} />
         </>
 
     )

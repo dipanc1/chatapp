@@ -16,7 +16,8 @@ import { MeetingProvider, MeetingConsumer } from '@videosdk.live/react-sdk';
 const Tab = createMaterialTopTabNavigator();
 
 const Chat = ({ user, fetchAgain, setFetchAgain }) => {
-    const { chats, dispatch, stream, fullScreen } = React.useContext(PhoneAppContext);
+    const { chats, dispatch, stream, fullScreen, selectedChat } = React.useContext(PhoneAppContext);
+
     const [conversations, setConversations] = React.useState([])
     const [groupConversations, setGroupConversations] = React.useState([])
     const [search, setSearch] = React.useState('')
@@ -25,6 +26,8 @@ const Chat = ({ user, fetchAgain, setFetchAgain }) => {
     const [loading, setLoading] = React.useState(false)
     const [meetingId, setMeetingId] = React.useState(null);
     const [token, setToken] = React.useState(null);
+
+    const admin = selectedChat?.isGroupChat && selectedChat?.groupAdmin._id === user._id;
 
     React.useEffect(() => {
         fetchChats();
@@ -104,12 +107,14 @@ const Chat = ({ user, fetchAgain, setFetchAgain }) => {
                     headers: {
                         Accept: "application/json",
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${user.token}`,
                     },
                 });
                 const { token } = await response.json();
                 setToken(token);
             } catch (e) {
                 console.log(e);
+                errorToast("Something went wrong");
             }
         };
         getToken();
@@ -157,14 +162,14 @@ const Chat = ({ user, fetchAgain, setFetchAgain }) => {
                         config={{
                             meetingId,
                             micEnabled: false,
-                            webcamEnabled: true,
+                            webcamEnabled: admin ? true : false,
                             name: user.username
                         }}
                         token={token}
                     >
                         <MeetingConsumer>
                             {() =>
-                                <Streaming fetchAgain={fetchAgain} user={user} meetingId={meetingId} setFetchAgain={setFetchAgain} />
+                                <Streaming admin={admin} fetchAgain={fetchAgain} user={user} meetingId={meetingId} setFetchAgain={setFetchAgain} />
                             }
                         </MeetingConsumer>
                         {!fullScreen && <Members user={user} />}

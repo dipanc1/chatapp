@@ -4,7 +4,7 @@ import React from 'react'
 import { PhoneAppContext } from '../../context/PhoneAppContext';
 import { backend_url } from '../../production';
 
-const StreamModal = ({ user, open, setOpen, getMeetingAndToken }) => {
+const StreamModal = ({ user, open, setOpen, getMeetingAndToken, admin }) => {
     const { selectedChat, dispatch } = React.useContext(PhoneAppContext);
     const [disabled, setDisabled] = React.useState(false)
     const [meetingId, setMeetingId] = React.useState(null);
@@ -19,9 +19,6 @@ const StreamModal = ({ user, open, setOpen, getMeetingAndToken }) => {
         }
         const { data } = await axios.get(`${backend_url}/conversation/streaming/${selectedChat._id}`, config);
         setMeetingId(data);
-        if (data) {
-            dispatch({ type: 'SET_STREAMEXISTS', payload: true });
-        }
         // console.warn("STREAM MODAL which is joinscreen", data, "MEETING ID", meetingId);
         await getMeetingAndToken(data);
         setOpen(false);
@@ -34,15 +31,16 @@ const StreamModal = ({ user, open, setOpen, getMeetingAndToken }) => {
                 <Modal.Body>
                     <Flex marginY={'24'} height={'64'} justifyContent={'space-between'}>
                         <VStack alignItems={'center'}>
-                            <Heading color={'primary.600'}>Share Video</Heading>
+                            <Heading color={'primary.600'}>{admin ? 'Share the Video?' : 'Join the Video?'}
+                            </Heading>
                             <Text color={'primary.600'}>
-                                You can share you screen with the members present in this group.
+                                {admin ? 'You can share you screen with the members present in this group.' : 'You can join the video call with the members present in this group.'}
                             </Text>
                         </VStack>
 
                         <VStack space={'3'}>
                             <Button disabled={disabled} rounded={'lg'} bg={'primary.300'} w={'100%'} onPress={startMeeting}>
-                                Share
+                                {admin ? 'Share' : 'Join'}
                             </Button>
                             <Button variant={'outline'} colorScheme="violet" rounded={'lg'} w={'100%'} onPress={() => setOpen(false)}>
                                 Cancel

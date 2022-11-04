@@ -5,14 +5,20 @@ import { PhoneAppContext } from '../../context/PhoneAppContext'
 import { RTCView, useMeeting, useParticipant } from '@videosdk.live/react-native-sdk'
 import axios from 'axios'
 import { backend_url } from '../../production'
+import { DevSettings } from 'react-native'
 
-function Controls({ fetchAgain, setFetchAgain, user }) {
+function Controls({ fetchAgain, setFetchAgain, user, admin }) {
+
     const { dispatch, selectedChat } = React.useContext(PhoneAppContext);
+
     const [micOn, setMicOn] = React.useState(true);
-    const { leave, toggleMic, toggleWebcam, getWebcams, changeWebcam } = useMeeting();
     const [webcamOn, setWebcamOn] = React.useState(false);
     const [flipWebcam, setFlipWebcam] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
+    const [startRecordingState, setStartRecordingState] = React.useState(false);
+    const [fullscreenOn, setFullscreenOn] = React.useState(false);
+
+    const { leave, toggleMic, toggleWebcam, getWebcams, changeWebcam, end, startRecording, stopRecording } = useMeeting();
 
     let webcams;
 
@@ -48,7 +54,8 @@ function Controls({ fetchAgain, setFetchAgain, user }) {
     };
 
     const endStream = async () => {
-        setLoading(true);
+        end();
+
         try {
             const config = {
                 headers: {
@@ -60,58 +67,84 @@ function Controls({ fetchAgain, setFetchAgain, user }) {
                 chatId: selectedChat._id
             }
             const result = await axios.put(`${backend_url}/conversation/stop-stream`, { data }, config);
-            console.warn(result, "result");
+            // console.warn(result, "result");
             if (result) {
-                setLoading(false);
-                dispatch({ type: 'SET_STREAM', payload: false })
-                dispatch({ type: 'SET_STREAMEXISTS', payload: false });
-                leave();
-                setFetchAgain(!fetchAgain);
+                dispatch({ type: "SET_STREAMING", payload: false });
+                DevSettings.reload();
             } else {
-                setLoading(false);
                 console.log("error");
             }
 
         } catch (error) {
-            setLoading(false);
             console.log(error);
         }
     }
 
+    const leaveStream = () => {
+        leave();
+        dispatch({ type: "SET_STREAMING", payload: false });
+        DevSettings.reload();
+    }
+
+    const recordingStart = () => {
+        startRecording();
+        setStartRecordingState(true);
+    }
+
+    const recordingStop = () => {
+        stopRecording();
+        setStartRecordingState(false);
+    }
+
+    const fullscreenToggle = () => {
+        setFullscreenOn(!fullscreenOn);
+        dispatch({ type: "SET_FULLSCREEN" });
+    }
+
     return (
         <HStack flex={'3'} mx={'2'} justifyContent={'space-between'}>
-            <Flex justifyContent={'center'} alignItems={'center'}>
+
+            {admin && <Flex justifyContent={'center'} alignItems={'center'}>
                 <IconButton disabled={loading} onPress={webcamToggle} bg={'primary.200'} icon={<MaterialIcons name={webcamOn ? "videocam" : "videocam-off"} size={24} color="#9F85F7" />} />
                 <Text>{webcamOn ? 'Camera On' : 'Camera Off'}</Text>
-            </Flex>
+            </Flex>}
 
-            <Flex justifyContent={'center'} alignItems={'center'}>
+            {admin && <Flex justifyContent={'center'} alignItems={'center'}>
                 <IconButton disabled={loading} onPress={handleChangeWebcam} bg={'primary.200'} icon={<MaterialIcons name={flipWebcam ? "camera-rear" : "camera-front"} size={24} color="#9F85F7" />} />
                 <Text>{flipWebcam ? 'Rear Camera' : 'Front Camera'}</Text>
-            </Flex>
+            </Flex>}
 
-            <Flex justifyContent={'center'} alignItems={'center'}>
+            {admin ? <Flex justifyContent={'center'} alignItems={'center'}>
                 <IconButton disabled={loading} onPress={() => micToggle()} bg={'primary.200'} icon={<MaterialIcons name={micOn ? "mic" : "mic-off"} size={24} color="#EFAA86" />} />
                 <Text>{micOn ? 'Unmute' : 'Mute'}</Text>
             </Flex>
+                :
+                <Flex justifyContent={'center'} alignItems={'center'}>
+                    <IconButton disabled={loading} onPress={fullscreenToggle} bg={'primary.200'} icon={<MaterialIcons name={fullscreenOn ? 'fullscreen' : 'fullscreen-exit'} size={24} color="#EFAA86" />} />
+                    <Text> {fullscreenOn ? 'Full Screen' : 'Fit Screen'}</Text>
+                </Flex>}
 
             <Flex justifyContent={'center'} alignItems={'center'}>
-                <IconButton disabled={loading} onPress={
-                    () => { dispatch({ type: 'SET_FULLSCREEN', payload: true }) }
-                } bg={'primary.200'} icon={<MaterialIcons name="fullscreen" size={24} color="#EFAA86" />} />
-                <Text>Full Screen</Text>
+                <IconButton disabled={loading} onPress={admin ? endStream : leaveStream} bg={'primary.200'} icon={<MaterialIcons name="cancel-presentation" size={24} color="#ff4343" />} />
+                <Text>
+                    {admin ? 'End' : 'Leave'}
+                </Text>
             </Flex>
 
-            <Flex justifyContent={'center'} alignItems={'center'}>
-                <IconButton disabled={loading} onPress={endStream} bg={'primary.200'} icon={<MaterialIcons name="cancel-presentation" size={24} color="#ff4343" />} />
-                <Text>Leave</Text>
-            </Flex>
+            {admin &&
+                <Flex justifyContent={'center'} alignItems={'center'}>
+                    <IconButton disabled={loading} onPress={startRecordingState ? recordingStop : recordingStart} bg={'primary.200'} icon={<MaterialIcons name={startRecordingState ? "voice-over-off" : "record-voice-over"} size={24} color="#EFAA86" />} />
+                    <Text>
+                        {startRecordingState ? 'Stop Recording' : 'Start Recording'}
+                    </Text>
+                </Flex>
+            }
         </HStack>
     )
 }
 
 const VideoComponent = ({ participantId }) => {
-    // console.warn("Participants Id ::: == >>>", participantId)
+    console.warn("Participants Id ::: == >>>", participantId)
     const { webcamStream, webcamOn } = useParticipant(
         participantId
     );
@@ -119,22 +152,28 @@ const VideoComponent = ({ participantId }) => {
 
     return (
         <Flex key={participantId} flex={'8'} justifyContent={'center'} alignItems={'center'} bg={'primary.200'} m={'5'}>
-            {webcamOn && webcamStream ?
+            {webcamOn && webcamStream ? (
                 <RTCView
                     objectFit="cover"
                     style={{ width: '100%', height: '100%' }}
                     streamURL={new MediaStream([webcamStream?.track]).toURL()}
                 />
-                : null}
+            ) : null}
         </Flex>
     )
 }
 
-const Streaming = ({ meetingId, fetchAgain, setFetchAgain, user }) => {
-    const { dispatch, streamExists, selectedChat } = React.useContext(PhoneAppContext);
+const Streaming = ({ meetingId, fetchAgain, setFetchAgain, user, admin }) => {
+
+    const { dispatch, selectedChat } = React.useContext(PhoneAppContext);
+
     const [joined, setJoined] = React.useState(false);
+    const [meetingIdExists, setMeetingIdExists] = React.useState(false);
+
     const { join, participants } = useMeeting({});
-    const participantsArrId = [...participants.keys()]; // Add this line
+
+    const participantsArrId = [...participants.keys()];
+
     // console.warn("Participants ID Array ::: >>>", participantsArrId);
 
     const joinMeeting = async () => {
@@ -152,12 +191,36 @@ const Streaming = ({ meetingId, fetchAgain, setFetchAgain, user }) => {
                 }
             }
             const { result } = await axios.put(`${backend_url}/conversation/stream`, { data }, config);
-            console.warn(result, "result");
+            // console.warn(result, "result");
 
         } catch (error) {
             console.log("Error", error);
         }
     };
+
+    React.useEffect(() => {
+        try {
+            const checkStream = async () => {
+                const config = {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${user.token}`
+                    }
+                }
+                const { data } = await axios.get(`${backend_url}/conversation/streaming/${selectedChat._id}`, config);
+                if (data) {
+                    setMeetingIdExists(true)
+                } else {
+                    setMeetingIdExists(false);
+                }
+            }
+            checkStream();
+        } catch (error) {
+            console.log(error);
+        }
+
+    }, []);
+
 
     return (
         <Flex flex={1} py={'1'} bg={'primary.100'}>
@@ -166,35 +229,26 @@ const Streaming = ({ meetingId, fetchAgain, setFetchAgain, user }) => {
                     {/* Name */}
                     <HStack flex={'2'} alignItems={'center'} justifyContent={'space-between'} my={'1'} mx={'5'}>
                         <VStack>
-                            <Text>Group Name: {selectedChat?.chatName}</Text>
-                            <Text>Host:</Text>
+                            <Text>Group Name: {selectedChat?.chatName.toUpperCase()}</Text>
+                            <Text>Host: {selectedChat?.groupAdmin?.username}</Text>
                         </VStack>
-                        <HStack alignItems={'center'}>
-                            <Icon mx={'1'} as={<MaterialIcons name="access-time" size={24} color="#3cc4b7" />} />
-
-                            <Text>00:25:20</Text>
-                        </HStack>
                     </HStack>
+
                     {/* Video  */}
                     {participantsArrId.map((participantId) => (
                         <VideoComponent participantId={participantId} />
                     ))}
+
                     {/* Controls */}
-                    <Controls fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} user={user} selectedChat={selectedChat} dispatch={dispatch} />
+                    <Controls admin={admin} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} user={user} selectedChat={selectedChat} dispatch={dispatch} />
                 </>
                 :
                 <Flex flex={'1'} justifyContent={'center'} alignItems={'center'} direction={'column'}>
                     <Text>
-                        {!streamExists ?
-                            'Create the meeting for the Others to join'
-                            : 'Join the already going on meeting'
-                        }
+                        {!meetingIdExists ? 'Create the meeting for the Others to join' : 'Join the already going on meeting'}
                     </Text>
                     <Button my={'3'} rounded={'lg'} bg={'primary.300'} onPress={joinMeeting}>
-                        {!streamExists ?
-                            'Create Meeting'
-                            : 'Join Meeting'
-                        }
+                        {!meetingIdExists ? 'Create Meeting' : 'Join Meeting'}
                     </Button>
                 </Flex>}
         </Flex>
