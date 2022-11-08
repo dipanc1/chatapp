@@ -29,6 +29,8 @@ const Chat = ({ user, fetchAgain, setFetchAgain }) => {
 
     const admin = selectedChat?.isGroupChat && selectedChat?.groupAdmin._id === user._id;
 
+    // console.log(admin, "admin");
+
     React.useEffect(() => {
         fetchChats();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -162,7 +164,7 @@ const Chat = ({ user, fetchAgain, setFetchAgain }) => {
                         config={{
                             meetingId,
                             micEnabled: false,
-                            webcamEnabled: admin ? true : false,
+                            webcamEnabled: admin,
                             name: user.username
                         }}
                         token={token}

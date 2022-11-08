@@ -166,7 +166,7 @@ router.put("/groupremove", asyncHandler(async (req, res) => {
 
 // start streaming
 router.put("/stream", asyncHandler(async (req, res) => {
-    console.log(req.body)
+    // console.log(req.body)
     const { data } = req.body;
 
     Chat.findByIdAndUpdate(data.chatId, {
@@ -186,7 +186,7 @@ router.put("/stream", asyncHandler(async (req, res) => {
 }));
 
 router.put("/stop-stream", asyncHandler(async (req, res) => {
-    console.log(req.body)
+    // console.log(req.body)
     const { data } = req.body;
 
     Chat.findByIdAndUpdate(data.chatId, {

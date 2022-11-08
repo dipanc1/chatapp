@@ -11,6 +11,7 @@ import { SocketContext } from '../../context/socketContext'
 import animation from '../../assets/typing.json'
 import animationData from '../../assets/red-dot.json';
 import StreamModal from '../UserModals/StreamModal'
+import { View } from 'react-native'
 
 var selectedChatCompare;
 
@@ -34,7 +35,6 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user, getMeetingAndToken }) => {
     const [open, setOpen] = React.useState(false);
 
     const admin = selectedChat?.isGroupChat && selectedChat?.groupAdmin._id === user._id;
-
 
     React.useEffect(() => {
         socket.emit("setup", user);
@@ -64,15 +64,23 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user, getMeetingAndToken }) => {
         try {
             setProfile(selectedChat?.users.find(member => member._id !== user._id));
         } catch (error) {
-            console.log(error);
+            // console.log(error);
+            toast({
+                title: "Error Occured!",
+                description: "Failed to Load the Profile",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "top",
+            });
         }
-
+        if (selectedChat && !selectedChat.isGroupChat) {
+            CheckOnlineStatus(selectedChat?.users.find(member => member._id !== user._id)._id);
+        }
         fetchMessages();
-
         selectedChatCompare = selectedChat;
-
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedChat]);
+    }, [selectedChat])
 
     const fetchMessages = async () => {
         if (!selectedChat) return;
@@ -194,10 +202,25 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user, getMeetingAndToken }) => {
                             {selectedChat?.isGroupChat ? selectedChat?.chatName : profile?.username}
                         </Text>
 
+                        {!selectedChat?.isGroupChat && <Text style={{ color: 'primary.600' }} fontWeight={'bold'} fontSize={'lg'} mx={'10'}>
+                            {online ? 'Online' : 'Offline'}
+                        </Text>}
+
                         <IconButton onPress={() => dispatch({ type: 'SET_SELECTED_CHAT', payload: null })} icon={<MaterialIcons name="keyboard-arrow-down" size={24} color={'black'} />} />
 
                         {selectedChat?.isGroupChat && (admin || meetingIdExists) &&
-                            <IconButton onPress={handleStream} icon={<MaterialIcons name="videocam" size={24} color={'black'} />} />
+                            <>
+                                <View>
+                                    <IconButton onPress={handleStream} icon={<MaterialIcons name="videocam" size={24} color={'black'} />} />
+                                    {!admin &&
+                                        <Lottie style={{
+                                            width: 30,
+                                            position: 'absolute',
+                                            zIndex: -1,
+                                        }}
+                                            source={animationData} autoPlay loop />}
+                                </View>
+                            </>
                         }
 
                     </HStack>

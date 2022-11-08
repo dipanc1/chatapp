@@ -37,7 +37,6 @@ router.post("/create-meeting", (req, res) => {
 
     axios(url, options)
         .then((response) => {
-            console.log(response.data);
             res.json(response.data);
         }).catch((error) => {
             res.json(error);

@@ -144,22 +144,24 @@ function Controls({ fetchAgain, setFetchAgain, user, admin }) {
 }
 
 const VideoComponent = ({ participantId }) => {
-    console.warn("Participants Id ::: == >>>", participantId)
+    // console.warn("Participants Id ::: == >>>", participantId)
     const { webcamStream, webcamOn } = useParticipant(
         participantId
     );
-    // console.warn("Webcam Stream ::: == >>>", webcamStream)
 
     return (
-        <Flex key={participantId} flex={'8'} justifyContent={'center'} alignItems={'center'} bg={'primary.200'} m={'5'}>
-            {webcamOn && webcamStream ? (
-                <RTCView
-                    objectFit="cover"
-                    style={{ width: '100%', height: '100%' }}
-                    streamURL={new MediaStream([webcamStream?.track]).toURL()}
-                />
-            ) : null}
-        </Flex>
+        webcamOn ?
+            <Flex key={participantId} flex={'8'} justifyContent={'center'} alignItems={'center'} bg={'primary.200'} m={'5'}>
+                {webcamOn && webcamStream &&
+                    <RTCView
+                        objectFit="cover"
+                        style={{ width: '100%', height: '100%' }}
+                        streamURL={new MediaStream([webcamStream?.track]).toURL()}
+                    />
+                }
+            </Flex>
+            :
+            <></>
     )
 }
 
@@ -221,6 +223,7 @@ const Streaming = ({ meetingId, fetchAgain, setFetchAgain, user, admin }) => {
 
     }, []);
 
+    console.log(admin, "admin");
 
     return (
         <Flex flex={1} py={'1'} bg={'primary.100'}>

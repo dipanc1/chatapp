@@ -42,7 +42,7 @@ function VideoComponent(props) {
     // console.log("Participants ID ::: >>>", props.participantId);
     const micRef = useRef(null);
 
-    const { displayName, isLocal, isActiveSpeaker, webcamStream, micStream, webcamOn, micOn } = useParticipant(
+    const { isLocal, webcamStream, micStream, webcamOn, micOn } = useParticipant(
         props.participantId, {
         onStreamEnabled: (stream) => {
             // console.log('stream enabled', stream);

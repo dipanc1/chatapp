@@ -8,7 +8,6 @@
 #### delete console statements
 #### make number unique in db model
 #### save stream and show it somewhere?
-#### picture url is not going to db while resgitering new user
 #### call for user details from the server, only save token in local storage
 #### if host accidently closes the stream then delete meeting token from database
 #### allowed origin to hosted address

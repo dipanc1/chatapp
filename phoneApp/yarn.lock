@@ -2468,30 +2468,30 @@
   dependencies:
     eslint-visitor-keys "^1.1.0"
 
-"@videosdk.live/js-sdk@0.0.49":
-  version "0.0.49"
-  resolved "https://registry.yarnpkg.com/@videosdk.live/js-sdk/-/js-sdk-0.0.49.tgz#a4861187dffb4e99825204359cc7c301b6689de0"
-  integrity sha512-zASawICx2ux+aotIxgV2/iuewCZJRNAy8hs1M/pZ9OFB7UdrnTG5YDBbvsPcRME9vDhEMJHg2CcB5HqEjzmRug==
+"@videosdk.live/js-sdk@0.0.52":
+  version "0.0.52"
+  resolved "https://registry.yarnpkg.com/@videosdk.live/js-sdk/-/js-sdk-0.0.52.tgz#9ca466f883c8cbee78d6bd90cf7370e13bfb8f9b"
+  integrity sha512-vovbFb80E8evuimgVJLVusaRflH1zm6oyNMJNvqNTaBIdNiIfdMM3UaGVLC+j5zYZUqqnwfOhZFgawuUmbQrxQ==
 
 "@videosdk.live/react-native-foreground-service@^0.0.1":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@videosdk.live/react-native-foreground-service/-/react-native-foreground-service-0.0.1.tgz#3d1f222de8ccb13692f8605c6d45ceec73380946"
   integrity sha512-z+9qEIixhbpGBKTU83XP6bd1Bx69yLkto19W/52GHE22hiM8ezXjsPdBxWp6/1C3o3Ng7HO5TZ2ddrTC7La88Q==
 
-"@videosdk.live/react-native-incallmanager@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@videosdk.live/react-native-incallmanager/-/react-native-incallmanager-0.0.6.tgz#7da9b78b4b3e111a8605fb51513d851daf52f909"
-  integrity sha512-mddXWFQyPtMuveaJ2561qGTtKDbwaoF/lRvIfgfp9UF8rftFGmcm+1Sq7dDoyQD0XMvVuneV4nOi6QVnY+qenw==
+"@videosdk.live/react-native-incallmanager@^0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@videosdk.live/react-native-incallmanager/-/react-native-incallmanager-0.0.9.tgz#fb7263ca2920e2eaa0c09ccf689dafd3d8b95787"
+  integrity sha512-waisqluM+otiCsAEsEOjT5nmkyydJ9EeH2m5w3+YhOyXzXni78ih7yJBHQDxBekbCYTnW3vkSMpGKvmZhyvGjw==
 
-"@videosdk.live/react-native-sdk@^0.0.33":
-  version "0.0.33"
-  resolved "https://registry.yarnpkg.com/@videosdk.live/react-native-sdk/-/react-native-sdk-0.0.33.tgz#d055a7fa6f1fe81db38d7e5fa3e29d2184b78cb9"
-  integrity sha512-IzImijGtpPmrn18XeKyju7P23UWhGIY05ix86B07tbMQSGP2vSm3b3m6mfSghilA5i/tEPpoqg9v7bwZuu2QRw==
+"@videosdk.live/react-native-sdk@^0.0.37":
+  version "0.0.37"
+  resolved "https://registry.yarnpkg.com/@videosdk.live/react-native-sdk/-/react-native-sdk-0.0.37.tgz#a709cdf267b31435294211338f17c03b225f5164"
+  integrity sha512-UybrsZ2mROBHC9LVrvH55Fkpq9zaLmxBi15gerq7UKCJ0YNVXE/FdMJpQLad5zZSyNeLc0C/VkC7yOkjCjSCvQ==
   dependencies:
     "@videosdk.live/react-native-foreground-service" "^0.0.1"
-    "@videosdk.live/react-native-incallmanager" "^0.0.6"
+    "@videosdk.live/react-native-incallmanager" "^0.0.9"
     "@videosdk.live/react-native-webrtc" "^0.0.4"
-    "@videosdk.live/react-sdk" "0.1.49"
+    "@videosdk.live/react-sdk" "0.1.52"
 
 "@videosdk.live/react-native-webrtc@^0.0.4":
   version "0.0.4"
@@ -2502,12 +2502,12 @@
     event-target-shim "6.0.2"
     tar "6.1.11"
 
-"@videosdk.live/react-sdk@0.1.49":
-  version "0.1.49"
-  resolved "https://registry.yarnpkg.com/@videosdk.live/react-sdk/-/react-sdk-0.1.49.tgz#30ac1550b4463cff9fffafed8c311529977cbb62"
-  integrity sha512-fT6SADdnriN2QybCyUcKrA5sqFJOLluD2QAnwGqfiY5aOLFnouXl0LvO/X+hOydskkdWEOPUVhwbSKUEky/nSg==
+"@videosdk.live/react-sdk@0.1.52":
+  version "0.1.52"
+  resolved "https://registry.yarnpkg.com/@videosdk.live/react-sdk/-/react-sdk-0.1.52.tgz#9067959fc5794403b2883eed43c1bbc37a69807b"
+  integrity sha512-JILuoTRllBZLp1hCAX7NhD/xUVpXRFKlfzf3sihCCN83w3av1+5h9vbb9/LFn9gQhfn4UWujeh6p0wFdYtObxA==
   dependencies:
-    "@videosdk.live/js-sdk" "0.0.49"
+    "@videosdk.live/js-sdk" "0.0.52"
     events "^3.3.0"
 
 abab@^2.0.3, abab@^2.0.5:
