@@ -5,7 +5,6 @@ import { PhoneAppContext } from '../../context/PhoneAppContext'
 import { RTCView, useMeeting, useParticipant } from '@videosdk.live/react-native-sdk'
 import axios from 'axios'
 import { backend_url } from '../../production'
-import { DevSettings } from 'react-native'
 
 function Controls({ fetchAgain, setFetchAgain, user, admin }) {
 
@@ -70,7 +69,7 @@ function Controls({ fetchAgain, setFetchAgain, user, admin }) {
             // console.warn(result, "result");
             if (result) {
                 dispatch({ type: "SET_STREAMING", payload: false });
-                DevSettings.reload();
+                setFetchAgain(!fetchAgain)
             } else {
                 console.log("error");
             }
@@ -83,7 +82,7 @@ function Controls({ fetchAgain, setFetchAgain, user, admin }) {
     const leaveStream = () => {
         leave();
         dispatch({ type: "SET_STREAMING", payload: false });
-        DevSettings.reload();
+        setFetchAgain(!fetchAgain)
     }
 
     const recordingStart = () => {
