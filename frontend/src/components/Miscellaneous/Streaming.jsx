@@ -202,7 +202,7 @@ function Controls({ admin, user, selectedChat, toast }) {
             const result = await axios.put(`${backend_url}/conversation/stop-stream`, { data }, config);
             // console.warn(result, "result");
             if (result) {
-                dispatch({ type: "SET_STREAMING", payload: false });
+                dispatch({ type: "SET_STREAM", payload: false });
                 window.location.reload();
             } else {
                 console.log("error");
@@ -215,7 +215,7 @@ function Controls({ admin, user, selectedChat, toast }) {
 
     const leaveStream = () => {
         leave();
-        dispatch({ type: "SET_STREAMING", payload: false });
+        dispatch({ type: "SET_STREAM", payload: false });
         window.location.reload();
     }
 

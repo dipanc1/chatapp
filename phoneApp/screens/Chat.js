@@ -145,7 +145,6 @@ const Chat = ({ user, fetchAgain, setFetchAgain }) => {
         }
     };
 
-
     const getMeetingAndToken = async (id) => {
         const meetingId =
             id == null ? await getMeetingId(token) : id;

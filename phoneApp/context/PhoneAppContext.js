@@ -8,7 +8,6 @@ const INITIAL_STATE = {
   notification: [],
   stream: false,
   fullScreen: true,
-  streamExists: false,
 };
 
 export const PhoneAppContext = createContext(INITIAL_STATE);
@@ -25,7 +24,6 @@ export const PhoneAppContextProvider = ({ children }) => {
         notification: state.notification,
         stream: state.stream,
         fullScreen: state.fullScreen,
-        streamExists: state.streamExists,
         dispatch
       }}>
       {children}

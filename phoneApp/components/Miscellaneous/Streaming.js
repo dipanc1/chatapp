@@ -68,7 +68,7 @@ function Controls({ fetchAgain, setFetchAgain, user, admin }) {
             const result = await axios.put(`${backend_url}/conversation/stop-stream`, { data }, config);
             // console.warn(result, "result");
             if (result) {
-                dispatch({ type: "SET_STREAMING", payload: false });
+                dispatch({ type: "SET_STREAM" });
                 setFetchAgain(!fetchAgain)
             } else {
                 console.log("error");
@@ -81,7 +81,7 @@ function Controls({ fetchAgain, setFetchAgain, user, admin }) {
 
     const leaveStream = () => {
         leave();
-        dispatch({ type: "SET_STREAMING", payload: false });
+        dispatch({ type: "SET_STREAM" });
         setFetchAgain(!fetchAgain)
     }
 

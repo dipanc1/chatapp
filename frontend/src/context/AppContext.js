@@ -7,7 +7,6 @@ const INITIAL_STATE = {
   chats: [],
   notification: [],
   stream: false,
-  streamExists: false,
   fullScreen: true,
 };
 
@@ -24,7 +23,6 @@ export const AppContextProvider = ({ children }) => {
         chats: state.chats,
         notification: state.notification,
         stream: state.stream,
-        streamExists: state.streamExists,
         fullScreen: state.fullScreen,
         dispatch
       }}>
