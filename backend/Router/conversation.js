@@ -151,6 +151,15 @@ router.put("/groupadd", asyncHandler(async (req, res) => {
 router.put("/groupremove", asyncHandler(async (req, res) => {
     const { chatId, userId } = req.body;
 
+    // check if group admin leave make some other admin
+    const isGroupAdmin = await Chat.findOne({ _id: chatId, groupAdmin: { $eq: userId } });
+    if (isGroupAdmin) {
+        const newAdmin = await Chat.findOne({ _id: chatId, users: { $elemMatch: { $ne: userId } } });
+        if (newAdmin) {
+            await Chat.findByIdAndUpdate(chatId, { groupAdmin: newAdmin.users[0] });
+        }
+    }
+
     const removed = await Chat.findByIdAndUpdate(chatId, {
         $pull: { users: userId }
     }, { new: true })
@@ -163,6 +172,7 @@ router.put("/groupremove", asyncHandler(async (req, res) => {
         res.status(200).json(removed);
     }
 }));
+
 
 // start streaming
 router.put("/stream", asyncHandler(async (req, res) => {
@@ -185,6 +195,8 @@ router.put("/stream", asyncHandler(async (req, res) => {
 
 }));
 
+
+// stop streaming
 router.put("/stop-stream", asyncHandler(async (req, res) => {
     // console.log(req.body)
     const { data } = req.body;
@@ -203,6 +215,8 @@ router.put("/stop-stream", asyncHandler(async (req, res) => {
 
 }));
 
+
+// get streaming meeting id
 router.get("/streaming/:chatid", asyncHandler(async (req, res) => {
 
     const { chatid } = req.params;
@@ -217,9 +231,6 @@ router.get("/streaming/:chatid", asyncHandler(async (req, res) => {
         console.log(err);
     })
 }));
-
-
-
 
 
 module.exports = router;

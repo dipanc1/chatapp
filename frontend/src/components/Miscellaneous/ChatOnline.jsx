@@ -1,75 +1,96 @@
 import { DeleteIcon } from '@chakra-ui/icons';
-import { AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Avatar, Box, Divider, Flex, Text } from '@chakra-ui/react';
+import { AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Avatar, Box, Divider, Flex, Text, useDisclosure } from '@chakra-ui/react';
+import { useRef } from 'react';
 import { BsPerson, BsTelephone } from 'react-icons/bs';
+import EndLeaveModal from '../UserModals/EndLeaveModal';
 
 const ChatOnline = ({ stream, id, user1, handleFunction }) => {
     const user = JSON.parse(localStorage.getItem('user'));
 
-    return (
-        <AccordionItem key={id} minWidth={stream ? '19vw' : '12vw'}>
-            <h2>
-                <AccordionButton
-                    backgroundColor={'selectSecondaryColor'}
-                    borderTopRadius={'md'}
-                    _expanded={{ bg: 'selectPrimaryColor' }}
-                    _hover={
-                        {
-                            backgroundColor: 'selectPrimaryColor',
-                            color: '#000',
-                            borderColor: '#000',
-                            cursor: 'pointer',
-                        }}>
-                    <Box flex='1' textAlign='left'>
-                        <Flex align={'center'}>
-                            <Avatar
-                                // src={!stream && user1.pic}
-                                src={user1.pic}
-                                size={'lg'}
-                                name={user1.username}
-                                ml={-1}
-                                mr={2}
-                            />
-                            {
-                                // stream ? user1 :
-                                    user1.username}
-                        </Flex>
-                    </Box>
-                    <AccordionIcon />
-                </AccordionButton>
-            </h2>
-            <AccordionPanel borderBottomRadius={'md'}
-                bg={'selectPrimaryColor'}
-                pb={4}
-            >
-                <Flex flexDir={'column'} alignItems={stream ? 'center' : ''}>
-                    <BsPerson />
-                    <Text as='samp'>
-                        {/* {stream ? user1 : user1.username} */}
-                        {user1.username}
-                    </Text>
-                    {!stream &&
-                        <>
-                            <BsTelephone /><Text as='samp'>
-                                +{user1.number}
-                            </Text>
-                        </>
-                    }
+    const removeRef = useRef()
+    const { isOpen: isRemoveOpen, onOpen: onRemoveOpen, onClose: onRemoveClose } = useDisclosure()
 
-                    <Divider orientation='horizontal' color={'#000000'}
-                        my={'2'}
-                    />
-                    {
-                        !stream && (user._id === user1._id ?
-                            null :
+    return (
+        <>
+            <AccordionItem key={id} minWidth={stream ? '19vw' : '12vw'}>
+                <h2>
+                    <AccordionButton
+                        backgroundColor={'selectSecondaryColor'}
+                        borderTopRadius={'md'}
+                        _expanded={{ bg: 'selectPrimaryColor' }}
+                        _hover={
+                            {
+                                backgroundColor: 'selectPrimaryColor',
+                                color: '#000',
+                                borderColor: '#000',
+                                cursor: 'pointer',
+                            }}>
+                        <Box flex='1' textAlign='left'>
+                            <Flex align={'center'}>
+                                <Avatar
+                                    // src={!stream && user1.pic}
+                                    src={user1.pic}
+                                    size={'lg'}
+                                    name={user1.username}
+                                    ml={-1}
+                                    mr={2}
+                                />
+                                {
+                                    // stream ? user1 :
+                                    user1.username}
+                            </Flex>
+                        </Box>
+                        <AccordionIcon />
+                    </AccordionButton>
+                </h2>
+                <AccordionPanel borderBottomRadius={'md'}
+                    bg={'selectPrimaryColor'}
+                    pb={4}
+                >
+                    <Flex flexDir={'column'} alignItems={stream ? 'center' : ''}>
+                        <BsPerson />
+                        <Text as='samp'>
+                            {/* {stream ? user1 : user1.username} */}
+                            {user1.username}
+                        </Text>
+                        {!stream &&
                             <>
-                                <Text cursor={'pointer'} color={'errorColor'} as='samp' onClick={handleFunction}>
-                                    <DeleteIcon />  Remove from group
+                                <BsTelephone /><Text as='samp'>
+                                    +{user1.number}
                                 </Text>
-                            </>)
-                    }
-                </Flex>
-            </AccordionPanel>
-        </AccordionItem>
+                            </>
+                        }
+
+                        <Divider orientation='horizontal' color={'#000000'}
+                            my={'2'}
+                        />
+                        {
+                            !stream && (user._id === user1._id ?
+                                null :
+                                <>
+                                    <Text cursor={'pointer'} color={'errorColor'} as='samp' onClick={onRemoveOpen}>
+                                        <DeleteIcon />  Remove from group
+                                    </Text>
+                                </>)
+                        }
+                    </Flex>
+                </AccordionPanel>
+            </AccordionItem>
+
+            {/* Confirm remove member */}
+            <EndLeaveModal
+                leastDestructiveRef={removeRef}
+                onClose={onRemoveClose}
+                header={'Remove Member'}
+                body={`Are you sure you want to remove ${user1.username} from the group?`}
+                confirmButton={'Remove'}
+                confirmFunction={() => {
+                    handleFunction();
+                    onRemoveClose();
+                }}
+                isOpen={isRemoveOpen}
+            />
+        </>
     )
 }
 

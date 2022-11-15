@@ -22,6 +22,7 @@ import {
     InputLeftElement,
     Avatar,
     IconButton,
+    FormHelperText,
 } from '@chakra-ui/react';
 import { AiOutlineUser } from 'react-icons/ai';
 import { FiUpload } from 'react-icons/fi';
@@ -40,7 +41,7 @@ const Register = () => {
     const [number, setNumber] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [confirmPassword, setConfirmPassword] = React.useState('');
-    const [pic, setPic] = React.useState('')
+    const [formhelpUsername, setFormhelpUsername] = React.useState('')
     const [selectedImage, setSelectedImage] = React.useState(null);
     const [loading, setLoading] = React.useState(false)
 
@@ -54,11 +55,22 @@ const Register = () => {
     const apiUrlMobile = `${backend_url}/mobile`;
     const apiUrlOtp = `${backend_url}/otp`;
     const apiUrlRegister = `${backend_url}/users/register`;
+    const apiUrlUsername = `${backend_url}/users/check-username`;
     const pictureUpload = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
 
-    const handleUsername = (e) => {
+    const handleUsername = async (e) => {
         setUsername(e.target.value);
+        e.target.value.length > 2 && await axios.get(`${apiUrlUsername}/${e.target.value}`)
+            .then(res => {
+                if (res.data) {
+                    setFormhelpUsername(res.data.message)
+                }
+            }
+            )
+            .catch(err => console.log(err))
+
     }
+
 
     const handlePassword = (e) => {
         setPassword(e.target.value);
@@ -302,7 +314,7 @@ const Register = () => {
                                                 children={<AiOutlineUser color='greyTextColor' />}
                                             />
                                             <Input
-                                                focusBorderColor='#9F85F7'
+                                                focusBorderColor={(username.length > 2 && formhelpUsername === "Username not available") ? '#FF4343' : '#9F85F7'}
                                                 type="text" id="username"
                                                 name='username'
                                                 value={username}
@@ -312,6 +324,7 @@ const Register = () => {
                                                 onChange={handleUsername}
                                             />
                                         </InputGroup>
+                                        {username.length > 2 && <FormHelperText>{formhelpUsername}</FormHelperText>}
                                     </FormControl>
 
                                     <Password password={password} confirmPassword={confirmPassword} handleConfirmPassword={handleConfirmPassword} handlePassword={handlePassword} />

@@ -109,7 +109,7 @@ router.get("/check-online/:id", protect, async (req, res) => {
     }
 });
 
-// search query for users and groups  exclusing user logged in
+// search query for users and groups excluding user logged in
 router.get("/", protect, async (req, res) => {
     try {
         const users = await User.find({
@@ -191,6 +191,31 @@ router.post("/forget-password-check-otp-change-password", async (req, res) => {
                     message: "OTP not valid",
                 })
             })
+    } catch (err) {
+        res.status(500).json({
+            message: "Something went wrong",
+        })
+        console.log(err)
+    }
+});
+
+// check if username is available
+router.get("/check-username/:username", async (req, res) => {
+    try {
+        if (req.params.username.length > 2) {
+            const user = await User.findOne({ username: req.params.username })
+
+            if (user) {
+                return res.status(200).json({
+                    message: "Username not available"
+                })
+            }
+
+            res.status(200).json({
+                message: "Username available"
+            })
+        }
+
     } catch (err) {
         res.status(500).json({
             message: "Something went wrong",

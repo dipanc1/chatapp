@@ -37,7 +37,7 @@ const Chat = () => {
   };
 
   React.useEffect(() => {
-    if (!user.token) {
+    if (!user || !user.token) {
       navigate('/');
     }
   }, [navigate, user]);
@@ -56,7 +56,7 @@ const Chat = () => {
         const { token } = await response.json();
         setToken(token);
       } catch (e) {
-        console.log(e);
+        // console.log(e);
         errorToast("Something went wrong");
       }
     };
@@ -79,12 +79,12 @@ const Chat = () => {
           return meetingId;
         })
         .catch((error) => {
-          console.log("error", error);
+          // console.log("error", error);
           errorToast("Something went wrong");
         });
       return response;
     } catch (e) {
-      console.log(e);
+      // console.log(e);
       errorToast("Something went wrong");
     }
   };
@@ -93,7 +93,7 @@ const Chat = () => {
     const meetingId =
       id == null ? await getMeetingId(token) : id;
     setMeetingId(meetingId);
-    console.warn("CHATTTTTTTT APP entry", meetingId, typeof meetingId)
+    // console.warn("CHATTTTTTTT APP entry", meetingId, typeof meetingId)
   };
 
   return (

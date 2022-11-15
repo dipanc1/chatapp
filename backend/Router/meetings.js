@@ -13,7 +13,6 @@ router.get("/get-token", protect, (req, res) => {
 
     const EXPIRES_IN = process.env.TOKEN_EXPIRES_IN;
 
-
     const options = { expiresIn: EXPIRES_IN, algorithm: "HS256" };
 
     const payload = {

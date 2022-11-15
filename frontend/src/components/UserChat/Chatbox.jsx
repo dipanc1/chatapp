@@ -11,7 +11,7 @@ import StreamModal from '../UserModals/StreamModal'
 import { backend_url } from '../../baseApi'
 import { Avatar, AvatarBadge, Box, Button, Divider, Flex, Image, Input, Spinner, Text, useToast } from '@chakra-ui/react'
 import { FiSend } from 'react-icons/fi'
-
+import InfiniteScroll from 'react-infinite-scroll-component'
 
 var selectedChatCompare;
 
@@ -20,6 +20,8 @@ export const ChatBoxComponent = ({ height, selectedChat, fetchAgain, setFetchAga
   // console.log("Socket ::: >>>",socket)
   const { notification, dispatch, fullScreen } = React.useContext(AppContext);
   const [messages, setMessages] = React.useState([]);
+  const [page, setPage] = React.useState(2);
+  const [hasMore, setHasMore] = React.useState(true);
   const [loading, setLoading] = React.useState(false);
   const [newMessage, setNewMessage] = React.useState("");
   const [socketConnected, setSocketConnected] = React.useState(false);
@@ -59,13 +61,41 @@ export const ChatBoxComponent = ({ height, selectedChat, fetchAgain, setFetchAga
         }
       };
       setLoading(true);
-      const { data } = await axios.get(`${backend_url}/message/${selectedChat._id}`, config);
-      setMessages(data);
+      const { data } = await axios.get(`${backend_url}/message/${selectedChat._id}/1`, config);
+      // console.log("Data fetch 1", data);
+      setMessages(data.messages);
+      setHasMore(data.hasMore);
       setLoading(false);
       socket.emit('join chat', selectedChat._id);
     } catch (error) {
       // console.log(error);
       setLoading(false);
+      toast({
+        title: "Error Occured!",
+        description: "Failed to Load the Messages",
+        status: "error",
+        isClosable: true,
+        position: "top",
+        duration: 5000
+      });
+    }
+  }
+
+  const fetchMoreMessages = async () => {
+    if (!selectedChat) return;
+    setPage(page + 1);
+    try {
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${user.token}`
+        }
+      };
+      const { data } = await axios.get(`${backend_url}/message/${selectedChat._id}/${page}`, config);
+      setMessages([...messages, ...data.messages]);
+      setHasMore(data.hasMore);
+      // console.log("Fetch more", page, data);
+    } catch (error) {
+      // console.log(error);
       toast({
         title: "Error Occured!",
         description: "Failed to Load the Messages",
@@ -145,70 +175,89 @@ export const ChatBoxComponent = ({ height, selectedChat, fetchAgain, setFetchAga
     }, typingTimer);
   }
 
-  const variants = {
-    visible: { opacity: 1 },
-    hidden: { opacity: 0 },
-  }
-
   return (
     <>
       {/* MIDDLE PART  */}
-      <Box
-        initial="hidden"
-        animate="visible"
-        variants={variants}
-        height={height}
-        overflowY={'scroll'}
-      >
-        {loading ?
-          (
-            <Box display={'flex'} alignItems={'center'} justifyContent={'center'} mt={44}>
-              <Spinner
-                thickness='4px'
-                speed='0.2s'
-                emptyColor='gray.200'
-                color='buttonPrimaryColor'
-                size='xl'
-              />
-            </Box>
-          ) :
-          (messages?.map((m, i) => (
-            <Box
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              key={m._id}
-              ref={scrollRef}>
-              <Message
-                key={m._id}
-                messages={m}
-                own={m.sender._id === user._id}
-                sameSender={(i < messages.length - 1 &&
-                  (messages[i + 1].sender._id !== m.sender._id ||
-                    messages[i + 1].sender._id === undefined) &&
-                  messages[i].sender._id !== user._id) || (i === messages.length - 1 &&
-                    messages[messages.length - 1].sender._id !== user._id &&
-                    messages[messages.length - 1].sender._id)}
-                sameTime={(i < messages.length - 1) && format(messages[i].createdAt) === format(messages[i + 1].createdAt)}
-              />
-            </Box>
-          )))
-        }
-        {isTyping ? (
-          <Box>
-            <Lottie
-              loop={true}
-              style={{
-                width: '7vw',
-              }}
-              animationData={animationData}
+      {loading ?
+        (
+          <Box display={'flex'} alignItems={'center'} justifyContent={'center'} height={height}>
+            <Spinner
+              thickness='4px'
+              speed='0.2s'
+              emptyColor='gray.200'
+              color='buttonPrimaryColor'
+              size='xl'
             />
           </Box>
-        ) : (
-          <></>
+        )
+        :
+        (
+          <div
+            id="scrollableDiv"
+            style={{
+              height: height,
+              overflow: 'auto',
+              display: 'flex',
+              flexDirection: 'column-reverse',
+            }}
+          >
+            {/*Put the scroll bar always on the bottom*/}
+            <InfiniteScroll
+              dataLength={messages.length}
+              next={fetchMoreMessages}
+              style={{ display: 'flex', flexDirection: 'column-reverse' }} //To put endMessage and loader to the top.
+              inverse={true} //
+              hasMore={hasMore}
+              loader={
+                <Box display={'flex'} alignItems={'center'} justifyContent={'center'} mt={44}>
+                  <Spinner
+                    thickness='4px'
+                    speed='0.2s'
+                    emptyColor='gray.200'
+                    color='buttonPrimaryColor'
+                    size='xl'
+                  />
+                </Box>}
+              scrollableTarget="scrollableDiv"
+            >
+              {messages?.map((m, i) => (
+                <Box
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  key={m._id}
+                // ref={scrollRef}
+                >
+                  <Message
+                    key={m._id}
+                    messages={m}
+                    own={m.sender._id === user._id}
+                    sameSender={(i < messages.length - 1 &&
+                      (messages[i + 1].sender._id !== m.sender._id ||
+                        messages[i + 1].sender._id === undefined) &&
+                      messages[i].sender._id !== user._id) || (i === messages.length - 1 &&
+                        messages[messages.length - 1].sender._id !== user._id &&
+                        messages[messages.length - 1].sender._id)}
+                    sameTime={(i < messages.length - 1) && format(messages[i].createdAt) === format(messages[i + 1].createdAt)}
+                  />
+                </Box>
+              ))}
+              {isTyping ? (
+                <Box>
+                  <Lottie
+                    loop={true}
+                    style={{
+                      width: '7vw',
+                    }}
+                    animationData={animationData}
+                  />
+                </Box>
+              ) : (
+                <></>
+              )}
+            </InfiniteScroll>
+          </div>
         )}
-      </Box>
-
 
       {/* BOTTOM PART  */}
       <Box
@@ -264,7 +313,14 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
       // console.log("DATAAAAAAAAAAAA", data);
       setOnline(data.isOnline);
     } catch (error) {
-      console.log(error);
+      toast({
+        title: "Error Occured!",
+        description: "Failed to Check Online Status",
+        status: "error",
+        isClosable: true,
+        position: "top",
+        duration: 5000,
+      });
     }
   }
 
@@ -287,7 +343,14 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
         }
         checkStream();
       } catch (error) {
-        console.log(error);
+        toast({
+          title: "Error Occured!",
+          description: "Failed to Check Streaming Status",
+          status: "error",
+          isClosable: true,
+          position: "top",
+          duration: 5000,
+        });
       }
 
     }

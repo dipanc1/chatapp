@@ -46,7 +46,7 @@ app.use("/meetings", meetingRoute);
 
 const PORT = process.env.PORT || "8000";
 const server = app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT} `);
+    console.log(`Server is running on http://localhost:${PORT} `);
 });
 
 const io = require("socket.io")(server, {
@@ -76,7 +76,7 @@ io.on("connection", (socket) => {
             })
                 .then((user) => {
                     // socket.broadcast.emit("user-online", user);
-                    console.log("User online");
+                    // console.log("User online");
                 })
                 .catch(err => console.log("Online ", err))
         } else {

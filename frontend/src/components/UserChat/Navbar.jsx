@@ -93,7 +93,7 @@ const Navbar = ({ fetchAgain, setFetchAgain }) => {
                         <MenuItem
                           key={notifications._id}
                           onClick={() => {
-                            console.log(notifications);
+                            // console.log(notifications);
                             dispatch({
                               type: 'SET_SELECTED_CHAT',
                               payload: notifications.chat

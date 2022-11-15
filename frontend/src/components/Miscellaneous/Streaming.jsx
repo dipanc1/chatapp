@@ -1,4 +1,4 @@
-import { Box, Button, Center, Divider, Flex, Heading, IconButton, Text, useToast, VStack } from '@chakra-ui/react';
+import { Box, Button, Divider, Flex, Heading, IconButton, Text, useDisclosure, useToast, VStack } from '@chakra-ui/react';
 import { useMeeting, useParticipant } from '@videosdk.live/react-sdk';
 import axios from 'axios';
 import React, { useContext, useEffect, useMemo, useRef } from 'react'
@@ -10,7 +10,8 @@ import { backend_url } from '../../baseApi';
 import useSound from 'use-sound';
 import joinSound from '../../sounds/join.mp3';
 import leaveSound from '../../sounds/leave.mp3';
-import Members, { MembersComponent } from '../UserChat/Members';
+import { MembersComponent } from '../UserChat/Members';
+import EndLeaveModal from '../UserModals/EndLeaveModal';
 
 const videoPlayerStyle = {
     width: '100%',
@@ -95,7 +96,7 @@ function VideoComponent(props) {
                         width={"100%"}
                         style={videoPlayerStyle}
                         onError={(err) => {
-                            console.log(err, "participant video error");
+                            console.log("participant video error");
                         }}
                     />
                 )}
@@ -107,6 +108,9 @@ function VideoComponent(props) {
 function Controls({ admin, user, selectedChat, toast }) {
     let timeOutId;
     const { dispatch, fullScreen } = useContext(AppContext);
+
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const cancelRef = React.useRef()
 
     const [micOn, setMicOn] = React.useState(true);
     const [webcamOn, setWebcamOn] = React.useState(false);
@@ -205,11 +209,23 @@ function Controls({ admin, user, selectedChat, toast }) {
                 dispatch({ type: "SET_STREAM", payload: false });
                 window.location.reload();
             } else {
-                console.log("error");
+                toast({
+                    title: "Error",
+                    description: "Something went wrong",
+                    status: "error",
+                    duration: 3000,
+                    isClosable: true,
+                });
             }
 
         } catch (error) {
-            console.log(error);
+            toast({
+                title: "Error",
+                description: "Something went wrong",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+            });
         }
     }
 
@@ -294,7 +310,7 @@ function Controls({ admin, user, selectedChat, toast }) {
                     </VStack>}
                 <VStack>
                     <IconButtonGeneric
-                        onClick={admin ? endStream : leaveStream}
+                        onClick={admin ? onOpen : leaveStream}
                         color={'errorColor'}
                         icon={<AiOutlineCloseSquare />}
                         size={fullScreen ? 'md' : 'sm'}
@@ -306,6 +322,19 @@ function Controls({ admin, user, selectedChat, toast }) {
                 </VStack>
 
             </Flex>
+
+            <EndLeaveModal
+                leastDestructiveRef={cancelRef}
+                onClose={onClose}
+                header={'End Stream'}
+                body={'Are you sure you want to end the stream?'}
+                confirmButton={'End'}
+                confirmFunction={() => {
+                    endStream();
+                    onClose();
+                }}
+                isOpen={isOpen}
+            />
         </Flex>
     );
 }
@@ -342,7 +371,7 @@ const Streaming = ({ admin, meetingId, setFetchAgain, fetchAgain, token }) => {
             await axios.put(`${backend_url}/conversation/stream`, { data }, config);
             // console.log(result);
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             toast({
                 title: "Error",
                 description: "Something went wrong",
@@ -371,7 +400,13 @@ const Streaming = ({ admin, meetingId, setFetchAgain, fetchAgain, token }) => {
             }
             checkStream();
         } catch (error) {
-            console.log(error);
+            toast({
+                title: "Error",
+                description: "Something went wrong",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+            });
         }
 
     }, []);

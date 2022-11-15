@@ -6,20 +6,23 @@ import UserListItem from '../UserItems/UserListItem'
 import { backend_url } from '../../baseApi'
 import { HiUserRemove } from 'react-icons/hi'
 import {
-  Accordion,
-  Avatar,
+  Accordion, Avatar,
   Box, Button, Divider, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Tab, TabList, TabPanel, TabPanels, Tabs, Text, useDisclosure, useToast,
 } from '@chakra-ui/react'
 import { GrUserAdd } from 'react-icons/gr'
 import { BsTelephone, BsPerson } from 'react-icons/bs'
 import { ChatBoxComponent } from './Chatbox'
+import EndLeaveModal from '../UserModals/EndLeaveModal'
 
 export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain }) => {
   const user = JSON.parse(localStorage.getItem('user'));
 
   const { selectedChat, dispatch, stream, fullScreen } = React.useContext(AppContext);
 
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure()
+  const { isOpen: isConfirmOpen, onOpen: onConfirmOpen, onClose: onConfirmClose } = useDisclosure()
+  const cancelRef = React.useRef()
+
   const toast = useToast();
 
   const [groupChatName, setGroupChatName] = React.useState('');
@@ -115,7 +118,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain }
         },
         config
       );
-      console.log(data);
+      // console.log(data);
       dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
       setFetchAgain(!fetchAgain);
       setLoading(false);
@@ -267,6 +270,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain }
                       //       handleFunction={() => handleRemove(participant)}
                       //     />
                       //   )) :
+
                       selectedChat?.users.map(u =>
                         <ChatOnline
                           stream={stream}
@@ -274,6 +278,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain }
                           user1={u}
                           handleFunction={() => handleRemove(u)} />
                       )}
+
                   </Accordion>
                 </Box>
               </TabPanel>
@@ -320,12 +325,12 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain }
 
                 <Box my={'2'}>
 
-                  <Button size={fullScreen ? 'md' : 'sm'} onClick={onOpen} rightIcon={<GrUserAdd />} color={'buttonPrimaryColor'} variant='outline'>
+                  <Button size={fullScreen ? 'md' : 'sm'} onClick={onAddOpen} rightIcon={<GrUserAdd />} color={'buttonPrimaryColor'} variant='outline'>
                     Add Member
                   </Button>
 
                   {/* Add Member Modal */}
-                  <Modal size={['xs', 'xs', 'xl', 'lg']} isOpen={isOpen} onClose={onClose}>
+                  <Modal size={['xs', 'xs', 'xl', 'lg']} isOpen={isAddOpen} onClose={onAddClose}>
                     <ModalOverlay />
                     <ModalContent>
                       <ModalHeader>Add Member</ModalHeader>
@@ -371,7 +376,9 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain }
                                   mx={'2rem'}
                                   borderRadius="lg"
                                   key={user._id}
-                                  onClick={() => handleAddUser(user._id)}
+                                  onClick={
+                                    () => handleAddUser(user._id)
+                                  }
                                 >
                                   <UserListItem user={user} />
                                 </Box>
@@ -381,17 +388,31 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain }
                       </ModalBody>
 
                       <ModalFooter>
-                        <Button backgroundColor={'buttonPrimaryColor'} color={'white'} mr={3} onClick={onClose}>
+                        <Button backgroundColor={'buttonPrimaryColor'} color={'white'} mr={3} onClick={onAddClose}>
                           Close
                         </Button>
                       </ModalFooter>
                     </ModalContent>
                   </Modal>
 
+                  {/* Confirm Add Member */}
+                  <EndLeaveModal
+                    leastDestructiveRef={cancelRef}
+                    onClose={onConfirmClose}
+                    header={'Leave Group'}
+                    body={'Are you sure you want to leave this group?'}
+                    confirmButton={'Leave'}
+                    confirmFunction={() => {
+                      handleRemove(user);
+                      onConfirmClose();
+                    }}
+                    isOpen={isConfirmOpen}
+                  />
+
                 </Box>
 
                 <Box my={fullScreen ? '2' : '0'}>
-                  <Button size={fullScreen ? 'md' : 'sm'} onClick={() => handleRemove(user)} rightIcon={<HiUserRemove />} colorScheme='red' variant='outline'>
+                  <Button size={fullScreen ? 'md' : 'sm'} onClick={onConfirmOpen} rightIcon={<HiUserRemove />} colorScheme='red' variant='outline'>
                     Leave Group
                   </Button>
                 </Box>

@@ -40,7 +40,7 @@ const StreamModal = ({ children, getMeetingAndToken, admin }) => {
         }
         const { data } = await axios.get(`${backend_url}/conversation/streaming/${selectedChat._id}`, config);
         setMeetingId(data);
-        console.warn("STREAM MODAL which is joinscreen", data, "MEETING ID", meetingId);
+        // console.warn("STREAM MODAL which is joinscreen", data, "MEETING ID", meetingId);
         await getMeetingAndToken(data);
         onClose();
         dispatch({ type: 'SET_STREAM', payload: true });
