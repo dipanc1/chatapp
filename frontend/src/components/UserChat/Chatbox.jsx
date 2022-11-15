@@ -49,6 +49,8 @@ export const ChatBoxComponent = ({ height, selectedChat, fetchAgain, setFetchAga
 
     selectedChatCompare = selectedChat;
 
+    setPage(2);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedChat])
 
@@ -122,9 +124,9 @@ export const ChatBoxComponent = ({ height, selectedChat, fetchAgain, setFetchAga
           content: newMessage,
           chatId: selectedChat._id
         }, config);
-        socket.emit("new message", data);
-        setMessages([...messages, data]);
-        // console.log(data);
+        socket.emit("new message", data.message);
+        setMessages([data.message, ...messages]);
+        // console.log(data, messages);
       } catch (error) {
         // console.log(error);
         toast({
@@ -226,7 +228,6 @@ export const ChatBoxComponent = ({ height, selectedChat, fetchAgain, setFetchAga
                   whileInView={{ opacity: 1 }}
                   viewport={{ once: true }}
                   key={m._id}
-                // ref={scrollRef}
                 >
                   <Message
                     key={m._id}
