@@ -4,6 +4,8 @@ const Chat = require("../models/Conversation");
 const Message = require("../models/Message");
 const User = require("../models/User");
 
+const LIMIT = 8;
+
 // add
 router.post("/", async (req, res) => {
     const { content, chatId } = req.body;
@@ -45,7 +47,7 @@ router.post("/", async (req, res) => {
 //get
 router.get("/:chatId/:page", async (req, res) => {
     //TODO: make it 50 or 100
-    const { limit = 8 } = req.query;
+    const { limit = LIMIT } = req.query;
 
     try {
         const totalCount = await Message.countDocuments({

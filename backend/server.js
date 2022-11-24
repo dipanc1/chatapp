@@ -5,11 +5,11 @@ const path = require("path");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 
-const userRoute = require("./Router/users")
-const otpRoute = require("./Router/otp")
-const conversationRoute = require("./Router/conversation")
-const messageRoute = require("./Router/messages")
-const meetingRoute = require("./Router/meetings")
+const userRoute = require("./Router/users");
+const otpRoute = require("./Router/otp");
+const conversationRoute = require("./Router/conversation");
+const messageRoute = require("./Router/messages");
+const meetingRoute = require("./Router/meetings");
 
 require("dotenv").config();
 
@@ -57,7 +57,7 @@ const io = require("socket.io")(server, {
 });
 
 io.on("connection", (socket) => {
-    console.log("New user connected", socket.id);
+    // console.log("New user connected", socket.id);
 
     socket.on("setup", (userData) => {
         socket.join(userData._id);
@@ -76,7 +76,7 @@ io.on("connection", (socket) => {
             })
                 .then((user) => {
                     // socket.broadcast.emit("user-online", user);
-                    // console.log("User online");
+                    console.log("User online");
                 })
                 .catch(err => console.log("Online ", err))
         } else {
