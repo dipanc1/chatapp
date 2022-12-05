@@ -18,7 +18,9 @@ const Message = ({ messages, own, sameSender, sameTime }) => {
                 <Box display={'flex'}>
                     {sameSender ?
                         <Avatar size='sm' mr={'1.5'} name={messages.sender.username} src={messages.sender.pic} />
-                        : <div style={{ width: '2.5rem' }}></div>}
+                        : 
+                        <div style={{ width: '2.5rem' }}></div>
+                        }
                     <Box p={2} borderRadius={'xl'} bg={own ? 'ownChatColor' : '#f3f7fc'}>
                         <Text color={own ? 'white' : ''}>{messages.content}</Text>
                     </Box>
