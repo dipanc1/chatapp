@@ -33,7 +33,7 @@ function Events() {
   return (
     <>
       <Static>
-        <Flex pt='10px' pb='50px' alignItems='center' justifyContent='space-between'>
+        <Flex pb='50px' alignItems='center' justifyContent='space-between'>
           <Heading as='h1' size='lg' fontWeight='500'>Events</Heading>
           <NavLink className='btn btn-primary' to="./create">
             <Flex alignItems='center'>

@@ -24,6 +24,7 @@ const sidebar = () => {
 		},
 		{
 			'title': 'Events', 
+			'url': 'event',
 			'icon': 'events',
 		},
 		{
@@ -36,6 +37,7 @@ const sidebar = () => {
 		},
 		{
 			'title': 'Settings', 
+			'url': 'settings',
 			'icon': 'settings',
 		}
 	]
@@ -52,7 +54,7 @@ const sidebar = () => {
 							NavMenu.map((navitem) => {
 								return (
 									<ListItem py={'4px'} fontWeight={'600'}>
-										<NavLink to={"/"+navitem.title}>
+										<NavLink to={"/"+navitem.url}>
 											<Image src={CDN_IMAGES+"/"+navitem.icon+".png"} alt={navitem.title} />
 											<Text>
 												{navitem.title}

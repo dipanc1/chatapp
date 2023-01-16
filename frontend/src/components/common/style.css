@@ -47,6 +47,9 @@
 .btn:hover::before {
     width: 100%;
 }
+.btn:hover img {
+    filter: invert();
+}
 .btn-primary {
     border: 1px solid #9F85F7;  
     color: #fff!important;
@@ -87,4 +90,54 @@
 .form-wrapper textarea {
     resize: none;
     height: 150px;
+}
+
+.form-details input {
+    background-color: #EAE4FF;
+}
+
+.form-details label {
+    border: 1px solid #EAE4FF;
+    border-radius: 5px;
+}
+
+.table thead th {
+    border-color: #9F85F7;
+}
+
+.table th, .table td {
+    padding: 25px 20px;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.table th {
+    color: #9F85F7;
+}
+
+.table td {
+    color: #6B6B6B;
+}
+
+.table tbody tr:nth-child(odd) {
+    background: #F8F5FF;
+}
+
+.table .badge {
+    display: block;
+    font-size: 13px;
+    padding: 7px 23px;
+    text-align: center;
+    border-radius: 30px;
+    color: #fff;
+    font-weight: bold;
+    background: lightgray;
+}
+
+.table .badge.active {
+    background: #24FF00;
+}
+
+.table .badge.expired {
+    background: #FF0000;
 }

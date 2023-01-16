@@ -7,7 +7,9 @@ import Register from './pages/Register'
 import Plans from './pages/Plans'
 import Events from './pages/Events';
 import CreateEvent from './pages/CreateEvent';
+import EventDetails from './pages/EventDetails';
 import NotFound from './pages/NotFound';
+import Settings from './pages/Settings';
 
 //TODO: delete console statements
 
@@ -21,8 +23,10 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/plans" element={<Plans />} />
-          <Route path="/events" element={<Events />} />
-          <Route path="/events/create" element={<CreateEvent />} />
+          <Route path="/event" element={<Events />} />
+          <Route path="/event/create" element={<CreateEvent />} />
+          <Route path="/event/detail" element={<EventDetails />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AnimatePresence>
