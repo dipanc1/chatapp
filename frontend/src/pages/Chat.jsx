@@ -10,6 +10,8 @@ import Streaming from '../components/Miscellaneous/Streaming';
 import { MeetingConsumer, MeetingProvider } from '@videosdk.live/react-sdk';
 import { SocketContextProvider } from '../context/SocketContext';
 import { backend_url } from '../baseApi';
+import StreamingPeer from '../components/Miscellaneous/StreamingPeer';
+import { RoomProvider } from '../context/RoomContext';
 
 
 const Chat = () => {
@@ -97,42 +99,45 @@ const Chat = () => {
   };
 
   return (
-    <>
-      {user.token && <Navbar fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
-      <Box display={'flex'} bg={'backgroundColor'} height={'calc(100vh - 60px)'}>
-        {(stream && token && meetingId) ?
-          <MeetingProvider
-            config={{
-              meetingId,
-              micEnabled: false,
-              webcamEnabled: admin ? true : false,
-              name: user.username
-            }}
-            token={token}
-          >
-            <MeetingConsumer>
-              {() =>
-                <Streaming admin={admin} meetingId={meetingId} setFetchAgain={setFetchAgain} token={token} fetchAgain={fetchAgain} />
-              }
-            </MeetingConsumer>
-          </MeetingProvider>
-          :
-          <>
-            <Box flex={['0', '2', '2', '2']}>
-              {user.token && <Conversations fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
-            </Box>
-            <SocketContextProvider>
+    <SocketContextProvider>
+      <RoomProvider>
+        {user.token && <Navbar fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+        <Box display={'flex'} bg={'backgroundColor'} height={'calc(100vh - 60px)'}>
+          {stream ?
+            <StreamingPeer admin={admin} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+            // (stream && token && meetingId) ?
+            //   <MeetingProvider
+            //     config={{
+            //       meetingId,
+            //       micEnabled: false,
+            //       webcamEnabled: admin ? true : false,
+            //       name: user.username
+            //     }}
+            //     token={token}
+            //   >
+            //     <MeetingConsumer>
+            //       {() =>
+            //         <Streaming admin={admin} meetingId={meetingId} setFetchAgain={setFetchAgain} token={token} fetchAgain={fetchAgain} />
+            //       }
+            //     </MeetingConsumer>
+            //   </MeetingProvider>
+            :
+            <>
+              <Box flex={['0', '2', '2', '2']}>
+                {user.token && <Conversations fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+              </Box>
               <Box flex={['12', '7.5', '7.5', '7.5']}>
                 {user.token && <Chatbox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} getMeetingAndToken={getMeetingAndToken} />}
               </Box>
-            </SocketContextProvider>
-          </>
-        }
-        <Box flex={(stream && token && meetingId) ? ['0', '3', '3', '3'] : ['0', '2.5', '2.5', '2.5']}>
-          {user.token && <Members token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+            </>
+          }
+          <Box flex={(stream && token && meetingId) ? ['0', '3', '3', '3'] : ['0', '2.5', '2.5', '2.5']}>
+            {user.token && <Members token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+          </Box>
         </Box>
-      </Box>
-    </>
+      </RoomProvider>
+    </SocketContextProvider>
+
   )
 }
 

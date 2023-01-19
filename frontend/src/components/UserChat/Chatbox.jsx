@@ -12,6 +12,7 @@ import { backend_url } from '../../baseApi'
 import { Avatar, AvatarBadge, Box, Button, Divider, Flex, Image, Input, Spinner, Text, useToast } from '@chakra-ui/react'
 import { FiSend } from 'react-icons/fi'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import StreamModalPeer from '../UserModals/StreamModalPeer'
 
 var selectedChatCompare;
 
@@ -150,11 +151,10 @@ export const ChatBoxComponent = ({ height, selectedChat, fetchAgain, setFetchAga
           setFetchAgain(!fetchAgain);
         }
       } else {
-        setMessages([...messages, newMessageReceived]);
+        setMessages([newMessageReceived, ...messages]);
       }
     })
   });
-
 
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
@@ -337,6 +337,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
           }
           const { data } = await axios.get(`${backend_url}/conversation/streaming/${selectedChat._id}`, config);
           if (data) {
+            localStorage.setItem('roomId', data);
             setMeetingIdExists(true)
           } else {
             setMeetingIdExists(false);
@@ -451,7 +452,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
 
               {selectedChat?.isGroupChat && (admin || meetingIdExists) &&
                 <Box>
-                  <StreamModal admin={admin} getMeetingAndToken={getMeetingAndToken} />
+                  <StreamModalPeer admin={admin} />
                 </Box>
 
               }
