@@ -41,7 +41,7 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
 
     // console.warn("StreamingPeer which is container", id);
     const { selectedChat, dispatch, fullScreen } = useContext(AppContext);
-    const { ws, me, streamState, peers, shareScreen, screenSharingId, setRoomId } = useContext(RoomContext);
+    const { ws, me, streamState, peers, shareScreen, screenSharingId, setRoomId, userId } = useContext(RoomContext);
 
     const toast = useToast();
     let recorder;
@@ -118,15 +118,14 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
     }
 
     useEffect(() => {
-        //TODO: send username if it's same as admin's name then show the video
-        if (me) ws.emit("join-room", { roomId: id, peerId: me._id });
+        if (streamState) ws.emit("join-room", { roomId: id, peerId: me._id, userId });
 
         if (id) {
             sendMeetingId();
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [id, me, ws])
+    }, [id, me, streamState])
 
     const recordedChunks = [];
 
@@ -181,13 +180,13 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
         dispatch({ type: "SET_FULLSCREEN" });
     }
 
-    let adminVideo = Object.values(peers).shift();
+    let adminVideo = Object.values(peers).filter(peer => peer.userId === selectedChat.groupAdmin._id);
 
     useEffect(() => {
         setRoomId(id);
     }, [id, setRoomId])
 
-    console.log({ screenSharingId }, "Screen Sharing Id", "adminVideo", adminVideo, "peers", peers, "me", me);
+    console.log({ screenSharingId }, "Screen Sharing Id", "adminVideo", adminVideo, "peers", peers, "me", me, "selectedChat", selectedChat);
 
     const screenSharingVideo = screenSharingId === me?.id ? streamState : peers[screenSharingId]?.stream;
 
@@ -214,10 +213,18 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
                             )
                         }
 
-                        {admin ? null :
-                            <>
-                                {adminVideo !== undefined && <Videoplayer width={'400px'} key={adminVideo?.stream.id} peerstream={adminVideo?.stream} />}
-                            </>
+                        {/* {Object.values(peersToShow).filter(peer => !!peer.stream).map((peer) => (
+                            <div key={peer.peerId}>
+                                <Videoplayer width={'400px'} peerstream={peer.stream} />
+                            </div>
+                        ))} */}
+
+                        {
+                            adminVideo.length > 0 && adminVideo[0]?.stream ?
+                                <div key={adminVideo[0]?.peerId}>
+                                    <Videoplayer width={'400px'} peerstream={adminVideo[0]?.stream} />
+                                </div>
+                                : null
                         }
                     </Box>
                     <VStack m={'2'}>

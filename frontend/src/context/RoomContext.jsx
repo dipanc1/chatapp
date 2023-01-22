@@ -2,8 +2,8 @@ import { createContext, useEffect, useState, useReducer } from "react";
 import socketIOClient from "socket.io-client";
 import { v4 as uuidV4 } from 'uuid';
 import Peer from 'peerjs';
-import { peerReducer } from "./peerReducer";
-import { ADD_PEER, REMOVE_PEER } from "./peerActions";
+import { peerReducer } from "../reducers/peerReducer";
+import { addUserIdAction, ADD_PEER_STREAM, REMOVE_PEER_STREAM } from "../reducers/peerActions";
 import { useContext } from "react";
 import { AppContext } from "./AppContext";
 import useSound from 'use-sound';
@@ -16,13 +16,13 @@ const ENDPOINT = "http://localhost:8080";
 
 export const RoomContext = createContext(null);
 
-
 const ws = socketIOClient(ENDPOINT);
 
 export const RoomProvider = ({ children }) => {
     const [playJoin] = useSound(joinSound);
     const [playLeave] = useSound(leaveSound);
     const [me, setMe] = useState();
+    const [userId, setUserId] = useState(JSON.parse(localStorage.getItem("user"))._id);
     const [streamState, setStreamState] = useState(null);
     const [peers, dispatch] = useReducer(peerReducer, {});
     const [screenSharingId, setScreenSharingId] = useState("");
@@ -41,7 +41,7 @@ export const RoomProvider = ({ children }) => {
 
     const removePeer = (peerId) => {
         dispatch({
-            type: REMOVE_PEER,
+            type: REMOVE_PEER_STREAM,
             payload: {
                 peerId,
             }
@@ -81,8 +81,10 @@ export const RoomProvider = ({ children }) => {
             ws.off("user-started-sharing");
             ws.off("user-stopped-sharing");
             ws.off("user-joined");
+            me?.disconnect();
         }
 
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const shareScreen = () => {
@@ -127,13 +129,18 @@ export const RoomProvider = ({ children }) => {
         if (!me) return;
         if (!streamState) return;
 
-        ws.on("user-joined", (peerId) => {
-            console.warn("Peer Id :: >>", peerId);
+        ws.on("user-joined", ({ peerId, userId: userid }) => {
+            dispatch(addUserIdAction(peerId, userid));
+            console.warn("Peer Id :: >>", peerId, userId);
             playJoin();
-            const call = me.call(peerId, streamState);
+            const call = me.call(peerId, streamState, {
+                metadata: {
+                    userId,
+                }
+            });
             call.on("stream", (peerStream) => {
                 dispatch({
-                    type: ADD_PEER,
+                    type: ADD_PEER_STREAM,
                     payload: {
                         peerId,
                         stream: peerStream
@@ -144,10 +151,12 @@ export const RoomProvider = ({ children }) => {
 
         me.on("call", (call) => {
             console.warn("Call :: >>", call);
+            const userId = call.metadata.userId;
+            dispatch(addUserIdAction(call.peer, userId))
             call.answer(streamState);
             call.on("stream", (peerStream) => {
                 dispatch({
-                    type: ADD_PEER,
+                    type: ADD_PEER_STREAM,
                     payload: {
                         peerId: call.peer,
                         stream: peerStream
@@ -156,8 +165,15 @@ export const RoomProvider = ({ children }) => {
             });
         });
 
-    }, [me, streamState])
+        return () => {
+            ws.off("user-joined");
+        };
 
+    }, [me, playJoin, streamState, userId])
+
+    useEffect(() => {
+        setUserId(JSON.parse(localStorage.getItem("user"))._id);
+    }, [userId])
 
     return (
         <RoomContext.Provider
@@ -169,6 +185,8 @@ export const RoomProvider = ({ children }) => {
                 shareScreen,
                 screenSharingId,
                 setRoomId,
+                userId,
+                setUserId
             }}>
             {children}
         </RoomContext.Provider>
