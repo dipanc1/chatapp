@@ -41,7 +41,7 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
 
     // console.warn("StreamingPeer which is container", id);
     const { selectedChat, dispatch, fullScreen } = useContext(AppContext);
-    const { ws, me, streamState, peers, shareScreen, screenSharingId, setRoomId, userId } = useContext(RoomContext);
+    const { ws, me, streamState, peers, shareScreen, screenSharingId, setRoomId, userId, screenStream } = useContext(RoomContext);
 
     const toast = useToast();
     let recorder;
@@ -188,7 +188,7 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
 
     console.log({ screenSharingId }, "Screen Sharing Id", "adminVideo", adminVideo, "peers", peers, "me", me, "selectedChat", selectedChat);
 
-    const screenSharingVideo = screenSharingId === me?.id ? streamState : peers[screenSharingId]?.stream;
+    const screenSharingVideo = screenSharingId === me?.id ? screenStream : peers[screenSharingId]?.stream;
 
     // const { [screenSharingId]: sharing, ...peersToShow } = peers;
 
@@ -205,6 +205,7 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
                 >
                     <Text m={'3'}>Host: {selectedChat.groupAdmin.username}</Text>
                     <Box>
+                        
                         {(admin && screenSharingId !== me?.id) && <Videoplayer width={'600px'} peerstream={admin && streamState} />}
 
                         {screenSharingVideo &&
