@@ -4,6 +4,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
 const { roomHandler } = require("./room");
+const port = process.env.PORT || 8080;
 
 app.use(cors());
 
@@ -22,6 +23,10 @@ io.on("connection", (socket) => {
     roomHandler(socket);
 });
 
-server.listen(8080, () => {
-    console.log("SERVER IS RUNNING at port 8080");
+server.listen(port, () => {
+    console.log("SERVER IS RUNNING at port", port);
+});
+
+app.get("/", (req, res) => {
+    res.send("Hello World!");
 });
