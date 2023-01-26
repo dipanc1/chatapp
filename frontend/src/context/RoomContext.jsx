@@ -26,6 +26,7 @@ export const RoomProvider = ({ children }) => {
     const [streamState, setStreamState] = useState(null);
     const [peers, dispatch] = useReducer(peerReducer, {});
     const [screenSharingId, setScreenSharingId] = useState("");
+    const [screenStream, setScreenStream] = useState();
     const [roomId, setRoomId] = useState("");
 
     const { stream } = useContext(AppContext);
@@ -91,17 +92,20 @@ export const RoomProvider = ({ children }) => {
         if (screenSharingId) {
             navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(switchScreen);
         } else {
-            navigator.mediaDevices.getDisplayMedia({}).then(switchScreen);
+            navigator.mediaDevices.getDisplayMedia({}).then((stream)=>{
+                switchScreen(stream);
+                setScreenStream(stream)
+            })
         }
     }
 
     const switchScreen = (stream) => {
-        setStreamState(stream);
+        // setStreamState(stream);
         setScreenSharingId(screenSharingId ? "" : me?.id);
 
         Object.values(me?.connections).forEach((connection) => {
             const videoTrack = stream?.getTracks().find((track) => track.kind === "video");
-            connection[0].peerConnection.getSenders()[1].replaceTrack(videoTrack).catch(err => console.error(err));
+            connection[0].peerConnection.getSenders().find((sender) => sender.track.kind === "video").replaceTrack(videoTrack).catch(err => console.error(err));
         });
     }
 
@@ -186,7 +190,8 @@ export const RoomProvider = ({ children }) => {
                 screenSharingId,
                 setRoomId,
                 userId,
-                setUserId
+                setUserId,
+                screenStream,
             }}>
             {children}
         </RoomContext.Provider>

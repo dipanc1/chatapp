@@ -41,7 +41,7 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
 
     // console.warn("StreamingPeer which is container", id);
     const { selectedChat, dispatch, fullScreen } = useContext(AppContext);
-    const { ws, me, streamState, peers, shareScreen, screenSharingId, setRoomId, userId } = useContext(RoomContext);
+    const { ws, me, streamState, peers, shareScreen, screenSharingId, setRoomId, userId, screenStream } = useContext(RoomContext);
 
     const toast = useToast();
     let recorder;
@@ -180,7 +180,7 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
         dispatch({ type: "SET_FULLSCREEN" });
     }
 
-    let adminVideo = Object.values(peers).filter(peer => peer.userId === selectedChat.groupAdmin._id);
+    let adminVideo = Object.values(peers).filter(peer => peer.userId === selectedChat.groupAdmin._id && peer.stream !== undefined);
 
     useEffect(() => {
         setRoomId(id);
@@ -188,7 +188,49 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
 
     console.log({ screenSharingId }, "Screen Sharing Id", "adminVideo", adminVideo, "peers", peers, "me", me, "selectedChat", selectedChat);
 
-    const screenSharingVideo = screenSharingId === me?.id ? streamState : peers[screenSharingId]?.stream;
+    const screenSharingVideo = screenSharingId === me?.id ? screenStream : peers[screenSharingId]?.stream;
+
+    useEffect(() => {
+        if (!admin) {
+            try {
+                const checkStream = async () => {
+                    const config = {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${user.token}`
+                        }
+                    }
+                    const { data } = await axios.get(`${backend_url}/conversation/streaming/${selectedChat._id}`, config);
+                    if (!data) {
+                        toast({
+                            title: "Meeting Ended!",
+                            description: "You are redirected to chat page",
+                            status: "error",
+                            isClosable: true,
+                            position: "top",
+                            duration: 5000,
+                        });
+                        leaveStream();
+                    }
+                }
+                setTimeout(() => {
+                    checkStream();
+                }, 1000);
+            } catch (error) {
+                toast({
+                    title: "Error Occured!",
+                    description: "Failed to Check Streaming Status",
+                    status: "error",
+                    isClosable: true,
+                    position: "top",
+                    duration: 5000,
+                });
+            }
+
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [adminVideo])
+
 
     // const { [screenSharingId]: sharing, ...peersToShow } = peers;
 
@@ -205,6 +247,7 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
                 >
                     <Text m={'3'}>Host: {selectedChat.groupAdmin.username}</Text>
                     <Box>
+
                         {(admin && screenSharingId !== me?.id) && <Videoplayer width={'600px'} peerstream={admin && streamState} />}
 
                         {screenSharingVideo &&
@@ -220,11 +263,18 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
                         ))} */}
 
                         {
-                            adminVideo.length > 0 && adminVideo[0]?.stream ?
-                                <div key={adminVideo[0]?.peerId}>
-                                    <Videoplayer width={'400px'} peerstream={adminVideo[0]?.stream} />
+                            adminVideo.length > 0 ?
+                            adminVideo.map((peer) => (
+                                <div key={peer?.peerId}>
+                                    <Videoplayer width={'400px'} peerstream={peer?.stream} />
                                 </div>
-                                : null
+                            ))
+                                :
+                                !admin &&
+                                <div>
+                                    <Text>Admin left the meeting, Please wait or leave the meeting</Text>
+                                </div>
+
                         }
                     </Box>
                     <VStack m={'2'}>
