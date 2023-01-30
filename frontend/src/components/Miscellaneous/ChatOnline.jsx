@@ -8,6 +8,7 @@ const ChatOnline = ({ stream, id, user1, handleFunction }) => {
     const user = JSON.parse(localStorage.getItem('user'));
 
     const removeRef = useRef()
+    
     const { isOpen: isRemoveOpen, onOpen: onRemoveOpen, onClose: onRemoveClose } = useDisclosure()
 
     return (
@@ -28,16 +29,13 @@ const ChatOnline = ({ stream, id, user1, handleFunction }) => {
                         <Box flex='1' textAlign='left'>
                             <Flex align={'center'}>
                                 <Avatar
-                                    // src={!stream && user1.pic}
                                     src={user1.pic}
                                     size={'lg'}
                                     name={user1.username}
                                     ml={-1}
                                     mr={2}
                                 />
-                                {
-                                    // stream ? user1 :
-                                    user1.username}
+                                {user1.username}
                             </Flex>
                         </Box>
                         <AccordionIcon />
@@ -50,7 +48,6 @@ const ChatOnline = ({ stream, id, user1, handleFunction }) => {
                     <Flex flexDir={'column'} alignItems={stream ? 'center' : ''}>
                         <BsPerson />
                         <Text as='samp'>
-                            {/* {stream ? user1 : user1.username} */}
                             {user1.username}
                         </Text>
                         {!stream &&
@@ -65,7 +62,7 @@ const ChatOnline = ({ stream, id, user1, handleFunction }) => {
                             my={'2'}
                         />
                         {
-                            !stream && (user._id === user1._id ?
+                            (user._id === user1._id ?
                                 null :
                                 <>
                                     <Text cursor={'pointer'} color={'errorColor'} as='samp' onClick={onRemoveOpen}>
