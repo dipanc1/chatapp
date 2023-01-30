@@ -10,8 +10,8 @@ import useSound from 'use-sound';
 import joinSound from '../sounds/join.mp3';
 import leaveSound from '../sounds/leave.mp3';
 
-const ENDPOINT = "http://localhost:8080";
-// const ENDPOINT = "https://peerjs.wildcrypto.com";
+// const ENDPOINT = "http://localhost:8080";
+const ENDPOINT = "https://peerjs.wildcrypto.com";
 // const ENDPOINT = "https://chatappeerserver.azurewebsites.net";
 
 export const RoomContext = createContext(null);
@@ -28,6 +28,7 @@ export const RoomProvider = ({ children }) => {
     const [screenSharingId, setScreenSharingId] = useState("");
     const [screenStream, setScreenStream] = useState();
     const [roomId, setRoomId] = useState("");
+    const [screenShare, setScreenShare] = useState(true)
 
     const { stream } = useContext(AppContext);
 
@@ -91,11 +92,13 @@ export const RoomProvider = ({ children }) => {
     const shareScreen = () => {
         if (screenSharingId) {
             navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(switchScreen);
+            setScreenShare(true)
         } else {
             navigator.mediaDevices.getDisplayMedia({}).then((stream)=>{
                 switchScreen(stream);
                 setScreenStream(stream)
             })
+            setScreenShare(false)
         }
     }
 
@@ -192,6 +195,7 @@ export const RoomProvider = ({ children }) => {
                 userId,
                 setUserId,
                 screenStream,
+                screenShare,
             }}>
             {children}
         </RoomContext.Provider>

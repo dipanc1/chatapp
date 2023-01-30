@@ -14,8 +14,11 @@ const Header = () => {
 
   return (
     <>
-			<Box zIndex='9' position='fixed' right='30px' left='290px' boxShadow={'Base'} bg={'white'} p={'20px'} borderRadius={'10px'}>
+			<Box className='header' zIndex='9' position='fixed' right='30px' left='290px' boxShadow={'Base'} bg={'white'} p={'20px'} borderRadius={'10px'}>
 				<Flex alignItems='center'>
+					<Box className='logo-header' display='none'>
+						<Image height='35px' mx='auto' src={CDN_IMAGES+"/chatapp-logo.png"} alt="ChatApp" />
+					</Box>
 					<Input mx='auto' placeholder='Search' maxW={'400px'} py={'13px'} px={'21px'} bg={'#F4F1FF'} border={'0'} />
 					<Flex>
 						<Flex alignItems='center'>

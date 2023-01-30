@@ -44,9 +44,9 @@ const sidebar = () => {
 
   return (
     <>
-			<Box position='fixed' boxShadow={'Base'} bg={'white'} p={'20px'} height={'calc(100vh - 40px)'} width={'240px'} borderRadius={'10px'}>
+			<Box className='sidebar' position='fixed' boxShadow={'Base'} bg={'white'} p={'20px'} height={'calc(100vh - 40px)'} width={'240px'} borderRadius={'10px'}>
 				<Flex className='sidebar-nav' height={'100%'} flexDirection={'column'}>
-					<Box pt='7px' pb='40px'>
+					<Box className='logo-sidebar' pt='7px' pb='40px'>
 						<Image height='35px' mx='auto' src={CDN_IMAGES+"/chatapp-logo.png"} alt="ChatApp" />
 					</Box>
 					<List>

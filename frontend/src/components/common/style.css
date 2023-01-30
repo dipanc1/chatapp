@@ -14,6 +14,18 @@
 .sidebar-nav li a:hover, .sidebar-nav li a.active {
     background-color: #EAE4FF;
 }
+.expand-btn {
+    height: 24px;
+    width: 24px;
+    background-color: #fff;
+    border-radius:100%;
+    box-shadow: 0px 4px 4px rgba(159, 133, 247, 0.1);
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(-50%, -50%);
+    border: 1px solid rgba(159, 133, 247, 0.3);
+}
 .btn-text {
     color: #9F85F7;
 }
@@ -118,11 +130,9 @@
 .table td {
     color: #6B6B6B;
 }
-
 .table tbody tr:nth-child(odd) {
     background: #F8F5FF;
 }
-
 .table .badge {
     display: block;
     font-size: 13px;
@@ -133,11 +143,84 @@
     font-weight: bold;
     background: lightgray;
 }
-
 .table .badge.active {
     background: #24FF00;
 }
-
 .table .badge.expired {
     background: #FF0000;
+}
+
+/* Maximized View */
+.sidebar, .header, .main-content-section {
+    transition: all 0.2s ease-in-out;
+}
+.maximized-view .sidebar {
+    padding: 13px;
+    width: 75px;
+    height: calc(100vh - 140px);
+    margin-top: 100px;
+    z-index: 10;
+}
+
+.maximized-view .logo-sidebar {
+    display: none;
+}
+
+.maximized-view .sidebar .sidebar-nav a {
+    padding: 13px;
+    position: relative;
+}
+
+.maximized-view .sidebar .sidebar-nav a p {
+    display: none;
+    position: absolute;
+    left: calc(100% + 10px);
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    background: #9F85F7;
+    align-items: center;
+    padding: 10px 30px;
+    border-radius: 4px; 
+    color: #fff;
+    white-space: pre;
+}
+
+.maximized-view .sidebar .sidebar-nav a:hover p {
+    display: flex;
+}
+
+.maximized-view .header {
+    left: 30px;
+}
+
+.maximized-view .main-content-section {
+    left: 125px;
+}
+
+.maximized-view .logo-header {
+    display: block;
+}
+
+/* Video Broadcasting  */
+.video-container .video-controls {
+    transform: translateY(100%);
+    transition: all 0.2s ease-in-out;
+}
+.video-container:hover .video-controls {
+    transform: unset;
+}
+
+.video-controls button {
+    background-color: rgba(0,0,0,0.5);
+    border-radius:4px;
+    height: 45px;
+    width: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 40px;
+}
+.video-controls button img {
+    width: 30px;
 }

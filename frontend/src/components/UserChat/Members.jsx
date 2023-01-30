@@ -484,16 +484,21 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain }
 const Members = ({ fetchAgain, setFetchAgain, token, meetingId }) => {
 
   return (
+    // <Box
+    //   height={'85vh'}
+    //   width={'98%'}
+    //   bg={'whiteColor'}
+    //   p={'1.5'}
+    //   my={'5'}
+    //   mr={'10'}
+    //   borderRadius={'xl'}
+    //   display={['none', 'none', 'none', 'block']}
+    //   boxShadow={'dark-lg'}>
     <Box
-      height={'85vh'}
-      width={'98%'}
       bg={'whiteColor'}
-      p={'1.5'}
-      my={'5'}
-      mr={'10'}
-      borderRadius={'xl'}
       display={['none', 'none', 'none', 'block']}
-      boxShadow={'dark-lg'}>
+      borderLeft='1px solid #EAE4FF'
+    >
 
       <MembersComponent token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
 
@@ -502,3 +507,4 @@ const Members = ({ fetchAgain, setFetchAgain, token, meetingId }) => {
 }
 
 export default Members
+
