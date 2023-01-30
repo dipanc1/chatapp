@@ -13,18 +13,22 @@ import { GrUserAdd } from 'react-icons/gr'
 import { BsTelephone, BsPerson } from 'react-icons/bs'
 import { ChatBoxComponent } from './Chatbox'
 import EndLeaveModal from '../UserModals/EndLeaveModal'
+import { RoomContext } from '../../context/RoomContext'
 
-export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain }) => {
+export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, admin }) => {
   const user = JSON.parse(localStorage.getItem('user'));
 
   const { selectedChat, dispatch, stream, fullScreen } = React.useContext(AppContext);
+  const { adminParticipantsArray, participantsArray } = React.useContext(RoomContext);
 
   const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure()
   const { isOpen: isConfirmOpen, onOpen: onConfirmOpen, onClose: onConfirmClose } = useDisclosure()
+
   const cancelRef = React.useRef()
 
   const toast = useToast();
 
+  const [actualParticipants, setActualParticipants] = React.useState([]);
   const [groupChatName, setGroupChatName] = React.useState('');
   const [search, setSearch] = React.useState('');
   const [searchResults, setSearchResults] = React.useState([]);
@@ -213,18 +217,47 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain }
     }
   }
 
+  React.useEffect(() => {
+    let actualParticipant = [];
+
+    if (stream && admin) {
+      adminParticipantsArray.forEach(participant => selectedChat?.users.forEach(user1 => {
+        if (participant.userid === user1._id) {
+          actualParticipant.push(user1, selectedChat.groupAdmin);
+        }
+      }))
+    }
+
+    if (stream && !admin) {
+      let psa = Object.values(participantsArray);
+      psa.forEach(participant => selectedChat?.users.forEach(user1 => {
+        if (participant.userId === user1._id) {
+          actualParticipant.push(user1);
+        }
+      }))
+    }
+
+    setActualParticipants(actualParticipant);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [adminParticipantsArray, selectedChat?.users, stream, participantsArray])
+
+  console.log(actualParticipants)
+
 
   return (
     selectedChat ? (
       selectedChat?.isGroupChat ? (
         <Tabs variant='unstyled' isFitted>
           <TabList mt={['2', '0', '0', '0']}>
-            {(token && meetingId && stream) &&
+            {/* {(token && meetingId && stream) &&
+              <Tab boxSize={fullScreen ? '10' : '1'} _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>Chat</Tab>
+            } */}
+            {stream &&
               <Tab boxSize={fullScreen ? '10' : '1'} _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>Chat</Tab>
             }
 
-            {/* It is the tab heading which will be used below */}
-            {!stream && <Tab _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>{stream ? 'Participants' : 'Members'}</Tab>}
+            <Tab _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>{stream ? 'Participants' : 'Members'}</Tab>
 
             <Tab boxSize={fullScreen ? '10' : '1'} _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>Settings</Tab>
           </TabList>
@@ -238,39 +271,35 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain }
               </TabPanel>
             }
 
-            {/* Participants/Members Tab
-            TODO: We will use it after we can get participants array working */}
-            {!stream &&
-              <TabPanel>
-                <Box>
-                  <Text>
-                    {/* {stream ? participantsArray.length : selectedChat?.users.length} {stream ? 'participants' : 'members'} */}
-                    {selectedChat?.users.length} members
-                  </Text>
-                </Box>
-                <Box
-                  display={'flex'}
-                  flexDirection={'column'}
-                  alignItems={'center'}
-                  justifyContent={'center'}
-                  minHeight={['72vh', '0', '0', '10']}
-                  maxHeight={'72vh'}
-                  overflowY={'scroll'}
-                  overflowX={'hidden'}
-                >
-                  <Accordion allowToggle>
-                    {
-                      // stream ?
-                      //   // check this
-                      //   participantsArray.map((participant, index) => (
-                      //     <ChatOnline
-                      //       stream={stream}
-                      //       key={participant}
-                      //       user1={participant}
-                      //       handleFunction={() => handleRemove(participant)}
-                      //     />
-                      //   )) :
-
+            {/* Participants/Members Tab */}
+            <TabPanel>
+              <Box>
+                <Text>
+                  {stream ? actualParticipants.length : selectedChat?.users.length} {stream ? 'participants' : 'members'}
+                </Text>
+              </Box>
+              <Box
+                display={'flex'}
+                flexDirection={'column'}
+                alignItems={'center'}
+                justifyContent={'center'}
+                minHeight={['72vh', '0', '0', '10']}
+                maxHeight={'72vh'}
+                overflowY={'scroll'}
+                overflowX={'hidden'}
+              >
+                <Accordion allowToggle>
+                  {
+                    stream ?
+                      actualParticipants.map((participant, index) => (
+                        <ChatOnline
+                          stream={stream}
+                          key={participant}
+                          user1={participant}
+                          handleFunction={() => handleRemove(participant)}
+                        />
+                      ))
+                      :
                       selectedChat?.users.map(u =>
                         <ChatOnline
                           stream={stream}
@@ -279,10 +308,10 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain }
                           handleFunction={() => handleRemove(u)} />
                       )}
 
-                  </Accordion>
-                </Box>
-              </TabPanel>
-            }
+                </Accordion>
+              </Box>
+            </TabPanel>
+
 
             {/* Settings Tab */}
             <TabPanel>
@@ -481,7 +510,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain }
   )
 }
 
-const Members = ({ fetchAgain, setFetchAgain, token, meetingId }) => {
+const Members = ({ fetchAgain, setFetchAgain, token, meetingId, admin }) => {
 
   return (
     // <Box
@@ -500,7 +529,7 @@ const Members = ({ fetchAgain, setFetchAgain, token, meetingId }) => {
       borderLeft='1px solid #EAE4FF'
     >
 
-      <MembersComponent token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+      <MembersComponent admin={admin} token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
 
     </Box>
   )

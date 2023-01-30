@@ -145,14 +145,14 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
 
     const download = () => {
         const blob = new Blob(recordedChunks, {
-            type: "video/mp4"
+            type: "video/webm"
         });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         document.body.appendChild(a);
         a.style = "display: none";
         a.href = url;
-        a.download = "test.mp4";
+        a.download = "test.webm";
         a.click();
         window.URL.revokeObjectURL(url);
     };
@@ -186,7 +186,7 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
         setRoomId(id);
     }, [id, setRoomId])
 
-    console.log({ screenSharingId }, "Screen Sharing Id", "adminVideo", adminVideo, "peers", peers, "me", me, "selectedChat", selectedChat);
+    // console.log({ screenSharingId }, "Screen Sharing Id", "adminVideo", adminVideo, "peers", peers, "me", me, "selectedChat", selectedChat);
 
     const screenSharingVideo = screenSharingId === me?.id ? screenStream : peers[screenSharingId]?.stream;
 

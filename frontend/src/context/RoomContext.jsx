@@ -29,19 +29,23 @@ export const RoomProvider = ({ children }) => {
     const [screenStream, setScreenStream] = useState();
     const [roomId, setRoomId] = useState("");
     const [screenShare, setScreenShare] = useState(true)
+    const [adminParticipantsArray, setAdminParticipantsArray] = useState([]);
+    const [participantsArray, setParticipantsArray] = useState([]);
 
     const { stream } = useContext(AppContext);
 
     const enterRoom = (roomId) => {
-        console.warn("Room ID ::: >>>", roomId);
+        // console.warn("Room ID ::: >>>", roomId);
         localStorage.setItem("roomId", roomId);
     };
 
     const getUsers = ({ participants }) => {
-        console.warn("Get Users ::: >>>", { participants });
+        // console.warn("Get Users ::: >>>", participants);
+        setParticipantsArray(participants);
     }
 
     const removePeer = (peerId) => {
+        setAdminParticipantsArray(adminParticipantsArray.filter((participant) => participant.peerId !== peerId));
         dispatch({
             type: REMOVE_PEER_STREAM,
             payload: {
@@ -94,7 +98,7 @@ export const RoomProvider = ({ children }) => {
             navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(switchScreen);
             setScreenShare(true)
         } else {
-            navigator.mediaDevices.getDisplayMedia({}).then((stream)=>{
+            navigator.mediaDevices.getDisplayMedia({}).then((stream) => {
                 switchScreen(stream);
                 setScreenStream(stream)
             })
@@ -137,8 +141,8 @@ export const RoomProvider = ({ children }) => {
         if (!streamState) return;
 
         ws.on("user-joined", ({ peerId, userId: userid }) => {
+            setAdminParticipantsArray([...adminParticipantsArray, { peerId, userid }]);
             dispatch(addUserIdAction(peerId, userid));
-            console.warn("Peer Id :: >>", peerId, userId);
             playJoin();
             const call = me.call(peerId, streamState, {
                 metadata: {
@@ -157,7 +161,7 @@ export const RoomProvider = ({ children }) => {
         });
 
         me.on("call", (call) => {
-            console.warn("Call :: >>", call);
+            // console.warn("Call :: >>", call);
             const userId = call.metadata.userId;
             dispatch(addUserIdAction(call.peer, userId))
             call.answer(streamState);
@@ -196,6 +200,8 @@ export const RoomProvider = ({ children }) => {
                 setUserId,
                 screenStream,
                 screenShare,
+                adminParticipantsArray,
+                participantsArray
             }}>
             {children}
         </RoomContext.Provider>
