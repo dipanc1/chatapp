@@ -44,7 +44,13 @@ const StreamModalPeer = ({ children, admin }) => {
         children ?
             <span>{children}</span> :
             <>
-                <Button onClick={() => {
+                <Button
+                    background="#fff"
+                    borderRadius="100%"
+                    h='40px'
+                    w='40px'
+                    p='0'
+                onClick={() => {
                     onOpen();
                 }}>{
                         !admin &&

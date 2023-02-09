@@ -21,7 +21,7 @@ const Message = ({ messages, own, sameSender, sameTime }) => {
                         : 
                         <div style={{ width: '2.5rem' }}></div>
                         }
-                    <Box p={2} borderRadius={'xl'} bg={own ? 'ownChatColor' : '#f3f7fc'}>
+                    <Box p={2} borderRadius={'6px'} bg={own ? '#9F85F7' : '#F6F3FF'}>
                         <Text color={own ? 'white' : ''}>{messages.content}</Text>
                     </Box>
                 </Box>

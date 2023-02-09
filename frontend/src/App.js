@@ -10,7 +10,7 @@ import CreateEvent from './pages/CreateEvent';
 import EventDetails from './pages/EventDetails';
 import NotFound from './pages/NotFound';
 import Settings from './pages/Settings';
-import VideoChat from './pages/VideoChat';
+import VideoChat from './pages/VideoChat';  
 
 //TODO: delete console statements
 

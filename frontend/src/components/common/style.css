@@ -29,6 +29,12 @@
 .btn-text {
     color: #9F85F7;
 }
+.btn-default {
+    padding: 0!important;
+}
+.btn-default:hover {
+    background-color: transparent!important;
+}
 .btn {  
     font-size: 18px;
     padding: 10px 49px!important;
@@ -223,4 +229,15 @@
 }
 .video-controls button img {
     width: 30px;
+}
+
+/* Header */
+.header-dd a:hover {
+    text-decoration: none!important;
+    background: #EAE4FF;
+}
+
+.group-event a > div {
+    border-radius: 0;
+    background-color: transparent;
 }

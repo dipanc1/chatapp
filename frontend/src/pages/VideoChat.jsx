@@ -104,7 +104,7 @@ const Chat = () => {
     <SocketContextProvider>
       <RoomProvider>
         <Static noPadding>
-            <Box display={'flex'}>
+            <Box h='100%' display={'flex'}>
             {stream ?
                 <StreamingPeer admin={admin} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
                 // (stream && token && meetingId) ?
@@ -125,19 +125,19 @@ const Chat = () => {
                 //   </MeetingProvider>
                 :
                 <>
-                <Box flex={['0', '2', '2', '2']}>
+                <Box flex={['0', '2', '2', '3']}>
                     {user.token && <Conversations fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
                 </Box>
-                <Box flex={['12', '7.5', '7.5', '7.5']}>
+                <Box h='100%' flex={['12', '7.5', '7.5', '7.5']}>
                     {user.token && <Chatbox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} getMeetingAndToken={getMeetingAndToken} />}
                 </Box>
                 </>
             }
             <Box 
-                h='fit-content'
+                h='100%'
                 position='sticky'
                 top='0'            
-                flex={(stream && token && meetingId) ? ['0', '3', '3', '3'] : ['0', '5', '5', '5']}
+                flex={(stream && token && meetingId) ? ['0', '3', '3', '3'] : ['0', '5', '5', '4']}
             >
                 {user.token && <Members token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
             </Box>

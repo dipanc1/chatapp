@@ -20,12 +20,17 @@ const sidebar = () => {
 		},
 		{
 			'title': 'Live Stream', 
+			'url': 'video-chat',
 			'icon': 'explore',
 		},
 		{
 			'title': 'Events', 
 			'url': 'event',
 			'icon': 'events',
+		},
+		{
+			'title': 'Groups',
+			'icon': 'groups',
 		},
 		{
 			'title': 'Messages', 

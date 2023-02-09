@@ -7,13 +7,15 @@ import { backend_url } from '../../baseApi'
 import { HiUserRemove } from 'react-icons/hi'
 import {
   Accordion, Avatar,
-  Box, Button, Divider, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Tab, TabList, TabPanel, TabPanels, Tabs, Text, useDisclosure, useToast,
+  Box, Button, Divider, Flex, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Tab, TabList, TabPanel, TabPanels, Tabs, Text, useDisclosure, useToast,
 } from '@chakra-ui/react'
 import { GrUserAdd } from 'react-icons/gr'
 import { BsTelephone, BsPerson } from 'react-icons/bs'
 import { ChatBoxComponent } from './Chatbox'
 import EndLeaveModal from '../UserModals/EndLeaveModal'
 import { RoomContext } from '../../context/RoomContext'
+import EventCard from '../Events/EventCard'
+import { NavLink } from 'react-router-dom'
 
 export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, admin }) => {
   const user = JSON.parse(localStorage.getItem('user'));
@@ -244,25 +246,41 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
 
   console.log(actualParticipants)
 
+  const EventsData = [
+    {
+      "title": "Ritviz Mimmi Album Launch Event",
+      "imageUrl": "https://assets.website-files.com/5ff4e43997c4ec6aa5d646d1/603d547ed5c5fd6365dabbef_industry%20expert%20roundup%20-%20why%20are%20events%20important.png"
+    },
+    {
+      "title": "Love A Fair With Darshan Raval",
+      "imageUrl": "https://res.cloudinary.com/dwzmsvp7f/image/fetch/q_75,f_auto,w_400/https%3A%2F%2Fmedia.insider.in%2Fimage%2Fupload%2Fc_crop%2Cg_custom%2Fv1672731458%2Ffhjoxm0euja3cafmrtyt.jpg"
+    },
+    {
+      "title": "INDIAN OCEAN LIVE AT THE FINCH",
+      "imageUrl": "https://imageio.forbes.com/specials-images/imageserve/882906386/0x0.jpg?format=jpg&width=1200"
+    }
+  ]
 
   return (
     selectedChat ? (
       selectedChat?.isGroupChat ? (
-        <Tabs variant='unstyled' isFitted>
+        <Tabs display='flex' flexDirection='column' h='100%'>
           <TabList mt={['2', '0', '0', '0']}>
             {/* {(token && meetingId && stream) &&
               <Tab boxSize={fullScreen ? '10' : '1'} _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>Chat</Tab>
             } */}
             {stream &&
-              <Tab boxSize={fullScreen ? '10' : '1'} _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>Chat</Tab>
+              <Tab flex='1'>Chat</Tab>
             }
 
-            <Tab _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>{stream ? 'Participants' : 'Members'}</Tab>
+            <Tab flex='1'>Events</Tab>
 
-            <Tab boxSize={fullScreen ? '10' : '1'} _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>Settings</Tab>
+            <Tab flex='1'>{stream ? 'Participants' : 'Members'}</Tab>
+
+            <Tab display='none' flex='1'>Settings</Tab>
           </TabList>
 
-          <TabPanels>
+          <TabPanels flex='1' h='80%'>
 
             {/* Chat Tab */}
             {stream &&
@@ -271,23 +289,59 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
               </TabPanel>
             }
 
-            {/* Participants/Members Tab */}
-            <TabPanel>
-              <Box>
-                <Text>
-                  {stream ? actualParticipants.length : selectedChat?.users.length} {stream ? 'participants' : 'members'}
-                </Text>
-              </Box>
+            {/* Events Tab */}
+            <TabPanel h='100%' p='0'>
               <Box
                 display={'flex'}
                 flexDirection={'column'}
                 alignItems={'center'}
-                justifyContent={'center'}
-                minHeight={['72vh', '0', '0', '10']}
-                maxHeight={'72vh'}
-                overflowY={'scroll'}
-                overflowX={'hidden'}
+                height='100%'
               >
+                <Box 
+                  h='50%'
+                  overflow='auto'
+                  flex='1'
+                  p='4'
+                >
+                  {EventsData.map((eventItem) => {
+                    return(
+                      <>
+                        <Box className='group-event' mb='20px'>
+                          <EventCard title={eventItem.title} imageUrl={eventItem.imageUrl} />
+                        </Box>
+                      </>
+                    )
+                  })}
+                </Box>
+                <Box py='25px'>
+                  <NavLink className='btn btn-primary' to="/event/create">
+                    <Flex alignItems='center'>
+                    <Image h='18px' pe='15px' src='https://ik.imagekit.io/sahildhingra/add.png?ik-sdk-version=javascript-1.4.3&updatedAt=1673025917620' /> 
+                    <Text>Create Event</Text>
+                    </Flex>
+                  </NavLink>
+                </Box>
+              </Box>
+            </TabPanel>
+
+            {/* Participants/Members Tab */}
+            <TabPanel h='100%' p='0'>
+              <Box
+                display={'flex'}
+                flexDirection={'column'}
+                height='100%'
+              >
+                <Box>
+                  <Text ps='4' py='5px'>
+                    {stream ? actualParticipants.length : selectedChat?.users.length} {stream ? 'participants' : 'members'}
+                  </Text>
+                </Box>
+                <Box 
+                  h='50%'
+                  overflow='auto'
+                  flex='1'
+                  p='4'
+                >
                 <Accordion allowToggle>
                   {
                     stream ?
@@ -309,7 +363,82 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
                       )}
 
                 </Accordion>
+                </Box>
+                <Box py='25px' textAlign='center'>
+                  <NavLink onClick={onAddOpen} className='btn btn-primary'>
+                    <Flex alignItems='center'>
+                    <Image h='18px' pe='15px' src='https://ik.imagekit.io/sahildhingra/add.png?ik-sdk-version=javascript-1.4.3&updatedAt=1673025917620' /> 
+                    <Text>Add Member</Text>
+                    </Flex>
+                  </NavLink>
+                </Box>
               </Box>
+
+              {/* Add Member Modal */}
+              <Modal size={['xs', 'xs', 'xl', 'lg']} isOpen={isAddOpen} onClose={onAddClose}>
+                <ModalOverlay />
+                <ModalContent>
+                  <ModalHeader>Add Member</ModalHeader>
+                  <ModalCloseButton />
+                  <ModalBody maxHeight={'lg'} overflow={'scroll'} overflowX={'hidden'}>
+                    <Input
+                      value={search}
+                      placeholder="Search Member" onChange={handleSearch}
+                      focusBorderColor='#9F85F7'
+                    />
+                    {loading
+                      ?
+                      <Box
+                        display={'flex'}
+                        alignItems={'center'}
+                        justifyContent={'center'}
+                        my={2}
+                        maxHeight={fullScreen ? '48' : '8'}
+                        overflowY={'scroll'}
+                      >
+                        <Spinner
+                          thickness='4px'
+                          speed='0.6s'
+                          emptyColor='gray.200'
+                          color='buttonPrimaryColor'
+                          size='xl'
+                        />
+                      </Box>
+                      :
+                      <Box maxHeight={fullScreen ? '48' : '8'}
+                        overflowY={'scroll'}>
+                        {search.length > 0 &&
+                          searchResults?.map(user => (
+                            <Box
+                              my={'2'}
+                              _hover={{
+                                background: '#b5cbfe',
+                                color: 'white',
+                              }}
+                              bg={'#E8E8E8'}
+                              p={2}
+                              cursor={'pointer'}
+                              mx={'2rem'}
+                              borderRadius="lg"
+                              key={user._id}
+                              onClick={
+                                () => handleAddUser(user._id)
+                              }
+                            >
+                              <UserListItem user={user} />
+                            </Box>
+                          ))}
+                      </Box>
+                    }
+                  </ModalBody>
+
+                  <ModalFooter>
+                    <Button backgroundColor={'buttonPrimaryColor'} color={'white'} mr={3} onClick={onAddClose}>
+                      Close
+                    </Button>
+                  </ModalFooter>
+                </ModalContent>
+              </Modal>
             </TabPanel>
 
 
@@ -320,8 +449,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
                 flexDirection={'column'}
                 alignItems={'center'}
                 justifyContent={'flex-end'}
-                maxHeight={'sm'}
-                minHeight={fullScreen ? '75vh' : '20vh'}
+                minHeight={fullScreen ? '100%' : '20vh'}
               >
 
                 {renameLoading ?
@@ -358,72 +486,6 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
                     Add Member
                   </Button>
 
-                  {/* Add Member Modal */}
-                  <Modal size={['xs', 'xs', 'xl', 'lg']} isOpen={isAddOpen} onClose={onAddClose}>
-                    <ModalOverlay />
-                    <ModalContent>
-                      <ModalHeader>Add Member</ModalHeader>
-                      <ModalCloseButton />
-                      <ModalBody maxHeight={'lg'} overflow={'scroll'} overflowX={'hidden'}>
-                        <Input
-                          value={search}
-                          placeholder="Search Member" onChange={handleSearch}
-                          focusBorderColor='#9F85F7'
-                        />
-                        {loading
-                          ?
-                          <Box
-                            display={'flex'}
-                            alignItems={'center'}
-                            justifyContent={'center'}
-                            my={2}
-                            maxHeight={fullScreen ? '48' : '8'}
-                            overflowY={'scroll'}
-                          >
-                            <Spinner
-                              thickness='4px'
-                              speed='0.6s'
-                              emptyColor='gray.200'
-                              color='buttonPrimaryColor'
-                              size='xl'
-                            />
-                          </Box>
-                          :
-                          <Box maxHeight={fullScreen ? '48' : '8'}
-                            overflowY={'scroll'}>
-                            {search.length > 0 &&
-                              searchResults?.map(user => (
-                                <Box
-                                  my={'2'}
-                                  _hover={{
-                                    background: '#b5cbfe',
-                                    color: 'white',
-                                  }}
-                                  bg={'#E8E8E8'}
-                                  p={2}
-                                  cursor={'pointer'}
-                                  mx={'2rem'}
-                                  borderRadius="lg"
-                                  key={user._id}
-                                  onClick={
-                                    () => handleAddUser(user._id)
-                                  }
-                                >
-                                  <UserListItem user={user} />
-                                </Box>
-                              ))}
-                          </Box>
-                        }
-                      </ModalBody>
-
-                      <ModalFooter>
-                        <Button backgroundColor={'buttonPrimaryColor'} color={'white'} mr={3} onClick={onAddClose}>
-                          Close
-                        </Button>
-                      </ModalFooter>
-                    </ModalContent>
-                  </Modal>
-
                   {/* Confirm Add Member */}
                   <EndLeaveModal
                     leastDestructiveRef={cancelRef}
@@ -457,7 +519,6 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
           <Box
             p={2}
             mx={'2'}
-            my={'1'}
             flexWrap={'wrap'}
             display={'flex'}
             justifyContent={'space-around'}
@@ -497,7 +558,6 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
         justifyContent={'center'}
         alignItems={'center'}
         flexDirection={'column'}
-
         height={'100%'}
       >
         <Text cursor={'default'} color={'buttonPrimaryColor'} fontSize={'2xl'}>
@@ -527,6 +587,7 @@ const Members = ({ fetchAgain, setFetchAgain, token, meetingId, admin }) => {
       bg={'whiteColor'}
       display={['none', 'none', 'none', 'block']}
       borderLeft='1px solid #EAE4FF'
+      h='100%'
     >
 
       <MembersComponent admin={admin} token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />

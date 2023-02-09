@@ -407,6 +407,15 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
 																		</button>
                                 </HStack>
                             )}
+                            {
+                                !admin && (
+                                    <HStack justifyContent='center'>
+                                        <button onClick={admin ? endStream : leaveStream}>
+                                            <img src="https://ik.imagekit.io/sahildhingra/hang-up.png" alt="end" />
+                                        </button>
+                                    </HStack>
+                                )
+                            }
                             <>
                                 <IconButtonGeneric
                                     onClick={fullscreenToggle}
