@@ -31,6 +31,7 @@ const roomHandler = (socket) => {
     };
 
     const leaveRoom = (roomId, peerId) => {
+        delete rooms[roomId][peerId];
         console.log(`User Left Room ${roomId} with PeerId ${peerId}`);
         socket.to(roomId).emit('user-disconnected', peerId);
     }
