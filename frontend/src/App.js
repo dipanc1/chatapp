@@ -4,7 +4,13 @@ import { AnimatePresence } from "framer-motion";
 import Login from './pages/Login'
 import Chat from './pages/Chat'
 import Register from './pages/Register'
+import Plans from './pages/Plans'
+import Events from './pages/Events';
+import CreateEvent from './pages/CreateEvent';
+import EventDetails from './pages/EventDetails';
 import NotFound from './pages/NotFound';
+import Settings from './pages/Settings';
+import VideoChat from './pages/VideoChat';  
 
 //TODO: delete console statements
 
@@ -17,6 +23,12 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/chat" element={<Chat />} />
+          <Route path="/plans" element={<Plans />} />
+          <Route path="/event" element={<Events />} />
+          <Route path="/event/create" element={<CreateEvent />} />
+          <Route path="/event/detail" element={<EventDetails />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/video-chat" element={<VideoChat /> } />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AnimatePresence>

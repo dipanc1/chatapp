@@ -97,11 +97,13 @@ export const RoomProvider = ({ children }) => {
     const shareScreen = () => {
         if (screenSharingId) {
             navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(switchScreen);
+            setScreenShare(true)
         } else {
             navigator.mediaDevices.getDisplayMedia({}).then((stream) => {
                 switchScreen(stream);
                 setScreenStream(stream)
             })
+            setScreenShare(false)
         }
     }
 

@@ -145,7 +145,7 @@ const Login = () => {
             const res = await axios.post(`${backend_url}/users/login`, user);
             localStorage.setItem("user", JSON.stringify(res.data));
             // console.log("working!!", res)
-            navigate('/chat')
+            navigate('/video-chat')
         } catch (err) {
             toast({
                 title: "Invalid username or password",
@@ -161,7 +161,7 @@ const Login = () => {
 
     React.useEffect(() => {
         if (user) {
-            navigate('/chat')
+            navigate('/video-chat')
         }
     }, [navigate, user])
 

@@ -8,15 +8,17 @@ import animationData from '../../animations/typing.json'
 import DetailsModal from '../UserModals/DetailsModal'
 import { format } from 'timeago.js'
 import StreamModal from '../UserModals/StreamModal'
+import { HiUserRemove } from 'react-icons/hi'
+import EndLeaveModal from '../UserModals/EndLeaveModal'
 import { backend_url } from '../../baseApi'
-import { Avatar, AvatarBadge, Box, Button, Divider, Flex, Image, Input, Spinner, Text, useToast } from '@chakra-ui/react'
+import { Modal, ModalBody, ModalCloseButton, ModalContent, useDisclosure, ModalFooter, ModalHeader, ModalOverlay, Avatar, AvatarBadge, Box, Button, Divider, Flex, Image, Img, Input, Spinner, Text, useToast } from '@chakra-ui/react'
 import { FiSend } from 'react-icons/fi'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import StreamModalPeer from '../UserModals/StreamModalPeer'
 
 var selectedChatCompare;
 
-export const ChatBoxComponent = ({ height, selectedChat, fetchAgain, setFetchAgain, user, toast }) => {
+export const ChatBoxComponent = ({ flex, height, selectedChat, fetchAgain, setFetchAgain, user, toast }) => {
   const socket = React.useContext(SocketContext);
   // console.log("Socket ::: >>>",socket)
   const { notification, dispatch, fullScreen } = React.useContext(AppContext);
@@ -182,7 +184,7 @@ export const ChatBoxComponent = ({ height, selectedChat, fetchAgain, setFetchAga
       {/* MIDDLE PART  */}
       {loading ?
         (
-          <Box display={'flex'} alignItems={'center'} justifyContent={'center'} height={height}>
+          <Box display={'flex'} alignItems={'center'} justifyContent={'center'} flex={flex} height={height}>
             <Spinner
               thickness='4px'
               speed='0.2s'
@@ -197,6 +199,7 @@ export const ChatBoxComponent = ({ height, selectedChat, fetchAgain, setFetchAga
           <div
             id="scrollableDiv"
             style={{
+              flex: flex,  
               height: height,
               overflow: 'auto',
               display: 'flex',
@@ -265,11 +268,12 @@ export const ChatBoxComponent = ({ height, selectedChat, fetchAgain, setFetchAga
         display={'flex'}
         alignItems={'center'}
         justifyContent={'space-between'}
+        background="#F6F3FF"
+        padding="15px 30px"
       >
         <Input
           mr={'10px'}
-          height={fullScreen ? '66px' : '35px'}
-          bgColor={'#f3f7fc'}
+          bgColor={'#fff'}
           border={'none'}
           placeholder='Type Your Message...'
           focusBorderColor='#9F85F7'
@@ -279,11 +283,10 @@ export const ChatBoxComponent = ({ height, selectedChat, fetchAgain, setFetchAga
         />
         <Button
           bg='buttonPrimaryColor'
-          size={fullScreen ? 'lg' : 'sm'}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={newMessage !== "" ? sendMessage : null}>
-          <FiSend />
+          <FiSend color="#fff"/>
         </Button>
       </Box>
     </>
@@ -291,8 +294,13 @@ export const ChatBoxComponent = ({ height, selectedChat, fetchAgain, setFetchAga
 }
 
 const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) => {
+  const { dispatch, fullScreen } = React.useContext(AppContext);
+  const [groupChatName, setGroupChatName] = React.useState('');
+  const [renameLoading, setRenameLoading] = React.useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const user = JSON.parse(localStorage.getItem('user'));
-
+  const cancelRef = React.useRef()
+  const { isOpen: isConfirmOpen, onOpen: onConfirmOpen, onClose: onConfirmClose } = useDisclosure()
   const [meetingIdExists, setMeetingIdExists] = React.useState(false);
   const [online, setOnline] = React.useState(false);
   const [profile, setProfile] = React.useState(null);
@@ -300,8 +308,101 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
   const { selectedChat } = React.useContext(AppContext);
 
   const toast = useToast();
-
+  const [loading, setLoading] = React.useState(false)
   const admin = selectedChat?.isGroupChat && selectedChat?.groupAdmin._id === user._id;
+
+  const handleRemove = async (user1) => {
+    if (selectedChat.groupAdmin._id !== user._id && user1._id !== user._id) {
+      return toast({
+        title: "Error Occured!",
+        description: "You are not the admin of this group",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+    }
+    try {
+      setLoading(true);
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.put(
+        `${backend_url}/conversation/groupremove`,
+        {
+          chatId: selectedChat._id,
+          userId: user1._id,
+        },
+        config
+      );
+
+      user1._id === user._id ? dispatch({ type: 'SET_SELECTED_CHAT', payload: '' }) : dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
+      setFetchAgain(!fetchAgain);
+      setLoading(false);
+      toast({
+        title: "Success!",
+        description: "Member Removed",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+    } catch (error) {
+      toast({
+        title: "Error Occured!",
+        description: "Failed to Remove Member",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+    }
+  }
+
+  const handleRename = async () => {
+    if (!groupChatName) {
+      return
+    }
+
+    try {
+      setRenameLoading(true);
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.token}`
+        }
+      }
+      const body = {
+        chatName: groupChatName,
+        chatId: selectedChat._id
+      }
+      const { data } = await axios.put(`${backend_url}/conversation/rename`, body, config)
+      dispatch({ type: 'SET_SELECTED_CHAT', payload: data })
+      toast({
+        title: "Group chat renamed",
+        description: "Group chat renamed to " + groupChatName,
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+      setRenameLoading(false);
+      setGroupChatName('');
+      setFetchAgain(!fetchAgain);
+    } catch (err) {
+      toast({
+        title: "Error Occured!",
+        description: "Failed to Rename Group Chat",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+      setRenameLoading(false);
+    }
+  }
 
   const CheckOnlineStatus = async (friendId) => {
     try {
@@ -389,13 +490,13 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
 
   return (
     <Box
-      height={'85vh'}
+      height={'100%'}
       bg={'whiteColor'}
-      p={'1.5'}
       my={'5'}
-      mx={['5', '10', '10', '10']}
-      borderRadius={'xl'}
-      boxShadow={'dark-lg'}
+      m='0'
+      borderLeft='1px solid #EAE4FF'
+      display='flex'
+      flexDirection='column'
     >
       {
         selectedChat ?
@@ -406,11 +507,12 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
               flexDirection={'row'}
               justifyContent={'space-between'}
               alignItems={'center'}
-              my={2}
-              mx={6}
+              px={4}
+              py="17px"
               initial="hidden"
               animate="visible"
               variants={variants}
+              background="#F6F3FF"
             >
 
               <Box
@@ -428,9 +530,11 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
                     initial="hidden"
                     animate="visible"
                     variants={variants}
-                    size='md'
+                    height='46px'
+                    width='46px'
                     name={profile?.username}
                     src={profile?.pic}
+                    mr={4}
                   >
                     {online ?
                       <AvatarBadge boxSize='1em' bg='green.500' />
@@ -442,20 +546,39 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
                   initial="hidden"
                   animate="visible"
                   variants={variants}
-                  ml={'4'}
-                  fontSize={'xl'}
+                  fontSize='16px'
                   fontWeight={'bold'}
                 >
                   {selectedChat?.isGroupChat ? selectedChat?.chatName.toUpperCase() : profile?.username}
                 </Text>
               </Box>
-
+              <Box display='flex' alignItems='center'>
               {selectedChat?.isGroupChat && (admin || meetingIdExists) &&
                 <Box>
                   <StreamModalPeer admin={admin} />
                 </Box>
-
               }
+              {
+                selectedChat && (
+                  selectedChat?.isGroupChat && (
+                    <Button
+                    background="transparent"
+                    borderRadius="100%"
+                    ms="15px"
+                    h='40px'
+                    w='40px'
+                    p='0'
+                    onClick={onOpen}
+                  >
+                    <Img
+                      h='22px'
+                    src="https://ik.imagekit.io/sahildhingra/settings.png" alt="" />
+                  </Button>
+                  )
+                )
+              }
+
+                  </Box>
               <Flex
                 display={['block', 'none', 'none', 'none']}
               >
@@ -465,8 +588,68 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
             </Box>
 
             <Divider orientation='horizontal' />
-            <ChatBoxComponent height={'78%'} setOnline={setOnline} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} user={user} toast={toast} selectedChat={selectedChat} meetingId={meetingId} />
+            <ChatBoxComponent flex='1' height={'78%'} setOnline={setOnline} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} user={user} toast={toast} selectedChat={selectedChat} meetingId={meetingId} />
+              
+            {/* Group Settings Modal */}
+            <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Settings</ModalHeader>
+          <ModalCloseButton />
 
+          <ModalBody>
+          <hr />
+          {renameLoading ?
+                  <Box display={'flex'}
+                    alignItems={'center'}
+                    justifyContent={'center'}
+                    my={2}>
+                    <Spinner
+                      thickness='4px'
+                      speed='0.7s'
+                      emptyColor='gray.200'
+                      color='buttonPrimaryColor'
+                      size='md'
+                    />
+                  </Box>
+                  :
+                  <Box display={'flex'} flexDirection={'column'} mt="30px" mb={fullScreen ? '50px' : '2'}>
+                    <Input
+                      mr={'2'}
+                      value={groupChatName}
+                      placeholder={selectedChat?.chatName}
+                      _placeholder={{ color: 'inherit' }}
+                      onChange={(e) => setGroupChatName(e.target.value)}
+                    />
+                  </Box>
+                }
+          </ModalBody>
+
+          <ModalFooter justifyContent='space-between'>
+            <Box my={fullScreen ? '2' : '0'}>
+              <Button size={fullScreen ? 'md' : 'sm'} onClick={onConfirmOpen} rightIcon={<HiUserRemove />} colorScheme='red' variant='outline'>
+                Leave Group
+              </Button>
+            </Box>
+            <button className='btn btn-primary' onClick={handleRename}>
+              Update
+            </button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      <EndLeaveModal
+        leastDestructiveRef={cancelRef}
+        onClose={onConfirmClose}
+        header={'Leave Group'}
+        body={'Are you sure you want to leave this group?'}
+        confirmButton={'Leave'}
+        confirmFunction={() => {
+          handleRemove(user);
+          onConfirmClose();
+        }}
+        isOpen={isConfirmOpen}
+      />
 
           </>)
           :
