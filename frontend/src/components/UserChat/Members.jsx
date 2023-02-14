@@ -217,21 +217,6 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
     }
   }
 
-  const EventsData = [
-    {
-      "title": "Ritviz Mimmi Album Launch Event",
-      "imageUrl": "https://assets.website-files.com/5ff4e43997c4ec6aa5d646d1/603d547ed5c5fd6365dabbef_industry%20expert%20roundup%20-%20why%20are%20events%20important.png"
-    },
-    {
-      "title": "Love A Fair With Darshan Raval",
-      "imageUrl": "https://res.cloudinary.com/dwzmsvp7f/image/fetch/q_75,f_auto,w_400/https%3A%2F%2Fmedia.insider.in%2Fimage%2Fupload%2Fc_crop%2Cg_custom%2Fv1672731458%2Ffhjoxm0euja3cafmrtyt.jpg"
-    },
-    {
-      "title": "INDIAN OCEAN LIVE AT THE FINCH",
-      "imageUrl": "https://imageio.forbes.com/specials-images/imageserve/882906386/0x0.jpg?format=jpg&width=1200"
-    }
-  ]
-
   return (
     selectedChat ? (
       selectedChat?.isGroupChat ? (
@@ -269,17 +254,17 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
                 alignItems={'center'}
                 height='100%'
               >
-                <Box 
+                <Box
                   h='50%'
                   overflow='auto'
                   flex='1'
                   p='4'
                 >
-                  {EventsData.map((eventItem) => {
-                    return(
+                  {selectedChat?.events.map((eventItem) => {
+                    return (
                       <>
                         <Box className='group-event' mb='20px'>
-                          <EventCard title={eventItem.title} imageUrl={eventItem.imageUrl} />
+                          <EventCard title={eventItem.name} imageUrl={"https://res.cloudinary.com/dwzmsvp7f/image/fetch/q_75,f_auto,w_400/https%3A%2F%2Fmedia.insider.in%2Fimage%2Fupload%2Fc_crop%2Cg_custom%2Fv1672731458%2Ffhjoxm0euja3cafmrtyt.jpg" || eventItem?.thumbnail} />
                         </Box>
                       </>
                     )
@@ -288,8 +273,8 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
                 <Box py='25px'>
                   <NavLink className='btn btn-primary' to="/event/create">
                     <Flex alignItems='center'>
-                    <Image h='18px' pe='15px' src='https://ik.imagekit.io/sahildhingra/add.png?ik-sdk-version=javascript-1.4.3&updatedAt=1673025917620' /> 
-                    <Text>Create Event</Text>
+                      <Image h='18px' pe='15px' src='https://ik.imagekit.io/sahildhingra/add.png?ik-sdk-version=javascript-1.4.3&updatedAt=1673025917620' />
+                      <Text>Create Event</Text>
                     </Flex>
                   </NavLink>
                 </Box>
@@ -305,31 +290,31 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
               >
                 <Box>
                   <Text ps='4' py='5px'>
-                    {stream ? actualParticipants.length : selectedChat?.users.length} {stream ? 'participants' : 'members'}
+                    {selectedChat?.users.length} members
                   </Text>
                 </Box>
-                <Box 
+                <Box
                   h='50%'
                   overflow='auto'
                   flex='1'
                   p='4'
                 >
-                <Accordion allowToggle>
-                  {selectedChat?.users.map(u =>
-                    <ChatOnline
-                      stream={stream}
-                      key={u._id}
-                      user1={u}
-                      handleFunction={() => handleRemove(u)} />
-                  )}
+                  <Accordion allowToggle>
+                    {selectedChat?.users.map(u =>
+                      <ChatOnline
+                        stream={stream}
+                        key={u._id}
+                        user1={u}
+                        handleFunction={() => handleRemove(u)} />
+                    )}
 
-                </Accordion>
+                  </Accordion>
                 </Box>
                 <Box py='25px' textAlign='center'>
                   <NavLink onClick={onAddOpen} className='btn btn-primary'>
                     <Flex alignItems='center'>
-                    <Image h='18px' pe='15px' src='https://ik.imagekit.io/sahildhingra/add.png?ik-sdk-version=javascript-1.4.3&updatedAt=1673025917620' /> 
-                    <Text>Add Member</Text>
+                      <Image h='18px' pe='15px' src='https://ik.imagekit.io/sahildhingra/add.png?ik-sdk-version=javascript-1.4.3&updatedAt=1673025917620' />
+                      <Text>Add Member</Text>
                     </Flex>
                   </NavLink>
                 </Box>

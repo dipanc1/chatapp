@@ -51,11 +51,12 @@ const Register = () => {
 
     const fileInputRef = React.createRef();
 
-    const cloudName = 'dipanc1';
     const apiUrlMobile = `${backend_url}/mobile`;
     const apiUrlOtp = `${backend_url}/otp`;
     const apiUrlRegister = `${backend_url}/users/register`;
     const apiUrlUsername = `${backend_url}/users/check-username`;
+    
+    const cloudName = 'dipanc1';
     const pictureUpload = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
 
     const handleUsername = async (e) => {

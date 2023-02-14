@@ -1,11 +1,11 @@
 import React from 'react'
 import { NavLink } from "react-router-dom";
-import { 
-  Box, 
+import {
+  Box,
   Grid,
   Text,
   Heading,
-  Button, 
+  Button,
   Container,
   Flex,
   Image
@@ -13,22 +13,11 @@ import {
 
 import Static from "../components/common/Static"
 import EventCard from '../components/Events/EventCard';
+import { useContext } from 'react';
+import { AppContext } from '../context/AppContext';
 
 function Events() {
-  const EventsData = [
-    {
-      "title": "Ritviz Mimmi Album Launch Event",
-      "imageUrl": "https://assets.website-files.com/5ff4e43997c4ec6aa5d646d1/603d547ed5c5fd6365dabbef_industry%20expert%20roundup%20-%20why%20are%20events%20important.png"
-    },
-    {
-      "title": "Love A Fair With Darshan Raval",
-      "imageUrl": "https://res.cloudinary.com/dwzmsvp7f/image/fetch/q_75,f_auto,w_400/https%3A%2F%2Fmedia.insider.in%2Fimage%2Fupload%2Fc_crop%2Cg_custom%2Fv1672731458%2Ffhjoxm0euja3cafmrtyt.jpg"
-    },
-    {
-      "title": "INDIAN OCEAN LIVE AT THE FINCH",
-      "imageUrl": "https://imageio.forbes.com/specials-images/imageserve/882906386/0x0.jpg?format=jpg&width=1200"
-    }
-  ]
+  const { selectedChat } = useContext(AppContext);
 
   return (
     <>
@@ -37,8 +26,8 @@ function Events() {
           <Heading as='h1' size='lg' fontWeight='500'>Events</Heading>
           <NavLink className='btn btn-primary' to="./create">
             <Flex alignItems='center'>
-            <Image h='18px' pe='15px' src='https://ik.imagekit.io/sahildhingra/add.png?ik-sdk-version=javascript-1.4.3&updatedAt=1673025917620' /> 
-            <Text>Create</Text>
+              <Image h='18px' pe='15px' src='https://ik.imagekit.io/sahildhingra/add.png?ik-sdk-version=javascript-1.4.3&updatedAt=1673025917620' />
+              <Text>Create</Text>
             </Flex>
           </NavLink>
         </Flex>
@@ -47,10 +36,10 @@ function Events() {
           <NavLink className='btn-text' to="./create">See all</NavLink>
         </Flex>
         <Grid mb='70px' templateColumns='repeat(3, 1fr)' gap='2rem' rowGap='3rem'>
-          {EventsData.map((eventItem) => {
-            return(
+          {selectedChat?.events.map((eventItem) => {
+            return (
               <>
-                <EventCard title={eventItem.title} imageUrl={eventItem.imageUrl} />
+                <EventCard key={eventItem._id} title={eventItem.name} imageUrl={"https://res.cloudinary.com/dwzmsvp7f/image/fetch/q_75,f_auto,w_400/https%3A%2F%2Fmedia.insider.in%2Fimage%2Fupload%2Fc_crop%2Cg_custom%2Fv1672731458%2Ffhjoxm0euja3cafmrtyt.jpg" || eventItem?.thumbnail} />
               </>
             )
           })}
@@ -60,10 +49,10 @@ function Events() {
           <NavLink className='btn-text' to="./create">See all</NavLink>
         </Flex>
         <Grid mb='70px' templateColumns='repeat(3, 1fr)' gap='2rem' rowGap='3rem'>
-          {EventsData.map((eventItem) => {
-            return(
+          {selectedChat?.events.map((eventItem) => {
+            return (
               <>
-                <EventCard title={eventItem.title} imageUrl={eventItem.imageUrl} />
+                <EventCard title={eventItem.name} imageUrl={"https://res.cloudinary.com/dwzmsvp7f/image/fetch/q_75,f_auto,w_400/https%3A%2F%2Fmedia.insider.in%2Fimage%2Fupload%2Fc_crop%2Cg_custom%2Fv1672731458%2Ffhjoxm0euja3cafmrtyt.jpg" || eventItem?.thumbnail} />
               </>
             )
           })}

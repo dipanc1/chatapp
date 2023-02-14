@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import Cookies from 'universal-cookie';
 
-import { 
+import {
   Box,
   Flex
 } from '@chakra-ui/react';
@@ -20,11 +20,11 @@ const Static = ({
   const [maximizedValue, setMaximizedValue] = useState(cookieVal)
 
   const handleExpand = () => {
-    if(cookies.get('maximized') == "true") {
-      cookies.set('maximized', "false", {path: '/' })
+    if (cookies.get('maximized') == "true") {
+      cookies.set('maximized', "false", { path: '/' })
       setMaximizedValue("false")
     } else {
-      cookies.set('maximized', "true", {path: '/' })
+      cookies.set('maximized', "true", { path: '/' })
       setMaximizedValue("true")
     }
   }
@@ -41,7 +41,7 @@ const Static = ({
               <Header />
               <Box className='main-content-section' position='fixed' h='calc(100vh - 140px)' right='30px' left='290px' mt='100px' bg='#fff' borderRadius='10px'>
                 <button onClick={handleExpand} className='expand-btn'>
-                <img src="https://ik.imagekit.io/sahildhingra/maximize.png" />
+                  <img src="https://ik.imagekit.io/sahildhingra/maximize.png" alt='' />
                 </button>
                 <Box overflowY='auto' h='100%' p={noPadding ? '0px' : '40px'}>
                   {children}

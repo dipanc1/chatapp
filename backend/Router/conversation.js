@@ -239,8 +239,17 @@ router.put("/event/:chatId", asyncHandler(async (req, res) => {
     const { name, description, date, time, thumbnail } = req.body;
     const { chatId } = req.params;
 
-    const userId = req.user._id;
+    if (!name || !description || !date || !time) {
+        return res.status(400).send("All Feilds are required")
+    }
 
+    const userId = req.user._id;
+    const updateGroupChat = await Chat.findById(chatId);
+
+    if (updateGroupChat.groupAdmin.toString() != userId.toString()) {
+        return res.status(400).send("You are not admin of this group")
+    };
+    
     const newEvent = new EventTable({
         name,
         description,
@@ -248,11 +257,11 @@ router.put("/event/:chatId", asyncHandler(async (req, res) => {
         time,
         thumbnail,
     });
-
+    
+    const user = await User.findById(userId);
     const savedEvent = await newEvent.save();
 
-    const updateGroupChat = await Chat.findById(chatId);
-    const user = await User.findById(userId);
+    console.log(savedEvent);
 
     if (updateGroupChat && user) {
         updateGroupChat.events.push(savedEvent);
