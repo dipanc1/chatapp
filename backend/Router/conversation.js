@@ -2,6 +2,7 @@ const router = require("express").Router();
 
 const User = require("../models/User");
 const Chat = require("../models/Conversation");
+const EventTable = require("../models/EventTable");
 
 const asyncHandler = require("express-async-handler");
 
@@ -63,6 +64,7 @@ router.get("/", async (req, res) => {
             .populate("users", "-password")
             .populate("groupAdmin", "-password")
             .populate("latestMessage")
+            .populate("events")
             .sort({ updatedAt: -1 })
             .then(async (results) => {
                 results = await User.populate(results, {
@@ -126,7 +128,7 @@ router.put("/rename", asyncHandler(async (req, res) => {
 // adding in group
 router.put("/groupadd", asyncHandler(async (req, res) => {
     const { chatId, userId } = req.body;
-    
+
     const isUser = await Chat.findOne({ _id: chatId, users: { $elemMatch: { $eq: userId } } });
 
     if (isUser) {
@@ -208,7 +210,7 @@ router.put("/stop-stream", asyncHandler(async (req, res) => {
         },
     }).then((chat) => {
         console.log("streaming stopped!!");
-        res.status(200).json({ msg: "streaming stopped!!"});
+        res.status(200).json({ msg: "streaming stopped!!" });
     }).catch((err) => {
         console.log(err);
     });
@@ -231,6 +233,42 @@ router.get("/streaming/:chatid", asyncHandler(async (req, res) => {
         console.log(err);
     })
 }));
+
+// add an event to the group conversation
+router.put("/event/:chatId", asyncHandler(async (req, res) => {
+    const { name, description, date, time, thumbnail } = req.body;
+    const { chatId } = req.params;
+
+    const userId = req.user._id;
+
+    const newEvent = new EventTable({
+        name,
+        description,
+        date,
+        time,
+        thumbnail,
+    });
+
+    const savedEvent = await newEvent.save();
+
+    const updateGroupChat = await Chat.findById(chatId);
+    const user = await User.findById(userId);
+
+    if (updateGroupChat && user) {
+        updateGroupChat.events.push(savedEvent);
+        user.events.push(savedEvent);
+        await updateGroupChat.save();
+        await user.save();
+        res.status(200).json("Event added");
+    } else {
+        res.status(404).send("Chat not found");
+    }
+}));
+
+
+
+
+
 
 
 module.exports = router;

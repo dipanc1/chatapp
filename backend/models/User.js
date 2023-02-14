@@ -36,7 +36,11 @@ const UserSchema = new mongoose.Schema({
     socketId: {
         type: String,
         default: null,
-    }
+    },
+    events: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Event",
+    },],
 }, { timestamps: true });
 
 const User = mongoose.model("User", UserSchema);
