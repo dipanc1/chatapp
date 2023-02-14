@@ -6,7 +6,7 @@ const ConversationSchema = mongoose.Schema({
     users: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-    }, ],
+    },],
     latestMessage: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Message",
@@ -14,6 +14,10 @@ const ConversationSchema = mongoose.Schema({
     groupAdmin: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     isStreaming: { type: Boolean, default: false },
     meetingId: { type: String, default: null },
+    events: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Event",
+    },],
 }, { timestamps: true });
 
 const Chat = mongoose.model("Chat", ConversationSchema);

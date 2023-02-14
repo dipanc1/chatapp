@@ -28,8 +28,6 @@ export const RoomProvider = ({ children }) => {
     const [screenSharingId, setScreenSharingId] = useState("");
     const [screenStream, setScreenStream] = useState();
     const [roomId, setRoomId] = useState("");
-    const [screenShare, setScreenShare] = useState(true)
-    const [adminParticipantsArray, setAdminParticipantsArray] = useState([]);
     const [participantsArray, setParticipantsArray] = useState([]);
 
     const { stream } = useContext(AppContext);
@@ -40,12 +38,15 @@ export const RoomProvider = ({ children }) => {
     };
 
     const getUsers = ({ participants }) => {
-        // console.warn("Get Users ::: >>>", participants);
-        setParticipantsArray(participants);
+        console.warn("Get Users ::: >>>", participants);
+        // const participantsArray = Object.entries(participants).map(([peerId]) => ({ peerId }));
+        // setParticipantsArray(participantsArray.map(x => x.peerId));
     }
 
     const removePeer = (peerId) => {
-        setAdminParticipantsArray(adminParticipantsArray.filter((participant) => participant.peerId !== peerId));
+        console.warn("Remove Peer ::: >>>", peerId, "typeof peerId ::: >>>", typeof peerId);
+        setParticipantsArray(participantsArray.filter((peerid) => peerid !== peerId));
+        console.log("Participants Array ::: >>>", participantsArray);
         dispatch({
             type: REMOVE_PEER_STREAM,
             payload: {
@@ -141,7 +142,9 @@ export const RoomProvider = ({ children }) => {
         if (!streamState) return;
 
         ws.on("user-joined", ({ peerId, userId: userid }) => {
-            setAdminParticipantsArray([...adminParticipantsArray, { peerId, userid }]);
+            console.warn("User Joined ::: >>>", peerId, "typeof peerId ::: >>>", typeof peerId);
+            setParticipantsArray([...participantsArray, peerId]);
+            console.log("Participants Array ::: >>>", participantsArray);
             dispatch(addUserIdAction(peerId, userid));
             playJoin();
             const call = me.call(peerId, streamState, {
@@ -161,7 +164,6 @@ export const RoomProvider = ({ children }) => {
         });
 
         me.on("call", (call) => {
-            // console.warn("Call :: >>", call);
             const userId = call.metadata.userId;
             dispatch(addUserIdAction(call.peer, userId))
             call.answer(streamState);
@@ -180,6 +182,7 @@ export const RoomProvider = ({ children }) => {
             ws.off("user-joined");
         };
 
+        // TODO: THIS MIGHT BE THE PROBLEM
     }, [me, playJoin, streamState, userId])
 
     useEffect(() => {
@@ -199,9 +202,7 @@ export const RoomProvider = ({ children }) => {
                 userId,
                 setUserId,
                 screenStream,
-                screenShare,
-                adminParticipantsArray,
-                participantsArray
+                participantsArray,
             }}>
             {children}
         </RoomContext.Provider>

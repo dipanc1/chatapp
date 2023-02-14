@@ -5,7 +5,6 @@
 #### make number unique in db model
 #### allowed origin to hosted address
 #### Group chat picture add
-#### show streaming link somewhere?
 #### if host accidently closes the stream then delete meeting token from database
 #### User cannot open when one session is going on multiple tabs/places
 #### if token fails then redirect to login page

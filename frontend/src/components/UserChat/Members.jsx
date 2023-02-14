@@ -21,7 +21,6 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
   const user = JSON.parse(localStorage.getItem('user'));
 
   const { selectedChat, dispatch, stream, fullScreen } = React.useContext(AppContext);
-  const { adminParticipantsArray, participantsArray } = React.useContext(RoomContext);
 
   const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure()
   const { isOpen: isConfirmOpen, onOpen: onConfirmOpen, onClose: onConfirmClose } = useDisclosure()
@@ -30,12 +29,11 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
 
   const toast = useToast();
 
-  const [actualParticipants, setActualParticipants] = React.useState([]);
   const [groupChatName, setGroupChatName] = React.useState('');
   const [search, setSearch] = React.useState('');
   const [searchResults, setSearchResults] = React.useState([]);
   const [renameLoading, setRenameLoading] = React.useState(false);
-  const [loading, setLoading] = React.useState(false)
+  const [loading, setLoading] = React.useState(false);
 
   const handleRemove = async (user1) => {
     if (selectedChat.groupAdmin._id !== user._id && user1._id !== user._id) {
@@ -219,33 +217,6 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
     }
   }
 
-  React.useEffect(() => {
-    let actualParticipant = [];
-
-    if (stream && admin) {
-      adminParticipantsArray.forEach(participant => selectedChat?.users.forEach(user1 => {
-        if (participant.userid === user1._id) {
-          actualParticipant.push(user1, selectedChat.groupAdmin);
-        }
-      }))
-    }
-
-    if (stream && !admin) {
-      let psa = Object.values(participantsArray);
-      psa.forEach(participant => selectedChat?.users.forEach(user1 => {
-        if (participant.userId === user1._id) {
-          actualParticipant.push(user1);
-        }
-      }))
-    }
-
-    setActualParticipants(actualParticipant);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [adminParticipantsArray, selectedChat?.users, stream, participantsArray])
-
-  console.log(actualParticipants)
-
   const EventsData = [
     {
       "title": "Ritviz Mimmi Album Launch Event",
@@ -291,6 +262,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
 
             {/* Events Tab */}
             <TabPanel h='100%' p='0'>
+
               <Box
                 display={'flex'}
                 flexDirection={'column'}
@@ -343,24 +315,13 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
                   p='4'
                 >
                 <Accordion allowToggle>
-                  {
-                    stream ?
-                      actualParticipants.map((participant, index) => (
-                        <ChatOnline
-                          stream={stream}
-                          key={participant}
-                          user1={participant}
-                          handleFunction={() => handleRemove(participant)}
-                        />
-                      ))
-                      :
-                      selectedChat?.users.map(u =>
-                        <ChatOnline
-                          stream={stream}
-                          key={u._id}
-                          user1={u}
-                          handleFunction={() => handleRemove(u)} />
-                      )}
+                  {selectedChat?.users.map(u =>
+                    <ChatOnline
+                      stream={stream}
+                      key={u._id}
+                      user1={u}
+                      handleFunction={() => handleRemove(u)} />
+                  )}
 
                 </Accordion>
                 </Box>
