@@ -119,10 +119,10 @@ const CreateEvent = () => {
 							<FormLabel>Description</FormLabel>
 						</FormControl>
 						<Flex gap='6'>
-							<FormControl className={!name === "" ? "filled" : ""}>
+							<FormControl className={"filled"}>
 								<Input type='date' value={date} onChange={(e) => setDate(e.target.value)} />
 							</FormControl>
-							<FormControl className={!name === "" ? "filled" : ""}>
+							<FormControl className={"filled"}>
 								<Input type='time' value={time} onChange={
 									(e) => setTime(e.target.value)
 								} />
@@ -149,7 +149,6 @@ const CreateEvent = () => {
 									ref={fileInputRef}
 									onChange={imageChange}
 									style={{ display: 'none' }}
-									required
 								/>
 							</FormControl>
 						</Flex>

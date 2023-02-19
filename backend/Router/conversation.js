@@ -61,8 +61,8 @@ router.get("/", async (req, res) => {
         Chat.find({
             users: { $elemMatch: { $eq: req.user._id } }
         })
-            .populate("users", "-password")
-            .populate("groupAdmin", "-password")
+            .populate("users", "-password -events")
+            .populate("groupAdmin", "-password -events")
             .populate("latestMessage")
             .populate("events")
             .sort({ updatedAt: -1 })
@@ -249,7 +249,7 @@ router.put("/event/:chatId", asyncHandler(async (req, res) => {
     if (updateGroupChat.groupAdmin.toString() != userId.toString()) {
         return res.status(400).send("You are not admin of this group")
     };
-    
+
     const newEvent = new EventTable({
         name,
         description,
@@ -257,7 +257,7 @@ router.put("/event/:chatId", asyncHandler(async (req, res) => {
         time,
         thumbnail,
     });
-    
+
     const user = await User.findById(userId);
     const savedEvent = await newEvent.save();
 
@@ -275,7 +275,55 @@ router.put("/event/:chatId", asyncHandler(async (req, res) => {
 }));
 
 
+// edit event 
+router.put("/event/edit/:eventId", asyncHandler(async (req, res) => {
+    const { name, description, date, time, thumbnail } = req.body;
+    const { eventId } = req.params;
 
+    const findEventandUpdate = await EventTable.findByIdAndUpdate(eventId, {
+        name,
+        description,
+        date,
+        time,
+        thumbnail,
+    }, { new: true });
+
+    if (!findEventandUpdate) {
+        return res.status(404).send("Event not found")
+    } else {
+        res.status(200).json({
+            message: "Event updated",
+        });
+    }
+
+}));
+
+
+// delete event
+router.delete("/event/delete/:eventId", asyncHandler(async (req, res) => {
+    const { chatId } = req.body;
+    const { eventId } = req.params;
+    const userId = req.user._id;
+
+    const findEventInConversationAndDelete = await Chat.findByIdAndUpdate(chatId, {
+        $pull: { events: eventId }
+    });
+
+    const findEventInUserAndDelete = await User.findByIdAndUpdate(userId, {
+        $pull: { events: eventId }
+    });
+
+    const findEventAndDelete = await EventTable.findByIdAndDelete(eventId);
+
+    if (!findEventInConversationAndDelete || !findEventInUserAndDelete || !findEventAndDelete) {
+        return res.status(404).send("Event not found")
+    }
+
+    res.status(200).json({
+        message: "Event deleted",
+    });
+
+}));
 
 
 
