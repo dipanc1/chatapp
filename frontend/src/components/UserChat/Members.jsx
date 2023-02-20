@@ -1,4 +1,7 @@
-import React from 'react'
+import React, {
+  useContext,
+  useState,
+} from 'react'
 import ChatOnline from '../Miscellaneous/ChatOnline'
 import { AppContext } from '../../context/AppContext'
 import axios from 'axios'
@@ -7,7 +10,7 @@ import { backend_url } from '../../baseApi'
 import { HiUserRemove } from 'react-icons/hi'
 import {
   Accordion, Avatar,
-  Box, Button, Divider, Flex, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Tab, TabList, TabPanel, TabPanels, Tabs, Text, useDisclosure, useToast,
+  Box, Button, Checkbox, Divider, Flex, FormControl, FormLabel, IconButton, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Tab, TabList, TabPanel, TabPanels, Tabs, Text, Textarea, useDisclosure, useToast,
 } from '@chakra-ui/react'
 import { GrUserAdd } from 'react-icons/gr'
 import { BsTelephone, BsPerson } from 'react-icons/bs'
@@ -17,12 +20,17 @@ import { RoomContext } from '../../context/RoomContext'
 import EventCard from '../Events/EventCard'
 import { NavLink } from 'react-router-dom'
 
+import { useNavigate } from 'react-router-dom';
+import { FiUpload } from 'react-icons/fi';
+
 export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, admin }) => {
   const user = JSON.parse(localStorage.getItem('user'));
 
   const { selectedChat, dispatch, stream, fullScreen } = React.useContext(AppContext);
 
   const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure()
+  const { isOpen: isOpenCreateEvent, onOpen: onOpenCreateEvent, onClose: onCloseCreateEvent } = useDisclosure()
+
   const { isOpen: isConfirmOpen, onOpen: onConfirmOpen, onClose: onConfirmClose } = useDisclosure()
 
   const cancelRef = React.useRef()
@@ -217,6 +225,85 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
     }
   }
 
+	const [name, setEventName] = useState("");
+	const [description, setDescription] = useState("");
+	const [date, setDate] = useState(new Date());
+	const [time, setTime] = useState("");
+	const [selectedImage, setSelectedImage] = React.useState(null);
+
+	const fileInputRef = React.createRef();
+
+	let navigate = useNavigate();
+
+	const cloudName = 'dipanc1';
+	const pictureUpload = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+
+	const imageChange = (e) => {
+		if (e.target.files && e.target.files.length > 0 && (e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/png')) {
+			setSelectedImage(e.target.files[0]);
+		} else {
+			alert('Please select a valid image file');
+		}
+	}
+
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+
+		if (selectedChat.groupAdmin._id !== user._id) return alert("You are not the admin of this group");
+
+		if (name === "" || description === "" || date === "" || time === "") return alert("Feilds cannot be empty");
+
+		const config = {
+			headers: {
+				Authorization: `Bearer ${user.token}`,
+			},
+		};
+
+		if (selectedImage === null) {
+			await axios.put(`${backend_url}/conversation/event/${selectedChat._id}`, {
+				name,
+				description,
+				date,
+				time
+			}, config)
+				.then((res) => {
+					// console.log(selectedChat)
+					navigate(`/video-chat`);
+					alert(res.data);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		} else {
+			const formData = new FormData();
+			formData.append('api_key', '835688546376544')
+			formData.append('file', selectedImage);
+			formData.append('upload_preset', 'chat-app');
+
+			await axios.post(pictureUpload, formData)
+				.then((res) => {
+					axios.put(`${backend_url}/conversation/event/${selectedChat._id}`, {
+						name,
+						description,
+						date,
+						time,
+						thumbnail: res.data.url
+					}, config)
+						.then((res) => {
+							navigate(`/video-chat`);
+							alert(res.data);
+						})
+						.catch((err) => {
+							console.log(err);
+						});
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		}
+
+	}
+
   return (
     selectedChat ? (
       selectedChat?.isGroupChat ? (
@@ -264,14 +351,14 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
                     return (
                       <>
                         <Box className='group-event' mb='20px'>
-                          <EventCard title={eventItem.name} imageUrl={"https://res.cloudinary.com/dwzmsvp7f/image/fetch/q_75,f_auto,w_400/https%3A%2F%2Fmedia.insider.in%2Fimage%2Fupload%2Fc_crop%2Cg_custom%2Fv1672731458%2Ffhjoxm0euja3cafmrtyt.jpg" || eventItem?.thumbnail} />
+                          <EventCard date={eventItem.date} time={eventItem.time} title={eventItem.name} imageUrl={eventItem?.thumbnail} />
                         </Box>
                       </>
                     )
                   })}
                 </Box>
                 <Box py='25px'>
-                  <NavLink className='btn btn-primary' to="/event/create">
+                  <NavLink className='btn btn-primary' onClick={onOpenCreateEvent}>
                     <Flex alignItems='center'>
                       <Image h='18px' pe='15px' src='https://ik.imagekit.io/sahildhingra/add.png?ik-sdk-version=javascript-1.4.3&updatedAt=1673025917620' />
                       <Text>Create Event</Text>
@@ -319,6 +406,81 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
                   </NavLink>
                 </Box>
               </Box>
+
+              {/* Create Event Modal */}
+              <Modal isOpen={isOpenCreateEvent} onClose={onCloseCreateEvent}>
+                <ModalOverlay />
+                <ModalContent>
+                  
+                <form onSubmit={handleSubmit}>
+                  <ModalHeader>Create Event</ModalHeader>
+                  <ModalCloseButton />
+                  <ModalBody className='form-wrapper'>
+						<FormControl className={"filled"}>
+							<Input type='text' value={name} onChange={(e) => setEventName(e.target.value)} />
+							<FormLabel>Event Name</FormLabel>
+						</FormControl>
+						<FormControl className={"filled"}>
+							<Textarea type='text' value={description} onChange={(e) => setDescription(e.target.value)} />
+							<FormLabel>Description</FormLabel>
+						</FormControl>
+						<Flex gap='6'>
+							<FormControl className={!name === "" ? "filled" : ""}>
+								<Input type='date' value={date} onChange={(e) => setDate(e.target.value)} />
+							</FormControl>
+							<FormControl className={!name === "" ? "filled" : ""}>
+								<Input type='time' value={time} onChange={
+									(e) => setTime(e.target.value)
+								} />
+							</FormControl>
+						</Flex>
+            <Box>
+            <FormControl className={"filled"}>
+								<Text>Upload Thumbnail</Text>
+                {
+                  selectedImage && (
+                    <Image
+                    width={'100px'}
+                    height={'100px'}
+                    src={selectedImage ? URL.createObjectURL(selectedImage) : ''}
+                    alt={''}
+                    mt='3'
+                  />
+                  )
+                }
+								<IconButton
+									aria-label="upload picture"
+									icon={<FiUpload />}
+									onClick={() => fileInputRef.current.click()}
+									size="xxl"
+									colorScheme="teal"
+									variant="outline"
+                  h='50px'
+                  w='50px'
+									mt={'3'}
+								/>
+								<input
+									type="file"
+									ref={fileInputRef}
+									onChange={imageChange}
+									style={{ display: 'none' }}
+									required
+								/>
+							</FormControl>
+            </Box>
+						<Box>
+							<Checkbox position='relative!important' defaultChecked pointerEvents='all!important' left='0!important' top='0!important' padding='0!important'>
+								Send Notification
+							</Checkbox>
+						</Box>
+                  </ModalBody>
+                  <ModalFooter>
+                  <button type='submit' className='btn btn-primary'>Create</button>
+                  </ModalFooter>
+                  
+					</form>
+                </ModalContent>
+              </Modal>
 
               {/* Add Member Modal */}
               <Modal size={['xs', 'xs', 'xl', 'lg']} isOpen={isAddOpen} onClose={onAddClose}>

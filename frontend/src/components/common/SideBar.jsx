@@ -30,6 +30,7 @@ const sidebar = () => {
 		},
 		{
 			'title': 'Groups',
+			'url': 'groups',
 			'icon': 'groups',
 		},
 		{
