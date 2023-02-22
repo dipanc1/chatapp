@@ -22,6 +22,7 @@ import { NavLink } from 'react-router-dom'
 
 import { useNavigate } from 'react-router-dom';
 import { FiUpload } from 'react-icons/fi';
+import EventModal from '../UserModals/EventModal'
 
 export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, admin }) => {
   const user = JSON.parse(localStorage.getItem('user'));
@@ -42,6 +43,80 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
   const [searchResults, setSearchResults] = React.useState([]);
   const [renameLoading, setRenameLoading] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const [name, setEventName] = useState("");
+  const [description, setDescription] = useState("");
+  const [date, setDate] = useState(new Date());
+  const [time, setTime] = useState("");
+  const [selectedImage, setSelectedImage] = React.useState(null);
+
+  const fileInputRef = React.createRef();
+
+  const cloudName = 'dipanc1';
+  const pictureUpload = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+
+  const imageChange = (e) => {
+    if (e.target.files && e.target.files.length > 0 && (e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/png')) {
+      setSelectedImage(e.target.files[0]);
+    } else {
+      alert('Please select a valid image file');
+    }
+  }
+
+  const handleCreateEvent = async (e) => {
+    e.preventDefault();
+
+    if (selectedChat.groupAdmin._id !== user._id) return alert("You are not the admin of this group");
+
+    if (name === "" || description === "" || date === "" || time === "") return alert("Feilds cannot be empty");
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    };
+
+    if (selectedImage === null) {
+      await axios.put(`${backend_url}/conversation/event/${selectedChat._id}`, {
+        name,
+        description,
+        date,
+        time
+      }, config)
+        .then((res) => {
+          // console.log(selectedChat)
+          alert(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      const formData = new FormData();
+      formData.append('api_key', '835688546376544')
+      formData.append('file', selectedImage);
+      formData.append('upload_preset', 'chat-app');
+
+      await axios.post(pictureUpload, formData)
+        .then((res) => {
+          axios.put(`${backend_url}/conversation/event/${selectedChat._id}`, {
+            name,
+            description,
+            date,
+            time,
+            thumbnail: res.data.url
+          }, config)
+            .then((res) => {
+              alert(res.data);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+
+  }
 
   const handleRemove = async (user1) => {
     if (selectedChat.groupAdmin._id !== user._id && user1._id !== user._id) {
@@ -225,84 +300,6 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
     }
   }
 
-	const [name, setEventName] = useState("");
-	const [description, setDescription] = useState("");
-	const [date, setDate] = useState(new Date());
-	const [time, setTime] = useState("");
-	const [selectedImage, setSelectedImage] = React.useState(null);
-
-	const fileInputRef = React.createRef();
-
-	let navigate = useNavigate();
-
-	const cloudName = 'dipanc1';
-	const pictureUpload = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
-
-	const imageChange = (e) => {
-		if (e.target.files && e.target.files.length > 0 && (e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/png')) {
-			setSelectedImage(e.target.files[0]);
-		} else {
-			alert('Please select a valid image file');
-		}
-	}
-
-	const handleSubmit = async (e) => {
-		e.preventDefault();
-
-		if (selectedChat.groupAdmin._id !== user._id) return alert("You are not the admin of this group");
-
-		if (name === "" || description === "" || date === "" || time === "") return alert("Feilds cannot be empty");
-
-		const config = {
-			headers: {
-				Authorization: `Bearer ${user.token}`,
-			},
-		};
-
-		if (selectedImage === null) {
-			await axios.put(`${backend_url}/conversation/event/${selectedChat._id}`, {
-				name,
-				description,
-				date,
-				time
-			}, config)
-				.then((res) => {
-					// console.log(selectedChat)
-					navigate(`/video-chat`);
-					alert(res.data);
-				})
-				.catch((err) => {
-					console.log(err);
-				});
-		} else {
-			const formData = new FormData();
-			formData.append('api_key', '835688546376544')
-			formData.append('file', selectedImage);
-			formData.append('upload_preset', 'chat-app');
-
-			await axios.post(pictureUpload, formData)
-				.then((res) => {
-					axios.put(`${backend_url}/conversation/event/${selectedChat._id}`, {
-						name,
-						description,
-						date,
-						time,
-						thumbnail: res.data.url
-					}, config)
-						.then((res) => {
-							navigate(`/video-chat`);
-							alert(res.data);
-						})
-						.catch((err) => {
-							console.log(err);
-						});
-				})
-				.catch((err) => {
-					console.log(err);
-				});
-		}
-
-	}
 
   return (
     selectedChat ? (
@@ -351,7 +348,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
                     return (
                       <>
                         <Box className='group-event' mb='20px'>
-                          <EventCard date={eventItem.date} time={eventItem.time} title={eventItem.name} imageUrl={eventItem?.thumbnail} />
+                          <EventCard id={eventItem._id} date={eventItem.date} time={eventItem.time} title={eventItem.name} imageUrl={eventItem?.thumbnail} />
                         </Box>
                       </>
                     )
@@ -408,79 +405,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
               </Box>
 
               {/* Create Event Modal */}
-              <Modal isOpen={isOpenCreateEvent} onClose={onCloseCreateEvent}>
-                <ModalOverlay />
-                <ModalContent>
-                  
-                <form onSubmit={handleSubmit}>
-                  <ModalHeader>Create Event</ModalHeader>
-                  <ModalCloseButton />
-                  <ModalBody className='form-wrapper'>
-						<FormControl className={"filled"}>
-							<Input type='text' value={name} onChange={(e) => setEventName(e.target.value)} />
-							<FormLabel>Event Name</FormLabel>
-						</FormControl>
-						<FormControl className={"filled"}>
-							<Textarea type='text' value={description} onChange={(e) => setDescription(e.target.value)} />
-							<FormLabel>Description</FormLabel>
-						</FormControl>
-						<Flex gap='6'>
-							<FormControl className={!name === "" ? "filled" : ""}>
-								<Input type='date' value={date} onChange={(e) => setDate(e.target.value)} />
-							</FormControl>
-							<FormControl className={!name === "" ? "filled" : ""}>
-								<Input type='time' value={time} onChange={
-									(e) => setTime(e.target.value)
-								} />
-							</FormControl>
-						</Flex>
-            <Box>
-            <FormControl className={"filled"}>
-								<Text>Upload Thumbnail</Text>
-                {
-                  selectedImage && (
-                    <Image
-                    width={'100px'}
-                    height={'100px'}
-                    src={selectedImage ? URL.createObjectURL(selectedImage) : ''}
-                    alt={''}
-                    mt='3'
-                  />
-                  )
-                }
-								<IconButton
-									aria-label="upload picture"
-									icon={<FiUpload />}
-									onClick={() => fileInputRef.current.click()}
-									size="xxl"
-									colorScheme="teal"
-									variant="outline"
-                  h='50px'
-                  w='50px'
-									mt={'3'}
-								/>
-								<input
-									type="file"
-									ref={fileInputRef}
-									onChange={imageChange}
-									style={{ display: 'none' }}
-									required
-								/>
-							</FormControl>
-            </Box>
-						<Box>
-							<Checkbox position='relative!important' defaultChecked pointerEvents='all!important' left='0!important' top='0!important' padding='0!important'>
-								Send Notification
-							</Checkbox>
-						</Box>
-                  </ModalBody>
-                  <ModalFooter>
-                  <button type='submit' className='btn btn-primary'>Create</button>
-                  </ModalFooter>
-                  
-					</form>
-                </ModalContent>
-              </Modal>
+              <EventModal isOpenCreateEvent={isOpenCreateEvent} onCloseCreateEvent={onCloseCreateEvent} name={name} setEventName={setEventName} description={description} setDescription={setDescription} date={date} setDate={setDate} time={time} setTime={setTime} selectedImage={selectedImage} imageChange={imageChange} handleSubmit={handleCreateEvent} fileInputRef={fileInputRef} />
 
               {/* Add Member Modal */}
               <Modal size={['xs', 'xs', 'xl', 'lg']} isOpen={isAddOpen} onClose={onAddClose}>

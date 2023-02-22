@@ -39,7 +39,7 @@ function Events() {
           {selectedChat?.events.map((eventItem) => {
             return (
               <>
-                <EventCard key={eventItem._id} title={eventItem.name} imageUrl={"https://res.cloudinary.com/dwzmsvp7f/image/fetch/q_75,f_auto,w_400/https%3A%2F%2Fmedia.insider.in%2Fimage%2Fupload%2Fc_crop%2Cg_custom%2Fv1672731458%2Ffhjoxm0euja3cafmrtyt.jpg" || eventItem?.thumbnail} />
+                <EventCard key={eventItem._id} title={eventItem.name} imageUrl={eventItem?.thumbnail} />
               </>
             )
           })}
@@ -52,7 +52,7 @@ function Events() {
           {selectedChat?.events.map((eventItem) => {
             return (
               <>
-                <EventCard title={eventItem.name} imageUrl={"https://res.cloudinary.com/dwzmsvp7f/image/fetch/q_75,f_auto,w_400/https%3A%2F%2Fmedia.insider.in%2Fimage%2Fupload%2Fc_crop%2Cg_custom%2Fv1672731458%2Ffhjoxm0euja3cafmrtyt.jpg" || eventItem?.thumbnail} />
+                <EventCard title={eventItem.name} imageUrl={eventItem?.thumbnail} />
               </>
             )
           })}

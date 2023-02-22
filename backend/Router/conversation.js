@@ -300,9 +300,8 @@ router.put("/event/edit/:eventId", asyncHandler(async (req, res) => {
 
 
 // delete event
-router.delete("/event/delete/:eventId", asyncHandler(async (req, res) => {
-    const { chatId } = req.body;
-    const { eventId } = req.params;
+router.delete("/event/delete/:eventId/:chatId", asyncHandler(async (req, res) => {
+    const { eventId, chatId } = req.params;
     const userId = req.user._id;
 
     const findEventInConversationAndDelete = await Chat.findByIdAndUpdate(chatId, {
