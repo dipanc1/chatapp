@@ -48,6 +48,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState("");
   const [selectedImage, setSelectedImage] = React.useState(null);
+  const [createEventLoading, setCreateEventLoading] = useState(false)
 
   const fileInputRef = React.createRef();
 
@@ -63,11 +64,18 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
   }
 
   const handleCreateEvent = async (e) => {
+    setCreateEventLoading(true)
     e.preventDefault();
 
-    if (selectedChat.groupAdmin._id !== user._id) return alert("You are not the admin of this group");
+    if (selectedChat.groupAdmin._id !== user._id) { 
+      setCreateEventLoading(false)
+      return alert("You are not the admin of this group");
+    }
 
-    if (name === "" || description === "" || date === "" || time === "") return alert("Feilds cannot be empty");
+    if (name === "" || description === "" || date === "" || time === "") {
+      setCreateEventLoading(false)
+      return alert("Feilds cannot be empty");
+    }
 
     const config = {
       headers: {
@@ -85,9 +93,12 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
         .then((res) => {
           // console.log(selectedChat)
           alert(res.data);
+          setCreateEventLoading(false)
+          onCloseCreateEvent()
         })
         .catch((err) => {
           console.log(err);
+          setCreateEventLoading(false)
         });
     } else {
       const formData = new FormData();
@@ -106,13 +117,17 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
           }, config)
             .then((res) => {
               alert(res.data);
+              setCreateEventLoading(false)
+
             })
             .catch((err) => {
               console.log(err);
+              setCreateEventLoading(false)
             });
         })
         .catch((err) => {
           console.log(err);
+          setCreateEventLoading(false)
         });
     }
 
@@ -405,7 +420,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
               </Box>
 
               {/* Create Event Modal */}
-              <EventModal isOpenCreateEvent={isOpenCreateEvent} onCloseCreateEvent={onCloseCreateEvent} name={name} setEventName={setEventName} description={description} setDescription={setDescription} date={date} setDate={setDate} time={time} setTime={setTime} selectedImage={selectedImage} imageChange={imageChange} handleSubmit={handleCreateEvent} fileInputRef={fileInputRef} />
+              <EventModal createEventLoading={createEventLoading} isOpenCreateEvent={isOpenCreateEvent} onCloseCreateEvent={onCloseCreateEvent} name={name} setEventName={setEventName} description={description} setDescription={setDescription} date={date} setDate={setDate} time={time} setTime={setTime} selectedImage={selectedImage} imageChange={imageChange} handleSubmit={handleCreateEvent} fileInputRef={fileInputRef} />
 
               {/* Add Member Modal */}
               <Modal size={['xs', 'xs', 'xl', 'lg']} isOpen={isAddOpen} onClose={onAddClose}>
