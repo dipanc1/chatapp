@@ -291,9 +291,7 @@ router.put("/event/edit/:eventId", asyncHandler(async (req, res) => {
     if (!findEventandUpdate) {
         return res.status(404).send("Event not found")
     } else {
-        res.status(200).json({
-            message: "Event updated",
-        });
+        res.status(200).send("Event updated");
     }
 
 }));

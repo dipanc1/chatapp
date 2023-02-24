@@ -11,7 +11,9 @@ import {
   Button,
   Box,
   UnorderedList,
-  ListItem
+  ListItem,
+  useDisclosure,
+  useToast
 } from '@chakra-ui/react';
 import { AppContext } from '../../context/AppContext';
 import { backend_url } from '../../baseApi';
@@ -29,11 +31,16 @@ const EventCard = ({
   const [toggleEventMenu, setToggleEventMenu] = useState(false);
   const { selectedChat } = useContext(AppContext);
   const user = JSON.parse(localStorage.getItem('user'));
-  const [name, setEventName] = useState("");
-  const [descriptiond, setDescriptiond] = useState();
+  const [name, setEventName] = useState(title);
+  const [descriptiond, setDescriptiond] = useState(description);
   const [dated, setDated] = useState(date);
   const [timed, setTimed] = useState(time);
   const [selectedImage, setSelectedImage] = React.useState(null);
+  const [editEventLoading, setEditEventLoading] = useState(false);
+
+  const toast = useToast();
+
+  const { isOpen: isOpenEditEvent, onOpen: onOpenEditEvent, onClose: onCloseEditEvent } = useDisclosure();
 
   const fileInputRef = React.createRef();
 
@@ -48,12 +55,35 @@ const EventCard = ({
     }
   }
 
-  const handleCreateEvent = async (e) => {
+  const handleEditEvent = async (e) => {
+    setEditEventLoading(true)
     e.preventDefault();
 
-    if (selectedChat.groupAdmin._id !== user._id) return alert("You are not the admin of this group");
+    if (selectedChat.groupAdmin._id !== user._id) {
+      setEditEventLoading(false);
+      toast({
+        title: "You are not the admin of this group",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    };
 
-    if (name === "" || description === "" || date === "" || time === "") return alert("Feilds cannot be empty");
+    if (name === "" || descriptiond === "" || dated === "" || timed === "") {
+      setEditEventLoading(false);
+      toast({
+        title: "Feilds cannot be empty",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      setEventName(title);
+      setDescriptiond(description);
+      setDated(date);
+      setTimed(time);
+      return;
+    }
 
     const config = {
       headers: {
@@ -62,15 +92,20 @@ const EventCard = ({
     };
 
     if (selectedImage === null) {
-      await axios.put(`${backend_url}/conversation/event/${selectedChat._id}`, {
-        name,
-        description,
-        date,
-        time
+      await axios.put(`${backend_url}/conversation/event/edit/${id}`, {
+        name: name,
+        description: descriptiond,
+        date: dated,
+        time: timed,
+        thumbnail: imageUrl
       }, config)
         .then((res) => {
-          // console.log(selectedChat)
-          alert(res.data);
+          setEditEventLoading(false);
+          setEventName(name);
+          setDescriptiond(descriptiond);
+          setDated(dated);
+          setTimed(timed);
+          onCloseEditEvent();
         })
         .catch((err) => {
           console.log(err);
@@ -81,17 +116,30 @@ const EventCard = ({
       formData.append('file', selectedImage);
       formData.append('upload_preset', 'chat-app');
 
-      await axios.post(pictureUpload, formData)
+      await axios.put(pictureUpload, formData)
         .then((res) => {
-          axios.put(`${backend_url}/conversation/event/${selectedChat._id}`, {
-            name,
-            description,
-            date,
-            time,
+          axios.put(`${backend_url}/conversation/event/edit/${id}`, {
+            name: name,
+            description: descriptiond,
+            date: dated,
+            time: timed,
             thumbnail: res.data.url
           }, config)
             .then((res) => {
-              alert(res.data);
+              toast({
+                title: "Event Created!",
+                description: "Event created successfully",
+                status: "success",
+                duration: 5000,
+                isClosable: true,
+                position: "bottom-left",
+              });
+              setEditEventLoading(false);
+              setEventName(name);
+              setDescriptiond(descriptiond);
+              setDated(dated);
+              setTimed(timed);
+              onCloseEditEvent();
             })
             .catch((err) => {
               console.log(err);
@@ -155,7 +203,10 @@ const EventCard = ({
                         <Image h='22px' me='15px' src="https://ik.imagekit.io/sahildhingra/save.png" />
                         <Text>Save</Text>
                       </ListItem>
-                      <ListItem p='10px 50px 10px 20px' display='flex' alignItems='center'>
+                      <ListItem onClick={() => {
+                        setToggleEventMenu(!toggleEventMenu);
+                        onOpenEditEvent();
+                      }} p='10px 50px 10px 20px' display='flex' alignItems='center'>
                         <Image h='22px' me='15px' src="https://ik.imagekit.io/sahildhingra/draw.png" />
                         <Text>Edit</Text>
                       </ListItem>
@@ -174,7 +225,7 @@ const EventCard = ({
           </Flex>
         </GridItem>
       </NavLink>
-      <EventModal />
+      <EventModal type={"Edit"} createEventLoading={editEventLoading} isOpenCreateEvent={isOpenEditEvent} onCloseCreateEvent={onCloseEditEvent} name={name} setEventName={setEventName} description={descriptiond} setDescription={setDescriptiond} date={dated} setDate={setDated} time={timed} setTime={setTimed} selectedImage={selectedImage} imageChange={imageChange} handleSubmit={handleEditEvent} fileInputRef={fileInputRef} imageUrl={imageUrl} />
     </>
   )
 }

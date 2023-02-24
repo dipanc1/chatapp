@@ -67,14 +67,35 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
     setCreateEventLoading(true)
     e.preventDefault();
 
-    if (selectedChat.groupAdmin._id !== user._id) { 
+    if (selectedChat.groupAdmin._id !== user._id) {
       setCreateEventLoading(false)
-      return alert("You are not the admin of this group");
+      toast({
+        title: "Error Occured!",
+        description: "You are not the admin of this group",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+      setEventName("");
+      setDescription("");
+      setDate("");
+      setTime("");
+      setSelectedImage(null);
+      return;
     }
 
     if (name === "" || description === "" || date === "" || time === "") {
       setCreateEventLoading(false)
-      return alert("Feilds cannot be empty");
+      toast({
+        title: "Error Occured!",
+        description: "Please fill all the fields",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+      return;
     }
 
     const config = {
@@ -82,6 +103,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
         Authorization: `Bearer ${user.token}`,
       },
     };
+
 
     if (selectedImage === null) {
       await axios.put(`${backend_url}/conversation/event/${selectedChat._id}`, {
@@ -91,14 +113,40 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
         time
       }, config)
         .then((res) => {
-          // console.log(selectedChat)
-          alert(res.data);
-          setCreateEventLoading(false)
-          onCloseCreateEvent()
+          toast({
+            title: "Event Created!",
+            description: "Event created successfully",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom-left",
+          });
+          setFetchAgain(!fetchAgain);
+          setCreateEventLoading(false);
+          setEventName("");
+          setDescription("");
+          setDate("");
+          setTime("");
+          setSelectedImage(null);
+          onCloseCreateEvent();
         })
         .catch((err) => {
           console.log(err);
-          setCreateEventLoading(false)
+          toast({
+            title: "Error Occured!",
+            description: "Something went wrong",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom-left",
+          });
+          setCreateEventLoading(false);
+          setEventName("");
+          setDescription("");
+          setDate("");
+          setTime("");
+          setSelectedImage(null);
+          onCloseCreateEvent();
         });
     } else {
       const formData = new FormData();
@@ -116,18 +164,59 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
             thumbnail: res.data.url
           }, config)
             .then((res) => {
-              alert(res.data);
-              setCreateEventLoading(false)
-
+              toast({
+                title: "Event Created!",
+                description: "Event created successfully",
+                status: "success",
+                duration: 5000,
+                isClosable: true,
+                position: "bottom-left",
+              });
+              setFetchAgain(!fetchAgain);
+              setCreateEventLoading(false);
+              setEventName("");
+              setDescription("");
+              setDate("");
+              setTime("");
+              setSelectedImage(null);
+              onCloseCreateEvent();
             })
             .catch((err) => {
               console.log(err);
-              setCreateEventLoading(false)
+              toast({
+                title: "Error Occured!",
+                description: "Something went wrong",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "bottom-left",
+              });
+              setCreateEventLoading(false);
+              setEventName("");
+              setDescription("");
+              setDate("");
+              setTime("");
+              setSelectedImage(null);
+              onCloseCreateEvent();
             });
         })
         .catch((err) => {
           console.log(err);
-          setCreateEventLoading(false)
+          toast({
+            title: "Error Occured!",
+            description: "Something went wrong",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom-left",
+          });
+          setCreateEventLoading(false);
+          setEventName("");
+          setDescription("");
+          setDate("");
+          setTime("");
+          setSelectedImage(null);
+          onCloseCreateEvent();
         });
     }
 
@@ -362,8 +451,8 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
                   {selectedChat?.events.map((eventItem) => {
                     return (
                       <>
-                        <Box className='group-event' mb='20px'>
-                          <EventCard id={eventItem._id} date={eventItem.date} time={eventItem.time} title={eventItem.name} imageUrl={eventItem?.thumbnail} />
+                        <Box key={eventItem._id} className='group-event' mb='20px'>
+                          <EventCard id={eventItem._id} date={eventItem.date} time={eventItem.time} title={eventItem.name} description={eventItem.description} imageUrl={eventItem?.thumbnail} />
                         </Box>
                       </>
                     )
@@ -420,7 +509,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
               </Box>
 
               {/* Create Event Modal */}
-              <EventModal createEventLoading={createEventLoading} isOpenCreateEvent={isOpenCreateEvent} onCloseCreateEvent={onCloseCreateEvent} name={name} setEventName={setEventName} description={description} setDescription={setDescription} date={date} setDate={setDate} time={time} setTime={setTime} selectedImage={selectedImage} imageChange={imageChange} handleSubmit={handleCreateEvent} fileInputRef={fileInputRef} />
+              <EventModal type={"Create"} createEventLoading={createEventLoading} isOpenCreateEvent={isOpenCreateEvent} onCloseCreateEvent={onCloseCreateEvent} name={name} setEventName={setEventName} description={description} setDescription={setDescription} date={date} setDate={setDate} time={time} setTime={setTime} selectedImage={selectedImage} imageChange={imageChange} handleSubmit={handleCreateEvent} fileInputRef={fileInputRef} />
 
               {/* Add Member Modal */}
               <Modal size={['xs', 'xs', 'xl', 'lg']} isOpen={isAddOpen} onClose={onAddClose}>
