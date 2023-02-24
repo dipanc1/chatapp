@@ -6,6 +6,7 @@ import {
     Heading,
     HStack,
     IconButton,
+    Image,
     Text,
     useDisclosure,
     useToast,
@@ -34,6 +35,7 @@ import EndLeaveModal from "../UserModals/EndLeaveModal";
 import { RoomContext } from "../../context/RoomContext";
 import Videoplayer from "./Videoplayer";
 import { useCallback } from "react";
+import { NavLink } from "react-router-dom";
 
 const IconButtonGeneric = ({
     icon,
@@ -82,6 +84,7 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
 				screenShare,
     } = useContext(RoomContext);
 
+    const CDN_IMAGES = "https://ik.imagekit.io/sahildhingra";
     const toast = useToast();
     let recorder;
 
@@ -305,10 +308,9 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
                 <Box
                     display={"flex"}
                     justifyContent={"space-between"}
-                    alignItems={"center"}
                     flexDirection={"column"}
                     p=" 50px 25px 0"
-                >
+                >   
                     <Box
                         className="video-container"
                         width={"100%"}
@@ -441,9 +443,48 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
                             </>
                         </Box>
                     </Box>
-                    <Text m={"3"}>
-                        Host: {selectedChat.groupAdmin.username}
-                    </Text>
+                    <Box>
+                        <Heading pt='20px' pb='15px' as='h1' size='lg' fontWeight='500'>Event Title Will Come Up Here</Heading>
+                        <Text as='h2' size='lg' fontWeight='500' pb='35px'>
+                            Host: {selectedChat.groupAdmin.username.toUpperCase()}
+                        </Text>
+                        <Flex justifyContent='end'>
+                        <NavLink className='btn btn-primary'>
+                            <Flex alignItems='center'>
+                            <Image h='18px' pe='15px' src={CDN_IMAGES+"/like-white.png"} /> 
+                            <Text>Like</Text>
+                            </Flex>
+                        </NavLink>
+                        <NavLink style={{"margin": "0 20px"}} className='btn btn-primary'>
+                            <Flex alignItems='center'>
+                            <Image h='18px' pe='15px' src={CDN_IMAGES+"/share-white.png"} /> 
+                            <Text>Share</Text>
+                            </Flex>
+                        </NavLink>
+                        <NavLink className='btn btn-primary'>
+                            <Flex alignItems='center'>
+                            <Image h='18px' pe='15px' src={CDN_IMAGES+"/save-white.png"} /> 
+                            <Text>Save</Text>
+                            </Flex>
+                        </NavLink>
+                        </Flex>
+                        <Box py='40px'><hr /></Box>
+                        <Box>
+                            <Flex gap='25px' fontWeight='bold'>
+                                <Flex alignItems='center'>
+                                    <Image h='18px' pe='6px' src={CDN_IMAGES+"/eye.png"} /> 
+                                    <Text>290 Watching</Text>
+                                </Flex>
+                                <Flex alignItems='center'>
+                                    <Image h='18px' pe='6px' src={CDN_IMAGES+"/clock.png"} /> 
+                                    <Text>Started 30 mins ago</Text>
+                                </Flex>
+                            </Flex>
+                            <Text pt='20px' pb='100px'>
+                                Description of the Event Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nihil dolore facere qentore, voluptas reiciendis, ea, minima vitae quod possimus totam consequatur vel facere! Sunt exercitationem eveniet harum. Tenetur voluptatem commodi officiis recusandae fugiat quisquam sunt dolorem? Cumque, assumenda aliquam! Officia provident ullam explicabo consectetur. Rerum consequatur inventore facilis accusantium optio perspiciatis obcaecati! Eius deleniti optio vitae possimus.
+                            </Text>
+                        </Box>
+                    </Box>
                     {!fullScreen && (
                         <Box
                             width={"100%"}

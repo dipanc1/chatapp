@@ -408,28 +408,37 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
   return (
     selectedChat ? (
       selectedChat?.isGroupChat ? (
-        <Tabs display='flex' flexDirection='column' h='100%'>
+
+        <Tabs display='flex' flexDirection='column' h='100%'>       
+        {
+          !stream && (
           <TabList mt={['2', '0', '0', '0']}>
             {/* {(token && meetingId && stream) &&
               <Tab boxSize={fullScreen ? '10' : '1'} _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>Chat</Tab>
             } */}
-            {stream &&
+            {/* {stream &&
               <Tab flex='1'>Chat</Tab>
-            }
+            } */}
 
-            <Tab flex='1'>Events</Tab>
 
-            <Tab flex='1'>{stream ? 'Participants' : 'Members'}</Tab>
+                <>
+                <Tab flex='1'>Events</Tab>
 
-            <Tab display='none' flex='1'>Settings</Tab>
+                <Tab flex='1'>{stream ? 'Participants' : 'Members'}</Tab>
+
+                <Tab display='none' flex='1'>Settings</Tab>
+                </>
+
           </TabList>
 
+          )
+        }
           <TabPanels flex='1' h='80%'>
 
             {/* Chat Tab */}
             {stream &&
-              <TabPanel>
-                <ChatBoxComponent height={fullScreen ? '65vh' : '20vh'} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} selectedChat={selectedChat} user={user} toast={toast} />
+              <TabPanel p='0' h='100%' display='flex' flexDirection='column'>
+                <ChatBoxComponent flex='1' height={fullScreen ? '65vh' : '20vh'} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} selectedChat={selectedChat} user={user} toast={toast} />
               </TabPanel>
             }
 

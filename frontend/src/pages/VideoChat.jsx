@@ -104,7 +104,7 @@ const Chat = () => {
     <SocketContextProvider>
       <RoomProvider>
         <Static noPadding>
-            <Box h='100%' display={'flex'}>
+            <Box h={stream ? '': '100%'} display={'flex'}>
             {stream ?
                 <StreamingPeer admin={admin} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
                 // (stream && token && meetingId) ?
@@ -134,7 +134,7 @@ const Chat = () => {
                 </>
             }
             <Box 
-                h='100%'
+                h={stream ?  'calc(100vh - 141px)' : '100%'}
                 position='sticky'
                 top='0'            
                 flex={(stream && token && meetingId) ? ['0', '3', '3', '3'] : ['0', '5', '5', '4']}
