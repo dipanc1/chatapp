@@ -5,11 +5,11 @@ const path = require("path");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 
-const userRoute = require("./Router/users");
-const otpRoute = require("./Router/otp");
-const conversationRoute = require("./Router/conversation");
-const messageRoute = require("./Router/messages");
-const meetingRoute = require("./Router/meetings");
+const userRoute = require("./router/users");
+const otpRoute = require("./router/otp");
+const conversationRoute = require("./router/conversation");
+const messageRoute = require("./router/messages");
+const meetingRoute = require("./router/meetings");
 
 require("dotenv").config();
 

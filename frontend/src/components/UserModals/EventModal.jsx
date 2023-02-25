@@ -57,7 +57,7 @@ const EventModal = ({ type, createEventLoading, isOpenCreateEvent, onCloseCreate
                                             mt='3'
                                         />
                                     ) : (
-                                        <Image
+                                       imageUrl && <Image
                                             width={'100px'}
                                             height={'100px'}
                                             src={imageUrl}

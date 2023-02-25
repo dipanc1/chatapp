@@ -70,12 +70,11 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
     if (selectedChat.groupAdmin._id !== user._id) {
       setCreateEventLoading(false)
       toast({
-        title: "Error Occured!",
-        description: "You are not the admin of this group",
+        title: "You are not the admin of this group",
         status: "error",
         duration: 5000,
         isClosable: true,
-        position: "bottom-left",
+        position: "bottom",
       });
       setEventName("");
       setDescription("");
@@ -88,12 +87,11 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
     if (name === "" || description === "" || date === "" || time === "") {
       setCreateEventLoading(false)
       toast({
-        title: "Error Occured!",
-        description: "Please fill all the fields",
+        title: "Please fill all the fields",
         status: "error",
         duration: 5000,
         isClosable: true,
-        position: "bottom-left",
+        position: "bottom",
       });
       return;
     }
@@ -113,22 +111,41 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
         time
       }, config)
         .then((res) => {
-          toast({
-            title: "Event Created!",
-            description: "Event created successfully",
-            status: "success",
-            duration: 5000,
-            isClosable: true,
-            position: "bottom-left",
-          });
-          setFetchAgain(!fetchAgain);
-          setCreateEventLoading(false);
-          setEventName("");
-          setDescription("");
-          setDate("");
-          setTime("");
-          setSelectedImage(null);
-          onCloseCreateEvent();
+          axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
+            selectedChat.events = res.data;
+            toast({
+              title: "Event Created!",
+              description: "Event created successfully",
+              status: "success",
+              duration: 5000,
+              isClosable: true,
+              position: "bottom-left",
+            });
+            setCreateEventLoading(false);
+            setEventName("");
+            setDescription("");
+            setDate("");
+            setTime("");
+            setSelectedImage(null);
+            onCloseCreateEvent();
+          }).catch((err) => {
+            console.log(err);
+            toast({
+              title: "Error Occured!",
+              description: "Something went wrong",
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+              position: "bottom-left",
+            });
+            setCreateEventLoading(false);
+            setEventName("");
+            setDescription("");
+            setDate("");
+            setTime("");
+            setSelectedImage(null);
+            onCloseCreateEvent();
+          })
         })
         .catch((err) => {
           console.log(err);
@@ -164,22 +181,41 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
             thumbnail: res.data.url
           }, config)
             .then((res) => {
-              toast({
-                title: "Event Created!",
-                description: "Event created successfully",
-                status: "success",
-                duration: 5000,
-                isClosable: true,
-                position: "bottom-left",
-              });
-              setFetchAgain(!fetchAgain);
-              setCreateEventLoading(false);
-              setEventName("");
-              setDescription("");
-              setDate("");
-              setTime("");
-              setSelectedImage(null);
-              onCloseCreateEvent();
+              axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
+                selectedChat.events = res.data;
+                toast({
+                  title: "Event Created!",
+                  description: "Event created successfully",
+                  status: "success",
+                  duration: 5000,
+                  isClosable: true,
+                  position: "bottom-left",
+                });
+                setCreateEventLoading(false);
+                setEventName("");
+                setDescription("");
+                setDate("");
+                setTime("");
+                setSelectedImage(null);
+                onCloseCreateEvent();
+              }).catch((err) => {
+                console.log(err);
+                toast({
+                  title: "Error Occured!",
+                  description: "Something went wrong",
+                  status: "error",
+                  duration: 5000,
+                  isClosable: true,
+                  position: "bottom-left",
+                });
+                setCreateEventLoading(false);
+                setEventName("");
+                setDescription("");
+                setDate("");
+                setTime("");
+                setSelectedImage(null);
+                onCloseCreateEvent();
+              })
             })
             .catch((err) => {
               console.log(err);
@@ -409,30 +445,30 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
     selectedChat ? (
       selectedChat?.isGroupChat ? (
 
-        <Tabs display='flex' flexDirection='column' h='100%'>       
-        {
-          !stream && (
-          <TabList mt={['2', '0', '0', '0']}>
-            {/* {(token && meetingId && stream) &&
+        <Tabs display='flex' flexDirection='column' h='100%'>
+          {
+            !stream && (
+              <TabList mt={['2', '0', '0', '0']}>
+                {/* {(token && meetingId && stream) &&
               <Tab boxSize={fullScreen ? '10' : '1'} _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>Chat</Tab>
             } */}
-            {/* {stream &&
+                {/* {stream &&
               <Tab flex='1'>Chat</Tab>
             } */}
 
 
                 <>
-                <Tab flex='1'>Events</Tab>
+                  <Tab flex='1'>Events</Tab>
 
-                <Tab flex='1'>{stream ? 'Participants' : 'Members'}</Tab>
+                  <Tab flex='1'>{stream ? 'Participants' : 'Members'}</Tab>
 
-                <Tab display='none' flex='1'>Settings</Tab>
+                  <Tab display='none' flex='1'>Settings</Tab>
                 </>
 
-          </TabList>
+              </TabList>
 
-          )
-        }
+            )
+          }
           <TabPanels flex='1' h='80%'>
 
             {/* Chat Tab */}

@@ -277,8 +277,15 @@ router.put("/event/:chatId", asyncHandler(async (req, res) => {
 
 // edit event 
 router.put("/event/edit/:eventId", asyncHandler(async (req, res) => {
-    const { name, description, date, time, thumbnail } = req.body;
+    const { name, description, date, time, thumbnail, chatId } = req.body;
     const { eventId } = req.params;
+    const userId = req.user._id;
+    
+    const updateGroupChat = await Chat.findById(chatId);
+
+    if (updateGroupChat.groupAdmin.toString() != userId.toString()) {
+        return res.status(400).send("You are not admin of this group")
+    };
 
     const findEventandUpdate = await EventTable.findByIdAndUpdate(eventId, {
         name,
@@ -302,6 +309,12 @@ router.delete("/event/delete/:eventId/:chatId", asyncHandler(async (req, res) =>
     const { eventId, chatId } = req.params;
     const userId = req.user._id;
 
+    const updateGroupChat = await Chat.findById(chatId);
+
+    if (updateGroupChat.groupAdmin.toString() != userId.toString()) {
+        return res.status(400).send("You are not admin of this group")
+    };
+
     const findEventInConversationAndDelete = await Chat.findByIdAndUpdate(chatId, {
         $pull: { events: eventId }
     });
@@ -322,6 +335,19 @@ router.delete("/event/delete/:eventId/:chatId", asyncHandler(async (req, res) =>
 
 }));
 
+
+// get events of a particular group
+router.get("/event/:chatId", asyncHandler(async (req, res) => {
+    const { chatId } = req.params;
+
+    const findGroupById = await Chat.findById(chatId).populate("events");
+
+    if (!findGroupById) {
+        return res.status(404).send("Group not found")
+    }
+
+    res.status(200).json(findGroupById.events);
+}));
 
 
 

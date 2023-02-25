@@ -5,7 +5,6 @@ const asyncHandler = require("express-async-handler");
 
 require("dotenv").config();
 
-
 const protect = asyncHandler(async (req, res, next) => {
     let token;
     const SECRET_KEY = process.env.JWT_SECRET;

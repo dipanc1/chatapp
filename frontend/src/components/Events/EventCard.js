@@ -97,15 +97,43 @@ const EventCard = ({
         description: descriptiond,
         date: dated,
         time: timed,
-        thumbnail: imageUrl
+        thumbnail: imageUrl,
+        chatId: selectedChat._id
       }, config)
         .then((res) => {
-          setEditEventLoading(false);
-          setEventName(name);
-          setDescriptiond(descriptiond);
-          setDated(dated);
-          setTimed(timed);
-          onCloseEditEvent();
+          axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
+            selectedChat.events = res.data;
+            toast({
+              title: "Event Edited!",
+              description: "Event edited successfully",
+              status: "success",
+              duration: 5000,
+              isClosable: true,
+              position: "bottom-left",
+            });
+            setEditEventLoading(false);
+            setEventName(name);
+            setDescriptiond(descriptiond);
+            setDated(dated);
+            setTimed(timed);
+            onCloseEditEvent();
+          }).catch((err) => {
+            console.log(err);
+            toast({
+              title: "Error Occured!",
+              description: "Something went wrong",
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+              position: "bottom-left",
+            });
+            setEditEventLoading(false);
+            setEventName(name);
+            setDescriptiond(descriptiond);
+            setDated(dated);
+            setTimed(timed);
+            onCloseEditEvent();
+          })
         })
         .catch((err) => {
           console.log(err);
@@ -123,23 +151,43 @@ const EventCard = ({
             description: descriptiond,
             date: dated,
             time: timed,
-            thumbnail: res.data.url
+            thumbnail: res.data.url,
+            chatId: selectedChat._id
           }, config)
             .then((res) => {
-              toast({
-                title: "Event Created!",
-                description: "Event created successfully",
-                status: "success",
-                duration: 5000,
-                isClosable: true,
-                position: "bottom-left",
-              });
-              setEditEventLoading(false);
-              setEventName(name);
-              setDescriptiond(descriptiond);
-              setDated(dated);
-              setTimed(timed);
-              onCloseEditEvent();
+              axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
+                selectedChat.events = res.data;
+                toast({
+                  title: "Event Created!",
+                  description: "Event edited successfully",
+                  status: "success",
+                  duration: 5000,
+                  isClosable: true,
+                  position: "bottom-left",
+                });
+                setEditEventLoading(false);
+                setEventName(name);
+                setDescriptiond(descriptiond);
+                setDated(dated);
+                setTimed(timed);
+                onCloseEditEvent();
+              }).catch((err) => {
+                console.log(err);
+                toast({
+                  title: "Error Occured!",
+                  description: "Something went wrong",
+                  status: "error",
+                  duration: 5000,
+                  isClosable: true,
+                  position: "bottom-left",
+                });
+                setEditEventLoading(false);
+                setEventName(name);
+                setDescriptiond(descriptiond);
+                setDated(dated);
+                setTimed(timed);
+                onCloseEditEvent();
+              })
             })
             .catch((err) => {
               console.log(err);
@@ -153,6 +201,16 @@ const EventCard = ({
   }
 
   const deleteEvent = async (id) => {
+    if (selectedChat.groupAdmin._id !== user._id) {
+      toast({
+        title: "You are not the admin of this group",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
     const newEvents = selectedChat.events.filter((event) => event._id !== id);
     selectedChat.events = newEvents;
 
@@ -165,12 +223,29 @@ const EventCard = ({
 
     try {
       await axios.delete(`${backend_url}/conversation/event/delete/${id}/${selectedChat._id}`, config).then((res) => {
-        console.log(res);
-        alert('Event deleted successfully');
+        toast({
+          title: "Event Deleted!",
+          description: "Event deleted successfully",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom-left",
+        });
       });
     } catch (error) {
-      console.log(error);
-      alert('Error deleting event');
+      axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
+        selectedChat.events = res.data;
+      }).catch((err) => {
+        console.log(err);
+      });
+      toast({
+        title: "Error Occured!",
+        description: "Something went wrong",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
     }
 
   }
