@@ -55,7 +55,7 @@ router.post("/", asyncHandler(async (req, res) => {
 }));
 
 
-//get all chats
+//get all chats of user
 router.get("/", async (req, res) => {
     try {
         Chat.find({
@@ -280,7 +280,7 @@ router.put("/event/edit/:eventId", asyncHandler(async (req, res) => {
     const { name, description, date, time, thumbnail, chatId } = req.body;
     const { eventId } = req.params;
     const userId = req.user._id;
-    
+
     const updateGroupChat = await Chat.findById(chatId);
 
     if (updateGroupChat.groupAdmin.toString() != userId.toString()) {
@@ -347,6 +347,27 @@ router.get("/event/:chatId", asyncHandler(async (req, res) => {
     }
 
     res.status(200).json(findGroupById.events);
+}));
+
+// get all group chats with pagination
+router.get("/all/:page", asyncHandler(async (req, res) => {
+    const { page } = req.params;
+    const limit = 10;
+    const skip = (page - 1) * limit;
+
+    const allGroupChats = await Chat.find({ isGroupChat: true })
+        .populate("users", "-password")
+        .populate("groupAdmin", "-password")
+        .populate("events")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit);
+
+    if (!allGroupChats) {
+        return res.status(404).send("No group chats found")
+    }
+
+    res.status(200).json(allGroupChats);
 }));
 
 
