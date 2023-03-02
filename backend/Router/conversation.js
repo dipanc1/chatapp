@@ -261,7 +261,7 @@ router.put("/event/:chatId", asyncHandler(async (req, res) => {
     const user = await User.findById(userId);
     const savedEvent = await newEvent.save();
 
-    console.log(savedEvent);
+    // console.log(savedEvent);
 
     if (updateGroupChat && user) {
         updateGroupChat.events.push(savedEvent);
@@ -349,6 +349,7 @@ router.get("/event/:chatId", asyncHandler(async (req, res) => {
     res.status(200).json(findGroupById.events);
 }));
 
+
 // get all group chats with pagination
 router.get("/all/:page", asyncHandler(async (req, res) => {
     const { page } = req.params;
@@ -369,7 +370,6 @@ router.get("/all/:page", asyncHandler(async (req, res) => {
 
     res.status(200).json(allGroupChats);
 }));
-
 
 
 module.exports = router;

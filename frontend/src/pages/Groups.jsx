@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { NavLink } from "react-router-dom";
 import {
   Box,
@@ -14,6 +14,8 @@ import {
 import Static from "../components/common/Static"
 import EventCard from '../components/Events/EventCard';
 import GroupCard from '../components/Groups/GroupCard';
+import axios from 'axios';
+import { backend_url } from '../baseApi';
 
 const groups = [
   {
@@ -55,6 +57,28 @@ const groups = [
 ]
 
 function Groups() {
+  const user = JSON.parse(localStorage.getItem('user'));
+
+  
+  
+  useEffect(() => {
+    const listGroups = async () => {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      // 1 is page number, 10 is limit, use it for pagination
+      const { data } = await axios.get(`${backend_url}/conversation/all/1`, config);
+      console.log(data);
+    }
+
+    listGroups();
+    
+  }, [user.token])
+
+
   return (
     <>
       <Static>
@@ -71,7 +95,7 @@ function Groups() {
           {
             groups.map((groupItem) => {
               return (
-                <GroupCard 
+                <GroupCard
                   name={groupItem.name}
                   members={groupItem.members}
                   upcomingEvents={groupItem.upcomingEvents}
