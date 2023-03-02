@@ -1,6 +1,6 @@
-import React, { 
+import React, {
   useState,
-  useEffect 
+  useEffect
 } from 'react'
 import { NavLink } from "react-router-dom";
 import {
@@ -30,36 +30,36 @@ function Groups() {
 
   const toast = useToast();
 
+  useEffect(() => {
     // fetch all conversations
     const fetchChats = async () => {
       try {
-          const config = {
-              headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${user.token}`,
-              },
-          };
-          const { data } = await axios.get(
-              `${backend_url}/conversation`,
-              config
-          );
-          setGroupConversations(
-              data.filter((friend) => friend.isGroupChat && friend.chatName)
-          );
+        const config = {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        };
+        const { data } = await axios.get(
+          `${backend_url}/conversation`,
+          config
+        );
+        setGroupConversations(
+          data.filter((friend) => friend.isGroupChat && friend.chatName)
+        );
       } catch (error) {
-          // console.log(error)
-          toast({
-              title: "Error Occured!",
-              description: "Failed to Load the Conversations",
-              status: "error",
-              duration: 5000,
-              isClosable: true,
-              position: "bottom-left",
-          });
+        // console.log(error)
+        toast({
+          title: "Error Occured!",
+          description: "Failed to Load the Conversations",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom-left",
+        });
       }
-  };
-  
-  useEffect(() => {
+    };
+
     const listGroups = async () => {
       const config = {
         headers: {
@@ -68,13 +68,17 @@ function Groups() {
         },
       };
       // 1 is page number, 10 is limit, use it for pagination
-      const { data } = await axios.get(`${backend_url}/conversation/all/1`, config);
-      setGroupsList(data)
+      await axios.get(`${backend_url}/conversation/all/1`, config).then(
+        (response) => {
+          setGroupsList(response.data);
+        }).catch((error) => {
+          console.log(error)
+        })
     }
 
     fetchChats();
     listGroups();
-  }, [user.token])
+  }, [toast, user.token])
 
 
   return (
@@ -92,70 +96,58 @@ function Groups() {
 
 
         <UnorderedList ps='0' ms='0' mb='30px' className="tab-nav">
-            <li onClick={() =>setActiveTab(1)} className={activeTab===1 ? "active" : ""}>
-                All Groups
-            </li>
-            <li onClick={() =>setActiveTab(2)} className={activeTab===2 ? "active" : ""}>
-                Joined Groups
-            </li>
+          <li onClick={() => setActiveTab(1)} className={activeTab === 1 ? "active" : ""}>
+            All Groups
+          </li>
+          <li onClick={() => setActiveTab(2)} className={activeTab === 2 ? "active" : ""}>
+            Joined Groups
+          </li>
         </UnorderedList>
         <div className="tab-content">
-            <div className={"tab-content-item "+(activeTab===1 ? "current" : "")}>
+          <div className={"tab-content-item " + (activeTab === 1 ? "current" : "")}>
 
             <Grid className='bg-variants' mb='70px' templateColumns='repeat(2, 1fr)' gap='2rem' rowGap='3rem'>
-          {
-            groupsList.map((groupItem) => {
-              if(user._id === groupItem.groupAdmin._id) {
-                const adminStatus = true;
-                return (
+              {
+                groupsList.map((groupItem) => (
                   <GroupCard
+                    key={groupItem._id}
                     name={groupItem.chatName}
                     members={groupItem.users.length}
                     upcomingEvents={groupItem.events.length}
-                    isAdmin={adminStatus}
+                    isAdmin={user._id === groupItem.groupAdmin._id}
                   />
-                )
+                ))
               }
-              return (
-                <GroupCard
-                  name={groupItem.chatName}
-                  members={groupItem.users.length}
-                  upcomingEvents={groupItem.events.length}
-                  isAdmin={false}
-                />
-              )
-            })
-          }
-        </Grid>
-            </div>
-            <div className={"tab-themes tab-content-item "+(activeTab===2 ? "current" : "")}>
+            </Grid>
+          </div>
+          <div className={"tab-themes tab-content-item " + (activeTab === 2 ? "current" : "")}>
 
             <Grid className='bg-variants' mb='70px' templateColumns='repeat(2, 1fr)' gap='2rem' rowGap='3rem'>
-          {
-            groupConversations.map((groupItem) => {
-              if(user._id === groupItem.groupAdmin._id) {
-                const adminStatus = true;
-                return (
-                  <GroupCard
-                    name={groupItem.chatName}
-                    members={groupItem.users.length}
-                    upcomingEvents={groupItem.events.length}
-                    isAdmin={adminStatus}
-                  />
-                )
+              {
+                groupConversations.map((groupItem) => {
+                  if (user._id === groupItem.groupAdmin._id) {
+                    const adminStatus = true;
+                    return (
+                      <GroupCard
+                        name={groupItem.chatName}
+                        members={groupItem.users.length}
+                        upcomingEvents={groupItem.events.length}
+                        isAdmin={adminStatus}
+                      />
+                    )
+                  }
+                  return (
+                    <GroupCard
+                      name={groupItem.chatName}
+                      members={groupItem.users.length}
+                      upcomingEvents={groupItem.events.length}
+                      isAdmin={false}
+                    />
+                  )
+                })
               }
-              return (
-                <GroupCard
-                  name={groupItem.chatName}
-                  members={groupItem.users.length}
-                  upcomingEvents={groupItem.events.length}
-                  isAdmin={false}
-                />
-              )
-            })
-          }
-        </Grid>
-            </div>
+            </Grid>
+          </div>
         </div>
 
       </Static>
