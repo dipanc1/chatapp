@@ -37,51 +37,51 @@ function Events() {
         </Flex>
         <Box pb='30px'>
           <ul className="tab-nav">
-              <li onClick={() =>setActiveTab(1)} className={activeTab===1 ? "active" : ""}>
-                  Group Events
-              </li>
-              <li onClick={() =>setActiveTab(2)} className={activeTab===2 ? "active" : ""}>
-                  Upcoming Events
-              </li>
-              <li onClick={() =>setActiveTab(3)} className={activeTab===3 ? "active" : ""}>
-                  Previous Events
-              </li>
+            <li onClick={() => setActiveTab(1)} className={activeTab === 1 ? "active" : ""}>
+              Group Events
+            </li>
+            <li onClick={() => setActiveTab(2)} className={activeTab === 2 ? "active" : ""}>
+              Upcoming Events
+            </li>
+            <li onClick={() => setActiveTab(3)} className={activeTab === 3 ? "active" : ""}>
+              Previous Events
+            </li>
           </ul>
         </Box>
         <div className="tab-content">
-            <div className={"tab-content-item "+(activeTab===1 ? "current" : "")}>
-              <Grid mb='70px' templateColumns='repeat(3, 1fr)' gap='2rem' rowGap='3rem'>
-                {selectedChat?.events.map((eventItem) => {
-                  return (
-                    <>
-                      <EventCard key={eventItem._id} title={eventItem.name} imageUrl={eventItem?.thumbnail} />
-                    </>
-                  )
-                })}
-              </Grid>
-            </div>
-            <div className={"tab-themes tab-content-item "+(activeTab===2 ? "current" : "")}>
-              <Grid mb='70px' templateColumns='repeat(3, 1fr)' gap='2rem' rowGap='3rem'>
-                {selectedChat?.events.map((eventItem) => {
-                  return (
-                    <>
-                      <EventCard key={eventItem._id} title={eventItem.name} imageUrl={eventItem?.thumbnail} />
-                    </>
-                  )
-                })}
-              </Grid>
-            </div>
-            <div className={"tab-content-item "+(activeTab===3 ? "current" : "")}>
-              <Grid mb='70px' templateColumns='repeat(3, 1fr)' gap='2rem' rowGap='3rem'>
-                  {selectedChat?.events.map((eventItem) => {
-                    return (
-                      <>
-                        <EventCard key={eventItem._id} title={eventItem.name} imageUrl={eventItem?.thumbnail} />
-                      </>
-                    )
-                  })}
-                </Grid>
-            </div>
+          <div className={"tab-content-item " + (activeTab === 1 ? "current" : "")}>
+            <Grid mb='70px' templateColumns='repeat(3, 1fr)' gap='2rem' rowGap='3rem'>
+              {selectedChat?.events.map((eventItem) => {
+                return (
+                  <>
+                    <EventCard key={eventItem._id} title={eventItem.name} imageUrl={eventItem?.thumbnail} />
+                  </>
+                )
+              })}
+            </Grid>
+          </div>
+          <div className={"tab-themes tab-content-item " + (activeTab === 2 ? "current" : "")}>
+            <Grid mb='70px' templateColumns='repeat(3, 1fr)' gap='2rem' rowGap='3rem'>
+              {selectedChat?.events.map((eventItem) => {
+                return (
+                  <>
+                    <EventCard key={eventItem._id} title={eventItem.name} imageUrl={eventItem?.thumbnail} />
+                  </>
+                )
+              })}
+            </Grid>
+          </div>
+          <div className={"tab-content-item " + (activeTab === 3 ? "current" : "")}>
+            <Grid mb='70px' templateColumns='repeat(3, 1fr)' gap='2rem' rowGap='3rem'>
+              {selectedChat?.events.map((eventItem) => {
+                return (
+                  <>
+                    <EventCard key={eventItem._id} title={eventItem.name} imageUrl={eventItem?.thumbnail} />
+                  </>
+                )
+              })}
+            </Grid>
+          </div>
         </div>
       </Static>
     </>

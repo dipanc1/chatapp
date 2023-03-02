@@ -234,6 +234,7 @@ router.get("/streaming/:chatid", asyncHandler(async (req, res) => {
     })
 }));
 
+
 // add an event to the group conversation
 router.put("/event/:chatId", asyncHandler(async (req, res) => {
     const { name, description, date, time, thumbnail } = req.body;
@@ -256,6 +257,7 @@ router.put("/event/:chatId", asyncHandler(async (req, res) => {
         date,
         time,
         thumbnail,
+        chatId,
     });
 
     const user = await User.findById(userId);

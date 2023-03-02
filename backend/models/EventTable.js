@@ -6,6 +6,7 @@ const EventSchema = mongoose.Schema({
     date: { type: Date },
     time: { type: String },
     thumbnail: { type: String },
+    chatId: { type: String },
 }, { timestamps: true });
 
 const EventTable = mongoose.model("Event", EventSchema);

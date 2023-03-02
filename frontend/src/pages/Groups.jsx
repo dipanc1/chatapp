@@ -109,8 +109,8 @@ function Groups() {
         </UnorderedList>
         <div className="tab-content">
           <div className={"tab-content-item " + (activeTab === 1 ? "current" : "")}>
-              {
-                groupsList.length ? 
+            {
+              groupsList.length ?
                 (
                   <Grid className='bg-variants' mb='70px' templateColumns='repeat(2, 1fr)' gap='2rem' rowGap='3rem'>
                     {groupsList.map((groupItem) => (
@@ -123,7 +123,7 @@ function Groups() {
                       />
                     ))}
                   </Grid>
-                ) : ( 
+                ) : (
                   <Box py='100px' background='transparent' textAlign='center'>
                     <Spinner
                       thickness='4px'
@@ -134,11 +134,11 @@ function Groups() {
                     />
                   </Box>
                 )
-              }
+            }
           </div>
           <div className={"tab-themes tab-content-item " + (activeTab === 2 ? "current" : "")}>
             {
-                groupConversations.length ? 
+              groupConversations.length ?
                 (
                   <Grid className='bg-variants' mb='70px' templateColumns='repeat(2, 1fr)' gap='2rem' rowGap='3rem'>
                     {groupConversations.map((groupItem) => (
@@ -151,7 +151,7 @@ function Groups() {
                       />
                     ))}
                   </Grid>
-                ) : ( 
+                ) : (
                   <Box py='100px' background='transparent' textAlign='center'>
                     <Spinner
                       thickness='4px'
@@ -162,11 +162,11 @@ function Groups() {
                     />
                   </Box>
                 )
-              }
+            }
           </div>
           <div className={"tab-themes tab-content-item " + (activeTab === 3 ? "current" : "")}>
             {
-                groupConversations.length ? 
+              groupConversations.length ?
                 (
                   <Grid className='bg-variants' mb='70px' templateColumns='repeat(2, 1fr)' gap='2rem' rowGap='3rem'>
                     {groupConversations.map((groupItem) => {
@@ -184,7 +184,7 @@ function Groups() {
                     }
                     )}
                   </Grid>
-                ) : ( 
+                ) : (
                   <Box py='100px' background='transparent' textAlign='center'>
                     <Spinner
                       thickness='4px'
@@ -195,7 +195,7 @@ function Groups() {
                     />
                   </Box>
                 )
-              }
+            }
           </div>
         </div>
 
