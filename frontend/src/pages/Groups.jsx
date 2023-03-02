@@ -13,7 +13,8 @@ import {
   Flex,
   Image,
   UnorderedList,
-  useToast
+  useToast,
+  Spinner
 } from '@chakra-ui/react';
 
 import Static from "../components/common/Static"
@@ -102,51 +103,99 @@ function Groups() {
           <li onClick={() => setActiveTab(2)} className={activeTab === 2 ? "active" : ""}>
             Joined Groups
           </li>
+          <li onClick={() => setActiveTab(3)} className={activeTab === 3 ? "active" : ""}>
+            My Groups
+          </li>
         </UnorderedList>
         <div className="tab-content">
           <div className={"tab-content-item " + (activeTab === 1 ? "current" : "")}>
-
-            <Grid className='bg-variants' mb='70px' templateColumns='repeat(2, 1fr)' gap='2rem' rowGap='3rem'>
               {
-                groupsList.map((groupItem) => (
-                  <GroupCard
-                    key={groupItem._id}
-                    name={groupItem.chatName}
-                    members={groupItem.users.length}
-                    upcomingEvents={groupItem.events.length}
-                    isAdmin={user._id === groupItem.groupAdmin._id}
-                  />
-                ))
-              }
-            </Grid>
-          </div>
-          <div className={"tab-themes tab-content-item " + (activeTab === 2 ? "current" : "")}>
-
-            <Grid className='bg-variants' mb='70px' templateColumns='repeat(2, 1fr)' gap='2rem' rowGap='3rem'>
-              {
-                groupConversations.map((groupItem) => {
-                  if (user._id === groupItem.groupAdmin._id) {
-                    const adminStatus = true;
-                    return (
+                groupsList.length ? 
+                (
+                  <Grid className='bg-variants' mb='70px' templateColumns='repeat(2, 1fr)' gap='2rem' rowGap='3rem'>
+                    {groupsList.map((groupItem) => (
                       <GroupCard
+                        key={groupItem._id}
                         name={groupItem.chatName}
                         members={groupItem.users.length}
                         upcomingEvents={groupItem.events.length}
-                        isAdmin={adminStatus}
+                        isAdmin={user._id === groupItem.groupAdmin._id}
                       />
-                    )
-                  }
-                  return (
-                    <GroupCard
-                      name={groupItem.chatName}
-                      members={groupItem.users.length}
-                      upcomingEvents={groupItem.events.length}
-                      isAdmin={false}
+                    ))}
+                  </Grid>
+                ) : ( 
+                  <Box py='100px' background='transparent' textAlign='center'>
+                    <Spinner
+                      thickness='4px'
+                      speed='0.2s'
+                      emptyColor='gray.200'
+                      color='buttonPrimaryColor'
+                      size='xl'
                     />
-                  )
-                })
+                  </Box>
+                )
               }
-            </Grid>
+          </div>
+          <div className={"tab-themes tab-content-item " + (activeTab === 2 ? "current" : "")}>
+            {
+                groupConversations.length ? 
+                (
+                  <Grid className='bg-variants' mb='70px' templateColumns='repeat(2, 1fr)' gap='2rem' rowGap='3rem'>
+                    {groupConversations.map((groupItem) => (
+                      <GroupCard
+                        key={groupItem._id}
+                        name={groupItem.chatName}
+                        members={groupItem.users.length}
+                        upcomingEvents={groupItem.events.length}
+                        isAdmin={user._id === groupItem.groupAdmin._id}
+                      />
+                    ))}
+                  </Grid>
+                ) : ( 
+                  <Box py='100px' background='transparent' textAlign='center'>
+                    <Spinner
+                      thickness='4px'
+                      speed='0.2s'
+                      emptyColor='gray.200'
+                      color='buttonPrimaryColor'
+                      size='xl'
+                    />
+                  </Box>
+                )
+              }
+          </div>
+          <div className={"tab-themes tab-content-item " + (activeTab === 3 ? "current" : "")}>
+            {
+                groupConversations.length ? 
+                (
+                  <Grid className='bg-variants' mb='70px' templateColumns='repeat(2, 1fr)' gap='2rem' rowGap='3rem'>
+                    {groupConversations.map((groupItem) => {
+                      if (user._id === groupItem.groupAdmin._id) {
+                        const adminStatus = true;
+                        return (
+                          <GroupCard
+                            name={groupItem.chatName}
+                            members={groupItem.users.length}
+                            upcomingEvents={groupItem.events.length}
+                            isAdmin={adminStatus}
+                          />
+                        )
+                      }
+                    }
+                    )}
+                  </Grid>
+                ) : ( 
+                  <Box py='100px' background='transparent' textAlign='center'>
+                    <Spinner
+                      thickness='4px'
+                      speed='0.2s'
+                      emptyColor='gray.200'
+                      color='buttonPrimaryColor'
+                      size='xl'
+                    />
+                  </Box>
+                )
+              }
           </div>
         </div>
 
