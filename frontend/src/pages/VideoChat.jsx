@@ -139,7 +139,7 @@ const Chat = () => {
                 top='0'            
                 flex={(stream && token && meetingId) ? ['0', '3', '3', '3'] : ['0', '5', '5', '4']}
             >
-                {user.token && <Members token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+                {user.token && <Members admin={admin} token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
             </Box>
             </Box>
         </Static>

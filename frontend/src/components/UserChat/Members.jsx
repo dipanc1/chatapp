@@ -503,14 +503,16 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
                     )
                   })}
                 </Box>
-                <Box py='25px'>
-                  <NavLink className='btn btn-primary' onClick={onOpenCreateEvent}>
-                    <Flex alignItems='center'>
-                      <Image h='18px' pe='15px' src='https://ik.imagekit.io/sahildhingra/add.png?ik-sdk-version=javascript-1.4.3&updatedAt=1673025917620' />
-                      <Text>Create Event</Text>
-                    </Flex>
-                  </NavLink>
-                </Box>
+                {admin && (
+                  <Box py='25px'>
+                    <NavLink className='btn btn-primary' onClick={onOpenCreateEvent}>
+                      <Flex alignItems='center'>
+                        <Image h='18px' pe='15px' src='https://ik.imagekit.io/sahildhingra/add.png?ik-sdk-version=javascript-1.4.3&updatedAt=1673025917620' />
+                        <Text>Create Event</Text>
+                      </Flex>
+                    </NavLink>
+                  </Box>
+                )}
               </Box>
             </TabPanel>
 
