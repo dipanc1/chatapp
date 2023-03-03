@@ -1,7 +1,8 @@
 import React, {
+  useEffect,
   useState
 } from 'react'
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   Box,
   Grid,
@@ -10,18 +11,90 @@ import {
   Button,
   Container,
   Flex,
-  Image
+  Image,
+  useToast
 } from '@chakra-ui/react';
 
 import Static from "../components/common/Static"
 import EventCard from '../components/Events/EventCard';
 import { useContext } from 'react';
 import { AppContext } from '../context/AppContext';
+import { backend_url } from '../baseApi';
+import axios from 'axios';
 
 function Events() {
-  const [activeTab, setActiveTab] = useState(1)
+  const [activeTab, setActiveTab] = useState(1);
+  const [eventsList, setEventsList] = useState([]);
 
-  const { selectedChat } = useContext(AppContext);
+  const toast = useToast();
+
+  const { selectedChat, dispatch } = useContext(AppContext);
+  const user = JSON.parse(localStorage.getItem('user'));
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchAllEvents = async () => {
+      try {
+        const config = {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        };
+        const { data } = await axios.get(
+          `${backend_url}/conversation/event/all/1`,
+          config
+        );
+        setEventsList(data);
+      } catch (error) {
+        // console.log(error)
+        toast({
+          title: "Error Occured!",
+          description: "Failed to Load the Events",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom-left",
+        });
+      }
+    };
+
+    fetchAllEvents();
+  }, [toast, user.token]);
+
+  const selectEvent = async (chatId) => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.get(
+        `${backend_url}/conversation/${chatId}`,
+        config
+      );
+
+      navigate(`/video-chat`);
+
+      dispatch({
+        type: "SET_SELECTED_CHAT",
+        payload: data,
+      });
+      
+    } catch (error) {
+      // console.log(error)
+      toast({
+        title: "Error Occured!",
+        description: "Failed to Load the Events",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+    }
+  };
+
 
   return (
     <>
@@ -51,11 +124,11 @@ function Events() {
         <div className="tab-content">
           <div className={"tab-content-item " + (activeTab === 1 ? "current" : "")}>
             <Grid mb='70px' templateColumns='repeat(3, 1fr)' gap='2rem' rowGap='3rem'>
-              {selectedChat?.events.map((eventItem) => {
+              {eventsList?.map((eventItem) => {
                 return (
-                  <>
+                  <div onClick={() => selectEvent(eventItem.chatId)}>
                     <EventCard key={eventItem._id} title={eventItem.name} imageUrl={eventItem?.thumbnail} />
-                  </>
+                  </div>
                 )
               })}
             </Grid>

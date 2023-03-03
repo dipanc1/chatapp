@@ -7,7 +7,7 @@ const EventTable = require("../models/EventTable");
 const asyncHandler = require("express-async-handler");
 
 
-//new conversation
+//new chat
 router.post("/", asyncHandler(async (req, res) => {
 
     const { userId } = req.body;
@@ -76,7 +76,51 @@ router.get("/", async (req, res) => {
     } catch (error) {
         res.status(500).json(error)
     }
-})
+});
+
+
+// get all group chats with pagination
+router.get("/all/:page", asyncHandler(async (req, res) => {
+    const { page } = req.params;
+    const limit = 10;
+    const skip = (page - 1) * limit;
+
+    const allGroupChats = await Chat.find({ isGroupChat: true })
+        .populate("users", "-password")
+        .populate("groupAdmin", "-password")
+        .populate("events")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit);
+
+    if (!allGroupChats) {
+        return res.status(404).send("No group chats found")
+    }
+
+    res.status(200).json(allGroupChats);
+}));
+
+
+// get chat by id
+router.get("/:id", asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const findChat = await Chat.findById(id)
+            .populate("users", "-password")
+            .populate("groupAdmin", "-password")
+            .populate("events");
+
+        if (!findChat) {
+            return res.status(404).send("No chat found")
+        }
+
+        res.status(200).json(findChat);
+    } catch (error) {
+        res.status(500).send("Something went wrong")
+    }
+
+}));
 
 
 // create groups
@@ -352,25 +396,24 @@ router.get("/event/:chatId", asyncHandler(async (req, res) => {
 }));
 
 
-// get all group chats with pagination
-router.get("/all/:page", asyncHandler(async (req, res) => {
+// get all events with pagination
+router.get("/event/all/:page", asyncHandler(async (req, res) => {
     const { page } = req.params;
     const limit = 10;
     const skip = (page - 1) * limit;
 
-    const allGroupChats = await Chat.find({ isGroupChat: true })
-        .populate("users", "-password")
-        .populate("groupAdmin", "-password")
-        .populate("events")
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit);
+    try {
+        const findEvents = await EventTable.find().skip(skip).limit(limit).sort({ createdAt: -1 });
 
-    if (!allGroupChats) {
-        return res.status(404).send("No group chats found")
+        if (!findEvents) {
+            return res.status(404).send("No events found")
+        }
+
+        res.status(200).json(findEvents);
+    } catch (error) {
+        console.log(error);
     }
 
-    res.status(200).json(allGroupChats);
 }));
 
 
