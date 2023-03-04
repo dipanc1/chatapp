@@ -15,7 +15,7 @@ const client = require("twilio")(accountSID, authToken);
 
 const Chat = require("../models/Conversation");
 const User = require("../models/User");
-
+const EventTable = require("../models/EventTable");
 
 // register
 router.post("/register", async (req, res) => {
@@ -114,13 +114,17 @@ router.get("/", protect, async (req, res) => {
     try {
         const users = await User.find({
             $or: [{ username: { $regex: req.query.search, $options: "i" } }]
-        }).find({ _id: { $ne: req.user._id } })
+        }).find({ _id: { $ne: req.user._id } });
         const groups = await Chat.find({
             $or: [{ chatName: { $regex: req.query.search, $options: "i" } }]
-        }).find({ isGroupChat: true, _id: { $ne: req.user._id } })
+        }).find({ isGroupChat: true, _id: { $ne: req.user._id } });
+        const events =  await EventTable.find({
+            $or: [{ eventName: { $regex: req.query.search, $options: "i" } }]
+        }).find();
         res.status(200).json({
             users: users,
-            groups: groups
+            groups: groups,
+            events: events
         })
     } catch (err) {
         res.status(500).json(err)
