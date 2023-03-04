@@ -80,6 +80,11 @@
 .btn-primary::before {
     background-color: #fff;
 }
+.btn-sm {
+    font-size: 14px;
+    padding: 7px 25px!important;
+    border-radius: 6px;
+}
 
 .form-wrapper label {
     position: absolute;

@@ -1,11 +1,13 @@
-import { Box, Flex, Image, ListItem, Text, UnorderedList } from '@chakra-ui/react'
+import { Box, Button, Flex, Image, ListItem, Text, UnorderedList } from '@chakra-ui/react'
 import React, {useState} from 'react'
+import { NavLink } from 'react-router-dom'
 
 const GroupCard = ({
     name,
     members,
     upcomingEvents,
-    isAdmin
+    isAdmin,
+    allowJoin
 }) => {
 const [toggleGroupMenu, setToggleGroupMenu] = useState(false)
   return (
@@ -21,33 +23,42 @@ const [toggleGroupMenu, setToggleGroupMenu] = useState(false)
                     )
                 }
             </Flex>
-            <Box position='relative'>
+            {
+              allowJoin ? (
+                <NavLink className='btn btn-primary btn-sm'>
+                  Join
+                </NavLink>
+              ) : (
+                <Box position='relative'>
                 <Image onClick={() => setToggleGroupMenu(!toggleGroupMenu)} px='10px' cursor="pointer" h="32px" src="https://ik.imagekit.io/sahildhingra/3dot-menu.png" />
                 {
                 toggleGroupMenu && (
                   <Box zIndex='1' overflow='hidden' className='lightHover' width='fit-content' position='absolute' borderRadius='10px' boxShadow='md' background='#fff' right='0' top='100%'>
-                    <UnorderedList listStyleType='none' ms='0'>
-                      <ListItem whiteSpace='pre' p='10px 50px 10px 20px' display='flex' alignItems='center'>
-                        <Image h='22px' me='15px' src="https://ik.imagekit.io/sahildhingra/user.png" /> 
-                        <Text>Add Member</Text>
-                      </ListItem>
-                      <ListItem whiteSpace='pre' p='10px 50px 10px 20px' display='flex' alignItems='center'>
-                        <Image h='22px' me='15px' src="https://ik.imagekit.io/sahildhingra/events.png" /> 
-                        <Text>Create Event</Text>
-                      </ListItem>
-                      <ListItem p='10px 50px 10px 20px' display='flex' alignItems='center'>
-                        <Image h='22px' me='15px' src="https://ik.imagekit.io/sahildhingra/settings.png" /> 
-                        <Text>Settings</Text>
-                      </ListItem>
-                      <ListItem p='10px 50px 10px 20px' display='flex' alignItems='center'>
-                        <Image h='22px' me='15px' src="https://ik.imagekit.io/sahildhingra/trash.png" /> 
-                        <Text color='#FF0000'>Delete</Text>
-                      </ListItem>
-                    </UnorderedList>
-                  </Box>
-                )
-              }
-            </Box>
+                      <UnorderedList listStyleType='none' ms='0'>
+                        <ListItem whiteSpace='pre' p='10px 50px 10px 20px' display='flex' alignItems='center'>
+                          <Image h='22px' me='15px' src="https://ik.imagekit.io/sahildhingra/user.png" /> 
+                          <Text>Add Member</Text>
+                        </ListItem>
+                        <ListItem whiteSpace='pre' p='10px 50px 10px 20px' display='flex' alignItems='center'>
+                          <Image h='22px' me='15px' src="https://ik.imagekit.io/sahildhingra/events.png" /> 
+                          <Text>Create Event</Text>
+                        </ListItem>
+                        <ListItem p='10px 50px 10px 20px' display='flex' alignItems='center'>
+                          <Image h='22px' me='15px' src="https://ik.imagekit.io/sahildhingra/settings.png" /> 
+                          <Text>Settings</Text>
+                        </ListItem>
+                        <ListItem p='10px 50px 10px 20px' display='flex' alignItems='center'>
+                          <Image h='22px' me='15px' src="https://ik.imagekit.io/sahildhingra/trash.png" /> 
+                          <Text color='#FF0000'>Delete</Text>
+                        </ListItem>
+                      </UnorderedList>
+                    </Box>
+                  )
+                }
+              </Box>
+              )
+            }
+
         </Flex>
         <Flex pt="60px" justifyContent="space-between">
             <Box>
