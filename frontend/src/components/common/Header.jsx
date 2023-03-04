@@ -74,7 +74,7 @@ const Header = () => {
 					<Box className='logo-header' display='none'>
 						<Image height='35px' mx='auto' src={CDN_IMAGES + "/chatapp-logo.png"} alt="ChatApp" />
 					</Box>
-					<Input onMouseEnter={handleSearchRoute} mx='auto' onChange={(e) => handleSearch(e)} value={search} placeholder='Search Users / Groups / Events' maxW={'400px'} py={'13px'} px={'21px'} bg={'#F4F1FF'} border={'0'} />
+					<Input onMouseEnter={handleSearchRoute} mx='auto' onChange={handleSearch} value={search} placeholder='Search Users / Groups / Events' maxW={'400px'} py={'13px'} px={'21px'} bg={'#F4F1FF'} border={'0'} />
 					<Flex>
 						<Flex alignItems='center'>
 							<Link href='/video-chat'>
