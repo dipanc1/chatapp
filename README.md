@@ -10,6 +10,7 @@
 #### if token fails then redirect to login page
 #### using accesstoken as well as refreshtokens
 #### delete images from cloudinary too
+#### user can add the participant again if it searches for the same name
 
 
 ## Phone App

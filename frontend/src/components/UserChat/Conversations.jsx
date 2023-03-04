@@ -69,7 +69,6 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
         }
     };
 
-    // add user to conversation
     const accessChat = async (userId) => {
         // console.log(userId);
         try {

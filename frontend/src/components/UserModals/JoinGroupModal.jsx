@@ -1,0 +1,77 @@
+import {
+    AlertDialog,
+    AlertDialogBody,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogContent,
+    AlertDialogOverlay,
+    Button,
+    AlertDialogCloseButton,
+} from '@chakra-ui/react'
+import axios from 'axios';
+import { useContext } from 'react';
+import { useRef } from 'react'
+import { useNavigate } from 'react-router-dom';
+import { backend_url } from '../../baseApi';
+import { AppContext } from '../../context/AppContext';
+
+
+const JoinGroupModal = ({ isOpenJoinEvent, onCloseJoinEvent, chatId, chatName }) => {
+    const cancelRef = useRef();
+    const navigate = useNavigate();
+    const { dispatch } = useContext(AppContext);
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    const handleJoinGroup = async () => {
+        const config = {
+            headers: {
+                Authorization: `Bearer ${user.token}`,
+            },
+        };
+        const { data } = await axios.put(
+            `${backend_url}/conversation/groupadd`,
+            {
+                chatId,
+                userId: user._id,
+            },
+            config
+        );
+
+        dispatch({ type: "SET_SELECTED_CHAT", payload: data });
+        navigate(`/video-chat`);
+        onCloseJoinEvent();
+    }
+
+
+    return (
+        <>
+            <AlertDialog
+                motionPreset='slideInBottom'
+                leastDestructiveRef={cancelRef}
+                onClose={onCloseJoinEvent}
+                isOpen={isOpenJoinEvent}
+                isCentered
+            >
+                <AlertDialogOverlay />
+
+                <AlertDialogContent>
+                    <AlertDialogHeader>You have to join {chatName} group to join this event?</AlertDialogHeader>
+                    <AlertDialogCloseButton />
+                    <AlertDialogBody>
+                        Are you sure you want to join this group? You can always leave later.
+                    </AlertDialogBody>
+                    <AlertDialogFooter>
+                        <Button ref={cancelRef} onClick={onCloseJoinEvent}>
+                            No
+                        </Button>
+                        <Button onClick={handleJoinGroup} colorScheme='red' ml={3}>
+                            Yes
+                        </Button>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+        </>
+    )
+}
+
+export default JoinGroupModal;

@@ -12,7 +12,8 @@ import {
   Container,
   Flex,
   Image,
-  useToast
+  useToast,
+  useDisclosure
 } from '@chakra-ui/react';
 
 import Static from "../components/common/Static"
@@ -21,16 +22,21 @@ import { useContext } from 'react';
 import { AppContext } from '../context/AppContext';
 import { backend_url } from '../baseApi';
 import axios from 'axios';
+import JoinGroupModal from '../components/UserModals/JoinGroupModal';
 
 function Events() {
   const [activeTab, setActiveTab] = useState(1);
   const [eventsList, setEventsList] = useState([]);
+  const [chatId, setChatId] = useState();
+  const [chatName, setChatName] = useState("");
 
   const toast = useToast();
+  const navigate = useNavigate();
 
   const { selectedChat, dispatch } = useContext(AppContext);
+  const { isOpen: isOpenJoinEvent, onOpen: onOpenJoinEvent, onClose: onCloseJoinEvent } = useDisclosure();
+
   const user = JSON.parse(localStorage.getItem('user'));
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAllEvents = async () => {
@@ -74,14 +80,16 @@ function Events() {
         `${backend_url}/conversation/${chatId}`,
         config
       );
+      setChatId(data._id);
+      setChatName(data.chatName);
 
-      navigate(`/video-chat`);
+      if (!data.users.includes(user._id)) {
+        onOpenJoinEvent();
+      } else {
+        dispatch({ type: "SET_SELECTED_CHAT", payload: data });
+        navigate(`/video-chat`);
+      }
 
-      dispatch({
-        type: "SET_SELECTED_CHAT",
-        payload: data,
-      });
-      
     } catch (error) {
       // console.log(error)
       toast({
@@ -135,28 +143,29 @@ function Events() {
           </div>
           <div className={"tab-themes tab-content-item " + (activeTab === 2 ? "current" : "")}>
             <Grid mb='70px' templateColumns='repeat(3, 1fr)' gap='2rem' rowGap='3rem'>
-              {selectedChat?.events.map((eventItem) => {
+              {/* {selectedChat?.events.map((eventItem) => {
                 return (
                   <>
                     <EventCard key={eventItem._id} title={eventItem.name} imageUrl={eventItem?.thumbnail} />
                   </>
                 )
-              })}
+              })} */}
             </Grid>
           </div>
           <div className={"tab-content-item " + (activeTab === 3 ? "current" : "")}>
             <Grid mb='70px' templateColumns='repeat(3, 1fr)' gap='2rem' rowGap='3rem'>
-              {selectedChat?.events.map((eventItem) => {
+              {/* {selectedChat?.events.map((eventItem) => {
                 return (
                   <>
                     <EventCard key={eventItem._id} title={eventItem.name} imageUrl={eventItem?.thumbnail} />
                   </>
                 )
-              })}
+              })} */}
             </Grid>
           </div>
         </div>
       </Static>
+      <JoinGroupModal chatName={chatName} isOpenJoinEvent={isOpenJoinEvent} onOpenJoinEvent={onOpenJoinEvent} onCloseJoinEvent={onCloseJoinEvent} chatId={chatId} />
     </>
   )
 }
