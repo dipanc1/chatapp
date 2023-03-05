@@ -83,7 +83,7 @@ function Events() {
       setChatId(data._id);
       setChatName(data.chatName);
 
-      if (!data.users.includes(user._id)) {
+      if (!data.users.map((u) => u._id === user._id).includes(true)) {
         onOpenJoinEvent();
       } else {
         dispatch({ type: "SET_SELECTED_CHAT", payload: data });

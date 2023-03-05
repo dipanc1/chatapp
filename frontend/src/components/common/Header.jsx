@@ -59,6 +59,7 @@ const Header = () => {
                 `${backend_url}/users?search=${search}`,
                 config
             );
+			console.log(data)
             setSearchResultsUsers(data.users);
             setSearchResultsGroups(data.groups);
 			setSearchResultsEvents(data.events);

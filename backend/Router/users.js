@@ -119,8 +119,8 @@ router.get("/", protect, async (req, res) => {
             $or: [{ chatName: { $regex: req.query.search, $options: "i" } }]
         }).find({ isGroupChat: true, _id: { $ne: req.user._id } });
         const events =  await EventTable.find({
-            $or: [{ eventName: { $regex: req.query.search, $options: "i" } }]
-        }).find();
+            $or: [{ name: { $regex: req.query.search, $options: "i" } }]
+        });
         res.status(200).json({
             users: users,
             groups: groups,
