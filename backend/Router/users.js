@@ -118,7 +118,7 @@ router.get("/", protect, async (req, res) => {
         const groups = await Chat.find({
             $or: [{ chatName: { $regex: req.query.search, $options: "i" } }]
         }).find({ isGroupChat: true, _id: { $ne: req.user._id } });
-        const events =  await EventTable.find({
+        const events = await EventTable.find({
             $or: [{ name: { $regex: req.query.search, $options: "i" } }]
         });
         res.status(200).json({
@@ -227,6 +227,101 @@ router.get("/check-username/:username", async (req, res) => {
         console.log(err)
     }
 });
+
+// user info
+router.get("/user-info", protect, async (req, res) => {
+    const userId = req.user._id;
+
+    await User.findById(userId)
+        .then((user) => {
+            res.status(200).json({
+                _id: user._id,
+                username: user.username,
+                number: user.number,
+                pic: user.pic,
+            })
+        })
+        .catch((err) => {
+            res.status(500).json(err)
+            console.log(err)
+        })
+});
+
+// change password
+router.put("/change-password", protect, async (req, res) => {
+    const userId = req.user._id;
+
+    const { oldPassword, newPassword, confirmPassword } = req.body;
+
+    if (oldPassword === "" || newPassword === "" || confirmPassword === "") {
+        return res.status(400).send("All fields are required")
+    }
+
+    if (newPassword.length <= 6) {
+        return res.status(400).send("Password must be greater than 6 characters")
+    }
+
+    if (newPassword !== confirmPassword) {
+        return res.status(400).send("Passwords do not match")
+    }
+
+    if (oldPassword === newPassword) {
+        return res.status(400).send("Old password and new password cannot be same")
+    }
+
+    await User.findById(userId)
+        .then(async (user) => {
+            const validPassword = await bcrypt.compare(oldPassword, user.password);
+
+            if (!validPassword) {
+                return res.status(400).send("Wrong Password")
+            }
+
+            const salt = await bcrypt.genSalt(10)
+            const hashedPassword = await bcrypt.hash(newPassword, salt)
+            user.password = hashedPassword
+            await user.save()
+            res.status(200).send("Password changed")
+        })
+        .catch((err) => {
+            res.status(500).send("Something went wrong")
+            console.log(err)
+        })
+});
+
+// update user info
+router.put("/update-user-info", protect, async (req, res) => {
+    const userId = req.user._id;
+    const { username, pic } = req.body;
+    
+    if (!username && !pic) {
+        return res.status(400).send("No data to update")
+    }
+
+    let message = "";
+
+    await User.findById(userId)
+        .then(async (user) => {
+            if (username && !pic) {
+                user.username = username
+                message = "Username updated"
+            } else if (!username && pic) {
+                user.pic = pic
+                message = "Profile picture updated"
+            } else if (username && pic) {
+                user.username = username
+                user.pic = pic
+                message = "Username and profile picture updated"
+            }
+            await user.save()
+            res.status(200).send(message);
+        })
+        .catch((err) => {
+            res.status(500).send("Something went wrong")
+            console.log(err)
+        })
+});
+
 
 
 module.exports = router;
