@@ -8,7 +8,7 @@
 #### if host accidently closes the stream then delete meeting token from database
 #### User cannot open when one session is going on multiple tabs/places
 #### if token fails then redirect to login page
-#### using accesstoken as well as refreshtokens
+#### using accesstoken as well as refreshtoken #### when hitting api to take user from select event from all app to group or to event send the data inly which is needed
 
 
 ## Phone App
