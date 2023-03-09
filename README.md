@@ -12,8 +12,7 @@
 #### delete images from cloudinary too
 #### user can add the participant again if it searches for the same name
 #### user search limit to 10
-
-#### when hitting api to take user from select event from all app to group or to event send the data inly which is needed
+#### when hitting api to take user from select event from all app to group or to event send the data only which is needed
 
 ## Phone App
 

@@ -235,7 +235,6 @@ router.get("/user-info", protect, async (req, res) => {
     await User.findById(userId)
         .then((user) => {
             res.status(200).json({
-                _id: user._id,
                 username: user.username,
                 number: user.number,
                 pic: user.pic,
@@ -314,7 +313,11 @@ router.put("/update-user-info", protect, async (req, res) => {
                 message = "Username and profile picture updated"
             }
             await user.save()
-            res.status(200).send(message);
+            res.status(200).send({
+                message: message,
+                username: user.username,
+                pic: user.pic,
+            });
         })
         .catch((err) => {
             res.status(500).send("Something went wrong")
