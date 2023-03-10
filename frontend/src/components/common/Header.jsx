@@ -45,7 +45,7 @@ const Header = () => {
 
 	const handleSearch = async (e) => {
 		setSearch(e.target.value);
-		if (e.target.value === '') {
+		if (e.target.value === '' || e.target.value === null) {
 			setSearchResults([])
 			return;
 		}

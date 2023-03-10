@@ -111,15 +111,17 @@ router.get("/check-online/:id", protect, async (req, res) => {
 
 // search query for users and groups excluding user logged in
 router.get("/", protect, async (req, res) => {
+    const query = req.query.search;
+    
     try {
         const users = await User.find({
-            $or: [{ username: { $regex: req.query.search, $options: "i" } }]
+            $or: [{ username: { $regex: query, $options: "i" } }]
         }).find({ _id: { $ne: req.user._id } });
         const groups = await Chat.find({
-            $or: [{ chatName: { $regex: req.query.search, $options: "i" } }]
+            $or: [{ chatName: { $regex: query, $options: "i" } }]
         }).find({ isGroupChat: true, _id: { $ne: req.user._id } });
         const events = await EventTable.find({
-            $or: [{ name: { $regex: req.query.search, $options: "i" } }]
+            $or: [{ name: { $regex: query, $options: "i" } }]
         });
         res.status(200).json({
             users: users,
@@ -292,7 +294,7 @@ router.put("/change-password", protect, async (req, res) => {
 router.put("/update-user-info", protect, async (req, res) => {
     const userId = req.user._id;
     const { username, pic } = req.body;
-    
+
     if (!username && !pic) {
         return res.status(400).send("No data to update")
     }

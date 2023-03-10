@@ -8,7 +8,7 @@ const UserCard = ({
     profileImg
 }) => {
   return (
-    <Flex alignItems='center' p='18px' borderRadius='10px' border="0">
+    <Flex cursor={'pointer'} alignItems='center' p='18px' borderRadius='10px' border="0">
         <Image mr='13px' h="46px" w='46px' objectFit='cover' borderRadius='100%' src={profileImg} />
         <Box flex='1'>
             <Text color="#032E2B" fontWeight="600" as="h3">{userName.toUpperCase()}</Text>
