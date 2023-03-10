@@ -26,15 +26,13 @@ import GroupCard from '../Groups/GroupCard';
 
 const Header = () => {
 	const [toggleProfiledd, setToggleProfiledd] = useState(false)
-	const { dispatch } = useContext(AppContext);
 
 	const user = JSON.parse(localStorage.getItem('user'));
 	const [search, setSearch] = useState('');
 	const [searching, setSearching] = useState(false)
-	const [searchResults, setSearchResults] = useState()	
+	const [searchResults, setSearchResults] = useState()
 	const [activeTab, setActiveTab] = useState(1)
 
-	const location = useLocation();
 	let navigate = useNavigate();
 
 	const CDN_IMAGES = "https://ik.imagekit.io/sahildhingra";
@@ -45,16 +43,13 @@ const Header = () => {
 		window.location.reload();
 	}
 
-	const handleSearchRoute = () => {
-		if (location.pathname !== '/search') {
-			navigate('/search');
-		}
-	}
-
 	const handleSearch = async (e) => {
-		setSearching(true)
-		console.log('.......')
 		setSearch(e.target.value);
+		if (e.target.value === '') {
+			setSearchResults([])
+			return;
+		}
+		setSearching(true)
 		try {
 			const config = {
 				headers: {
@@ -66,13 +61,8 @@ const Header = () => {
 				`${backend_url}/users?search=${search}`,
 				config
 			);
-			console.log(data, "groups", "users", "events")
 			setSearchResults(data)
 			setSearching(false)
-			dispatch({
-				type: "SET_SEARCH_RESULTS",
-				payload: data,
-			});
 		} catch (error) {
 			console.log(error)
 			setSearching(false)
@@ -87,7 +77,7 @@ const Header = () => {
 						<Image height='35px' mx='auto' src={CDN_IMAGES + "/chatapp-logo.png"} alt="ChatApp" />
 					</Box>
 					<Box position='relative' mx='auto' minW={'400px'}>
-						<Input onMouseEnter={handleSearchRoute} onChange={handleSearch} value={search} placeholder='Search Users / Groups / Events' py={'13px'} px={'21px'} bg={'#F4F1FF'} border={'0'} />
+						<Input onChange={handleSearch} value={search} placeholder='Search Users / Groups / Events' py={'13px'} px={'21px'} bg={'#F4F1FF'} border={'0'} />
 						{
 							searching && (
 								<Box zIndex='1' position='absolute' top='2px' right='12px'>
@@ -99,62 +89,62 @@ const Header = () => {
 							{
 								searchResults?.user?.length || searchResults?.groups?.length || searchResults?.events?.length ? (
 									<>
-									<UnorderedList ms='0' display='flex' className="tab-nav">
-										{
-											searchResults?.users?.length && (
-												<ListItem mr='0!important' onClick={() =>setActiveTab(1)} className={activeTab===1 ? "active" : ""}>
-													Users
-												</ListItem>
-											)
-										}
-										{
-											searchResults?.groups?.length && (
-												<ListItem mr='0!important' onClick={() =>setActiveTab(2)} className={activeTab===2 ? "active" : ""}>
-													Groups
-												</ListItem>
-											)
-										}
-										{
-											searchResults?.events?.length && (
-												<ListItem mr='0!important' onClick={() =>setActiveTab(3)} className={activeTab===3 ? "active" : ""}>
-													Events
-												</ListItem>
-											)
-										}
-									</UnorderedList>
-									<div className="tab-content">
-										<div className={"tab-content-item "+(activeTab===1 ? "current" : "")}>
+										<UnorderedList ms='0' display='flex' className="tab-nav">
 											{
-												searchResults?.users?.map((item) => {
-													return (
-														<UserCard profileImg={item.pic} userName={item.username} />
-													);
-												})
+												searchResults?.users?.length && (
+													<ListItem mr='0!important' onClick={() => setActiveTab(1)} className={activeTab === 1 ? "active" : ""}>
+														Users
+													</ListItem>
+												)
 											}
-										</div>
-										<div className={"tab-themes tab-content-item "+(activeTab===2 ? "current" : "")}>
 											{
-												searchResults?.groups?.map((item) => {
-													return (
-														<UserCard name={item.users.length+' Members'} profileImg={item.pic} userName={item.chatName} />
-													);
-												})
+												searchResults?.groups?.length && (
+													<ListItem mr='0!important' onClick={() => setActiveTab(2)} className={activeTab === 2 ? "active" : ""}>
+														Groups
+													</ListItem>
+												)
 											}
-										</div>
-										<div className={"tab-content-item "+(activeTab===3 ? "current" : "")}>
 											{
-												searchResults?.events?.map((item) => {
-													return (
-														<UserCard name={item.time} profileImg={item.thumbnail} userName={item.name} />
-													);
-												})
+												searchResults?.events?.length && (
+													<ListItem mr='0!important' onClick={() => setActiveTab(3)} className={activeTab === 3 ? "active" : ""}>
+														Events
+													</ListItem>
+												)
 											}
+										</UnorderedList>
+										<div className="tab-content">
+											<div className={"tab-content-item " + (activeTab === 1 ? "current" : "")}>
+												{
+													searchResults?.users?.map((item) => {
+														return (
+															<UserCard profileImg={item.pic} userName={item.username} />
+														);
+													})
+												}
+											</div>
+											<div className={"tab-themes tab-content-item " + (activeTab === 2 ? "current" : "")}>
+												{
+													searchResults?.groups?.map((item) => {
+														return (
+															<UserCard name={item.users.length + ' Members'} profileImg={item.pic} userName={item.chatName} />
+														);
+													})
+												}
+											</div>
+											<div className={"tab-content-item " + (activeTab === 3 ? "current" : "")}>
+												{
+													searchResults?.events?.map((item) => {
+														return (
+															<UserCard name={item.time} profileImg={item.thumbnail} userName={item.name} />
+														);
+													})
+												}
+											</div>
 										</div>
-									</div>
 									</>
 								) : ('')
 							}
-						</Box>					
+						</Box>
 					</Box>
 					<Flex>
 						<Flex alignItems='center'>

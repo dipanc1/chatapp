@@ -289,8 +289,8 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                 ))
                             )}
                             {conversations.length === 0 &&
-                            !loading &&
-                            search.length === 0 ? (
+                                !loading &&
+                                search.length === 0 ? (
                                 <Box
                                     initial="hidden"
                                     animate="visible"
@@ -392,8 +392,8 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                 ))
                             )}
                             {groupConversations.length === 0 &&
-                            !loading &&
-                            search.length === 0 ? (
+                                !loading &&
+                                search.length === 0 ? (
                                 <Box
                                     initial="hidden"
                                     animate="visible"
