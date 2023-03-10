@@ -21,6 +21,8 @@ import ProfileModal from '../UserModals/ProfileModal';
 import { backend_url } from '../../baseApi';
 import axios from 'axios';
 import { AppContext } from '../../context/AppContext';
+import UserCard from '../UserItems/UserCard';
+import GroupCard from '../Groups/GroupCard';
 
 const Header = () => {
 	const [toggleProfiledd, setToggleProfiledd] = useState(false)
@@ -28,11 +30,14 @@ const Header = () => {
 
 	const user = JSON.parse(localStorage.getItem('user'));
 	const [search, setSearch] = useState('');
+	const [searching, setSearching] = useState(false)
+	const [searchResults, setSearchResults] = useState()	
+	const [activeTab, setActiveTab] = useState(1)
+
 	const location = useLocation();
 	let navigate = useNavigate();
 
 	const CDN_IMAGES = "https://ik.imagekit.io/sahildhingra";
-
 
 	const handleLogout = () => {
 		localStorage.removeItem('user');
@@ -47,6 +52,8 @@ const Header = () => {
 	}
 
 	const handleSearch = async (e) => {
+		setSearching(true)
+		console.log('.......')
 		setSearch(e.target.value);
 		try {
 			const config = {
@@ -60,12 +67,15 @@ const Header = () => {
 				config
 			);
 			console.log(data, "groups", "users", "events")
+			setSearchResults(data)
+			setSearching(false)
 			dispatch({
 				type: "SET_SEARCH_RESULTS",
 				payload: data,
 			});
 		} catch (error) {
 			console.log(error)
+			setSearching(false)
 		}
 	};
 
@@ -76,7 +86,76 @@ const Header = () => {
 					<Box className='logo-header' display='none'>
 						<Image height='35px' mx='auto' src={CDN_IMAGES + "/chatapp-logo.png"} alt="ChatApp" />
 					</Box>
-					<Input onMouseEnter={handleSearchRoute} mx='auto' onChange={handleSearch} value={search} placeholder='Search Users / Groups / Events' maxW={'400px'} py={'13px'} px={'21px'} bg={'#F4F1FF'} border={'0'} />
+					<Box position='relative' mx='auto' minW={'400px'}>
+						<Input onMouseEnter={handleSearchRoute} onChange={handleSearch} value={search} placeholder='Search Users / Groups / Events' py={'13px'} px={'21px'} bg={'#F4F1FF'} border={'0'} />
+						{
+							searching && (
+								<Box zIndex='1' position='absolute' top='2px' right='12px'>
+									<Image opacity='0.8' h='35px' src="https://ik.imagekit.io/sahildhingra/search-loading.svg" />
+								</Box>
+							)
+						}
+						<Box px='20px' background='#fff' boxShadow='0px 3px 24px rgba(159, 133, 247, 0.6)' borderRadius='5px' w='100%' position='absolute' top='calc(100% + 10px)' zIndex='1'>
+							{
+								searchResults?.user?.length || searchResults?.groups?.length || searchResults?.events?.length ? (
+									<>
+									<UnorderedList ms='0' display='flex' className="tab-nav">
+										{
+											searchResults?.users?.length && (
+												<ListItem mr='0!important' onClick={() =>setActiveTab(1)} className={activeTab===1 ? "active" : ""}>
+													Users
+												</ListItem>
+											)
+										}
+										{
+											searchResults?.groups?.length && (
+												<ListItem mr='0!important' onClick={() =>setActiveTab(2)} className={activeTab===2 ? "active" : ""}>
+													Groups
+												</ListItem>
+											)
+										}
+										{
+											searchResults?.events?.length && (
+												<ListItem mr='0!important' onClick={() =>setActiveTab(3)} className={activeTab===3 ? "active" : ""}>
+													Events
+												</ListItem>
+											)
+										}
+									</UnorderedList>
+									<div className="tab-content">
+										<div className={"tab-content-item "+(activeTab===1 ? "current" : "")}>
+											{
+												searchResults?.users?.map((item) => {
+													return (
+														<UserCard profileImg={item.pic} userName={item.username} />
+													);
+												})
+											}
+										</div>
+										<div className={"tab-themes tab-content-item "+(activeTab===2 ? "current" : "")}>
+											{
+												searchResults?.groups?.map((item) => {
+													return (
+														<UserCard name={item.users.length+' Members'} profileImg={item.pic} userName={item.chatName} />
+													);
+												})
+											}
+										</div>
+										<div className={"tab-content-item "+(activeTab===3 ? "current" : "")}>
+											{
+												searchResults?.events?.map((item) => {
+													return (
+														<UserCard name={item.time} profileImg={item.thumbnail} userName={item.name} />
+													);
+												})
+											}
+										</div>
+									</div>
+									</>
+								) : ('')
+							}
+						</Box>					
+					</Box>
 					<Flex>
 						<Flex alignItems='center'>
 							<Link href='/video-chat'>
