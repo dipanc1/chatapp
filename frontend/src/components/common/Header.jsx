@@ -1,4 +1,5 @@
 import React, {
+	useContext,
 	useState
 } from 'react'
 import { useLocation, useNavigate } from "react-router-dom";
@@ -19,15 +20,14 @@ import {
 import ProfileModal from '../UserModals/ProfileModal';
 import { backend_url } from '../../baseApi';
 import axios from 'axios';
+import { AppContext } from '../../context/AppContext';
 
 const Header = () => {
 	const [toggleProfiledd, setToggleProfiledd] = useState(false)
+	const { dispatch } = useContext(AppContext);
 
 	const user = JSON.parse(localStorage.getItem('user'));
 	const [search, setSearch] = useState('');
-	const [searchResultsUsers, setSearchResultsUsers] = useState([]);
-	const [searchResultsGroups, setSearchResultsGroups] = useState([]);
-	const [searchResultsEvents, setSearchResultsEvents] = useState([]);
 	const location = useLocation();
 	let navigate = useNavigate();
 
@@ -47,26 +47,27 @@ const Header = () => {
 	}
 
 	const handleSearch = async (e) => {
-        setSearch(e.target.value);
-        try {
-            const config = {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${user.token}`,
-                },
-            };
-            const { data } = await axios.get(
-                `${backend_url}/users?search=${search}`,
-                config
-            );
-			console.log(data)
-            setSearchResultsUsers(data.users);
-            setSearchResultsGroups(data.groups);
-			setSearchResultsEvents(data.events);
-        } catch (error) {
-            console.log(error)
-        }
-    };
+		setSearch(e.target.value);
+		try {
+			const config = {
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${user.token}`,
+				},
+			};
+			const { data } = await axios.get(
+				`${backend_url}/users?search=${search}`,
+				config
+			);
+			console.log(data, "groups", "users", "events")
+			dispatch({
+				type: "SET_SEARCH_RESULTS",
+				payload: data,
+			});
+		} catch (error) {
+			console.log(error)
+		}
+	};
 
 	return (
 		<>

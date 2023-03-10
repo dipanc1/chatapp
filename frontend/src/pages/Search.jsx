@@ -5,6 +5,8 @@ import Static from '../components/common/Static'
 import GroupCard from '../components/Groups/GroupCard';
 import UserCard from '../components/UserItems/UserCard';
 import EventCard from '../components/Events/EventCard';
+import { useContext } from 'react';
+import { AppContext } from '../context/AppContext';
 
 const groups = [
   {
@@ -46,7 +48,10 @@ const groups = [
 ]
 
 const Search = () => {
-  const [activeTab, setActiveTab] = useState(1)
+  const { searchResults } = useContext(AppContext);
+  const [activeTab, setActiveTab] = useState(1);
+
+  console.log(searchResults)
   return (
     <>
       <Static>
@@ -55,37 +60,36 @@ const Search = () => {
         </Box>
         <UnorderedList ps='0' ms='0' mb='30px' className="tab-nav">
           <li onClick={() => setActiveTab(1)} className={activeTab === 1 ? "active" : ""}>
-            Users (4)
+            Users {searchResults.length > 0 && "(" + searchResults.users.length + ")"}
           </li>
           <li onClick={() => setActiveTab(2)} className={activeTab === 2 ? "active" : ""}>
-            Groups (2)
+            Groups {searchResults.length > 0 && "(" + searchResults.groups.length + ")"}
           </li>
           <li onClick={() => setActiveTab(3)} className={activeTab === 3 ? "active" : ""}>
-            Events (6)
+            Events {searchResults.length > 0 && "(" + searchResults.events.length + ")"}
           </li>
         </UnorderedList>
         <div className="tab-content">
           <div className={"tab-content-item " + (activeTab === 1 ? "current" : "")}>
             <Grid className='bg-variants' mb='70px' templateColumns='repeat(2, 1fr)' gap='2rem'>
-              <UserCard />
-              <UserCard />
-              <UserCard />
+              {searchResults.length > 0 && searchResults.users.map((userItem) =>
+                <UserCard userName={userItem.username} />
+              )}
             </Grid>
           </div>
           <div className={"tab-themes tab-content-item " + (activeTab === 2 ? "current" : "")}>
             <Grid className='bg-variants' mb='70px' templateColumns='repeat(2, 1fr)' gap='2rem' rowGap='3rem'>
-              {
-                groups.map((groupItem) => {
-                  return (
-                    <GroupCard
-                      name={groupItem.name}
-                      members={groupItem.members}
-                      upcomingEvents={groupItem.upcomingEvents}
-                      isAdmin={groupItem.isAdmin}
-                      allowJoin="true"
-                    />
-                  )
-                })
+              {searchResults.length > 0 && searchResults.groups.map((groupItem) => {
+                return (
+                  <GroupCard
+                    name={groupItem.name}
+                    members={groupItem.members}
+                    // upcomingEvents={groupItem.events}
+                    // isAdmin={groupItem.isAdmin}
+                    allowJoin="true"
+                  />
+                )
+              })
               }
             </Grid>
           </div>
