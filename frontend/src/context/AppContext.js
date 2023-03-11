@@ -8,7 +8,6 @@ const INITIAL_STATE = {
   notification: [],
   stream: false,
   fullScreen: true,
-  searchResults: [],
 };
 
 export const AppContext = createContext(INITIAL_STATE);
@@ -25,7 +24,6 @@ export const AppContextProvider = ({ children }) => {
         notification: state.notification,
         stream: state.stream,
         fullScreen: state.fullScreen,
-        searchResults: state.searchResults,
         dispatch
       }}>
       {children}

@@ -30,11 +30,6 @@ const AppReducer = (state, action) => {
                 ...state,
                 fullScreen: !state.fullScreen
             };
-        case "SET_SEARCH_RESULTS":
-            return {
-                ...state,
-                searchResults: action.payload
-            };
         default:
             return state;
     }
