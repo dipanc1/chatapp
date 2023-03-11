@@ -53,7 +53,6 @@ const Header = () => {
 
 	const handleSearch = async (e) => {
 		setSearching(true)
-		console.log('.......')
 		setSearch(e.target.value);
 		try {
 			const config = {
