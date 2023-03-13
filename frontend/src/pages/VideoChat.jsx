@@ -18,10 +18,9 @@ import Static from "../components/common/Static"
 
 const Chat = () => {
   const user = JSON.parse(localStorage.getItem('user'));
-
+  const [fetchAgain, setFetchAgain] = React.useState(false);
   const { stream, selectedChat } = useContext(AppContext);
 
-  const [fetchAgain, setFetchAgain] = React.useState(false)
   const [meetingId, setMeetingId] = React.useState(null);
   const [token, setToken] = React.useState(null);
 
@@ -97,51 +96,50 @@ const Chat = () => {
     const meetingId =
       id == null ? await getMeetingId(token) : id;
     setMeetingId(meetingId);
-    // console.warn("CHATTTTTTTT APP entry", meetingId, typeof meetingId)
   };
 
   return (
     <SocketContextProvider>
       <RoomProvider>
-        <Static noPadding>
-            <Box h={stream ? '': '100%'} display={'flex'}>
+        <Static noPadding fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}>
+          <Box h={stream ? '' : '100%'} display={'flex'}>
             {stream ?
-                <StreamingPeer admin={admin} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
-                // (stream && token && meetingId) ?
-                //   <MeetingProvider
-                //     config={{
-                //       meetingId,
-                //       micEnabled: false,
-                //       webcamEnabled: admin ? true : false,
-                //       name: user.username
-                //     }}
-                //     token={token}
-                //   >
-                //     <MeetingConsumer>
-                //       {() =>
-                //         <Streaming admin={admin} meetingId={meetingId} setFetchAgain={setFetchAgain} token={token} fetchAgain={fetchAgain} />
-                //       }
-                //     </MeetingConsumer>
-                //   </MeetingProvider>
-                :
-                <>
+              <StreamingPeer admin={admin} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+              // (stream && token && meetingId) ?
+              //   <MeetingProvider
+              //     config={{
+              //       meetingId,
+              //       micEnabled: false,
+              //       webcamEnabled: admin ? true : false,
+              //       name: user.username
+              //     }}
+              //     token={token}
+              //   >
+              //     <MeetingConsumer>
+              //       {() =>
+              //         <Streaming admin={admin} meetingId={meetingId} setFetchAgain={setFetchAgain} token={token} fetchAgain={fetchAgain} />
+              //       }
+              //     </MeetingConsumer>
+              //   </MeetingProvider>
+              :
+              <>
                 <Box flex={['0', '2', '2', '3']}>
-                    {user.token && <Conversations fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+                  {user.token && <Conversations fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
                 </Box>
                 <Box h='100%' flex={['12', '7.5', '7.5', '7.5']}>
-                    {user.token && <Chatbox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} getMeetingAndToken={getMeetingAndToken} />}
+                  {user.token && <Chatbox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} getMeetingAndToken={getMeetingAndToken} />}
                 </Box>
-                </>
+              </>
             }
-            <Box 
-                h={stream ?  'calc(100vh - 141px)' : '100%'}
-                position='sticky'
-                top='0'            
-                flex={(stream && token && meetingId) ? ['0', '3', '3', '3'] : ['0', '5', '5', '4']}
+            <Box
+              h={stream ? 'calc(100vh - 141px)' : '100%'}
+              position='sticky'
+              top='0'
+              flex={(stream && token && meetingId) ? ['0', '3', '3', '3'] : ['0', '5', '5', '4']}
             >
-                {user.token && <Members admin={admin} token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+              {user.token && <Members admin={admin} token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
             </Box>
-            </Box>
+          </Box>
         </Static>
       </RoomProvider>
     </SocketContextProvider>

@@ -25,83 +25,10 @@ import {
 import { AddIcon, ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 
 export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
-    const { dispatch, chats, selectedChat } = React.useContext(AppContext);
-    const [dropdown, setDropdown] = React.useState(true);
-    const [dropdownGroup, setDropdownGroup] = React.useState(true);
-    const [conversations, setConversations] = React.useState([]);
-    const [groupConversations, setGroupConversations] = React.useState([]);
-    const [search, setSearch] = React.useState("");
-    const [searchResultsUsers, setSearchResultsUsers] = React.useState([]);
-    const [searchResultsGroups, setSearchResultsGroups] = React.useState([]);
-    const [loading, setLoading] = React.useState(false);
+    const { dispatch, chats, selectedChat, conversations, groupConversations, loading } = React.useContext(AppContext);
+    
     const user = JSON.parse(localStorage.getItem("user"));
     const toast = useToast();
-
-    // search bar to search for users
-    const handleSearch = async (e) => {
-        setSearch(e.target.value);
-        try {
-            setLoading(true);
-            const config = {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${user.token}`,
-                },
-            };
-            const { data } = await axios.get(
-                `${backend_url}/users?search=${search}`,
-                config
-            );
-            // console.warn("gorups,,,", data);
-            setLoading(false);
-            setSearchResultsUsers(data.users);
-            setSearchResultsGroups(data.groups);
-        } catch (error) {
-            // console.log(error)
-            toast({
-                title: "Error Occured!",
-                description: "Failed to Load the Search Results",
-                status: "error",
-                duration: 5000,
-                isClosable: true,
-                position: "bottom-left",
-            });
-        }
-    };
-
-    const accessChat = async (userId) => {
-        // console.log(userId);
-        try {
-            setLoading(true);
-            const config = {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${user.token}`,
-                },
-            };
-            const { data } = await axios.post(
-                `${backend_url}/conversation`,
-                { userId },
-                config
-            );
-
-            dispatch({ type: "SET_SELECTED_CHAT", payload: data });
-            // console.log(data);
-            setLoading(false);
-            setSearch("");
-            setFetchAgain(!fetchAgain);
-        } catch (error) {
-            // console.log(error)
-            toast({
-                title: "Error Occured!",
-                description: "Failed to Load the Search Results",
-                status: "error",
-                duration: 5000,
-                isClosable: true,
-                position: "bottom-left",
-            });
-        }
-    };
 
     // fetch all conversations
     const fetchChats = async () => {
@@ -117,10 +44,12 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                 config
             );
 
-            setConversations(data.filter((friend) => !friend.isGroupChat));
-            setGroupConversations(
-                data.filter((friend) => friend.isGroupChat && friend.chatName)
-            );
+            // setConversations(data.filter((friend) => !friend.isGroupChat));
+            dispatch({ type: "SET_CONVERSATIONS", payload: data });
+            dispatch({ type: "SET_GROUP_CONVERSATIONS", payload: data });
+            // setGroupConversations(
+            //     data.filter((friend) => friend.isGroupChat && friend.chatName)
+            // );
 
             if (
                 !chats.find(
@@ -142,42 +71,6 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
         }
     };
 
-    const handleAddUser = async (user1, groupId) => {
-        try {
-            setLoading(true);
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${user.token}`,
-                },
-            };
-            const { data } = await axios.put(
-                `${backend_url}/conversation/groupadd`,
-                {
-                    chatId: groupId,
-                    userId: user1,
-                },
-                config
-            );
-
-            dispatch({ type: "SET_SELECTED_CHAT", payload: data });
-            setFetchAgain(!fetchAgain);
-            setLoading(false);
-        } catch (error) {
-            // console.log(error);
-            toast({
-                title: "Error Occured!",
-                description: "User already exists in the group",
-                status: "error",
-                duration: 5000,
-                isClosable: true,
-                position: "bottom-left",
-            });
-            setFetchAgain(!fetchAgain);
-            setLoading(false);
-        }
-        setSearch("");
-    };
-
     React.useEffect(() => {
         fetchChats();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -195,20 +88,6 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
 
     return (
         <>
-            <Box whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                <Input
-                    width={"calc(100% - 50px)"}
-                    py={"0.8rem"}
-                    fontWeight={"bold"}
-                    m='20px auto 20px'
-                    placeholder="Start a new chat"
-                    value={search}
-                    onChange={handleSearch}
-                    focusBorderColor="#9F85F7"
-                    display='block'
-                    borderColor='#9F85F7'
-                />
-            </Box>
 
             <Tabs>
                 <TabList>
@@ -224,7 +103,6 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                             maxHeight={"100%"}
                             overflow={"auto"}
                             overflowX={"hidden"}
-                            animate={dropdown ? "open" : "closed"}
                             variants={variants}
                         >
                             {loading ? (
@@ -241,26 +119,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                         size="xl"
                                     />
                                 </Box>
-                            ) : search.length > 0 ? (
-                                searchResultsUsers?.map((user) => (
-                                    <Box
-                                        _hover={{
-                                            background: "selectPrimaryColor",
-                                            fontWeight: "bold",
-                                        }}
-                                        bg={"selectSecondaryColor"}
-                                        p={2}
-                                        cursor={"pointer"}
-                                        my={"0.2rem"}
-                                        mx={"2rem"}
-                                        borderRadius="lg"
-                                        key={user._id}
-                                        onClick={() => accessChat(user._id)}
-                                    >
-                                        <UserListItem user={user} />
-                                    </Box>
-                                ))
-                            ) : !dropdown ? null : (
+                            ) : (
                                 conversations.map((c) => (
                                     <Box
                                         _hover={{
@@ -289,8 +148,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                 ))
                             )}
                             {conversations.length === 0 &&
-                                !loading &&
-                                search.length === 0 ? (
+                                !loading ? (
                                 <Box
                                     initial="hidden"
                                     animate="visible"
@@ -325,7 +183,6 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                             maxHeight={"100%"}
                             overflow={"auto"}
                             overflowX={"hidden"}
-                            animate={dropdownGroup ? "open" : "closed"}
                             variants={variants}
                         >
                             {loading ? (
@@ -342,28 +199,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                         size="xl"
                                     />
                                 </Box>
-                            ) : search.length > 0 ? (
-                                searchResultsGroups?.map((group) => (
-                                    <Box
-                                        _hover={{
-                                            background: "selectPrimaryColor",
-                                            fontWeight: "bold",
-                                        }}
-                                        bg={"selectSecondaryColor"}
-                                        p={2}
-                                        cursor={"pointer"}
-                                        my={"0.2rem"}
-                                        mx={"2rem"}
-                                        borderRadius="lg"
-                                        key={group._id}
-                                        onClick={() =>
-                                            handleAddUser(user._id, group._id)
-                                        }
-                                    >
-                                        <GroupListItem group={group} />
-                                    </Box>
-                                ))
-                            ) : !dropdownGroup ? null : (
+                            ) : (
                                 groupConversations.map((c) => (
                                     <Box
                                         _hover={{
@@ -392,8 +228,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                 ))
                             )}
                             {groupConversations.length === 0 &&
-                                !loading &&
-                                search.length === 0 ? (
+                                !loading ? (
                                 <Box
                                     initial="hidden"
                                     animate="visible"

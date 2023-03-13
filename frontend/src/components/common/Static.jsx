@@ -12,6 +12,8 @@ import Header from './Header';
 const Static = ({
   noPadding,
   children,
+  fetchAgain,
+  setFetchAgain
 }) => {
 
   const cookies = new Cookies();
@@ -38,7 +40,7 @@ const Static = ({
               <SideBar />
             </Box>
             <Box ps='260px' flex='1'>
-              <Header />
+              <Header fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}/>
               <Box className='main-content-section' position='fixed' h='calc(100vh - 140px)' right='30px' left='290px' mt='100px' bg='#fff' borderRadius='10px'>
                 <button onClick={handleExpand} className='expand-btn'>
                   <img src="https://ik.imagekit.io/sahildhingra/maximize.png" alt='' />

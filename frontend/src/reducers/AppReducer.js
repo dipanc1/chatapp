@@ -30,6 +30,21 @@ const AppReducer = (state, action) => {
                 ...state,
                 fullScreen: !state.fullScreen
             };
+        case "SET_CONVERSATIONS":
+            return {
+                ...state,
+                conversations: action.payload.filter((friend) => !friend.isGroupChat)
+            };
+        case "SET_GROUP_CONVERSATIONS":
+            return {
+                ...state,
+                groupConversations: action.payload.filter((friend) => friend.isGroupChat && friend.chatName)
+            };
+        case "SET_LOADING":
+            return {
+                ...state,
+                loading: action.payload
+            };
         default:
             return state;
     }

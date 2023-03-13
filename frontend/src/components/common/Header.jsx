@@ -24,10 +24,10 @@ import { AppContext } from '../../context/AppContext';
 import UserCard from '../UserItems/UserCard';
 import GroupCard from '../Groups/GroupCard';
 
-const Header = () => {
-	const [toggleProfiledd, setToggleProfiledd] = useState(false)
-
+const Header = ({ fetchAgain, setFetchAgain }) => {
 	const user = JSON.parse(localStorage.getItem('user'));
+	const { dispatch, chats, loading } = useContext(AppContext);
+	const [toggleProfiledd, setToggleProfiledd] = useState(false)
 	const [search, setSearch] = useState('');
 	const [searching, setSearching] = useState(false)
 	const [searchResults, setSearchResults] = useState()
@@ -69,6 +69,131 @@ const Header = () => {
 		}
 	};
 
+	const accessChat = async (userId) => {
+		// console.log(userId);
+		setSearchResults([]);
+		try {
+			setSearching(true);
+			dispatch({ type: "SET_LOADING", payload: true });
+			const config = {
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${user.token}`,
+				},
+			};
+			const { data } = await axios.post(
+				`${backend_url}/conversation`,
+				{ userId },
+				config
+			);
+
+			dispatch({ type: "SET_SELECTED_CHAT", payload: data });
+			// console.log(data);
+			setSearching(false);
+			dispatch({ type: "SET_LOADING", payload: false });
+			setSearch("");
+			setFetchAgain(!fetchAgain);
+		} catch (error) {
+			console.log(error)
+			setSearching(false);
+			dispatch({ type: "SET_LOADING", payload: false });
+			// toast({
+			//     title: "Error Occured!",
+			//     description: "Failed to Load the Search Results",
+			//     status: "error",
+			//     duration: 5000,
+			//     isClosable: true,
+			//     position: "bottom-left",
+			// });
+		}
+	};
+
+	// fetch all conversations
+	const fetchChats = async () => {
+		try {
+			const config = {
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${user.token}`,
+				},
+			};
+			const { data } = await axios.get(
+				`${backend_url}/conversation`,
+				config
+			);
+
+			dispatch({ type: "SET_CONVERSATIONS", payload: data });
+			dispatch({ type: "SET_GROUP_CONVERSATIONS", payload: data });
+
+			if (
+				!chats.find(
+					(chat) => chat._id === data.map((datas) => datas._id)
+				)
+			) {
+				dispatch({ type: "SET_CHATS", payload: data });
+			}
+		} catch (error) {
+			console.log(error)
+			// toast({
+			//     title: "Error Occured!",
+			//     description: "Failed to Load the Conversations",
+			//     status: "error",
+			//     duration: 5000,
+			//     isClosable: true,
+			//     position: "bottom-left",
+			// });
+		}
+		setSearchResults([]);
+
+	};
+
+	const handleAddUser = async (user1, groupId) => {
+		try {
+			dispatch({ type: "SET_LOADING", payload: true });
+			setSearching(true);
+			const config = {
+				headers: {
+					Authorization: `Bearer ${user.token}`,
+				},
+			};
+			const { data } = await axios.put(
+				`${backend_url}/conversation/groupadd`,
+				{
+					chatId: groupId,
+					userId: user1,
+				},
+				config
+			);
+
+			console.log(`data`, data)
+
+			dispatch({ type: "SET_SELECTED_CHAT", payload: data });
+			setFetchAgain(!fetchAgain);
+			setSearching(false);
+			setSearchResults([]);
+			dispatch({ type: "SET_LOADING", payload: false });
+		} catch (error) {
+			console.log(error);
+			// toast({
+			//     title: "Error Occured!",
+			//     description: "User already exists in the group",
+			//     status: "error",
+			//     duration: 5000,
+			//     isClosable: true,
+			//     position: "bottom-left",
+			// });
+			setSearching(false);
+			setSearchResults([]);
+			dispatch({ type: "SET_LOADING", payload: false });
+		}
+		setSearch("");
+	};
+
+	React.useEffect(() => {
+		fetchChats();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [fetchAgain]);
+
 	return (
 		<>
 			<Box className='header' zIndex='9' position='fixed' right='30px' left='290px' boxShadow={'Base'} bg={'white'} p={'20px'} borderRadius={'10px'}>
@@ -77,7 +202,7 @@ const Header = () => {
 						<Image height='35px' mx='auto' src={CDN_IMAGES + "/chatapp-logo.png"} alt="ChatApp" />
 					</Box>
 					<Box position='relative' mx='auto' minW={'400px'}>
-						<Input onChange={handleSearch} value={search} placeholder='Search Users / Groups / Events' py={'13px'} px={'21px'} bg={'#F4F1FF'} border={'0'} />
+						<Input disabled={loading} onChange={handleSearch} value={search} placeholder='Search Users / Groups / Events' py={'13px'} px={'21px'} bg={'#F4F1FF'} border={'0'} />
 						{
 							searching && (
 								<Box zIndex='1' position='absolute' top='2px' right='12px'>
@@ -117,7 +242,11 @@ const Header = () => {
 												{
 													searchResults?.users?.map((item) => {
 														return (
-															<UserCard profileImg={item.pic} userName={item.username} />
+															<div key={item._id}
+																onClick={() => accessChat(item._id)}>
+
+																<UserCard profileImg={item.pic} userName={item.username} />
+															</div>
 														);
 													})
 												}
@@ -126,7 +255,13 @@ const Header = () => {
 												{
 													searchResults?.groups?.map((item) => {
 														return (
-															<UserCard name={item.users.length + ' Members'} profileImg={item.pic} userName={item.chatName} />
+															<div key={item._id}
+																onClick={() =>
+																	handleAddUser(user._id, item._id)
+																}>
+
+																<UserCard name={item.users.length + ' Members'} profileImg={item.pic} userName={item.chatName} />
+															</div>
 														);
 													})
 												}

@@ -8,6 +8,9 @@ const INITIAL_STATE = {
   notification: [],
   stream: false,
   fullScreen: true,
+  conversations: [],
+  groupConversations: [],
+  loading: false
 };
 
 export const AppContext = createContext(INITIAL_STATE);
@@ -24,6 +27,9 @@ export const AppContextProvider = ({ children }) => {
         notification: state.notification,
         stream: state.stream,
         fullScreen: state.fullScreen,
+        conversations: state.conversations,
+        groupConversations: state.groupConversations,
+        loading: state.loading,
         dispatch
       }}>
       {children}
