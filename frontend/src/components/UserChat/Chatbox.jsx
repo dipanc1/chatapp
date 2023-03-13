@@ -148,7 +148,7 @@ export const ChatBoxComponent = ({ flex, height, selectedChat, fetchAgain, setFe
     socket.on("message received", (newMessageReceived) => {
       if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
         if (!notification.includes(newMessageReceived)) {
-          dispatch({ type: 'SET_NOTIFICATION', payload: [newMessageReceived] });
+          dispatch({ type: 'SET_NOTIFICATION', payload: [newMessageReceived, ...notification] });
           // console.log(newMessageReceived);
           setFetchAgain(!fetchAgain);
         }

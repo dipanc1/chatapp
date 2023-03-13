@@ -16,6 +16,8 @@ import {
 	UnorderedList,
 	ListItem,
 	Link,
+	MenuButton,
+	Portal,
 } from '@chakra-ui/react';
 import ProfileModal from '../UserModals/ProfileModal';
 import { backend_url } from '../../baseApi';
@@ -23,10 +25,11 @@ import axios from 'axios';
 import { AppContext } from '../../context/AppContext';
 import UserCard from '../UserItems/UserCard';
 import GroupCard from '../Groups/GroupCard';
+import { BellIcon } from '@chakra-ui/icons';
 
 const Header = ({ fetchAgain, setFetchAgain }) => {
 	const user = JSON.parse(localStorage.getItem('user'));
-	const { dispatch, chats, loading } = useContext(AppContext);
+	const { dispatch, chats, loading, notification } = useContext(AppContext);
 	const [toggleProfiledd, setToggleProfiledd] = useState(false)
 	const [search, setSearch] = useState('');
 	const [searching, setSearching] = useState(false)
@@ -287,9 +290,32 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 							<Link href='/video-chat'>
 								<Image height='23px' me='20px' src={CDN_IMAGES + "/messages.png"} />
 							</Link>
-							<Box position='relative'>
-								<Image height='25px' src={CDN_IMAGES + "/notification.png"} />
-							</Box>
+							<Menu>
+								<MenuButton>
+									<BellIcon fontSize={'3xl'} />
+								</MenuButton>
+								<Portal>
+									<MenuList>
+										{!notification.length
+											? <MenuItem>No new notifications</MenuItem>
+											:
+											notification.map((notifications) =>
+												<MenuItem
+													key={notifications._id}
+													onClick={() => {
+														// console.log(notifications);
+														dispatch({
+															type: 'SET_SELECTED_CHAT',
+															payload: notifications.chat
+														})
+													}
+													}>
+													{notifications.chat.isGroupChat ? `New Message in ${notifications.chat.chatName}` : `New Message from ${notifications.sender.username}`}
+												</MenuItem>
+											)}
+									</MenuList>
+								</Portal>
+							</Menu>
 							<Box position='relative'>
 								<Button onClick={() => setToggleProfiledd(!toggleProfiledd)} className='btn-default' ms='15px' display='flex' alignItems='center' bg='transparent'>
 									<Image borderRadius='full' boxSize='40px' src={user.pic} alt='Profile Pic' />
