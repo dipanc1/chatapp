@@ -44,6 +44,7 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 	}
 
 	const handleSearch = async (e) => {
+		setSearching(true)
 		setSearch(e.target.value);
 		if (e.target.value === '' || e.target.value === null) {
 			setSearchResults([])
