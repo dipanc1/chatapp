@@ -18,6 +18,7 @@ import {
 	Link,
 	MenuButton,
 	Portal,
+	Badge,
 } from '@chakra-ui/react';
 import ProfileModal from '../UserModals/ProfileModal';
 import { backend_url } from '../../baseApi';
@@ -292,6 +293,7 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 							</Link>
 							<Menu>
 								<MenuButton>
+									<Badge colorScheme={"purple"} size="md">{notification.length}</Badge>
 									<BellIcon fontSize={'3xl'} />
 								</MenuButton>
 								<Portal>
@@ -308,8 +310,11 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 															type: 'SET_SELECTED_CHAT',
 															payload: notifications.chat
 														})
-													}
-													}>
+														dispatch({
+															type: 'SET_NOTIFICATION',
+															payload: notification.filter((item) => item._id !== notifications._id)
+														})
+													}}>
 													{notifications.chat.isGroupChat ? `New Message in ${notifications.chat.chatName}` : `New Message from ${notifications.sender.username}`}
 												</MenuItem>
 											)}
