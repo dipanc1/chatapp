@@ -7,7 +7,6 @@ import Lottie from "lottie-react";
 import animationData from '../../animations/typing.json'
 import DetailsModal from '../UserModals/DetailsModal'
 import { format } from 'timeago.js'
-import StreamModal from '../UserModals/StreamModal'
 import { HiUserRemove } from 'react-icons/hi'
 import EndLeaveModal from '../UserModals/EndLeaveModal'
 import { backend_url } from '../../baseApi'
@@ -20,8 +19,7 @@ var selectedChatCompare;
 
 export const ChatBoxComponent = ({ flex, height, selectedChat, fetchAgain, setFetchAgain, user, toast }) => {
   const socket = React.useContext(SocketContext);
-  // console.log("Socket ::: >>>",socket)
-  const { notification, dispatch, fullScreen } = React.useContext(AppContext);
+  const { notification, dispatch } = React.useContext(AppContext);
   const [messages, setMessages] = React.useState([]);
   const [page, setPage] = React.useState(2);
   const [hasMore, setHasMore] = React.useState(true);
@@ -148,6 +146,10 @@ export const ChatBoxComponent = ({ flex, height, selectedChat, fetchAgain, setFe
     socket.on("message received", (newMessageReceived) => {
       if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
         if (!notification.includes(newMessageReceived)) {
+          if (notification.length >= 5) {
+            notification.pop();
+          }
+
           dispatch({ type: 'SET_NOTIFICATION', payload: [newMessageReceived, ...notification] });
           // console.log(newMessageReceived);
           setFetchAgain(!fetchAgain);
@@ -199,7 +201,7 @@ export const ChatBoxComponent = ({ flex, height, selectedChat, fetchAgain, setFe
           <div
             id="scrollableDiv"
             style={{
-              flex: flex,  
+              flex: flex,
               height: height,
               overflow: 'auto',
               display: 'flex',
@@ -286,7 +288,7 @@ export const ChatBoxComponent = ({ flex, height, selectedChat, fetchAgain, setFe
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={newMessage !== "" ? sendMessage : null}>
-          <FiSend color="#fff"/>
+          <FiSend color="#fff" />
         </Button>
       </Box>
     </>
@@ -553,32 +555,32 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
                 </Text>
               </Box>
               <Box display='flex' alignItems='center'>
-              {selectedChat?.isGroupChat && (admin || meetingIdExists) &&
-                <Box>
-                  <StreamModalPeer admin={admin} />
-                </Box>
-              }
-              {
-                selectedChat && (
-                  selectedChat?.isGroupChat && (
-                    <Button
-                    background="transparent"
-                    borderRadius="100%"
-                    ms="15px"
-                    h='40px'
-                    w='40px'
-                    p='0'
-                    onClick={onOpen}
-                  >
-                    <Img
-                      h='22px'
-                    src="https://ik.imagekit.io/sahildhingra/settings.png" alt="" />
-                  </Button>
-                  )
-                )
-              }
-
+                {selectedChat?.isGroupChat && (admin || meetingIdExists) &&
+                  <Box>
+                    <StreamModalPeer admin={admin} />
                   </Box>
+                }
+                {
+                  selectedChat && (
+                    selectedChat?.isGroupChat && (
+                      <Button
+                        background="transparent"
+                        borderRadius="100%"
+                        ms="15px"
+                        h='40px'
+                        w='40px'
+                        p='0'
+                        onClick={onOpen}
+                      >
+                        <Img
+                          h='22px'
+                          src="https://ik.imagekit.io/sahildhingra/settings.png" alt="" />
+                      </Button>
+                    )
+                  )
+                }
+
+              </Box>
               <Flex
                 display={['block', 'none', 'none', 'none']}
               >
@@ -589,67 +591,67 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
 
             <Divider orientation='horizontal' />
             <ChatBoxComponent flex='1' height={'78%'} setOnline={setOnline} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} user={user} toast={toast} selectedChat={selectedChat} meetingId={meetingId} />
-              
+
             {/* Group Settings Modal */}
             <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Settings</ModalHeader>
-          <ModalCloseButton />
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>Settings</ModalHeader>
+                <ModalCloseButton />
 
-          <ModalBody>
-          <hr />
-          {renameLoading ?
-                  <Box display={'flex'}
-                    alignItems={'center'}
-                    justifyContent={'center'}
-                    my={2}>
-                    <Spinner
-                      thickness='4px'
-                      speed='0.7s'
-                      emptyColor='gray.200'
-                      color='buttonPrimaryColor'
-                      size='md'
-                    />
+                <ModalBody>
+                  <hr />
+                  {renameLoading ?
+                    <Box display={'flex'}
+                      alignItems={'center'}
+                      justifyContent={'center'}
+                      my={2}>
+                      <Spinner
+                        thickness='4px'
+                        speed='0.7s'
+                        emptyColor='gray.200'
+                        color='buttonPrimaryColor'
+                        size='md'
+                      />
+                    </Box>
+                    :
+                    <Box display={'flex'} flexDirection={'column'} mt="30px" mb={fullScreen ? '50px' : '2'}>
+                      <Input
+                        mr={'2'}
+                        value={groupChatName}
+                        placeholder={selectedChat?.chatName}
+                        _placeholder={{ color: 'inherit' }}
+                        onChange={(e) => setGroupChatName(e.target.value)}
+                      />
+                    </Box>
+                  }
+                </ModalBody>
+
+                <ModalFooter justifyContent='space-between'>
+                  <Box my={fullScreen ? '2' : '0'}>
+                    <Button size={fullScreen ? 'md' : 'sm'} onClick={onConfirmOpen} rightIcon={<HiUserRemove />} colorScheme='red' variant='outline'>
+                      Leave Group
+                    </Button>
                   </Box>
-                  :
-                  <Box display={'flex'} flexDirection={'column'} mt="30px" mb={fullScreen ? '50px' : '2'}>
-                    <Input
-                      mr={'2'}
-                      value={groupChatName}
-                      placeholder={selectedChat?.chatName}
-                      _placeholder={{ color: 'inherit' }}
-                      onChange={(e) => setGroupChatName(e.target.value)}
-                    />
-                  </Box>
-                }
-          </ModalBody>
+                  <button className='btn btn-primary' onClick={handleRename}>
+                    Update
+                  </button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
 
-          <ModalFooter justifyContent='space-between'>
-            <Box my={fullScreen ? '2' : '0'}>
-              <Button size={fullScreen ? 'md' : 'sm'} onClick={onConfirmOpen} rightIcon={<HiUserRemove />} colorScheme='red' variant='outline'>
-                Leave Group
-              </Button>
-            </Box>
-            <button className='btn btn-primary' onClick={handleRename}>
-              Update
-            </button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-
-      <EndLeaveModal
-        leastDestructiveRef={cancelRef}
-        onClose={onConfirmClose}
-        header={'Leave Group'}
-        body={'Are you sure you want to leave this group?'}
-        confirmButton={'Leave'}
-        confirmFunction={() => {
-          handleRemove(user);
-          onConfirmClose();
-        }}
-        isOpen={isConfirmOpen}
-      />
+            <EndLeaveModal
+              leastDestructiveRef={cancelRef}
+              onClose={onConfirmClose}
+              header={'Leave Group'}
+              body={'Are you sure you want to leave this group?'}
+              confirmButton={'Leave'}
+              confirmFunction={() => {
+                handleRemove(user);
+                onConfirmClose();
+              }}
+              isOpen={isConfirmOpen}
+            />
 
           </>)
           :

@@ -309,7 +309,7 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 							</Link>
 							<Menu>
 								<MenuButton position='relative'>
-									<Text background='#9F85F7' top='-4px' borderRadius='100%' left='-3px' fontSize='10px' display='flex' alignItems='center' justifyContent='center' color='#fff' h='15px' w='15px' position="absolute">{notification.length}</Text>
+									<Text background='#9F85F7' top='-4px' borderRadius='100%' left='-3px' fontSize='10px' display='flex' alignItems='center' justifyContent='center' color='#fff' h='15px' w='15px' position="absolute">{notification.length > 3 ? "3+" : notification.length}</Text>
 									{/* <BellIcon fontSize={'3xl'} /> */}
 									<Image height='23px' src={CDN_IMAGES + "/notification.png"} />
 								</MenuButton>
