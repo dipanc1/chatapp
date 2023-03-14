@@ -13,7 +13,7 @@
 #### user can add the participant again if it searches for the same name
 #### user search limit to 10
 #### when hitting api to take user from select event from all app to group or to event send the data only which is needed
-#### notifications -> need sound? need to save them in database?
+#### notifications -> sound fix in header comp.
 
 ## Phone App
 
