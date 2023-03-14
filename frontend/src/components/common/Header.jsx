@@ -35,7 +35,9 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 	const [toggleProfiledd, setToggleProfiledd] = useState(false)
 	const [search, setSearch] = useState('');
 	const [searching, setSearching] = useState(false)
-	const [searchResults, setSearchResults] = useState()
+	const [searchResultsUsers, setSearchResultsUsers] = useState([]);
+	const [searchResultsGroups, setSearchResultsGroups] = useState([]);
+	const [searchResultsEvents, setSearchResultsEvents] = useState([]);
 	const [activeTab, setActiveTab] = useState(1)
 
 	let navigate = useNavigate();
@@ -53,7 +55,10 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 		setSearching(true)
 		setSearch(e.target.value);
 		if (e.target.value === '' || e.target.value === null) {
-			setSearchResults([])
+			setSearching(false)
+			setSearchResultsUsers([]);
+			setSearchResultsGroups([]);
+			setSearchResultsEvents([]);
 			return;
 		}
 		setSearching(true)
@@ -65,10 +70,12 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 				},
 			};
 			const { data } = await axios.get(
-				`${backend_url}/users?search=${search}`,
+				`${backend_url}/users?search=${e.target.value}`,
 				config
 			);
-			setSearchResults(data)
+			setSearchResultsUsers(data.users);
+			setSearchResultsGroups(data.groups);
+			setSearchResultsEvents(data.events);
 			setSearching(false)
 		} catch (error) {
 			console.log(error)
@@ -78,7 +85,9 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 
 	const accessChat = async (userId) => {
 		// console.log(userId);
-		setSearchResults([]);
+		setSearchResultsUsers([]);
+		setSearchResultsGroups([]);
+		setSearchResultsEvents([]);
 		try {
 			setSearching(true);
 			dispatch({ type: "SET_LOADING", payload: true });
@@ -105,12 +114,12 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 			setSearching(false);
 			dispatch({ type: "SET_LOADING", payload: false });
 			toast({
-			    title: "Error Occured!",
-			    description: "Failed to Load the Search Results",
-			    status: "error",
-			    duration: 5000,
-			    isClosable: true,
-			    position: "bottom-left",
+				title: "Error Occured!",
+				description: "Failed to Load the Search Results",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+				position: "bottom-left",
 			});
 		}
 	};
@@ -142,16 +151,17 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 		} catch (error) {
 			// console.log(error)
 			toast({
-			    title: "Error Occured!",
-			    description: "Failed to Load the Conversations",
-			    status: "error",
-			    duration: 5000,
-			    isClosable: true,
-			    position: "bottom-left",
+				title: "Error Occured!",
+				description: "Failed to Load the Conversations",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+				position: "bottom-left",
 			});
 		}
-		setSearchResults([]);
-
+		setSearchResultsUsers([]);
+		setSearchResultsGroups([]);
+		setSearchResultsEvents([]);
 	};
 
 	const handleAddUser = async (user1, groupId) => {
@@ -177,20 +187,24 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 			dispatch({ type: "SET_SELECTED_CHAT", payload: data });
 			setFetchAgain(!fetchAgain);
 			setSearching(false);
-			setSearchResults([]);
+			setSearchResultsUsers([]);
+			setSearchResultsGroups([]);
+			setSearchResultsEvents([]);
 			dispatch({ type: "SET_LOADING", payload: false });
 		} catch (error) {
 			// console.log(error);
 			toast({
-			    title: "Error Occured!",
-			    description: "User already exists in the group",
-			    status: "error",
-			    duration: 5000,
-			    isClosable: true,
-			    position: "bottom-left",
+				title: "Error Occured!",
+				description: "User already exists in the group",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+				position: "bottom-left",
 			});
 			setSearching(false);
-			setSearchResults([]);
+			setSearchResultsUsers([]);
+			setSearchResultsGroups([]);
+			setSearchResultsEvents([]);
 			dispatch({ type: "SET_LOADING", payload: false });
 		}
 		setSearch("");
@@ -209,7 +223,7 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 						<Image height='35px' mx='auto' src={CDN_IMAGES + "/chatapp-logo.png"} alt="ChatApp" />
 					</Box>
 					<Box position='relative' mx='auto' minW={'400px'}>
-						<Input disabled={loading} onChange={handleSearch} value={search} placeholder='Search Users / Groups / Events' py={'13px'} px={'21px'} bg={'#F4F1FF'} border={'0'} />
+						<Input disabled={loading} onChange={(e) => handleSearch(e)} value={search} placeholder='Search Users / Groups / Events' py={'13px'} px={'21px'} bg={'#F4F1FF'} border={'0'} />
 						{
 							searching && (
 								<Box zIndex='1' position='absolute' top='2px' right='12px'>
@@ -219,25 +233,25 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 						}
 						<Box px='20px' background='#fff' boxShadow='0px 3px 24px rgba(159, 133, 247, 0.6)' borderRadius='5px' w='100%' position='absolute' top='calc(100% + 10px)' zIndex='1'>
 							{
-								searchResults?.user?.length || searchResults?.groups?.length || searchResults?.events?.length ? (
+								searchResultsUsers?.length || searchResultsGroups?.length || searchResultsEvents?.length ? (
 									<>
 										<UnorderedList ms='0' display='flex' className="tab-nav">
 											{
-												searchResults?.users?.length && (
+												searchResultsUsers?.length && (
 													<ListItem mr='0!important' onClick={() => setActiveTab(1)} className={activeTab === 1 ? "active" : ""}>
 														Users
 													</ListItem>
 												)
 											}
 											{
-												searchResults?.groups?.length && (
+												searchResultsGroups?.length && (
 													<ListItem mr='0!important' onClick={() => setActiveTab(2)} className={activeTab === 2 ? "active" : ""}>
 														Groups
 													</ListItem>
 												)
 											}
 											{
-												searchResults?.events?.length && (
+												searchResultsEvents?.length && (
 													<ListItem mr='0!important' onClick={() => setActiveTab(3)} className={activeTab === 3 ? "active" : ""}>
 														Events
 													</ListItem>
@@ -247,7 +261,7 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 										<div className="tab-content">
 											<div className={"tab-content-item " + (activeTab === 1 ? "current" : "")}>
 												{
-													searchResults?.users?.map((item) => {
+													searchResultsUsers?.map((item) => {
 														return (
 															<div key={item._id}
 																onClick={() => accessChat(item._id)}>
@@ -260,7 +274,7 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 											</div>
 											<div className={"tab-themes tab-content-item " + (activeTab === 2 ? "current" : "")}>
 												{
-													searchResults?.groups?.map((item) => {
+													searchResultsGroups?.map((item) => {
 														return (
 															<div key={item._id}
 																onClick={() =>
@@ -275,7 +289,7 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 											</div>
 											<div className={"tab-content-item " + (activeTab === 3 ? "current" : "")}>
 												{
-													searchResults?.events?.map((item) => {
+													searchResultsEvents?.map((item) => {
 														return (
 															<UserCard name={item.time} profileImg={item.thumbnail} userName={item.name} />
 														);
