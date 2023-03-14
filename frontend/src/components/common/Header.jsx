@@ -19,6 +19,7 @@ import {
 	MenuButton,
 	Portal,
 	Badge,
+	useToast,
 } from '@chakra-ui/react';
 import ProfileModal from '../UserModals/ProfileModal';
 import { backend_url } from '../../baseApi';
@@ -38,6 +39,7 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 	const [activeTab, setActiveTab] = useState(1)
 
 	let navigate = useNavigate();
+	const toast = useToast();
 
 	const CDN_IMAGES = "https://ik.imagekit.io/sahildhingra";
 
@@ -99,17 +101,17 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 			setSearch("");
 			setFetchAgain(!fetchAgain);
 		} catch (error) {
-			console.log(error)
+			// console.log(error)
 			setSearching(false);
 			dispatch({ type: "SET_LOADING", payload: false });
-			// toast({
-			//     title: "Error Occured!",
-			//     description: "Failed to Load the Search Results",
-			//     status: "error",
-			//     duration: 5000,
-			//     isClosable: true,
-			//     position: "bottom-left",
-			// });
+			toast({
+			    title: "Error Occured!",
+			    description: "Failed to Load the Search Results",
+			    status: "error",
+			    duration: 5000,
+			    isClosable: true,
+			    position: "bottom-left",
+			});
 		}
 	};
 
@@ -138,15 +140,15 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 				dispatch({ type: "SET_CHATS", payload: data });
 			}
 		} catch (error) {
-			console.log(error)
-			// toast({
-			//     title: "Error Occured!",
-			//     description: "Failed to Load the Conversations",
-			//     status: "error",
-			//     duration: 5000,
-			//     isClosable: true,
-			//     position: "bottom-left",
-			// });
+			// console.log(error)
+			toast({
+			    title: "Error Occured!",
+			    description: "Failed to Load the Conversations",
+			    status: "error",
+			    duration: 5000,
+			    isClosable: true,
+			    position: "bottom-left",
+			});
 		}
 		setSearchResults([]);
 
@@ -178,15 +180,15 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 			setSearchResults([]);
 			dispatch({ type: "SET_LOADING", payload: false });
 		} catch (error) {
-			console.log(error);
-			// toast({
-			//     title: "Error Occured!",
-			//     description: "User already exists in the group",
-			//     status: "error",
-			//     duration: 5000,
-			//     isClosable: true,
-			//     position: "bottom-left",
-			// });
+			// console.log(error);
+			toast({
+			    title: "Error Occured!",
+			    description: "User already exists in the group",
+			    status: "error",
+			    duration: 5000,
+			    isClosable: true,
+			    position: "bottom-left",
+			});
 			setSearching(false);
 			setSearchResults([]);
 			dispatch({ type: "SET_LOADING", payload: false });
