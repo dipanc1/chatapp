@@ -294,9 +294,10 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 								<Image height='23px' me='20px' src={CDN_IMAGES + "/messages.png"} />
 							</Link>
 							<Menu>
-								<MenuButton>
-									<Badge colorScheme={"purple"} size="md">{notification.length}</Badge>
-									<BellIcon fontSize={'3xl'} />
+								<MenuButton position='relative'>
+									<Text background='#9F85F7' top='-4px' borderRadius='100%' left='-3px' fontSize='10px' display='flex' alignItems='center' justifyContent='center' color='#fff' h='15px' w='15px' position="absolute">{notification.length}</Text>
+									{/* <BellIcon fontSize={'3xl'} /> */}
+									<Image height='23px' src={CDN_IMAGES + "/notification.png"} />
 								</MenuButton>
 								<Portal>
 									<MenuList>

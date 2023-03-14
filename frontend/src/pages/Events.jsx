@@ -13,7 +13,8 @@ import {
   Flex,
   Image,
   useToast,
-  useDisclosure
+  useDisclosure,
+  Spinner
 } from '@chakra-ui/react';
 
 import Static from "../components/common/Static"
@@ -131,15 +132,32 @@ function Events() {
         </Box>
         <div className="tab-content">
           <div className={"tab-content-item " + (activeTab === 1 ? "current" : "")}>
-            <Grid mb='70px' templateColumns='repeat(3, 1fr)' gap='2rem' rowGap='3rem'>
-              {eventsList?.map((eventItem) => {
-                return (
-                  <div onClick={() => selectEvent(eventItem.chatId)}>
-                    <EventCard key={eventItem._id} title={eventItem.name} imageUrl={eventItem?.thumbnail} />
-                  </div>
-                )
-              })}
-            </Grid>
+            {
+              eventsList.length ? (
+                <Grid mb='70px' templateColumns='repeat(3, 1fr)' gap='2rem' rowGap='3rem'>
+                  {
+                    eventsList?.map((eventItem) => {
+                      return (
+                        <div onClick={() => selectEvent(eventItem.chatId)}>
+                          <EventCard key={eventItem._id} title={eventItem.name} imageUrl={eventItem?.thumbnail} />
+                        </div>
+                      )
+                    })
+                  }
+                </Grid>
+              ) : (
+                <Box py='100px' background='transparent' textAlign='center'>
+                    <Spinner
+                      thickness='4px'
+                      speed='0.2s'
+                      emptyColor='gray.200'
+                      color='buttonPrimaryColor'
+                      size='xl'
+                    />
+                  </Box>
+              )
+            } 
+            
           </div>
           <div className={"tab-themes tab-content-item " + (activeTab === 2 ? "current" : "")}>
             <Grid mb='70px' templateColumns='repeat(3, 1fr)' gap='2rem' rowGap='3rem'>
