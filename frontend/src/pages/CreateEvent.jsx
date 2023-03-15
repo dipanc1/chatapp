@@ -15,7 +15,7 @@ import {
 
 import Static from '../components/common/Static'
 import axios from 'axios';
-import { backend_url } from '../baseApi';
+import { backend_url, pictureUpload } from '../baseApi';
 import { AppContext } from '../context/AppContext';
 import { useNavigate } from 'react-router-dom';
 import { FiUpload } from 'react-icons/fi';
@@ -32,9 +32,6 @@ const CreateEvent = () => {
 	const fileInputRef = React.createRef();
 
 	let navigate = useNavigate();
-
-	const cloudName = 'dipanc1';
-	const pictureUpload = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
 
 	const imageChange = (e) => {
 		if (e.target.files && e.target.files.length > 0 && (e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/png')) {

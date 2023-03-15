@@ -5,7 +5,7 @@ import axios from 'axios';
 import { AppContext } from '../context/AppContext';
 import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
-import { backend_url } from '../baseApi';
+import { backend_url, pictureUpload } from '../baseApi';
 import {
     Flex,
     Box,
@@ -56,8 +56,6 @@ const Register = () => {
     const apiUrlRegister = `${backend_url}/users/register`;
     const apiUrlUsername = `${backend_url}/users/check-username`;
     
-    const cloudName = 'dipanc1';
-    const pictureUpload = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
 
     const handleUsername = async (e) => {
         setUsername(e.target.value);

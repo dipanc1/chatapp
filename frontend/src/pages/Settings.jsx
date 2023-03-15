@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 import Static from '../components/common/Static'
 import {
@@ -29,22 +29,33 @@ import {
     AccordionIcon,
     AccordionItem,
     AccordionButton,
-    AccordionPanel
+    AccordionPanel,
+    useToast,
+    Avatar,
+    IconButton
 } from '@chakra-ui/react';
 import "./Settings.css"
 import axios from 'axios';
-import { backend_url } from '../baseApi';
+import { backend_url, pictureUpload } from '../baseApi';
+import { FiUpload } from 'react-icons/fi';
 
 const Settings = () => {
     const user = JSON.parse(localStorage.getItem('user'));
-    const [activeTab, setActiveTab] = useState(1);
 
+    const toast = useToast();
+    const navigate = useNavigate();
+    const fileInputRef = React.createRef();
+
+    const [activeTab, setActiveTab] = useState(1);
     const [username, setUsername] = useState("");
     const [number, setNumber] = useState("");
     const [pic, setPic] = useState("");
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [selectedImage, setSelectedImage] = React.useState(null);
+
+    // TODO: Disable button and tabs while making API calls and other checks, update profile details , temp. solution: log out and log in again or save evrything in local storage separately
 
     useEffect(() => {
         const currentUserDetails = async () => {
@@ -111,8 +122,67 @@ const Settings = () => {
         }
     }
 
+    const imageChange = (e) => {
+        if (e.target.files && e.target.files.length > 0 && (e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/png')) {
+            setSelectedImage(e.target.files[0]);
+        } else {
+            toast({
+                title: "Error",
+                description: "Please upload a picture",
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+            });
+        }
+    }
+
     const handleUpdateProfile = async (e) => {
         e.preventDefault();
+        let data;
+        if (!username) {
+            toast({
+                title: "Error",
+                description: "Please enter a username",
+                status: "error",
+                duration: 4000,
+                isClosable: true,
+            });
+            return;
+        }
+
+        if (username.length < 3) {
+            toast({
+                title: "Error",
+                description: "Username should be at least 3 characters long",
+                status: "error",
+                duration: 4000,
+                isClosable: true,
+            });
+            return;
+        }
+
+        if (username.length > 20) {
+            toast({
+                title: "Error",
+                description: "Username should be less than 20 characters long",
+                status: "error",
+                duration: 4000,
+                isClosable: true,
+            });
+            return;
+        }
+
+        if ((pic === user.pic || !selectedImage) && username === user.username) {
+            toast({
+                title: "Error",
+                description: "Picture is same as old picture and username is same as old username",
+                status: "error",
+                duration: 4000,
+                isClosable: true,
+            });
+            return;
+        }
+
         try {
             const config = {
                 headers: {
@@ -120,18 +190,49 @@ const Settings = () => {
                     "Authorization": `Bearer ${user.token}`,
                 },
             };
-            const { data } = await axios.put(
-                `${backend_url}/users/update-user-info`, {
-                username,
-                pic,
-            },
-                config
-            );
 
-            console.log(data);
-            alert("Profile updated successfully");
-            setUsername(data.username);
-            setPic(data.pic);
+            if (selectedImage) {
+                const formData = new FormData();
+                formData.append('api_key', '835688546376544')
+                formData.append('file', selectedImage);
+                formData.append('upload_preset', 'chat-app');
+                await axios.post(pictureUpload, formData).then(res =>
+                    axios.put(
+                        `${backend_url}/users/update-user-info`, {
+                        username,
+                        pic: res.data.url,
+                    },
+                        config
+                    )).catch(err => {
+                        toast({
+                            title: "Error",
+                            description: "Error uploading picture",
+                            status: "error",
+                            duration: 4000,
+                            isClosable: true,
+                        });
+                    })
+            } else {
+                data = await axios.put(
+                    `${backend_url}/users/update-user-info`, {
+                    username,
+                    pic,
+                },
+                    config
+                );
+            }
+
+            toast({
+                title: "Success",
+                description: data.data.message,
+                status: "success",
+                duration: 4000,
+                isClosable: true,
+            });
+            setUsername(data.data.username);
+            setPic(data.data.pic);
+            localStorage.removeItem("user");
+            navigate("/");
         } catch (error) {
             console.log(error);
         }
@@ -186,7 +287,26 @@ const Settings = () => {
                             <Grid mt='30px' templateColumns='repeat(2, 1fr)' gap='5rem' rowGap='3rem' className='form-wrapper form-details'>
                                 <GridItem w='100%'>
                                     <FormControl className="filled">
-                                        <Image src={pic} width="40" height="40" borderRadius="full" />
+                                        <Avatar
+                                            size={'2xl'}
+                                            src={selectedImage ? URL.createObjectURL(selectedImage) : pic}
+                                            alt={'Avatar Alt'}
+                                        />
+                                        <IconButton
+                                            aria-label="upload picture"
+                                            icon={<FiUpload />}
+                                            onClick={() => fileInputRef.current.click()}
+                                            size="xs"
+                                            colorScheme="teal"
+                                            variant="outline"
+                                            mt={'3'}
+                                        />
+                                        <input
+                                            type="file"
+                                            ref={fileInputRef}
+                                            onChange={imageChange}
+                                            style={{ display: 'none' }}
+                                        />
                                         <FormLabel>PROFILE IMAGE</FormLabel>
                                     </FormControl>
                                 </GridItem>
@@ -194,7 +314,7 @@ const Settings = () => {
                             <Flex pt='50px' alignItems='center' justifyContent='end'>
                                 <Button type='submit' bg="buttonPrimaryColor" color={"white"}>
                                     <Image h='18px' pe='15px' src='https://ik.imagekit.io/sahildhingra/edit.png' />
-                                    <Text>Edit Profile</Text>
+                                    <Text>Edit Profile & Logout</Text>
                                 </Button>
                             </Flex>
                         </form>

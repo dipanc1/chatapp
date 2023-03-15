@@ -6,7 +6,7 @@ import ChatOnline from '../Miscellaneous/ChatOnline'
 import { AppContext } from '../../context/AppContext'
 import axios from 'axios'
 import UserListItem from '../UserItems/UserListItem'
-import { backend_url } from '../../baseApi'
+import { backend_url, pictureUpload } from '../../baseApi'
 import { HiUserRemove } from 'react-icons/hi'
 import {
   Accordion, Avatar,
@@ -51,9 +51,6 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
   const [createEventLoading, setCreateEventLoading] = useState(false)
 
   const fileInputRef = React.createRef();
-
-  const cloudName = 'dipanc1';
-  const pictureUpload = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
 
   const imageChange = (e) => {
     if (e.target.files && e.target.files.length > 0 && (e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/png')) {

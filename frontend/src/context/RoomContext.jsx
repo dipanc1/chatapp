@@ -180,7 +180,6 @@ export const RoomProvider = ({ children }) => {
             ws.off("user-joined");
         };
 
-        // TODO: THIS MIGHT BE THE PROBLEM
     }, [me, playJoin, streamState, userId])
 
     useEffect(() => {
