@@ -28,10 +28,13 @@ import { AppContext } from '../../context/AppContext';
 import UserCard from '../UserItems/UserCard';
 import GroupCard from '../Groups/GroupCard';
 import { BellIcon } from '@chakra-ui/icons';
+import useSound from 'use-sound';
+import joinSound from '../../sounds/join.mp3';
 
 const Header = ({ fetchAgain, setFetchAgain }) => {
 	const user = JSON.parse(localStorage.getItem('user'));
 	const { dispatch, chats, loading, notification } = useContext(AppContext);
+	const [play] = useSound(joinSound);
 	const [toggleProfiledd, setToggleProfiledd] = useState(false)
 	const [search, setSearch] = useState('');
 	const [searching, setSearching] = useState(false)
@@ -50,6 +53,12 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 		navigate('/');
 		window.location.reload();
 	}
+
+	React.useEffect(() => {
+		notification.length > 0 && notification.length < 3 && play()
+
+	}, [notification.length, play])
+
 
 	const handleSearch = async (e) => {
 		setSearching(true)
@@ -310,7 +319,6 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 							<Menu>
 								<MenuButton position='relative'>
 									<Text background='#9F85F7' top='-4px' borderRadius='100%' left='-3px' fontSize='10px' display='flex' alignItems='center' justifyContent='center' color='#fff' h='15px' w='15px' position="absolute">{notification.length > 3 ? "3+" : notification.length}</Text>
-									{/* <BellIcon fontSize={'3xl'} /> */}
 									<Image height='23px' src={CDN_IMAGES + "/notification.png"} />
 								</MenuButton>
 								<Portal>
