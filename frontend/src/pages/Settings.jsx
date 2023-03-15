@@ -55,7 +55,7 @@ const Settings = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [selectedImage, setSelectedImage] = React.useState(null);
 
-    // TODO: Disable button and tabs while making API calls and other checks, update profile details , temp. solution: log out and log in again or save evrything in local storage separately
+    // TODO: Disable button and tabs while making API calls and other checks, update profile details , temp. solution: log out and log in again or save evrything in local storage separately or use context API to update the user details
 
     useEffect(() => {
         const currentUserDetails = async () => {

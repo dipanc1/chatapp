@@ -237,6 +237,7 @@ router.get("/user-info", protect, async (req, res) => {
     await User.findById(userId)
         .then((user) => {
             res.status(200).json({
+                _id: user._id,
                 username: user.username,
                 number: user.number,
                 pic: user.pic,
