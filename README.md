@@ -14,6 +14,7 @@
 #### user search limit to 10
 #### when hitting api to take user from select event from all app to group or to event send the data only which is needed
 #### notifications -> sound fix in header comp.
+#### use httponly cookies for refresh token
 
 ## Phone App
 

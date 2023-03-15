@@ -52,9 +52,9 @@ const customTheme = extendTheme({
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <ChakraProvider theme={customTheme}>
-        <AppContextProvider>
-          <App />
-        </AppContextProvider>
+      <AppContextProvider>
+        <App />
+      </AppContextProvider>
     </ChakraProvider>
   </BrowserRouter>,
 );
