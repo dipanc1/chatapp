@@ -1,6 +1,6 @@
 import axios from "axios";
 import { createContext, useEffect, useReducer } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { backend_url } from "../baseApi";
 import AppReducer from "../reducers/AppReducer";
 
@@ -22,10 +22,14 @@ export const AppContext = createContext(INITIAL_STATE);
 export const AppContextProvider = ({ children }) => {
   const user = JSON.parse(localStorage.getItem("user"));
   const navigate = useNavigate();
+  const location = useLocation();
   const [state, dispatch] = useReducer(AppReducer, INITIAL_STATE);
 
   useEffect(() => {
     const getUserInfo = async () => {
+      if (location.pathname === "/register" || location.pathname === "/") {
+        return;
+      }
       if (!user) {
         navigate("/");
         return;
@@ -49,7 +53,8 @@ export const AppContextProvider = ({ children }) => {
         });
     };
     getUserInfo();
-  }, [navigate, user, user?.token])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname, navigate, user?.token])
 
 
   return (
