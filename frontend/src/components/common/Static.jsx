@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState} from 'react'
 import Cookies from 'universal-cookie';
 
 import {
@@ -7,7 +7,6 @@ import {
 } from '@chakra-ui/react';
 import SideBar from './SideBar';
 import Header from './Header';
-
 
 const Static = ({
   noPadding,

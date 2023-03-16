@@ -226,6 +226,7 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 
 	return (
 		<>
+    {console.log(user, "<---")}
 			<Box className='header' zIndex='9' position='fixed' right='30px' left='290px' boxShadow={'Base'} bg={'white'} p={'20px'} borderRadius={'10px'}>
 				<Flex alignItems='center'>
 					<Box className='logo-header' display='none'>
@@ -318,7 +319,11 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 							</Link>
 							<Menu>
 								<MenuButton position='relative'>
-									<Text background='#9F85F7' top='-4px' borderRadius='100%' left='-3px' fontSize='10px' display='flex' alignItems='center' justifyContent='center' color='#fff' h='15px' w='15px' position="absolute">{notification.length > 3 ? "3+" : notification.length}</Text>
+									{
+										notification.length > 0 && (
+											<Text background='#9F85F7' top='-4px' borderRadius='100%' left='-3px' fontSize='10px' display='flex' alignItems='center' justifyContent='center' color='#fff' h='15px' w='15px' position="absolute">{notification.length > 3 ? "3+" : notification.length}</Text>
+										)
+									}
 									<Image height='23px' src={CDN_IMAGES + "/notification.png"} />
 								</MenuButton>
 								<Portal>
@@ -346,9 +351,9 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 									</MenuList>
 								</Portal>
 							</Menu>
-							<Box position='relative'>
+							<Box position='relative' ms='7px'>
 								<Button onClick={() => setToggleProfiledd(!toggleProfiledd)} className='btn-default' ms='15px' display='flex' alignItems='center' bg='transparent'>
-									<Image borderRadius='full' boxSize='40px' src={user.pic} alt='Profile Pic' />
+									<Image borderRadius='full' objectFit='cover' boxSize='40px' src={user.pic} alt='Profile Pic' />
 									<Text ps='15px' pe='10px'>
 										{user.username}
 									</Text>

@@ -503,7 +503,7 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
                 </Box>
             ) : (
                 <Box
-                    height={fullScreen ? "85vh" : ""}
+                    height={fullScreen ? "75vh" : ""}
                     p={fullScreen ? "1.5" : "0"}
                     my={fullScreen ? "5" : "0"}
                     mx={["5", "10", "10", "10"]}
@@ -511,23 +511,23 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
                     display={"flex"}
                     alignItems={"center"}
                     justifyContent={"center"}
-                    boxShadow={"dark-lg"}
                     bg={"whiteColor"}
                 >
                     <VStack>
-                        <Heading my={"5"}>
+                        <Heading my={"5"} fontWeight='400' fontSize={['xl', 'xl', 'xl', '3xl']} color={'buttonPrimaryColor'}>
                             {admin
                                 ? "Start streaming for other users to join"
                                 : "Join the stream"}
                         </Heading>
-                        <Button
+                        <button 
+                            className="btn btn-primary"
                             my={"5"}
                             color={"whiteColor"}
                             bg={"buttonPrimaryColor"}
                             onClick={sendMeetingId}
                         >
                             {admin ? "Start" : "Join"}
-                        </Button>
+                        </button>
                         <Button
                             color={"whiteColor"}
                             bg={"errorColor"}
