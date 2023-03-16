@@ -744,7 +744,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
         <Text cursor={'default'} color={'buttonPrimaryColor'} fontSize={'2xl'}>
           Select a chat
         </Text>
-        <Text color={'greyTextColor'} p={'4'}>
+        <Text fontSize={['xs', 'md', 'md', 'md']} px='50px' textAlign='center' pt='20px' color={'greyTextColor'}>
           Select or create a group to see the participants of that group along with settings and other information.
         </Text>
       </Box>)

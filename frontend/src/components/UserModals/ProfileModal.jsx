@@ -16,6 +16,7 @@ import {
     Text,
     Avatar
 } from '@chakra-ui/react'
+import { NavLink } from 'react-router-dom'
 
 const ProfileModal = ({ user, children }) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
@@ -62,6 +63,7 @@ const ProfileModal = ({ user, children }) => {
                             <Image
                                 borderRadius="full"
                                 boxSize="250px"
+                                objectFit='cover'
                                 src={user.pic}
                                 alt={user.name}
                             />
@@ -74,15 +76,15 @@ const ProfileModal = ({ user, children }) => {
                         )}
                         <Text
                             fontSize={{ md: "20px" }}
-                            my={4}
+                            mt={4}
                         >
                             Phone Number: +{user.number}
                         </Text>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color={'white'} backgroundColor={'buttonPrimaryColor'} mr={3} onClick={onClose}>
-                            Close
-                        </Button>
+                        <NavLink className='btn btn-primary btn-sm' to='/settings' color={'white'} backgroundColor={'buttonPrimaryColor'} mr={3}>
+                            Edit Profile
+                        </NavLink>
                     </ModalFooter>
                 </ModalContent>
             </Modal>

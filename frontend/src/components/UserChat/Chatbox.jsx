@@ -665,11 +665,11 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
             animate="visible"
             variants={variants}
           >
-            <Image src='./images/chatmain.png' />
-            <Text fontSize={['xl', 'xl', 'xl', '5xl']} color={'buttonPrimaryColor'}>
+            <Image src='./images/chatmain.png' h='150px' mb='10px' />
+            <Text fontSize={['xl', 'xl', 'xl', '2xl']} color={'buttonPrimaryColor'}>
               Open a Conversation to Start a Chat
             </Text>
-            <Text fontSize={['xs', 'md', 'md', 'md']} color={'greyTextColor'}>
+            <Text fontSize={['xs', 'md', 'md', 'md']} px='50px' textAlign='center' pt='20px' color={'greyTextColor'}>
               Select or create a group to have conversation, share video and start connecting with other users.
             </Text>
           </Box>)
