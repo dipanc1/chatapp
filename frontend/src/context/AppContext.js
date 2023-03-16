@@ -1,5 +1,6 @@
 import axios from "axios";
 import { createContext, useEffect, useReducer } from "react";
+import { useNavigate } from "react-router-dom";
 import { backend_url } from "../baseApi";
 import AppReducer from "../reducers/AppReducer";
 
@@ -20,9 +21,15 @@ export const AppContext = createContext(INITIAL_STATE);
 
 export const AppContextProvider = ({ children }) => {
   const user = JSON.parse(localStorage.getItem("user"));
+  const navigate = useNavigate();
   const [state, dispatch] = useReducer(AppReducer, INITIAL_STATE);
+
   useEffect(() => {
     const getUserInfo = async () => {
+      if (!user) {
+        navigate("/");
+        return;
+      }
       const config = {
         headers: {
           "Content-Type": "application/json",
@@ -37,11 +44,12 @@ export const AppContextProvider = ({ children }) => {
           });
         })
         .catch((err) => {
-          console.log(err);
+          navigate("/");
+          localStorage.removeItem("user");
         });
     };
     getUserInfo();
-  }, [user.token])
+  }, [navigate, user, user?.token])
 
 
   return (
