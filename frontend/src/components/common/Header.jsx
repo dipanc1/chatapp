@@ -44,6 +44,7 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 	const [activeTab, setActiveTab] = useState(1)
 
 	let navigate = useNavigate();
+	let location = useLocation();
 	const toast = useToast();
 
 	const CDN_IMAGES = "https://ik.imagekit.io/sahildhingra";
@@ -112,12 +113,16 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 				config
 			);
 
+			if (location.pathname !== "/video-chat") {
+				navigate("/video-chat");
+			}
+
 			dispatch({ type: "SET_SELECTED_CHAT", payload: data });
 			// console.log(data);
 			setSearching(false);
 			dispatch({ type: "SET_LOADING", payload: false });
 			setSearch("");
-			setFetchAgain(!fetchAgain);
+			if (fetchAgain) setFetchAgain(!fetchAgain);
 		} catch (error) {
 			// console.log(error)
 			setSearching(false);
