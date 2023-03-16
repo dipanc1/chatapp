@@ -196,14 +196,19 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 				config
 			);
 
-			console.log(`data`, data)
+			// console.log(`data`, data)
+
+			if (location.pathname !== "/video-chat") {
+				navigate("/video-chat");
+			}
 
 			dispatch({ type: "SET_SELECTED_CHAT", payload: data });
-			setFetchAgain(!fetchAgain);
+			
 			setSearching(false);
 			setSearchResultsUsers([]);
 			setSearchResultsGroups([]);
 			setSearchResultsEvents([]);
+			if (fetchAgain) setFetchAgain(!fetchAgain);
 			dispatch({ type: "SET_LOADING", payload: false });
 		} catch (error) {
 			// console.log(error);
@@ -231,7 +236,7 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 
 	return (
 		<>
-    {console.log(user, "<---")}
+			{console.log(user, "<---")}
 			<Box className='header' zIndex='9' position='fixed' right='30px' left='290px' boxShadow={'Base'} bg={'white'} p={'20px'} borderRadius={'10px'}>
 				<Flex alignItems='center'>
 					<Box className='logo-header' display='none'>

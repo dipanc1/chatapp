@@ -345,7 +345,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
       setLoading(false);
       toast({
         title: "Success!",
-        description: "Member Removed",
+        description: "You left the group",
         status: "success",
         duration: 5000,
         isClosable: true,
@@ -354,7 +354,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
     } catch (error) {
       toast({
         title: "Error Occured!",
-        description: "Failed to Remove Member",
+        description: "Failed to leave the group",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -464,6 +464,9 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
 
 
   React.useEffect(() => {
+    if (!selectedChat) {
+      return;
+    }
     try {
       setProfile(selectedChat?.users.find(member => member._id !== user._id));
     } catch (error) {
