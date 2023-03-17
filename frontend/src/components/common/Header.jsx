@@ -18,7 +18,6 @@ import {
 	Link,
 	MenuButton,
 	Portal,
-	Badge,
 	useToast,
 } from '@chakra-ui/react';
 import ProfileModal from '../UserModals/ProfileModal';
@@ -26,8 +25,6 @@ import { backend_url } from '../../baseApi';
 import axios from 'axios';
 import { AppContext } from '../../context/AppContext';
 import UserCard from '../UserItems/UserCard';
-import GroupCard from '../Groups/GroupCard';
-import { BellIcon } from '@chakra-ui/icons';
 import useSound from 'use-sound';
 import joinSound from '../../sounds/join.mp3';
 
