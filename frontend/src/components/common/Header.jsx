@@ -233,7 +233,6 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 
 	return (
 		<>
-			{console.log(user, "<---")}
 			<Box className='header' zIndex='9' position='fixed' right='30px' left='290px' boxShadow={'Base'} bg={'white'} p={'20px'} borderRadius={'10px'}>
 				<Flex alignItems='center'>
 					<Box className='logo-header' display='none'>
