@@ -14,12 +14,14 @@ import { Modal, ModalBody, ModalCloseButton, ModalContent, useDisclosure, ModalF
 import { FiSend } from 'react-icons/fi'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import StreamModalPeer from '../UserModals/StreamModalPeer'
+import { useLocation } from 'react-router-dom'
 
 var selectedChatCompare;
 
 export const ChatBoxComponent = ({ flex, height, selectedChat, fetchAgain, setFetchAgain, user, toast }) => {
   const socket = React.useContext(SocketContext);
   const { notification, dispatch } = React.useContext(AppContext);
+
   const [messages, setMessages] = React.useState([]);
   const [page, setPage] = React.useState(2);
   const [hasMore, setHasMore] = React.useState(true);
@@ -28,6 +30,9 @@ export const ChatBoxComponent = ({ flex, height, selectedChat, fetchAgain, setFe
   const [socketConnected, setSocketConnected] = React.useState(false);
   const [typing, setTyping] = React.useState(false);
   const [isTyping, setIsTyping] = React.useState(false);
+
+  const location = useLocation();
+  
   const scrollRef = React.useRef();
 
   React.useEffect(() => {
@@ -144,7 +149,7 @@ export const ChatBoxComponent = ({ flex, height, selectedChat, fetchAgain, setFe
 
   React.useEffect(() => {
     socket.on("message received", (newMessageReceived) => {
-      if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
+      if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id || location.pathname !== '/video-chat') {
         if (!notification.includes(newMessageReceived)) {
           if (notification.length >= 5) {
             notification.pop();

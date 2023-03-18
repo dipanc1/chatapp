@@ -15,6 +15,7 @@ const INITIAL_STATE = {
   groupConversations: [],
   loading: false,
   userInfo: null,
+  pushNotification: true,
 };
 
 export const AppContext = createContext(INITIAL_STATE);
@@ -70,6 +71,7 @@ export const AppContextProvider = ({ children }) => {
         groupConversations: state.groupConversations,
         loading: state.loading,
         userInfo: state.userInfo,
+        pushNotification: state.pushNotification,
         dispatch
       }}>
       {children}

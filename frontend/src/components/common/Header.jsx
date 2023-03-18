@@ -25,13 +25,10 @@ import { backend_url } from '../../baseApi';
 import axios from 'axios';
 import { AppContext } from '../../context/AppContext';
 import UserCard from '../UserItems/UserCard';
-import useSound from 'use-sound';
-import joinSound from '../../sounds/join.mp3';
 
 const Header = ({ fetchAgain, setFetchAgain }) => {
 	const user = JSON.parse(localStorage.getItem('user'));
-	const { dispatch, chats, loading, notification } = useContext(AppContext);
-	const [play] = useSound(joinSound);
+	const { dispatch, chats, loading, notification, pushNotification } = useContext(AppContext);
 	const [toggleProfiledd, setToggleProfiledd] = useState(false)
 	const [search, setSearch] = useState('');
 	const [searching, setSearching] = useState(false)
@@ -51,11 +48,6 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 		navigate('/');
 		window.location.reload();
 	}
-
-	React.useEffect(() => {
-		notification.length > 0 && notification.length < 3 && play()
-
-	}, [notification.length, play])
 
 
 	const handleSearch = async (e) => {
@@ -200,7 +192,7 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 			}
 
 			dispatch({ type: "SET_SELECTED_CHAT", payload: data });
-			
+
 			setSearching(false);
 			setSearchResultsUsers([]);
 			setSearchResultsGroups([]);
@@ -326,7 +318,7 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 							<Menu>
 								<MenuButton position='relative'>
 									{
-										notification.length > 0 && (
+										pushNotification && notification.length > 0 && (
 											<Text background='#9F85F7' top='-4px' borderRadius='100%' left='-3px' fontSize='10px' display='flex' alignItems='center' justifyContent='center' color='#fff' h='15px' w='15px' position="absolute">{notification.length > 3 ? "3+" : notification.length}</Text>
 										)
 									}
@@ -337,11 +329,14 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 										{!notification.length
 											? <MenuItem>No new notifications</MenuItem>
 											:
-											notification.map((notifications) =>
+											pushNotification && notification.map((notifications) =>
 												<MenuItem
 													key={notifications._id}
 													onClick={() => {
 														// console.log(notifications);
+														if (location.pathname !== '/video-chat'){
+															navigate(`/video-chat`)
+														}
 														dispatch({
 															type: 'SET_SELECTED_CHAT',
 															payload: notifications.chat
