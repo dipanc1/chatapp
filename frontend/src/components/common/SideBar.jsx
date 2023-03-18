@@ -14,10 +14,10 @@ const sidebar = () => {
 
 	const CDN_IMAGES = "https://ik.imagekit.io/sahildhingra";
 	const NavMenu = [
-		{
-			'title': 'Dashboard', 
-			'icon': 'dashboard'
-		},
+		// {
+		// 	'title': 'Dashboard', 
+		// 	'icon': 'dashboard'
+		// },
 		{
 			'title': 'Live Stream', 
 			'url': 'video-chat',
@@ -33,14 +33,14 @@ const sidebar = () => {
 			'url': 'groups',
 			'icon': 'groups',
 		},
-		{
-			'title': 'Messages', 
-			'icon': 'messages',
-		},
-		{
-			'title': 'Subscription', 
-			'icon': 'subscription',
-		},
+		// {
+		// 	'title': 'Messages', 
+		// 	'icon': 'messages',
+		// },
+		// {
+		// 	'title': 'Subscription', 
+		// 	'icon': 'subscription',
+		// },
 		{
 			'title': 'Settings', 
 			'url': 'settings',
