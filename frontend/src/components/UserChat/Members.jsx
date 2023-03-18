@@ -494,7 +494,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
                     return (
                       <>
                         <Box key={eventItem._id} className='group-event' mb='20px'>
-                          <EventCard id={eventItem._id} date={eventItem.date} time={eventItem.time} title={eventItem.name} description={eventItem.description} imageUrl={eventItem?.thumbnail} />
+                          <EventCard id={eventItem._id} date={eventItem.date} time={eventItem.time} title={eventItem.name} description={eventItem.description} imageUrl={eventItem?.thumbnail} admin={admin} />
                         </Box>
                       </>
                     )

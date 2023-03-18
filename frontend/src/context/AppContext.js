@@ -16,6 +16,7 @@ const INITIAL_STATE = {
   loading: false,
   userInfo: null,
   pushNotification: true,
+  eventInfo: null,
 };
 
 export const AppContext = createContext(INITIAL_STATE);
@@ -72,6 +73,7 @@ export const AppContextProvider = ({ children }) => {
         loading: state.loading,
         userInfo: state.userInfo,
         pushNotification: state.pushNotification,
+        eventInfo: state.eventInfo,
         dispatch
       }}>
       {children}

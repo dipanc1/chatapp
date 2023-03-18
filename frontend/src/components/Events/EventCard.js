@@ -19,6 +19,7 @@ import { AppContext } from '../../context/AppContext';
 import { backend_url, pictureUpload } from '../../baseApi';
 import axios from 'axios';
 import EventModal from '../UserModals/EventModal';
+import StreamModalPeer from '../UserModals/StreamModalPeer';
 
 const EventCard = ({
   id,
@@ -26,7 +27,8 @@ const EventCard = ({
   date,
   time,
   imageUrl,
-  description
+  description,
+  admin
 }) => {
   const [toggleEventMenu, setToggleEventMenu] = useState(false);
   const { selectedChat } = useContext(AppContext);
@@ -247,8 +249,6 @@ const EventCard = ({
 
   }
 
-
-
   return (
     <>
       <NavLink>
@@ -263,6 +263,11 @@ const EventCard = ({
                 {time} AM
               </Text>
             </Box>
+            {selectedChat?.isGroupChat && admin &&
+              <Box>
+                <StreamModalPeer admin={admin} title={title} date={date} time={time} imageUrl={imageUrl} description={description} />
+              </Box>
+            }
             <Box position='relative' zIndex='1'>
               <Button type='button' onClick={() => setToggleEventMenu(!toggleEventMenu)} bg='transparent'>
                 <Image height='22px' src='https://ik.imagekit.io/sahildhingra/3dot-menu.png' />

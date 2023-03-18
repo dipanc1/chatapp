@@ -55,6 +55,11 @@ const AppReducer = (state, action) => {
                 ...state,
                 pushNotification: !state.pushNotification
             };
+        case "SET_EVENT_INFO":
+            return {
+                ...state,
+                eventInfo: action.payload
+            };
         default:
             return state;
     }

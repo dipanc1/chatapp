@@ -69,8 +69,8 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
     const [id, setId] = React.useState(localStorage.getItem("roomId"));
     const [fullscreenOn, setFullscreenOn] = React.useState(false);
 
-    // console.warn("StreamingPeer which is container", id);
-    const { selectedChat, dispatch, fullScreen } = useContext(AppContext);
+    const { selectedChat, dispatch, fullScreen, eventInfo } = useContext(AppContext);
+
     const {
         ws,
         me,
@@ -81,8 +81,10 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
         setRoomId,
         userId,
         screenStream,
-				screenShare,
+        screenShare,
     } = useContext(RoomContext);
+
+    // console.warn("StreamingPeer which is container", id);
 
     const CDN_IMAGES = "https://ik.imagekit.io/sahildhingra";
     const toast = useToast();
@@ -239,18 +241,18 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
         setRoomId(id);
     }, [id, setRoomId]);
 
-    console.log(
-        { screenSharingId },
-        "Screen Sharing Id",
-        "adminVideo",
-        adminVideo,
-        "peers",
-        peers,
-        "me",
-        me,
-        "selectedChat",
-        selectedChat
-    );
+    // console.log(
+    //     { screenSharingId },
+    //     "Screen Sharing Id",
+    //     "adminVideo",
+    //     adminVideo,
+    //     "peers",
+    //     peers,
+    //     "me",
+    //     me,
+    //     "selectedChat",
+    //     selectedChat
+    // );
 
     const screenSharingVideo =
         screenSharingId === me?.id
@@ -310,7 +312,7 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
                     justifyContent={"space-between"}
                     flexDirection={"column"}
                     p=" 50px 25px 0"
-                >   
+                >
                     <Box
                         className="video-container"
                         width={"100%"}
@@ -328,12 +330,12 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
                             )}
 
                             {screenSharingVideo && (
-															<Box transform="rotateY(180deg)">
-                                <Videoplayer
-                                    width={"100%"}
-                                    peerstream={screenSharingVideo}
-                                />
-																</Box>
+                                <Box transform="rotateY(180deg)">
+                                    <Videoplayer
+                                        width={"100%"}
+                                        peerstream={screenSharingVideo}
+                                    />
+                                </Box>
                             )}
 
                             {/* {Object.values(peersToShow).filter(peer => !!peer.stream).map((peer) => (
@@ -344,21 +346,21 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
 
                             {adminVideo.length > 0
                                 ? adminVideo.map((peer) => (
-                                      <div key={peer?.peerId}>
-                                          <Videoplayer
-                                              width={"100%"}
-                                              peerstream={peer?.stream}
-                                          />
-                                      </div>
-                                  ))
+                                    <div key={peer?.peerId}>
+                                        <Videoplayer
+                                            width={"100%"}
+                                            peerstream={peer?.stream}
+                                        />
+                                    </div>
+                                ))
                                 : !admin && (
-                                      <div>
-                                          <Text>
-                                              Admin left the meeting, Please
-                                              wait or leave the meeting
-                                          </Text>
-                                      </div>
-                                  )}
+                                    <div>
+                                        <Text>
+                                            Admin left the meeting, Please
+                                            wait or leave the meeting
+                                        </Text>
+                                    </div>
+                                )}
                         </Box>
                         <Box
                             className="video-controls"
@@ -370,10 +372,10 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
                             p="50px 40px 20px"
                         >
                             {admin && fullScreen && (
-                                <HStack 
-																	justifyContent='center'
-																>
-																	
+                                <HStack
+                                    justifyContent='center'
+                                >
+
                                     <IconButtonGeneric
                                         onClick={startRecording}
                                         color={"tomato"}
@@ -395,18 +397,18 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
                                         ref={stopButton}
                                         disabled={!recording}
                                     />
-																		<button onClick={shareScreen}>
-																			{
-																				screenShare ? (
-																					<img src="https://ik.imagekit.io/sahildhingra/screen-share.png" alt="share-screen" />
-																				) : (
-																					<img src="https://ik.imagekit.io/sahildhingra/stop-screen-share.png" alt="share-screen" />
-																				)
-																			}
-																		</button>
-																		<button onClick={admin ? endStream : leaveStream}>
-																			<img src="https://ik.imagekit.io/sahildhingra/hang-up.png" alt="end" />
-																		</button>
+                                    <button onClick={shareScreen}>
+                                        {
+                                            screenShare ? (
+                                                <img src="https://ik.imagekit.io/sahildhingra/screen-share.png" alt="share-screen" />
+                                            ) : (
+                                                <img src="https://ik.imagekit.io/sahildhingra/stop-screen-share.png" alt="share-screen" />
+                                            )
+                                        }
+                                    </button>
+                                    <button onClick={admin ? endStream : leaveStream}>
+                                        <img src="https://ik.imagekit.io/sahildhingra/hang-up.png" alt="end" />
+                                    </button>
                                 </HStack>
                             )}
                             {
@@ -444,44 +446,44 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
                         </Box>
                     </Box>
                     <Box>
-                        <Heading pt='20px' pb='15px' as='h1' size='lg' fontWeight='500'>Event Title Will Come Up Here</Heading>
+                        <Heading pt='20px' pb='15px' as='h1' size='lg' fontWeight='500'>{eventInfo.title}</Heading>
                         <Text as='h2' size='lg' fontWeight='500' pb='35px'>
                             Host: {selectedChat.groupAdmin.username.toUpperCase()}
                         </Text>
                         <Flex justifyContent='end'>
-                        <NavLink className='btn btn-primary'>
-                            <Flex alignItems='center'>
-                            <Image h='18px' pe='15px' src={CDN_IMAGES+"/like-white.png"} /> 
-                            <Text>Like</Text>
-                            </Flex>
-                        </NavLink>
-                        <NavLink style={{"margin": "0 20px"}} className='btn btn-primary'>
-                            <Flex alignItems='center'>
-                            <Image h='18px' pe='15px' src={CDN_IMAGES+"/share-white.png"} /> 
-                            <Text>Share</Text>
-                            </Flex>
-                        </NavLink>
-                        <NavLink className='btn btn-primary'>
-                            <Flex alignItems='center'>
-                            <Image h='18px' pe='15px' src={CDN_IMAGES+"/save-white.png"} /> 
-                            <Text>Save</Text>
-                            </Flex>
-                        </NavLink>
+                            <NavLink className='btn btn-primary'>
+                                <Flex alignItems='center'>
+                                    <Image h='18px' pe='15px' src={CDN_IMAGES + "/like-white.png"} />
+                                    <Text>Like</Text>
+                                </Flex>
+                            </NavLink>
+                            <NavLink style={{ "margin": "0 20px" }} className='btn btn-primary'>
+                                <Flex alignItems='center'>
+                                    <Image h='18px' pe='15px' src={CDN_IMAGES + "/share-white.png"} />
+                                    <Text>Share</Text>
+                                </Flex>
+                            </NavLink>
+                            <NavLink className='btn btn-primary'>
+                                <Flex alignItems='center'>
+                                    <Image h='18px' pe='15px' src={CDN_IMAGES + "/save-white.png"} />
+                                    <Text>Save</Text>
+                                </Flex>
+                            </NavLink>
                         </Flex>
                         <Box py='40px'><hr /></Box>
                         <Box>
                             <Flex gap='25px' fontWeight='bold'>
                                 <Flex alignItems='center'>
-                                    <Image h='18px' pe='6px' src={CDN_IMAGES+"/eye.png"} /> 
-                                    <Text>290 Watching</Text>
+                                    <Image h='18px' pe='6px' src={CDN_IMAGES + "/eye.png"} />
+                                    <Text>{peers.length > 0 ? peers.length : "0"} Watching</Text>
                                 </Flex>
                                 <Flex alignItems='center'>
-                                    <Image h='18px' pe='6px' src={CDN_IMAGES+"/clock.png"} /> 
-                                    <Text>Started 30 mins ago</Text>
+                                    <Image h='18px' pe='6px' src={CDN_IMAGES + "/clock.png"} />
+                                    <Text>Started 20 Minutes ago</Text>
                                 </Flex>
                             </Flex>
                             <Text pt='20px' pb='100px'>
-                                Description of the Event Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nihil dolore facere qentore, voluptas reiciendis, ea, minima vitae quod possimus totam consequatur vel facere! Sunt exercitationem eveniet harum. Tenetur voluptatem commodi officiis recusandae fugiat quisquam sunt dolorem? Cumque, assumenda aliquam! Officia provident ullam explicabo consectetur. Rerum consequatur inventore facilis accusantium optio perspiciatis obcaecati! Eius deleniti optio vitae possimus.
+                                {eventInfo.description}
                             </Text>
                         </Box>
                     </Box>
@@ -519,7 +521,7 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
                                 ? "Start streaming for other users to join"
                                 : "Join the stream"}
                         </Heading>
-                        <button 
+                        <button
                             className="btn btn-primary"
                             my={"5"}
                             color={"whiteColor"}

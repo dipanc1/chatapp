@@ -563,11 +563,6 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
                 </Text>
               </Box>
               <Box display='flex' alignItems='center'>
-                {selectedChat?.isGroupChat && (admin || meetingIdExists) &&
-                  <Box>
-                    <StreamModalPeer admin={admin} />
-                  </Box>
-                }
                 {
                   selectedChat && (
                     selectedChat?.isGroupChat && (
