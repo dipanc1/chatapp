@@ -308,7 +308,6 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
   const user = JSON.parse(localStorage.getItem('user'));
   const cancelRef = React.useRef()
   const { isOpen: isConfirmOpen, onOpen: onConfirmOpen, onClose: onConfirmClose } = useDisclosure()
-  const [meetingIdExists, setMeetingIdExists] = React.useState(false);
   const [online, setOnline] = React.useState(false);
   const [profile, setProfile] = React.useState(null);
 
@@ -432,40 +431,6 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
       });
     }
   }
-
-  React.useEffect(() => {
-    if (selectedChat?.isGroupChat) {
-      try {
-        const checkStream = async () => {
-          const config = {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${user.token}`
-            }
-          }
-          const { data } = await axios.get(`${backend_url}/conversation/streaming/${selectedChat._id}`, config);
-          if (data) {
-            localStorage.setItem('roomId', data);
-            setMeetingIdExists(true)
-          } else {
-            setMeetingIdExists(false);
-          }
-        }
-        checkStream();
-      } catch (error) {
-        toast({
-          title: "Error Occured!",
-          description: "Failed to Check Streaming Status",
-          status: "error",
-          isClosable: true,
-          position: "top",
-          duration: 5000,
-        });
-      }
-
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedChat])
 
 
   React.useEffect(() => {

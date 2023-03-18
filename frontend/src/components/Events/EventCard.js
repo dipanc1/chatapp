@@ -39,12 +39,47 @@ const EventCard = ({
   const [timed, setTimed] = useState(time);
   const [selectedImage, setSelectedImage] = React.useState(null);
   const [editEventLoading, setEditEventLoading] = useState(false);
+  const [meetingIdExists, setMeetingIdExists] = React.useState(false);
 
   const toast = useToast();
 
   const { isOpen: isOpenEditEvent, onOpen: onOpenEditEvent, onClose: onCloseEditEvent } = useDisclosure();
 
   const fileInputRef = React.createRef();
+
+  React.useEffect(() => {
+    if (selectedChat?.isGroupChat) {
+      try {
+        const checkStream = async () => {
+          const config = {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${user.token}`
+            }
+          }
+          const { data } = await axios.get(`${backend_url}/conversation/streaming/${selectedChat._id}`, config);
+          if (data) {
+            localStorage.setItem('roomId', data);
+            setMeetingIdExists(true)
+          } else {
+            setMeetingIdExists(false);
+          }
+        }
+        checkStream();
+      } catch (error) {
+        toast({
+          title: "Error Occured!",
+          description: "Failed to Check Streaming Status",
+          status: "error",
+          isClosable: true,
+          position: "top",
+          duration: 5000,
+        });
+      }
+
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedChat])
 
   const imageChange = (e) => {
     if (e.target.files && e.target.files.length > 0 && (e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/png')) {
@@ -263,7 +298,7 @@ const EventCard = ({
                 {time} AM
               </Text>
             </Box>
-            {selectedChat?.isGroupChat && admin &&
+            {selectedChat?.isGroupChat && (admin || meetingIdExists) &&
               <Box>
                 <StreamModalPeer admin={admin} title={title} date={date} time={time} imageUrl={imageUrl} description={description} />
               </Box>

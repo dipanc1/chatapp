@@ -174,7 +174,7 @@ const Settings = () => {
             return;
         }
 
-        if ((pic === user.pic || !selectedImage) && username === user.username) {
+        if (!selectedImage && (username === user.username)) {
             toast({
                 title: "Error",
                 description: "Picture is same as old picture and username is same as old username",
@@ -407,8 +407,8 @@ const Settings = () => {
                             </GridItem>
                             <GridItem>
                                 <Flex pb='12px' alignItems='center'>
-                                    <Switch isChecked={pushNotification} onChange={()=> {
-                                        dispatch({type: 'SET_PUSH_NOTIFICATION'})
+                                    <Switch isChecked={pushNotification} onChange={() => {
+                                        dispatch({ type: 'SET_PUSH_NOTIFICATION' })
                                     }} pe='15px' colorScheme={'twitter'} size='lg' />
                                     <Text color='#6C4545' fontWeight='700'>
                                         Push
