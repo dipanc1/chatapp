@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { NavLink, useNavigate } from "react-router-dom";
 
 import Static from '../components/common/Static'
@@ -38,6 +38,7 @@ import "./Settings.css"
 import axios from 'axios';
 import { backend_url, pictureUpload } from '../baseApi';
 import { FiUpload } from 'react-icons/fi';
+import { AppContext } from '../context/AppContext';
 
 const Settings = () => {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -45,6 +46,7 @@ const Settings = () => {
     const toast = useToast();
     const navigate = useNavigate();
     const fileInputRef = React.createRef();
+    const { pushNotification, dispatch } = useContext(AppContext);
 
     const [activeTab, setActiveTab] = useState(1);
     const [username, setUsername] = useState("");
@@ -405,69 +407,16 @@ const Settings = () => {
                             </GridItem>
                             <GridItem>
                                 <Flex pb='12px' alignItems='center'>
-                                    <Switch pe='15px' defaultChecked colorScheme={'twitter'} size='md' />
+                                    <Switch isChecked={pushNotification} onChange={()=> {
+                                        dispatch({type: 'SET_PUSH_NOTIFICATION'})
+                                    }} pe='15px' colorScheme={'twitter'} size='lg' />
                                     <Text color='#6C4545' fontWeight='700'>
                                         Push
-                                    </Text>
-                                </Flex>
-                                <Flex alignItems='center'>
-                                    <Switch pe='15px' colorScheme={'twitter'} size='md' />
-                                    <Text color='#6C4545' fontWeight='700'>
-                                        Email
                                     </Text>
                                 </Flex>
                             </GridItem>
                         </Grid>
                         <Box h='1px' background='#EAE4FF' my='30px'></Box>
-                        <Grid alignItems='center' templateColumns='repeat(2, 1fr)' gap='4.5rem'>
-                            <GridItem>
-                                <Text color='#6C4545' fontWeight='700'>
-                                    Comment
-                                </Text>
-                                <Text mt='10px' color='#7B7A7A' fontWeight='500'>
-                                    These are notifications for comments on your event and replies to your comment
-                                </Text>
-                            </GridItem>
-                            <GridItem>
-                                <Flex pb='12px' alignItems='center'>
-                                    <Switch pe='15px' colorScheme={'twitter'} size='md' />
-                                    <Text color='#6C4545' fontWeight='700'>
-                                        Push
-                                    </Text>
-                                </Flex>
-                                <Flex alignItems='center'>
-                                    <Switch pe='15px' colorScheme={'twitter'} size='md' />
-                                    <Text color='#6C4545' fontWeight='700'>
-                                        Email
-                                    </Text>
-                                </Flex>
-                            </GridItem>
-                        </Grid>
-                        <Box h='1px' background='#EAE4FF' my='30px'></Box>
-                        <Grid alignItems='center' templateColumns='repeat(2, 1fr)' gap='4.5rem'>
-                            <GridItem>
-                                <Text color='#6C4545' fontWeight='700'>
-                                    Tags
-                                </Text>
-                                <Text mt='10px' color='#7B7A7A' fontWeight='500'>
-                                    These are notifications for the tags if someone mentions you in a group or comment
-                                </Text>
-                            </GridItem>
-                            <GridItem>
-                                <Flex pb='12px' alignItems='center'>
-                                    <Switch pe='15px' defaultChecked colorScheme={'twitter'} size='md' />
-                                    <Text color='#6C4545' fontWeight='700'>
-                                        Push
-                                    </Text>
-                                </Flex>
-                                <Flex alignItems='center'>
-                                    <Switch pe='15px' colorScheme={'twitter'} size='md' />
-                                    <Text color='#6C4545' fontWeight='700'>
-                                        Email
-                                    </Text>
-                                </Flex>
-                            </GridItem>
-                        </Grid>
                         <Flex pt='40px' alignItems='center' justifyContent='end'>
                             <NavLink className='btn btn-primary' to="#">
                                 <Text>Update</Text>

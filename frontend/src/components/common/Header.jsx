@@ -18,7 +18,6 @@ import {
 	Link,
 	MenuButton,
 	Portal,
-	Badge,
 	useToast,
 } from '@chakra-ui/react';
 import ProfileModal from '../UserModals/ProfileModal';
@@ -26,15 +25,10 @@ import { backend_url } from '../../baseApi';
 import axios from 'axios';
 import { AppContext } from '../../context/AppContext';
 import UserCard from '../UserItems/UserCard';
-import GroupCard from '../Groups/GroupCard';
-import { BellIcon } from '@chakra-ui/icons';
-import useSound from 'use-sound';
-import joinSound from '../../sounds/join.mp3';
 
 const Header = ({ fetchAgain, setFetchAgain }) => {
 	const user = JSON.parse(localStorage.getItem('user'));
-	const { dispatch, chats, loading, notification } = useContext(AppContext);
-	const [play] = useSound(joinSound);
+	const { dispatch, chats, loading, notification, pushNotification } = useContext(AppContext);
 	const [toggleProfiledd, setToggleProfiledd] = useState(false)
 	const [search, setSearch] = useState('');
 	const [searching, setSearching] = useState(false)
@@ -44,6 +38,7 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 	const [activeTab, setActiveTab] = useState(1)
 
 	let navigate = useNavigate();
+	let location = useLocation();
 	const toast = useToast();
 
 	const CDN_IMAGES = "https://ik.imagekit.io/sahildhingra";
@@ -53,11 +48,6 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 		navigate('/');
 		window.location.reload();
 	}
-
-	React.useEffect(() => {
-		notification.length > 0 && notification.length < 3 && play()
-
-	}, [notification.length, play])
 
 
 	const handleSearch = async (e) => {
@@ -112,12 +102,16 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 				config
 			);
 
+			if (location.pathname !== "/video-chat") {
+				navigate("/video-chat");
+			}
+
 			dispatch({ type: "SET_SELECTED_CHAT", payload: data });
 			// console.log(data);
 			setSearching(false);
 			dispatch({ type: "SET_LOADING", payload: false });
 			setSearch("");
-			setFetchAgain(!fetchAgain);
+			if (fetchAgain) setFetchAgain(!fetchAgain);
 		} catch (error) {
 			// console.log(error)
 			setSearching(false);
@@ -191,14 +185,19 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 				config
 			);
 
-			console.log(`data`, data)
+			// console.log(`data`, data)
+
+			if (location.pathname !== "/video-chat") {
+				navigate("/video-chat");
+			}
 
 			dispatch({ type: "SET_SELECTED_CHAT", payload: data });
-			setFetchAgain(!fetchAgain);
+
 			setSearching(false);
 			setSearchResultsUsers([]);
 			setSearchResultsGroups([]);
 			setSearchResultsEvents([]);
+			if (fetchAgain) setFetchAgain(!fetchAgain);
 			dispatch({ type: "SET_LOADING", payload: false });
 		} catch (error) {
 			// console.log(error);
@@ -226,7 +225,6 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 
 	return (
 		<>
-    {console.log(user, "<---")}
 			<Box className='header' zIndex='9' position='fixed' right='30px' left='290px' boxShadow={'Base'} bg={'white'} p={'20px'} borderRadius={'10px'}>
 				<Flex alignItems='center'>
 					<Box className='logo-header' display='none'>
@@ -320,7 +318,7 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 							<Menu>
 								<MenuButton position='relative'>
 									{
-										notification.length > 0 && (
+										pushNotification && notification.length > 0 && (
 											<Text background='#9F85F7' top='-4px' borderRadius='100%' left='-3px' fontSize='10px' display='flex' alignItems='center' justifyContent='center' color='#fff' h='15px' w='15px' position="absolute">{notification.length > 3 ? "3+" : notification.length}</Text>
 										)
 									}
@@ -331,11 +329,14 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 										{!notification.length
 											? <MenuItem>No new notifications</MenuItem>
 											:
-											notification.map((notifications) =>
+											pushNotification && notification.map((notifications) =>
 												<MenuItem
 													key={notifications._id}
 													onClick={() => {
 														// console.log(notifications);
+														if (location.pathname !== '/video-chat'){
+															navigate(`/video-chat`)
+														}
 														dispatch({
 															type: 'SET_SELECTED_CHAT',
 															payload: notifications.chat

@@ -50,6 +50,11 @@ const AppReducer = (state, action) => {
                 ...state,
                 userInfo: action.payload
             };
+        case "SET_PUSH_NOTIFICATION":
+            return {
+                ...state,
+                pushNotification: !state.pushNotification
+            };
         default:
             return state;
     }

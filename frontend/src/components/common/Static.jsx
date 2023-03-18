@@ -1,4 +1,4 @@
-import React, { useState} from 'react'
+import React, { useState } from 'react'
 import Cookies from 'universal-cookie';
 
 import {
@@ -39,7 +39,7 @@ const Static = ({
               <SideBar />
             </Box>
             <Box ps='260px' flex='1'>
-              <Header fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}/>
+              <Header fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
               <Box className='main-content-section' position='fixed' h='calc(100vh - 140px)' right='30px' left='290px' mt='100px' bg='#fff' borderRadius='10px'>
                 <button onClick={handleExpand} className='expand-btn'>
                   <img src="https://ik.imagekit.io/sahildhingra/maximize.png" alt='' />
