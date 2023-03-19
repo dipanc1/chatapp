@@ -76,8 +76,8 @@ const CreateEvent = () => {
 			formData.append('upload_preset', 'chat-app');
 
 			await axios.post(pictureUpload, formData)
-				.then((res) => {
-					axios.put(`${backend_url}/conversation/event/${selectedChat._id}`, {
+				.then(async (res) => {
+					await axios.put(`${backend_url}/conversation/event/${selectedChat._id}`, {
 						name,
 						description,
 						date,

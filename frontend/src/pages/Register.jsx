@@ -181,7 +181,7 @@ const Register = () => {
 
     const renderTime = () => React.Fragment;
 
-    const handleVerify = () => {
+    const handleVerify = async () => {
         if (number === '') {
             toast({
                 title: "Error",
@@ -196,7 +196,7 @@ const Register = () => {
         const isValidPhoneNumber = validator.isMobilePhone(number)
         if (isValidPhoneNumber) {
             setVerify(false);
-            axios.post(apiUrlMobile, { number }).then((res) => {
+            await axios.post(apiUrlMobile, { number }).then((res) => {
                 if (res.data) {
                     // console.log(res)
                     setNumber("");
@@ -225,8 +225,8 @@ const Register = () => {
         setOTP(OTP);
         // console.log(OTP);
         if (OTP.length === 5) {
-            setTimeout(() => {
-                axios.post(apiUrlOtp, { OTP, number1 }).then((res) => {
+            setTimeout(async () => {
+                await axios.post(apiUrlOtp, { OTP, number1 }).then((res) => {
                     // console.log(res)
                     if (res.data.message === "Welcome") {
                         setOtp(false)

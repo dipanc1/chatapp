@@ -107,8 +107,8 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
         date,
         time
       }, config)
-        .then((res) => {
-          axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
+        .then(async (res) => {
+          await axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
             selectedChat.events = res.data;
             toast({
               title: "Event Created!",
@@ -169,16 +169,16 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
       formData.append('upload_preset', 'chat-app');
 
       await axios.post(pictureUpload, formData)
-        .then((res) => {
-          axios.put(`${backend_url}/conversation/event/${selectedChat._id}`, {
+        .then(async (res) => {
+          await axios.put(`${backend_url}/conversation/event/${selectedChat._id}`, {
             name,
             description,
             date,
             time,
             thumbnail: res.data.url
           }, config)
-            .then((res) => {
-              axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
+            .then(async (res) => {
+              await axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
                 selectedChat.events = res.data;
                 toast({
                   title: "Event Created!",
@@ -490,11 +490,11 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
                   flex='1'
                   p='4'
                 >
-                  {selectedChat?.events.map((eventItem) => {
+                  {selectedChat?.events.map((eventItem, index) => {
                     return (
                       <>
                         <Box key={eventItem._id} className='group-event' mb='20px'>
-                          <EventCard id={eventItem._id} date={eventItem.date} time={eventItem.time} title={eventItem.name} description={eventItem.description} imageUrl={eventItem?.thumbnail} admin={admin} />
+                          <EventCard index={index} id={eventItem._id} date={eventItem.date} time={eventItem.time} title={eventItem.name} description={eventItem.description} imageUrl={eventItem?.thumbnail} admin={admin} />
                         </Box>
                       </>
                     )

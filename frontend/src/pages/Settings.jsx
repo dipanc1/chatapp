@@ -198,14 +198,16 @@ const Settings = () => {
                 formData.append('api_key', '835688546376544')
                 formData.append('file', selectedImage);
                 formData.append('upload_preset', 'chat-app');
-                await axios.post(pictureUpload, formData).then(res =>
-                    axios.put(
-                        `${backend_url}/users/update-user-info`, {
-                        username,
-                        pic: res.data.url,
-                    },
-                        config
-                    )).catch(err => {
+                await axios.post(pictureUpload, formData)
+                    .then(async res =>
+                        data = await axios.put(
+                            `${backend_url}/users/update-user-info`, {
+                            username,
+                            pic: res.data.url,
+                        },
+                            config
+                        ))
+                    .catch(err => {
                         toast({
                             title: "Error",
                             description: "Error uploading picture",
@@ -237,6 +239,13 @@ const Settings = () => {
             navigate("/");
         } catch (error) {
             console.log(error);
+            toast({
+                title: "Error",
+                description: "Error updating profile",
+                status: "error",
+                duration: 4000,
+                isClosable: true,
+            });
         }
     }
 

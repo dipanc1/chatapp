@@ -22,6 +22,7 @@ import EventModal from '../UserModals/EventModal';
 import StreamModalPeer from '../UserModals/StreamModalPeer';
 
 const EventCard = ({
+  index,
   id,
   title,
   date,
@@ -134,8 +135,8 @@ const EventCard = ({
         thumbnail: imageUrl,
         chatId: selectedChat._id
       }, config)
-        .then((res) => {
-          axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
+        .then(async (res) => {
+          await axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
             selectedChat.events = res.data;
             toast({
               title: "Event Edited!",
@@ -179,8 +180,8 @@ const EventCard = ({
       formData.append('upload_preset', 'chat-app');
 
       await axios.put(pictureUpload, formData)
-        .then((res) => {
-          axios.put(`${backend_url}/conversation/event/edit/${id}`, {
+        .then(async (res) => {
+          await axios.put(`${backend_url}/conversation/event/edit/${id}`, {
             name: name,
             description: descriptiond,
             date: dated,
@@ -188,8 +189,8 @@ const EventCard = ({
             thumbnail: res.data.url,
             chatId: selectedChat._id
           }, config)
-            .then((res) => {
-              axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
+            .then(async (res) => {
+              await axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
                 selectedChat.events = res.data;
                 toast({
                   title: "Event Created!",
@@ -298,7 +299,7 @@ const EventCard = ({
                 {time} AM
               </Text>
             </Box>
-            {selectedChat?.isGroupChat && (admin || meetingIdExists) &&
+            {selectedChat?.isGroupChat && (admin || meetingIdExists) && (index === 0) &&
               <Box>
                 <StreamModalPeer admin={admin} title={title} date={date} time={time} imageUrl={imageUrl} description={description} />
               </Box>
