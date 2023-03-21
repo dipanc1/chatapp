@@ -28,6 +28,8 @@ import JoinGroupModal from '../components/UserModals/JoinGroupModal';
 function Events() {
   const [activeTab, setActiveTab] = useState(1);
   const [eventsList, setEventsList] = useState([]);
+  const [upcomingEventsList, setUpcomingEventsList] = useState([]);
+  const [previousEventsList, setPreviousEventsList] = useState([]);
   const [chatId, setChatId] = useState();
   const [chatName, setChatName] = useState("");
 
@@ -53,8 +55,21 @@ function Events() {
           config
         );
         setEventsList(data);
+        setUpcomingEventsList(data.filter((event) => {
+          const eventDate = new Date(`${event.date.slice(0, 10)}T${event.time}:00.000Z`);
+          eventDate.setHours(eventDate.getHours() - 5.5);
+          const currentDate = new Date();
+          return eventDate > currentDate;
+        }
+        ));
+        setPreviousEventsList(data.filter((event) => {
+          const eventDate = new Date(`${event.date.slice(0, 10)}T${event.time}:00.000Z`);
+          eventDate.setHours(eventDate.getHours() - 5.5);
+          const currentDate = new Date();
+          return eventDate < currentDate;
+        }
+        ));
       } catch (error) {
-        // console.log(error)
         toast({
           title: "Error Occured!",
           description: "Failed to Load the Events",
@@ -136,10 +151,10 @@ function Events() {
               eventsList.length ? (
                 <Grid mb='70px' templateColumns='repeat(3, 1fr)' gap='2rem' rowGap='3rem'>
                   {
-                    eventsList?.map((eventItem) => {
+                    eventsList?.map((eventItem, index) => {
                       return (
                         <div onClick={() => selectEvent(eventItem.chatId)}>
-                          <EventCard key={eventItem._id} title={eventItem.name} imageUrl={eventItem?.thumbnail} />
+                          <EventCard index={index} key={eventItem._id} title={eventItem.name} imageUrl={eventItem?.thumbnail} time={eventItem.time} />
                         </div>
                       )
                     })
@@ -147,38 +162,38 @@ function Events() {
                 </Grid>
               ) : (
                 <Box py='100px' background='transparent' textAlign='center'>
-                    <Spinner
-                      thickness='4px'
-                      speed='0.2s'
-                      emptyColor='gray.200'
-                      color='buttonPrimaryColor'
-                      size='xl'
-                    />
-                  </Box>
+                  <Spinner
+                    thickness='4px'
+                    speed='0.2s'
+                    emptyColor='gray.200'
+                    color='buttonPrimaryColor'
+                    size='xl'
+                  />
+                </Box>
               )
-            } 
-            
+            }
+
           </div>
           <div className={"tab-themes tab-content-item " + (activeTab === 2 ? "current" : "")}>
             <Grid mb='70px' templateColumns='repeat(3, 1fr)' gap='2rem' rowGap='3rem'>
-              {/* {selectedChat?.events.map((eventItem) => {
+              {upcomingEventsList?.map((eventItem, index) => {
                 return (
-                  <>
-                    <EventCard key={eventItem._id} title={eventItem.name} imageUrl={eventItem?.thumbnail} />
-                  </>
+                  <div onClick={() => selectEvent(eventItem.chatId)}>
+                    <EventCard index={index} key={eventItem._id} title={eventItem.name} imageUrl={eventItem?.thumbnail} time={eventItem.time} />
+                  </div>
                 )
-              })} */}
+              })}
             </Grid>
           </div>
           <div className={"tab-content-item " + (activeTab === 3 ? "current" : "")}>
             <Grid mb='70px' templateColumns='repeat(3, 1fr)' gap='2rem' rowGap='3rem'>
-              {/* {selectedChat?.events.map((eventItem) => {
+              {previousEventsList?.map((eventItem, index) => {
                 return (
-                  <>
-                    <EventCard key={eventItem._id} title={eventItem.name} imageUrl={eventItem?.thumbnail} />
-                  </>
+                  <div onClick={() => selectEvent(eventItem.chatId)}>
+                    <EventCard index={index} key={eventItem._id} title={eventItem.name} imageUrl={eventItem?.thumbnail} time={eventItem.time} />
+                  </div>
                 )
-              })} */}
+              })}
             </Grid>
           </div>
         </div>
