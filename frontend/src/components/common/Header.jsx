@@ -28,7 +28,7 @@ import UserCard from '../UserItems/UserCard';
 
 const Header = ({ fetchAgain, setFetchAgain }) => {
 	const user = JSON.parse(localStorage.getItem('user'));
-	const { dispatch, chats, loading, notification, pushNotification } = useContext(AppContext);
+	const { dispatch, chats, loading, notification, pushNotification, userInfo } = useContext(AppContext);
 	const [toggleProfiledd, setToggleProfiledd] = useState(false)
 	const [search, setSearch] = useState('');
 	const [searching, setSearching] = useState(false)
@@ -45,6 +45,7 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 
 	const handleLogout = () => {
 		localStorage.removeItem('user');
+		dispatch({ type: "SET_USER", payload: null });
 		navigate('/');
 		window.location.reload();
 	}
@@ -286,7 +287,7 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 														return (
 															<div key={item._id}
 																onClick={() =>
-																	handleAddUser(user._id, item._id)
+																	handleAddUser(userInfo._id, item._id)
 																}>
 
 																<UserCard name={item.users.length + ' Members'} profileImg={item.pic} userName={item.chatName} />
@@ -354,9 +355,9 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 							</Menu>
 							<Box position='relative' ms='7px'>
 								<Button onClick={() => setToggleProfiledd(!toggleProfiledd)} className='btn-default' ms='15px' display='flex' alignItems='center' bg='transparent'>
-									<Image borderRadius='full' objectFit='cover' boxSize='40px' src={user.pic} alt='Profile Pic' />
+									<Image borderRadius='full' objectFit='cover' boxSize='40px' src={userInfo?.pic} alt='Profile Pic' />
 									<Text ps='15px' pe='10px'>
-										{user.username}
+										{userInfo?.username}
 									</Text>
 									<Image height='17px' src={CDN_IMAGES + "/down-arrow.png"} alt='' />
 								</Button>
@@ -365,7 +366,7 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 										<Box className='header-dd' width='100%' borderRadius='4px' overflow='hidden' position='absolute' top='calc(100% + 20px)' right='0' background='#fff' boxShadow='0px 3px 24px rgb(159 133 247 / 60%)'>
 											<UnorderedList listStyleType='none' p='10px 0' ms='0'>
 												<ListItem ps='0'>
-													<ProfileModal user={user}>
+													<ProfileModal>
 														<Link display='block' p='5px 25px' textDecoration='none'>Profile</Link>
 													</ProfileModal>
 												</ListItem>

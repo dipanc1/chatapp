@@ -75,7 +75,6 @@ router.post("/login", async (req, res) => {
             _id: user._id,
             username: user.username,
             number: user.number,
-            isAdmin: user.isAdmin,
             pic: user.pic,
             token: generateToken(user._id)
         })
@@ -112,7 +111,7 @@ router.get("/check-online/:id", protect, async (req, res) => {
 // search query for users and groups excluding user logged in
 router.get("/", protect, async (req, res) => {
     const query = req.query.search;
-    
+
     try {
         const users = await User.find({
             $or: [{ username: { $regex: query, $options: "i" } }]
@@ -318,7 +317,9 @@ router.put("/update-user-info", protect, async (req, res) => {
             await user.save()
             res.status(200).send({
                 message: message,
+                _id: user._id,
                 username: user.username,
+                number: user.number,
                 pic: user.pic,
             });
         })

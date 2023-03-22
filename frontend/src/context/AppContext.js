@@ -45,7 +45,7 @@ export const AppContextProvider = ({ children }) => {
       await axios.get(`${backend_url}/users/user-info`, config)
         .then((res) => {
           dispatch({
-            type: "GET_USER_INFO",
+            type: "SET_USER_INFO",
             payload: res.data,
           });
         })
