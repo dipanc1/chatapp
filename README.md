@@ -10,10 +10,11 @@
 #### if token fails then redirect to login page
 #### using accesstoken as well as refreshtokens
 #### delete images from cloudinary too
-#### user can add the participant again if it searches for the same name
+#### solve: user can add the participant again if it searches for the same name
 #### user search limit to 10
 #### when hitting api to take user from select event from all app to group or to event send the data only which is needed
 #### use httponly cookies for refresh token
+#### use userinfo global state in all components
 
 ## Phone App
 
