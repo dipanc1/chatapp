@@ -1,9 +1,12 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
+import React, { useContext } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import { Box, Text, Flex, List, ListItem, Image } from "@chakra-ui/react";
 import "./style.css";
+import { AppContext } from "../../context/AppContext";
 
-const sidebar = () => {
+const SideBar = () => {
+  const { dispatch } = useContext(AppContext);
+  const navigate = useNavigate();
   const CDN_IMAGES = "https://ik.imagekit.io/sahildhingra";
   const NavMenu = [
     // {
@@ -39,6 +42,13 @@ const sidebar = () => {
       icon: "settings",
     },
   ];
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    dispatch({ type: "SET_USER", payload: null });
+    navigate('/');
+    window.location.reload();
+  }
 
   return (
     <>
@@ -89,14 +99,12 @@ const sidebar = () => {
           </List>
           <Box mt={["0", "auto"]} py={["4px", "auto"]}>
             <List>
-              <ListItem>
-                <NavLink to={"/logout"}>
-                  <Image
-                    src={CDN_IMAGES + "/logout.png"}
-                    alt="Dan Abramov"
-                  />
-                  <Text>Logout</Text>
-                </NavLink>
+              <ListItem onClick={handleLogout}>
+                <Image
+                  src={CDN_IMAGES + "/logout.png"}
+                  alt="Dan Abramov"
+                />
+                <Text>Logout</Text>
               </ListItem>
             </List>
           </Box>
@@ -106,4 +114,4 @@ const sidebar = () => {
   );
 };
 
-export default sidebar;
+export default SideBar;
