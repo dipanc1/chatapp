@@ -185,18 +185,18 @@ const EventCard = ({
       formData.append('api_key', '835688546376544')
       formData.append('file', selectedImage);
       formData.append('upload_preset', 'chat-app');
-      
+
       await axios.put(pictureUpload, formData)
-      .then(async (res) => {
-        await axios.put(`${backend_url}/conversation/event/edit/${id}`, {
-          name: name,
-          description: descriptiond,
-          date: dated,
-          time: timed,
+        .then(async (res) => {
+          await axios.put(`${backend_url}/conversation/event/edit/${id}`, {
+            name: name,
+            description: descriptiond,
+            date: dated,
+            time: timed,
             thumbnail: res.data.url,
             chatId: selectedChat._id
           }, config)
-          .then(async (res) => {
+            .then(async (res) => {
               await axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
                 selectedChat.events = res.data;
                 toast({
@@ -254,6 +254,9 @@ const EventCard = ({
       return;
     }
 
+    const newEvents = selectedChat.events.filter((event) => event._id !== id);
+    selectedChat.events = newEvents;
+
     const config = {
       headers: {
         'Content-Type': 'application/json',
@@ -274,6 +277,11 @@ const EventCard = ({
         setFetchAgain(!fetchAgain);
       });
     } catch (error) {
+      axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
+        selectedChat.events = res.data;
+      }).catch((err) => {
+        console.log(err);
+      });
       toast({
         title: "Error Occured!",
         description: "Something went wrong",

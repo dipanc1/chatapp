@@ -18,7 +18,6 @@ import { useState } from 'react';
 //TODO: delete console statements
 
 function App() {
-  const [fetchAgain, setFetchAgain] = useState(false);
 
   return (
     <div>
@@ -28,11 +27,11 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/plans" element={<Plans />} />
-          <Route path="/event" element={<Events fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />} />
+          <Route path="/event" element={<Events />} />
           <Route path="/event/create" element={<CreateEvent />} />
           <Route path="/event/detail" element={<EventDetails />} />
           <Route path="/settings" element={<Settings />} />
-          <Route path="/video-chat" element={<VideoChat fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />} />
+          <Route path="/video-chat" element={<VideoChat />} />
           <Route path="/groups" element={<Groups />} />
           <Route path="/search" element={<Search />} />
           <Route path="*" element={<NotFound />} />

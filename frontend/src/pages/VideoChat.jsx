@@ -16,11 +16,12 @@ import { RoomProvider } from '../context/RoomContext';
 import Static from "../components/common/Static"
 
 
-const Chat = ({ fetchAgain, setFetchAgain }) => {
+const Chat = () => {
   const user = JSON.parse(localStorage.getItem('user'));
   const { stream, selectedChat } = useContext(AppContext);
 
   const [meetingId, setMeetingId] = React.useState(null);
+  const [fetchAgain, setFetchAgain] = React.useState(false);
   const [token, setToken] = React.useState(null);
 
   const admin = selectedChat?.isGroupChat && selectedChat?.groupAdmin._id === user._id;

@@ -25,13 +25,14 @@ import { backend_url } from '../baseApi';
 import axios from 'axios';
 import JoinGroupModal from '../components/UserModals/JoinGroupModal';
 
-function Events({ fetchAgain, setFetchAgain }) {
+function Events() {
   const [activeTab, setActiveTab] = useState(1);
   const [eventsList, setEventsList] = useState([]);
   const [upcomingEventsList, setUpcomingEventsList] = useState([]);
   const [previousEventsList, setPreviousEventsList] = useState([]);
   const [chatId, setChatId] = useState();
   const [chatName, setChatName] = useState("");
+  const [fetchAgain, setFetchAgain] = useState(false);
 
   const toast = useToast();
   const navigate = useNavigate();
