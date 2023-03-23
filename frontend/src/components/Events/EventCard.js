@@ -29,11 +29,17 @@ const EventCard = ({
   time,
   imageUrl,
   description,
-  admin
+  admin,
+  chatId,
+  selectEvent,
+  fetchAgain,
+  setFetchAgain
 }) => {
-  const [toggleEventMenu, setToggleEventMenu] = useState(false);
-  const { selectedChat } = useContext(AppContext);
   const user = JSON.parse(localStorage.getItem('user'));
+
+  const { selectedChat } = useContext(AppContext);
+
+  const [toggleEventMenu, setToggleEventMenu] = useState(false);
   const [name, setEventName] = useState(title);
   const [descriptiond, setDescriptiond] = useState(description);
   const [dated, setDated] = useState(date);
@@ -151,6 +157,7 @@ const EventCard = ({
             setDescriptiond(descriptiond);
             setDated(dated);
             setTimed(timed);
+            setFetchAgain(!fetchAgain);
             onCloseEditEvent();
           }).catch((err) => {
             console.log(err);
@@ -178,18 +185,18 @@ const EventCard = ({
       formData.append('api_key', '835688546376544')
       formData.append('file', selectedImage);
       formData.append('upload_preset', 'chat-app');
-
+      
       await axios.put(pictureUpload, formData)
-        .then(async (res) => {
-          await axios.put(`${backend_url}/conversation/event/edit/${id}`, {
-            name: name,
-            description: descriptiond,
-            date: dated,
-            time: timed,
+      .then(async (res) => {
+        await axios.put(`${backend_url}/conversation/event/edit/${id}`, {
+          name: name,
+          description: descriptiond,
+          date: dated,
+          time: timed,
             thumbnail: res.data.url,
             chatId: selectedChat._id
           }, config)
-            .then(async (res) => {
+          .then(async (res) => {
               await axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
                 selectedChat.events = res.data;
                 toast({
@@ -205,6 +212,7 @@ const EventCard = ({
                 setDescriptiond(descriptiond);
                 setDated(dated);
                 setTimed(timed);
+                setFetchAgain(!fetchAgain);
                 onCloseEditEvent();
               }).catch((err) => {
                 console.log(err);
@@ -246,9 +254,6 @@ const EventCard = ({
       return;
     }
 
-    const newEvents = selectedChat.events.filter((event) => event._id !== id);
-    selectedChat.events = newEvents;
-
     const config = {
       headers: {
         'Content-Type': 'application/json',
@@ -266,13 +271,9 @@ const EventCard = ({
           isClosable: true,
           position: "bottom-left",
         });
+        setFetchAgain(!fetchAgain);
       });
     } catch (error) {
-      axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
-        selectedChat.events = res.data;
-      }).catch((err) => {
-        console.log(err);
-      });
       toast({
         title: "Error Occured!",
         description: "Something went wrong",
@@ -289,7 +290,7 @@ const EventCard = ({
     <>
       <NavLink>
         <GridItem bg='#EAE4FF' w='100%' overflow='hidden' borderRadius='10px'>
-          <Image src={imageUrl} w='100%' height='220px' objectFit='cover' />
+          <Image onClick={() => selectEvent(chatId)} src={imageUrl} w='100%' height='220px' objectFit='cover' />
           <Flex alignItems='center' justifyContent='space-between' px='20px' py='10px'>
             <Box>
               <Text flex='1' fontSize='18px'>
@@ -312,10 +313,6 @@ const EventCard = ({
                 toggleEventMenu && (
                   <Box overflow='hidden' className='lightHover' width='fit-content' position='absolute' borderRadius='10px' boxShadow='md' background='#fff' right='0' bottom='100%'>
                     <UnorderedList listStyleType='none' ms='0'>
-                      <ListItem p='10px 50px 10px 20px' display='flex' alignItems='center'>
-                        <Image h='22px' me='15px' src="https://ik.imagekit.io/sahildhingra/save.png" />
-                        <Text>Save</Text>
-                      </ListItem>
                       <ListItem onClick={() => {
                         setToggleEventMenu(!toggleEventMenu);
                         onOpenEditEvent();
@@ -338,7 +335,7 @@ const EventCard = ({
           </Flex>
         </GridItem>
       </NavLink>
-      <EventModal type={"Edit"} createEventLoading={editEventLoading} isOpenCreateEvent={isOpenEditEvent} onCloseCreateEvent={onCloseEditEvent} name={name} setEventName={setEventName} description={descriptiond} setDescription={setDescriptiond} date={dated} setDate={setDated} time={timed} setTime={setTimed} selectedImage={selectedImage} imageChange={imageChange} handleSubmit={handleEditEvent} fileInputRef={fileInputRef} imageUrl={imageUrl} />
+      <EventModal type={"Update"} createEventLoading={editEventLoading} isOpenCreateEvent={isOpenEditEvent} onCloseCreateEvent={onCloseEditEvent} name={name} setEventName={setEventName} description={descriptiond} setDescription={setDescriptiond} date={dated} setDate={setDated} time={timed} setTime={setTimed} selectedImage={selectedImage} imageChange={imageChange} handleSubmit={handleEditEvent} fileInputRef={fileInputRef} imageUrl={imageUrl} />
     </>
   )
 }

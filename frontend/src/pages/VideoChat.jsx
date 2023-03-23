@@ -16,9 +16,8 @@ import { RoomProvider } from '../context/RoomContext';
 import Static from "../components/common/Static"
 
 
-const Chat = () => {
+const Chat = ({ fetchAgain, setFetchAgain }) => {
   const user = JSON.parse(localStorage.getItem('user'));
-  const [fetchAgain, setFetchAgain] = React.useState(false);
   const { stream, selectedChat } = useContext(AppContext);
 
   const [meetingId, setMeetingId] = React.useState(null);

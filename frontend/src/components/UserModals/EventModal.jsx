@@ -3,7 +3,6 @@ import React from 'react'
 import { FiUpload } from 'react-icons/fi'
 
 const EventModal = ({ type, createEventLoading, isOpenCreateEvent, onCloseCreateEvent, name, setEventName, description, setDescription, date, setDate, time, setTime, selectedImage, imageChange, handleSubmit, fileInputRef, imageUrl }) => {
-    console.log()
 
     return (
         <Modal isOpen={isOpenCreateEvent} onClose={onCloseCreateEvent}>
