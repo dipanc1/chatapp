@@ -32,11 +32,12 @@ function Events() {
   const [previousEventsList, setPreviousEventsList] = useState([]);
   const [chatId, setChatId] = useState();
   const [chatName, setChatName] = useState("");
+  const [fetchAgain, setFetchAgain] = useState(false);
 
   const toast = useToast();
   const navigate = useNavigate();
 
-  const { selectedChat, dispatch } = useContext(AppContext);
+  const { dispatch } = useContext(AppContext);
   const { isOpen: isOpenJoinEvent, onOpen: onOpenJoinEvent, onClose: onCloseJoinEvent } = useDisclosure();
 
   const user = JSON.parse(localStorage.getItem('user'));
@@ -82,7 +83,7 @@ function Events() {
     };
 
     fetchAllEvents();
-  }, [toast, user.token]);
+  }, [toast, user.token, fetchAgain]);
 
   const selectEvent = async (chatId) => {
     try {
@@ -125,12 +126,6 @@ function Events() {
       <Static>
         <Flex pb='30px' alignItems='center' justifyContent='space-between'>
           <Heading as='h1' size='lg' fontWeight='500'>Events</Heading>
-          <NavLink className='btn btn-primary' to="./create">
-            <Flex alignItems='center'>
-              <Image h='18px' pe='15px' src='https://ik.imagekit.io/sahildhingra/add.png?ik-sdk-version=javascript-1.4.3&updatedAt=1673025917620' />
-              <Text>Create</Text>
-            </Flex>
-          </NavLink>
         </Flex>
         <Box pb='30px'>
           <ul className="tab-nav">
@@ -147,40 +142,26 @@ function Events() {
         </Box>
         <div className="tab-content">
           <div className={"tab-content-item " + (activeTab === 1 ? "current" : "")}>
-            {
-              eventsList.length ? (
-                <Grid mb='70px' templateColumns='repeat(3, 1fr)' gap='2rem' rowGap='3rem'>
-                  {
-                    eventsList?.map((eventItem, index) => {
-                      return (
-                        <div onClick={() => selectEvent(eventItem.chatId)}>
-                          <EventCard index={index} key={eventItem._id} title={eventItem.name} imageUrl={eventItem?.thumbnail} time={eventItem.time} />
-                        </div>
-                      )
-                    })
-                  }
-                </Grid>
-              ) : (
-                <Box py='100px' background='transparent' textAlign='center'>
-                  <Spinner
-                    thickness='4px'
-                    speed='0.2s'
-                    emptyColor='gray.200'
-                    color='buttonPrimaryColor'
-                    size='xl'
-                  />
-                </Box>
-              )
-            }
+            <Grid mb='70px' templateColumns='repeat(3, 1fr)' gap='2rem' rowGap='3rem'>
+              {
+                eventsList?.map((eventItem, index) => {
+                  return (
+                    <>
+                      <EventCard key={eventItem._id} selectEvent={selectEvent} chatId={eventItem.chatId} index={index} id={eventItem._id} date={eventItem.date.split('T')[0]} time={eventItem.time} title={eventItem.name} description={eventItem.description} imageUrl={eventItem?.thumbnail} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+                    </>
+                  )
+                })
+              }
+            </Grid>
 
           </div>
           <div className={"tab-themes tab-content-item " + (activeTab === 2 ? "current" : "")}>
             <Grid mb='70px' templateColumns='repeat(3, 1fr)' gap='2rem' rowGap='3rem'>
               {upcomingEventsList?.map((eventItem, index) => {
                 return (
-                  <div onClick={() => selectEvent(eventItem.chatId)}>
-                    <EventCard index={index} key={eventItem._id} title={eventItem.name} imageUrl={eventItem?.thumbnail} time={eventItem.time} />
-                  </div>
+                  <>
+                    <EventCard key={eventItem._id} selectEvent={selectEvent} chatId={eventItem.chatId} index={index} id={eventItem._id} date={eventItem.date.split('T')[0]} time={eventItem.time} title={eventItem.name} description={eventItem.description} imageUrl={eventItem?.thumbnail} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+                  </>
                 )
               })}
             </Grid>
@@ -189,9 +170,9 @@ function Events() {
             <Grid mb='70px' templateColumns='repeat(3, 1fr)' gap='2rem' rowGap='3rem'>
               {previousEventsList?.map((eventItem, index) => {
                 return (
-                  <div onClick={() => selectEvent(eventItem.chatId)}>
-                    <EventCard index={index} key={eventItem._id} title={eventItem.name} imageUrl={eventItem?.thumbnail} time={eventItem.time} />
-                  </div>
+                  <>
+                    <EventCard key={eventItem._id} selectEvent={selectEvent} chatId={eventItem.chatId} index={index} id={eventItem._id} date={eventItem.date.split('T')[0]} time={eventItem.time} title={eventItem.name} description={eventItem.description} imageUrl={eventItem?.thumbnail} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+                  </>
                 )
               })}
             </Grid>

@@ -18,10 +18,10 @@ import Static from "../components/common/Static"
 
 const Chat = () => {
   const user = JSON.parse(localStorage.getItem('user'));
-  const [fetchAgain, setFetchAgain] = React.useState(false);
   const { stream, selectedChat } = useContext(AppContext);
 
   const [meetingId, setMeetingId] = React.useState(null);
+  const [fetchAgain, setFetchAgain] = React.useState(false);
   const [token, setToken] = React.useState(null);
 
   const admin = selectedChat?.isGroupChat && selectedChat?.groupAdmin._id === user._id;

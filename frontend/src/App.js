@@ -10,9 +10,10 @@ import CreateEvent from './pages/CreateEvent';
 import EventDetails from './pages/EventDetails';
 import NotFound from './pages/NotFound';
 import Settings from './pages/Settings';
-import VideoChat from './pages/VideoChat';  
+import VideoChat from './pages/VideoChat';
 import Groups from './pages/Groups';
 import Search from './pages/Search';
+import { useState } from 'react';
 
 //TODO: delete console statements
 
@@ -30,9 +31,9 @@ function App() {
           <Route path="/event/create" element={<CreateEvent />} />
           <Route path="/event/detail" element={<EventDetails />} />
           <Route path="/settings" element={<Settings />} />
-          <Route path="/video-chat" element={<VideoChat /> } />
-          <Route path="/groups" element={<Groups /> } />
-          <Route path="/search" element={<Search /> } />
+          <Route path="/video-chat" element={<VideoChat />} />
+          <Route path="/groups" element={<Groups />} />
+          <Route path="/search" element={<Search />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AnimatePresence>

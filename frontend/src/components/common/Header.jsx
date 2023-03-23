@@ -357,7 +357,7 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
                 <Button onClick={() => setToggleProfiledd(!toggleProfiledd)} className='btn-default' ms='15px' display='flex' alignItems='center' bg='transparent'>
                   <Image borderRadius='full' objectFit='cover' boxSize='40px' src={user.pic} alt='Profile Pic' />
                   <Text display={["none", "block"]} ps='15px' pe='10px'>
-                    {user.username}
+                    {userInfo?.username}
                   </Text>
                   <Image display={["none", "block"]} height='17px' src={CDN_IMAGES + "/down-arrow.png"} alt='' />
                 </Button>
