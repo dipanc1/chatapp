@@ -46,7 +46,7 @@ const Settings = () => {
     const toast = useToast();
     const navigate = useNavigate();
     const fileInputRef = React.createRef();
-    const { pushNotification, dispatch } = useContext(AppContext);
+    const { pushNotification, dispatch, userInfo } = useContext(AppContext);
 
     const [activeTab, setActiveTab] = useState(1);
     const [username, setUsername] = useState("");
@@ -174,7 +174,7 @@ const Settings = () => {
             return;
         }
 
-        if (!selectedImage && (username === user.username)) {
+        if (!selectedImage && (username === userInfo.username)) {
             toast({
                 title: "Error",
                 description: "Picture is same as old picture and username is same as old username",
@@ -235,8 +235,7 @@ const Settings = () => {
             });
             setUsername(data.data.username);
             setPic(data.data.pic);
-            localStorage.removeItem("user");
-            navigate("/");
+            dispatch({ type: "SET_USER_INFO", payload: data.data });
         } catch (error) {
             console.log(error);
             toast({
@@ -325,7 +324,7 @@ const Settings = () => {
                             <Flex pt='50px' alignItems='center' justifyContent='end'>
                                 <Button type='submit' bg="buttonPrimaryColor" color={"white"}>
                                     <Image h='18px' pe='15px' src='https://ik.imagekit.io/sahildhingra/edit.png' />
-                                    <Text>Edit Profile & Logout</Text>
+                                    <Text>Edit Profile</Text>
                                 </Button>
                             </Flex>
                         </form>

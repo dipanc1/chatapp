@@ -16,10 +16,13 @@ import {
     Text,
     Avatar
 } from '@chakra-ui/react'
+import { useContext } from 'react';
 import { NavLink } from 'react-router-dom'
+import { AppContext } from '../../context/AppContext';
 
-const ProfileModal = ({ user, children }) => {
-    const { isOpen, onOpen, onClose } = useDisclosure()
+const ProfileModal = ({ children }) => {
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const { userInfo } = useContext(AppContext)
 
     return (
         <>
@@ -50,7 +53,7 @@ const ProfileModal = ({ user, children }) => {
                         d="flex"
                         justifyContent="center"
                     >
-                        {user.username}
+                        {userInfo?.username}
                     </ModalHeader>
                     <ModalCloseButton />
                     <ModalBody
@@ -59,18 +62,18 @@ const ProfileModal = ({ user, children }) => {
                         justifyContent={'center'}
                         flexDirection={'column'}
                     >
-                        {user.pic ? (
+                        {userInfo?.pic ? (
                             <Image
                                 borderRadius="full"
                                 boxSize="250px"
                                 objectFit='cover'
-                                src={user.pic}
-                                alt={user.name}
+                                src={userInfo?.pic}
+                                alt={userInfo?.name}
                             />
                         ) : (
                             <Avatar
                                 size='full'
-                                name={user.name}
+                                name={userInfo?.name}
                                 src={''}
                             />
                         )}
@@ -78,7 +81,7 @@ const ProfileModal = ({ user, children }) => {
                             fontSize={{ md: "20px" }}
                             mt={4}
                         >
-                            Phone Number: +{user.number}
+                            Phone Number: +{userInfo?.number}
                         </Text>
                     </ModalBody>
                     <ModalFooter>

@@ -27,9 +27,11 @@ import { AiOutlineLock, AiOutlineUser } from 'react-icons/ai';
 import PhoneNumber from '../components/Miscellaneous/PhoneNumber';
 import Otp from '../components/Miscellaneous/Otp';
 import Password from '../components/Miscellaneous/Password';
+import { AppContext } from '../context/AppContext';
 
 
 const Login = () => {
+    const { dispatch } = React.useContext(AppContext)
     const [username, setUsername] = React.useState('')
     const [password, setPassword] = React.useState('')
     const [forgetPasswordValue, setForgetPasswordValue] = React.useState('')
@@ -143,6 +145,7 @@ const Login = () => {
         setDisable(true)
         try {
             const res = await axios.post(`${backend_url}/users/login`, user);
+            dispatch({ type: 'SET_USER_INFO', payload: res.data })
             localStorage.setItem("user", JSON.stringify(res.data));
             // console.log("working!!", res)
             navigate('/video-chat')

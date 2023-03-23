@@ -45,7 +45,7 @@ const AppReducer = (state, action) => {
                 ...state,
                 loading: action.payload
             };
-        case "GET_USER_INFO":
+        case "SET_USER_INFO":
             return {
                 ...state,
                 userInfo: action.payload

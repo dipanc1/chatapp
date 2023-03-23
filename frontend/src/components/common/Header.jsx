@@ -27,15 +27,15 @@ import { AppContext } from '../../context/AppContext';
 import UserCard from '../UserItems/UserCard';
 
 const Header = ({ fetchAgain, setFetchAgain }) => {
-  const user = JSON.parse(localStorage.getItem('user'));
-  const { dispatch, chats, loading, notification, pushNotification } = useContext(AppContext);
-  const [toggleProfiledd, setToggleProfiledd] = useState(false)
-  const [search, setSearch] = useState('');
-  const [searching, setSearching] = useState(false)
-  const [searchResultsUsers, setSearchResultsUsers] = useState([]);
-  const [searchResultsGroups, setSearchResultsGroups] = useState([]);
-  const [searchResultsEvents, setSearchResultsEvents] = useState([]);
-  const [activeTab, setActiveTab] = useState(1)
+	const user = JSON.parse(localStorage.getItem('user'));
+	const { dispatch, chats, loading, notification, pushNotification, userInfo } = useContext(AppContext);
+	const [toggleProfiledd, setToggleProfiledd] = useState(false)
+	const [search, setSearch] = useState('');
+	const [searching, setSearching] = useState(false)
+	const [searchResultsUsers, setSearchResultsUsers] = useState([]);
+	const [searchResultsGroups, setSearchResultsGroups] = useState([]);
+	const [searchResultsEvents, setSearchResultsEvents] = useState([]);
+	const [activeTab, setActiveTab] = useState(1)
 
   let navigate = useNavigate();
   let location = useLocation();
@@ -43,11 +43,12 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 
   const CDN_IMAGES = "https://ik.imagekit.io/sahildhingra";
 
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    navigate('/');
-    window.location.reload();
-  }
+	const handleLogout = () => {
+		localStorage.removeItem('user');
+		dispatch({ type: "SET_USER", payload: null });
+		navigate('/');
+		window.location.reload();
+	}
 
 
   const handleSearch = async (e) => {
@@ -274,108 +275,108 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
                               <div key={item._id}
                                 onClick={() => accessChat(item._id)}>
 
-                                <UserCard profileImg={item.pic} userName={item.username} />
-                              </div>
-                            );
-                          })
-                        }
-                      </div>
-                      <div className={"tab-themes tab-content-item " + (activeTab === 2 ? "current" : "")}>
-                        {
-                          searchResultsGroups?.map((item) => {
-                            return (
-                              <div key={item._id}
-                                onClick={() =>
-                                  handleAddUser(user._id, item._id)
-                                }>
+																<UserCard profileImg={item.pic} userName={item.username} />
+															</div>
+														);
+													})
+												}
+											</div>
+											<div className={"tab-themes tab-content-item " + (activeTab === 2 ? "current" : "")}>
+												{
+													searchResultsGroups?.map((item) => {
+														return (
+															<div key={item._id}
+																onClick={() =>
+																	handleAddUser(userInfo._id, item._id)
+																}>
 
-                                <UserCard name={item.users.length + ' Members'} profileImg={item.pic} userName={item.chatName} />
-                              </div>
-                            );
-                          })
-                        }
-                      </div>
-                      <div className={"tab-content-item " + (activeTab === 3 ? "current" : "")}>
-                        {
-                          searchResultsEvents?.map((item) => {
-                            return (
-                              <UserCard name={item.time} profileImg={item.thumbnail} userName={item.name} />
-                            );
-                          })
-                        }
-                      </div>
-                    </div>
-                  </>
-                ) : ('')
-              }
-            </Box>
-          </Box>
-          <Flex>
-            <Flex alignItems='center'>
-              <Link href='/video-chat'>
-                <Image height='23px' me='20px' src={CDN_IMAGES + "/messages.png"} />
-              </Link>
-              <Menu>
-                <MenuButton position='relative'>
-                  {
-                    pushNotification && notification.length > 0 && (
-                      <Text background='#9F85F7' top='-4px' borderRadius='100%' left='-3px' fontSize='10px' display='flex' alignItems='center' justifyContent='center' color='#fff' h='15px' w='15px' position="absolute">{notification.length > 3 ? "3+" : notification.length}</Text>
-                    )
-                  }
-                  <Image height='23px' src={CDN_IMAGES + "/notification.png"} />
-                </MenuButton>
-                <Portal>
-                  <MenuList>
-                    {!notification.length
-                      ? <MenuItem>No new notifications</MenuItem>
-                      :
-                      pushNotification && notification.map((notifications) =>
-                        <MenuItem
-                          key={notifications._id}
-                          onClick={() => {
-                            // console.log(notifications);
-                            if (location.pathname !== '/video-chat') {
-                              navigate(`/video-chat`)
-                            }
-                            dispatch({
-                              type: 'SET_SELECTED_CHAT',
-                              payload: notifications.chat
-                            })
-                            dispatch({
-                              type: 'SET_NOTIFICATION',
-                              payload: notification.filter((item) => item._id !== notifications._id)
-                            })
-                          }}>
-                          {notifications.chat.isGroupChat ? `New Message in ${notifications.chat.chatName}` : `New Message from ${notifications.sender.username}`}
-                        </MenuItem>
-                      )}
-                  </MenuList>
-                </Portal>
-              </Menu>
-              <Box position='relative' ms='7px'>
-                <Button onClick={() => setToggleProfiledd(!toggleProfiledd)} className='btn-default' ms='15px' display='flex' alignItems='center' bg='transparent'>
-                  <Image borderRadius='full' objectFit='cover' boxSize='40px' src={user.pic} alt='Profile Pic' />
-                  <Text display={["none", "block"]} ps='15px' pe='10px'>
-                    {user.username}
-                  </Text>
-                  <Image display={["none", "block"]} height='17px' src={CDN_IMAGES + "/down-arrow.png"} alt='' />
-                </Button>
-                {
-                  toggleProfiledd && (
-                    <Box className='header-dd' width='100%' borderRadius='4px' overflow='hidden' position='absolute' top='calc(100% + 20px)' right='0' background='#fff' boxShadow='0px 3px 24px rgb(159 133 247 / 60%)'>
-                      <UnorderedList listStyleType='none' p='10px 0' ms='0'>
-                        <ListItem ps='0'>
-                          <ProfileModal user={user}>
-                            <Link display='block' p='5px 25px' textDecoration='none'>Profile</Link>
-                          </ProfileModal>
-                        </ListItem>
-                        <ListItem ps='0'>
-                          <Link onClick={handleLogout} display='block' p='5px 25px' textDecoration='none'>Logout</Link>
-                        </ListItem>
-                      </UnorderedList>
-                    </Box>
-                  )
-                }
+																<UserCard name={item.users.length + ' Members'} profileImg={item.pic} userName={item.chatName} />
+															</div>
+														);
+													})
+												}
+											</div>
+											<div className={"tab-content-item " + (activeTab === 3 ? "current" : "")}>
+												{
+													searchResultsEvents?.map((item) => {
+														return (
+															<UserCard name={item.time} profileImg={item.thumbnail} userName={item.name} />
+														);
+													})
+												}
+											</div>
+										</div>
+									</>
+								) : ('')
+							}
+						</Box>
+					</Box>
+					<Flex>
+						<Flex alignItems='center'>
+							<Link href='/video-chat'>
+								<Image height='23px' me='20px' src={CDN_IMAGES + "/messages.png"} />
+							</Link>
+							<Menu>
+								<MenuButton position='relative'>
+									{
+										pushNotification && notification.length > 0 && (
+											<Text background='#9F85F7' top='-4px' borderRadius='100%' left='-3px' fontSize='10px' display='flex' alignItems='center' justifyContent='center' color='#fff' h='15px' w='15px' position="absolute">{notification.length > 3 ? "3+" : notification.length}</Text>
+										)
+									}
+									<Image height='23px' src={CDN_IMAGES + "/notification.png"} />
+								</MenuButton>
+								<Portal>
+									<MenuList>
+										{!notification.length
+											? <MenuItem>No new notifications</MenuItem>
+											:
+											pushNotification && notification.map((notifications) =>
+												<MenuItem
+													key={notifications._id}
+													onClick={() => {
+														// console.log(notifications);
+														if (location.pathname !== '/video-chat'){
+															navigate(`/video-chat`)
+														}
+														dispatch({
+															type: 'SET_SELECTED_CHAT',
+															payload: notifications.chat
+														})
+														dispatch({
+															type: 'SET_NOTIFICATION',
+															payload: notification.filter((item) => item._id !== notifications._id)
+														})
+													}}>
+													{notifications.chat.isGroupChat ? `New Message in ${notifications.chat.chatName}` : `New Message from ${notifications.sender.username}`}
+												</MenuItem>
+											)}
+									</MenuList>
+								</Portal>
+							</Menu>
+							<Box position='relative' ms='7px'>
+								<Button onClick={() => setToggleProfiledd(!toggleProfiledd)} className='btn-default' ms='15px' display='flex' alignItems='center' bg='transparent'>
+									<Image borderRadius='full' objectFit='cover' boxSize='40px' src={userInfo?.pic} alt='Profile Pic' />
+									<Text ps='15px' pe='10px'>
+										{userInfo?.username}
+									</Text>
+									<Image height='17px' src={CDN_IMAGES + "/down-arrow.png"} alt='' />
+								</Button>
+								{
+									toggleProfiledd && (
+										<Box className='header-dd' width='100%' borderRadius='4px' overflow='hidden' position='absolute' top='calc(100% + 20px)' right='0' background='#fff' boxShadow='0px 3px 24px rgb(159 133 247 / 60%)'>
+											<UnorderedList listStyleType='none' p='10px 0' ms='0'>
+												<ListItem ps='0'>
+													<ProfileModal>
+														<Link display='block' p='5px 25px' textDecoration='none'>Profile</Link>
+													</ProfileModal>
+												</ListItem>
+												<ListItem ps='0'>
+													<Link onClick={handleLogout} display='block' p='5px 25px' textDecoration='none'>Logout</Link>
+												</ListItem>
+											</UnorderedList>
+										</Box>
+									)
+								}
 
               </Box>
             </Flex>

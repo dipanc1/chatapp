@@ -45,7 +45,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
   const [loading, setLoading] = React.useState(false);
   const [name, setEventName] = useState("");
   const [description, setDescription] = useState("");
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [selectedImage, setSelectedImage] = React.useState(null);
   const [createEventLoading, setCreateEventLoading] = useState(false)
@@ -494,7 +494,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
                     return (
                       <>
                         <Box key={eventItem._id} className='group-event' mb='20px'>
-                          <EventCard index={index} id={eventItem._id} date={eventItem.date} time={eventItem.time} title={eventItem.name} description={eventItem.description} imageUrl={eventItem?.thumbnail} admin={admin} />
+                          <EventCard index={index} id={eventItem._id} date={eventItem.date.split('T')[0]} time={eventItem.time} title={eventItem.name} description={eventItem.description} imageUrl={eventItem?.thumbnail} admin={admin} />
                         </Box>
                       </>
                     )
