@@ -489,7 +489,6 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
               variants={variants}
               background="#F6F3FF"
             >
-
               <Box
                 display="flex"
                 flexDirection="row"
@@ -499,6 +498,15 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
                 animate="visible"
                 variants={variants}
                 style={{ margin: selectedChat?.isGroupChat ? '8px' : null }}>
+                <Box 
+                  display={['block', 'none']}
+                  pe='10px'
+                  onClick={() => {
+                    dispatch({type:"SET_SELECTED_CHAT", payload: null});
+                  }}
+                >
+                  <Image h='18px' src="https://ik.imagekit.io/sahildhingra/back.png" />
+                </Box>
                 {selectedChat?.isGroupChat ?
                   null :
                   <Avatar

@@ -102,7 +102,7 @@ const Chat = () => {
     <SocketContextProvider>
       <RoomProvider>
         <Static noPadding fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}>
-          <Box h={stream ? '' : '100%'} display={'flex'}>
+          <Box overflow={['hidden', 'auto']} position='relative' h={stream ? '' : '100%'} display={'flex'}>
             {stream ?
               <StreamingPeer admin={admin} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
               // (stream && token && meetingId) ?
@@ -123,10 +123,17 @@ const Chat = () => {
               //   </MeetingProvider>
               :
               <>
-                <Box flex={['0', '2', '2', '3']}>
+                <Box width={['100%', 'auto']} flex={['1', '2', '2', '3']}>
                   {user.token && <Conversations fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
                 </Box>
-                <Box h='100%' flex={['12', '7.5', '7.5', '7.5']}>
+                <Box 
+                  transform={selectedChat===null ? ["translateX(100%)", 'unset'] : ["translateX(0)", 'unset']} 
+                  position={['absolute', 'relative']} 
+                  h='100%' 
+                  w='100%'
+                  flex={['12', '7.5', '7.5', '7.5']}
+                  transition="all 0.25s ease-in-out"
+                >
                   {user.token && <Chatbox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} getMeetingAndToken={getMeetingAndToken} />}
                 </Box>
               </>

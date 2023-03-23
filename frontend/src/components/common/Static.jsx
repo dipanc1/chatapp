@@ -47,7 +47,7 @@ const Static = ({ noPadding, children, fetchAgain, setFetchAgain }) => {
                 left={["0", "290px"]}
                 mt={["82px", "100px"]}
                 bg="#fff"
-                borderRadius="10px"
+                borderRadius={["0", "10px"]}
               >
                 <button
                   onClick={handleExpand}

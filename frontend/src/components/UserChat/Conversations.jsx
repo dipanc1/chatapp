@@ -302,7 +302,7 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
         <>
             <Box
                 bg={"whiteColor"}
-                display={["none", "none", "none", "block"]}
+                display={["block", "block", "block", "block"]}
             >
                 <DrawerConversations
                     fetchAgain={fetchAgain}
