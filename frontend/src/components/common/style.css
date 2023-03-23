@@ -201,6 +201,25 @@
     display: flex;
 }
 
+@media (max-width:480px) {
+    .sidebar .sidebar-nav a p {
+        display: none;
+    } 
+    .sidebar-nav li a {
+        padding: 13px;
+        width:fit-content;
+    }
+    .sidebar-nav li a img {
+        margin-right: unset;
+    }
+    .expand-btn {
+        display: none;
+    }
+    .logo-header {
+        display: block!important;
+    }
+}
+
 .maximized-view .header {
     left: 30px;
 }
