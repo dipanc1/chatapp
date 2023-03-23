@@ -100,11 +100,13 @@ const SideBar = () => {
           <Box mt={["0", "auto"]} py={["4px", "auto"]}>
             <List>
               <ListItem onClick={handleLogout}>
-                <Image
-                  src={CDN_IMAGES + "/logout.png"}
-                  alt="Dan Abramov"
-                />
-                <Text>Logout</Text>
+                <NavLink to={"/logout"}>
+                  <Image
+                    src={CDN_IMAGES + "/logout.png"}
+                    alt="Dan Abramov"
+                  />
+                  <Text>Logout</Text>
+                </NavLink>
               </ListItem>
             </List>
           </Box>
