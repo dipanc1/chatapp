@@ -231,7 +231,7 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
           <Box className='logo-header' display='none'>
             <Image height={['25px', '35px']} mx='auto' src={CDN_IMAGES + "/chatapp-logo.png"} alt="ChatApp" />
           </Box>
-          <Box position='relative' mx='auto' minW={'400px'}>
+          <Box display={['none', 'block']} position='relative' mx='auto' minW={'400px'}>
             <Input disabled={loading} onChange={(e) => handleSearch(e)} value={search} placeholder='Search Users / Groups / Events' py={'13px'} px={'21px'} bg={'#F4F1FF'} border={'0'} />
             {
               searching && (
@@ -311,7 +311,7 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
               }
             </Box>
           </Box>
-          <Flex>
+          <Flex ms={['auto', '0']}>
             <Flex alignItems='center'>
               <Link href='/video-chat'>
                 <Image height='23px' me='20px' src={CDN_IMAGES + "/messages.png"} />
