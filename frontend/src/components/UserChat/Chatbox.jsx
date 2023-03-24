@@ -32,7 +32,7 @@ export const ChatBoxComponent = ({ flex, height, selectedChat, fetchAgain, setFe
   const [isTyping, setIsTyping] = React.useState(false);
 
   const location = useLocation();
-  
+
   const scrollRef = React.useRef();
 
   React.useEffect(() => {
@@ -385,7 +385,6 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
         chatId: selectedChat._id
       }
       const { data } = await axios.put(`${backend_url}/conversation/rename`, body, config)
-      dispatch({ type: 'SET_SELECTED_CHAT', payload: data })
       toast({
         title: "Group chat renamed",
         description: "Group chat renamed to " + groupChatName,
@@ -397,6 +396,8 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
       setRenameLoading(false);
       setGroupChatName('');
       setFetchAgain(!fetchAgain);
+      dispatch({ type: 'SET_SELECTED_CHAT', payload: null })
+      onClose();
     } catch (err) {
       toast({
         title: "Error Occured!",
@@ -498,11 +499,11 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
                 animate="visible"
                 variants={variants}
                 style={{ margin: selectedChat?.isGroupChat ? '8px' : null }}>
-                <Box 
+                <Box
                   display={['block', 'none']}
                   pe='10px'
                   onClick={() => {
-                    dispatch({type:"SET_SELECTED_CHAT", payload: null});
+                    dispatch({ type: "SET_SELECTED_CHAT", payload: null });
                   }}
                 >
                   <Image h='18px' src="https://ik.imagekit.io/sahildhingra/back.png" />

@@ -5,7 +5,7 @@ import "./style.css";
 import { AppContext } from "../../context/AppContext";
 
 const SideBar = () => {
-  const { dispatch } = useContext(AppContext);
+  const { dispatch, stream } = useContext(AppContext);
   const navigate = useNavigate();
   const CDN_IMAGES = "https://ik.imagekit.io/sahildhingra";
   const NavMenu = [
@@ -17,16 +17,19 @@ const SideBar = () => {
       title: "Live Stream",
       url: "video-chat",
       icon: "explore",
+      disabled: !stream,
     },
     {
       title: "Events",
       url: "event",
       icon: "events",
+      disabled: stream,
     },
     {
       title: "Groups",
       url: "groups",
       icon: "groups",
+      disabled: !stream,
     },
     // {
     // 	'title': 'Messages',
@@ -40,8 +43,12 @@ const SideBar = () => {
       title: "Settings",
       url: "settings",
       icon: "settings",
+      disabled: !stream,
+
     },
   ];
+
+  // TODO: Disable the events if the user is streaming
 
   const handleLogout = () => {
     localStorage.removeItem('user');

@@ -30,7 +30,7 @@ export const RoomProvider = ({ children }) => {
     const [roomId, setRoomId] = useState("");
     const [participantsArray, setParticipantsArray] = useState([]);
 
-    const { stream } = useContext(AppContext);
+    const { stream, selectedChat, userInfo } = useContext(AppContext);
 
     const enterRoom = (roomId) => {
         // console.warn("Room ID ::: >>>", roomId);
@@ -126,14 +126,14 @@ export const RoomProvider = ({ children }) => {
 
     useEffect(() => {
         try {
-            navigator.mediaDevices.getUserMedia({ video: stream, audio: stream }).then((stream) => {
+            navigator.mediaDevices.getUserMedia({ video: stream, audio: selectedChat?.groupAdmin._id === userInfo?._id ? stream : false }).then((stream) => {
                 setStreamState(stream);
             });
         } catch (error) {
             console.error(error);
         }
 
-    }, [stream])
+    }, [selectedChat?.groupAdmin._id, stream, userInfo?._id])
 
     useEffect(() => {
         if (!me) return;

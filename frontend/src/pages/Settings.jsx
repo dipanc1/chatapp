@@ -425,11 +425,6 @@ const Settings = () => {
                             </GridItem>
                         </Grid>
                         <Box h='1px' background='#EAE4FF' my='30px'></Box>
-                        <Flex pt='40px' alignItems='center' justifyContent='end'>
-                            <NavLink className='btn btn-primary' to="#">
-                                <Text>Update</Text>
-                            </NavLink>
-                        </Flex>
                     </div>
                     <div className={"tab-content-item " + (activeTab === 5 ? "current" : "")}>
                         <Text mt='40px' mb='30px' fontSize='18px' color='#6C4545' fontWeight='600'>

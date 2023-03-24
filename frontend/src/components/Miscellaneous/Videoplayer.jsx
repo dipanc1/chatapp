@@ -11,7 +11,7 @@ const Videoplayer = ({ peerstream, width }) => {
 
 
   return (
-    <video width={width} height={'62vh'} ref={videoRef} autoPlay playsInline muted={true} />
+    <video width={width} height={'62vh'} ref={videoRef} autoPlay playsInline />
   )
 }
 

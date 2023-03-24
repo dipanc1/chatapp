@@ -36,6 +36,7 @@ const EventCard = ({
   setFetchAgain
 }) => {
   const user = JSON.parse(localStorage.getItem('user'));
+  console.log(fetchAgain)
 
   const { selectedChat } = useContext(AppContext);
 
@@ -157,7 +158,7 @@ const EventCard = ({
             setDescriptiond(descriptiond);
             setDated(dated);
             setTimed(timed);
-            setFetchAgain(!fetchAgain);
+            if (fetchAgain !== undefined) setFetchAgain(!fetchAgain);
             onCloseEditEvent();
           }).catch((err) => {
             console.log(err);
@@ -212,7 +213,7 @@ const EventCard = ({
                 setDescriptiond(descriptiond);
                 setDated(dated);
                 setTimed(timed);
-                setFetchAgain(!fetchAgain);
+                if (fetchAgain !== undefined) setFetchAgain(!fetchAgain);
                 onCloseEditEvent();
               }).catch((err) => {
                 console.log(err);
@@ -274,7 +275,7 @@ const EventCard = ({
           isClosable: true,
           position: "bottom-left",
         });
-        setFetchAgain(!fetchAgain);
+        if (fetchAgain !== undefined) setFetchAgain(!fetchAgain);
       });
     } catch (error) {
       axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {

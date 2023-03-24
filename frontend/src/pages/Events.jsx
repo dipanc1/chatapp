@@ -147,7 +147,7 @@ function Events() {
                 eventsList?.map((eventItem, index) => {
                   return (
                     <>
-                      <EventCard key={eventItem._id} selectEvent={selectEvent} chatId={eventItem.chatId} index={index} id={eventItem._id} date={eventItem.date.split('T')[0]} time={eventItem.time} title={eventItem.name} description={eventItem.description} imageUrl={eventItem?.thumbnail} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+                      <EventCard key={eventItem._id} selectEvent={selectEvent} chatId={eventItem.chatId} index={index} id={eventItem._id} date={eventItem.date} time={eventItem.time} title={eventItem.name} description={eventItem.description} imageUrl={eventItem?.thumbnail} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
                     </>
                   )
                 })
@@ -160,7 +160,7 @@ function Events() {
               {upcomingEventsList?.map((eventItem, index) => {
                 return (
                   <>
-                    <EventCard key={eventItem._id} selectEvent={selectEvent} chatId={eventItem.chatId} index={index} id={eventItem._id} date={eventItem.date.split('T')[0]} time={eventItem.time} title={eventItem.name} description={eventItem.description} imageUrl={eventItem?.thumbnail} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+                    <EventCard key={eventItem._id} selectEvent={selectEvent} chatId={eventItem.chatId} index={index} id={eventItem._id} date={eventItem.date} time={eventItem.time} title={eventItem.name} description={eventItem.description} imageUrl={eventItem?.thumbnail} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
                   </>
                 )
               })}
@@ -171,7 +171,7 @@ function Events() {
               {previousEventsList?.map((eventItem, index) => {
                 return (
                   <>
-                    <EventCard key={eventItem._id} selectEvent={selectEvent} chatId={eventItem.chatId} index={index} id={eventItem._id} date={eventItem.date.split('T')[0]} time={eventItem.time} title={eventItem.name} description={eventItem.description} imageUrl={eventItem?.thumbnail} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+                    <EventCard key={eventItem._id} selectEvent={selectEvent} chatId={eventItem.chatId} index={index} id={eventItem._id} date={eventItem.date} time={eventItem.time} title={eventItem.name} description={eventItem.description} imageUrl={eventItem?.thumbnail} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
                   </>
                 )
               })}

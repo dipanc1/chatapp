@@ -338,12 +338,6 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
                                 </Box>
                             )}
 
-                            {/* {Object.values(peersToShow).filter(peer => !!peer.stream).map((peer) => (
-                            <div key={peer.peerId}>
-                                <Videoplayer width={'400px'} peerstream={peer.stream} />
-                            </div>
-                        ))} */}
-
                             {adminVideo.length > 0
                                 ? adminVideo.map((peer) => (
                                     <div key={peer?.peerId}>
@@ -457,7 +451,7 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
                                     <Text>Like</Text>
                                 </Flex>
                             </NavLink>
-                            <NavLink style={{ "margin": "0 20px" }} className='btn btn-primary'>
+                            {/* <NavLink style={{ "margin": "0 20px" }} className='btn btn-primary'>
                                 <Flex alignItems='center'>
                                     <Image h='18px' pe='15px' src={CDN_IMAGES + "/share-white.png"} />
                                     <Text>Share</Text>
@@ -468,18 +462,18 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
                                     <Image h='18px' pe='15px' src={CDN_IMAGES + "/save-white.png"} />
                                     <Text>Save</Text>
                                 </Flex>
-                            </NavLink>
+                            </NavLink> */}
                         </Flex>
                         <Box py='40px'><hr /></Box>
                         <Box>
                             <Flex gap='25px' fontWeight='bold'>
                                 <Flex alignItems='center'>
                                     <Image h='18px' pe='6px' src={CDN_IMAGES + "/eye.png"} />
-                                    <Text>{peers.length > 0 ? peers.length : "0"} Watching</Text>
+                                    <Text>{Object.keys(peers).length > 0 ? Object.keys(peers).length : 0} Watching</Text>
                                 </Flex>
                                 <Flex alignItems='center'>
                                     <Image h='18px' pe='6px' src={CDN_IMAGES + "/clock.png"} />
-                                    <Text>Started 20 Minutes ago</Text>
+                                    <Text>Started {new Date().getMinutes() - eventInfo.time.split(":")[1]} Minutes ago</Text>
                                 </Flex>
                             </Flex>
                             <Text pt='20px' pb='100px'>
