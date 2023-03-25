@@ -126,23 +126,23 @@ export const RoomProvider = ({ children }) => {
 
     useEffect(() => {
         try {
-            navigator.mediaDevices.getUserMedia({ video: stream, audio: selectedChat?.groupAdmin._id === userInfo?._id ? stream : false }).then((stream) => {
+            navigator.mediaDevices.getUserMedia({ video: stream, audio: stream }).then((stream) => {
                 setStreamState(stream);
             });
         } catch (error) {
             console.error(error);
         }
 
-    }, [selectedChat?.groupAdmin._id, stream, userInfo?._id])
+    }, [stream])
 
     useEffect(() => {
         if (!me) return;
         if (!streamState) return;
 
         ws.on("user-joined", ({ peerId, userId: userid }) => {
-            console.warn("User Joined ::: >>>", peerId, "typeof peerId ::: >>>", typeof peerId);
+            // console.warn("User Joined ::: >>>", peerId, "typeof peerId ::: >>>", typeof peerId);
             setParticipantsArray([...participantsArray, peerId]);
-            console.log("Participants Array ::: >>>", participantsArray);
+            // console.log("Participants Array ::: >>>", participantsArray);
             dispatch(addUserIdAction(peerId, userid));
             playJoin();
             const call = me.call(peerId, streamState, {

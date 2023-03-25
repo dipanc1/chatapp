@@ -17,19 +17,16 @@ const SideBar = () => {
       title: "Live Stream",
       url: "video-chat",
       icon: "explore",
-      disabled: !stream,
     },
     {
       title: "Events",
       url: "event",
       icon: "events",
-      disabled: stream,
     },
     {
       title: "Groups",
       url: "groups",
       icon: "groups",
-      disabled: !stream,
     },
     // {
     // 	'title': 'Messages',
@@ -43,8 +40,6 @@ const SideBar = () => {
       title: "Settings",
       url: "settings",
       icon: "settings",
-      disabled: !stream,
-
     },
   ];
 
@@ -107,7 +102,7 @@ const SideBar = () => {
           <Box mt={["0", "auto"]} py={["4px", "auto"]}>
             <List>
               <ListItem onClick={handleLogout}>
-                <NavLink to={"/logout"}>
+                <NavLink to={"/"}>
                   <Image
                     src={CDN_IMAGES + "/logout.png"}
                     alt="Dan Abramov"

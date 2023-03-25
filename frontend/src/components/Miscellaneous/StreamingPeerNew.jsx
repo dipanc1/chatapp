@@ -326,6 +326,7 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
                                 <Videoplayer
                                     width={"100%"}
                                     peerstream={admin && streamState}
+                                    admin={admin}
                                 />
                             )}
 

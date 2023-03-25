@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Videoplayer = ({ peerstream, width }) => {
+const Videoplayer = ({ peerstream, width, admin }) => {
   const videoRef = React.useRef(null);
 
   React.useEffect(() => {
@@ -11,7 +11,7 @@ const Videoplayer = ({ peerstream, width }) => {
 
 
   return (
-    <video width={width} height={'62vh'} ref={videoRef} autoPlay playsInline />
+    <video width={width} height={'62vh'} ref={videoRef} autoPlay playsInline muted={admin} />
   )
 }
 
