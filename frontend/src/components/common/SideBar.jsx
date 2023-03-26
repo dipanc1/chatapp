@@ -59,7 +59,7 @@ const SideBar = () => {
         position="fixed"
         boxShadow={"Base"}
         bg={"white"}
-        p={["7px 20px", "20px"]}
+        p={["7px 15px", "20px"]}
         height={["fit-content", "calc(100vh - 40px)"]}
         width={["100%", "240px"]}
         borderRadius={["0", "10px"]}

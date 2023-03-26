@@ -27,7 +27,7 @@ const GroupChat = ({ chat }) => {
         <Box
             display={'flex'}
             flexDirection={'row'}
-            px='20px'
+            px={['5px', '10px']}
             alignItems={'center'}
             initial="hidden"
             animate="visible"
@@ -35,7 +35,7 @@ const GroupChat = ({ chat }) => {
         >
             {/* <img src="https://via.placeholder.com/150" alt="avatar" className='icon' />  */}
             {/* will add image later */}
-            <Avatar me='10px' variants={item} />
+            <Avatar size={['sm', 'md']} me={['10px', '15px']} variants={item} />
             <Text fontSize='md' variants={item}>{chat.chatName}</Text>
         </Box>
     )

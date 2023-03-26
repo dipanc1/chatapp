@@ -85,7 +85,7 @@ function Groups() {
   return (
     <>
       <Static>
-        <Flex pb='30px' alignItems='center' justifyContent='space-between'>
+        <Flex pb={['10px', '30px']} alignItems='center' justifyContent='space-between'>
           <Heading as='h1' size='lg' fontWeight='500'>Groups</Heading>
           <NavLink className='btn btn-primary' to="/video-chat">
             <Flex alignItems='center'>
@@ -112,7 +112,7 @@ function Groups() {
             {
               groupsList.length ?
                 (
-                  <Grid className='bg-variants' mb='70px' templateColumns='repeat(2, 1fr)' gap='2rem' rowGap='3rem'>
+                  <Grid className='bg-variants' mb='70px' templateColumns={['repeat(1, 1fr)' ,'repeat(2, 1fr)']} gap='2rem' rowGap={['1.5rem', '3rem']}>
                     {groupsList.map((groupItem) => (
                       <GroupCard
                         key={groupItem._id}
@@ -140,7 +140,7 @@ function Groups() {
             {
               groupConversations.length ?
                 (
-                  <Grid className='bg-variants' mb='70px' templateColumns='repeat(2, 1fr)' gap='2rem' rowGap='3rem'>
+                  <Grid className='bg-variants' mb='70px' templateColumns={['repeat(1, 1fr)' ,'repeat(2, 1fr)']} gap='2rem' rowGap={['1.5rem', '3rem']}>
                     {groupConversations.map((groupItem) => (
                       <GroupCard
                         key={groupItem._id}
@@ -168,7 +168,7 @@ function Groups() {
             {
               groupConversations.length ?
                 (
-                  <Grid className='bg-variants' mb='70px' templateColumns='repeat(2, 1fr)' gap='2rem' rowGap='3rem'>
+                  <Grid className='bg-variants' mb='70px' templateColumns={['repeat(1, 1fr)' ,'repeat(2, 1fr)']} gap='2rem' rowGap={['1.5rem', '3rem']}>
                     {groupConversations.map((groupItem) => {
                       if (user._id === groupItem.groupAdmin._id) {
                         const adminStatus = true;
