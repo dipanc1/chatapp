@@ -30,6 +30,7 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 	const user = JSON.parse(localStorage.getItem('user'));
 	const { dispatch, chats, loading, notification, pushNotification, userInfo } = useContext(AppContext);
 	const [toggleProfiledd, setToggleProfiledd] = useState(false)
+  const [toggleSearch, setToggleSearch] = useState(false)
 	const [search, setSearch] = useState('');
 	const [searching, setSearching] = useState(false)
 	const [searchResultsUsers, setSearchResultsUsers] = useState([]);
@@ -85,6 +86,7 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 
   const accessChat = async (userId) => {
     // console.log(userId);
+    setToggleSearch(false)
     setSearchResultsUsers([]);
     setSearchResultsGroups([]);
     setSearchResultsEvents([]);
@@ -169,6 +171,7 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
   };
 
   const handleAddUser = async (user1, groupId) => {
+    setToggleSearch(false)
     try {
       dispatch({ type: "SET_LOADING", payload: true });
       setSearching(true);
@@ -226,21 +229,25 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 
   return (
     <>
-      <Box className='header' zIndex='9' position='fixed' right={['0', '30px']} left={['0','290px']} boxShadow={'Base'} bg={'white'} p={'20px'} borderRadius={['0', '10px']}>
+      <Box className='header' zIndex='9' position='fixed' right={['0', '30px']} left={['0','290px']} boxShadow={'Base'} bg={'white'} p={['7px 10px', '20px']} borderRadius={['0', '10px']}>
         <Flex alignItems='center'>
           <Box className='logo-header' display='none'>
-            <Image height={['25px', '35px']} mx='auto' src={CDN_IMAGES + "/chatapp-logo.png"} alt="ChatApp" />
+            <Image display={['none', 'block']} height={['25px', '35px']} mx='auto' src={CDN_IMAGES + "/chatapp-logo.png"} alt="ChatApp" />
+            <Image display={['block', 'none!important']} height={['25px', '35px']} mx='auto' src={CDN_IMAGES + "/chatapp-logo-small.png"} alt="ChatApp" />
           </Box>
-          <Box display={['none', 'block']} position='relative' mx='auto' minW={'400px'}>
-            <Input disabled={loading} onChange={(e) => handleSearch(e)} value={search} placeholder='Search Users / Groups / Events' py={'13px'} px={'21px'} bg={'#F4F1FF'} border={'0'} />
+          <Box transition='all 0.3s ease-in-out' p={['15px 20px', '0']} display={['block', 'block']} w={['100%', 'auto']} zIndex={['1']} top={['0']} transform={[toggleSearch ? 'unset' : 'translateY(100%)', 'unset']} right={['0']} position={['absolute', 'relative']} height={['100vh', 'auto']} mx='auto' minW={['unset', '400px']} bg='#fff'>
+            <Box onClick={() => setToggleSearch(false)} p='10px' display={['block', 'none']} zIndex='2' position='absolute' top={['17px', '2px']} left={['17px', '12px']}>
+              <Image opacity='0.8' h='15px' src={CDN_IMAGES + '/search-back.png'} />
+            </Box>
+            <Input disabled={loading} onChange={(e) => handleSearch(e)} value={search} placeholder='Search Users / Groups / Events' py={'13px'} px={['30px', '21px']} bg={'#F4F1FF'} border={'0'} />
             {
               searching && (
-                <Box zIndex='1' position='absolute' top='2px' right='12px'>
+                <Box zIndex='1' position='absolute' top={['17px', '2px']} right={['30px', '12px']}>
                   <Image opacity='0.8' h='35px' src="https://ik.imagekit.io/sahildhingra/search-loading.svg" />
                 </Box>
               )
             }
-            <Box px='20px' background='#fff' boxShadow='0px 3px 24px rgba(159, 133, 247, 0.6)' borderRadius='5px' w='100%' position='absolute' top='calc(100% + 10px)' zIndex='1'>
+            <Box px='20px' background='#fff' boxShadow={['unset', '0px 3px 24px rgba(159, 133, 247, 0.6)']} borderRadius='5px' w='100%' position='absolute' top={['60px', 'calc(100% + 10px)']} right={['0']} zIndex='1'>
               {
                 searchResultsUsers?.length || searchResultsGroups?.length || searchResultsEvents?.length ? (
                   <>
@@ -313,7 +320,8 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
           </Box>
           <Flex ms={['auto', '0']}>
             <Flex alignItems='center'>
-              <Link href='/video-chat'>
+              <Image onClick={() => setToggleSearch(true)} display={['block', 'none']} px='18px' height='21px' src={CDN_IMAGES + "/search-icon.png"} />
+              <Link display={['none', 'block']} href='/video-chat'>
                 <Image height='23px' me='20px' src={CDN_IMAGES + "/messages.png"} />
               </Link>
               <Menu>
@@ -354,8 +362,8 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
                 </Portal>
               </Menu>
               <Box position='relative' ms='7px'>
-                <Button onClick={() => setToggleProfiledd(!toggleProfiledd)} className='btn-default' ms='15px' display='flex' alignItems='center' bg='transparent'>
-                  <Image borderRadius='full' objectFit='cover' boxSize='40px' src={user.pic} alt='Profile Pic' />
+                <Button onClick={() => setToggleProfiledd(!toggleProfiledd)} className='btn-default' ms={['5px', '15px']} display='flex' alignItems='center' bg='transparent'>
+                  <Image borderRadius='full' objectFit='cover' boxSize={['30px', '40px']} src={user.pic} alt='Profile Pic' />
                   <Text display={["none", "block"]} ps='15px' pe='10px'>
                     {userInfo?.username}
                   </Text>

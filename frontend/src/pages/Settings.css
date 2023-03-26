@@ -6,6 +6,22 @@
     margin-right:20px;
 }
 
+@media (max-width: 480px) {
+    .tab-nav {
+        display: flex;
+        white-space: pre;
+        overflow: auto;
+        padding-bottom: 5px;
+    }
+    .tab-nav li {
+        padding-right: 20px;
+        padding-left: 20px;
+        flex: 1;
+        text-align: center;
+        margin-right: unset;
+    }
+}
+
 .tab-nav li.active, .tab-nav li:hover {
     color: #9F85F7;
     border-bottom: 2px solid #9F85F7;

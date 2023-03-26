@@ -124,7 +124,7 @@ function Events() {
   return (
     <>
       <Static>
-        <Flex pb='30px' alignItems='center' justifyContent='space-between'>
+        <Flex pb={['10px', '30px']} alignItems='center' justifyContent='space-between'>
           <Heading as='h1' size='lg' fontWeight='500'>Events</Heading>
         </Flex>
         <Box pb='30px'>
@@ -142,7 +142,7 @@ function Events() {
         </Box>
         <div className="tab-content">
           <div className={"tab-content-item " + (activeTab === 1 ? "current" : "")}>
-            <Grid mb='70px' templateColumns='repeat(3, 1fr)' gap='2rem' rowGap='3rem'>
+            <Grid mb={['30px', '70px']} templateColumns={['repeat(1, 1fr)' ,'repeat(3, 1fr)']} gap='2rem' rowGap={['1.5rem', '3rem']}>
               {
                 eventsList?.map((eventItem, index) => {
                   return (
@@ -156,7 +156,7 @@ function Events() {
 
           </div>
           <div className={"tab-themes tab-content-item " + (activeTab === 2 ? "current" : "")}>
-            <Grid mb='70px' templateColumns='repeat(3, 1fr)' gap='2rem' rowGap='3rem'>
+            <Grid mb={['30px', '70px']} templateColumns={['repeat(1, 1fr)' ,'repeat(3, 1fr)']} gap='2rem' rowGap={['1.5rem', '3rem']}>
               {upcomingEventsList?.map((eventItem, index) => {
                 return (
                   <>
@@ -167,7 +167,7 @@ function Events() {
             </Grid>
           </div>
           <div className={"tab-content-item " + (activeTab === 3 ? "current" : "")}>
-            <Grid mb='70px' templateColumns='repeat(3, 1fr)' gap='2rem' rowGap='3rem'>
+            <Grid mb={['30px', '70px']} templateColumns={['repeat(1, 1fr)' ,'repeat(3, 1fr)']} gap='2rem' rowGap={['1.5rem', '3rem']}>
               {previousEventsList?.map((eventItem, index) => {
                 return (
                   <>

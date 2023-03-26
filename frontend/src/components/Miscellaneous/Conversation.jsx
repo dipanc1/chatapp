@@ -50,10 +50,10 @@ const Conversation = ({ chat }) => {
       variants={list}
       display={'flex'}
       flexDirection={'row'}
-      px='20px'
+      px={['5px', '10px']}
       alignItems={'center'}
     >
-      <Avatar me='10px' variants={item} name={chat && friends?.username} src={chat && friends?.pic} />
+      <Avatar size={['sm', 'md']} me={['10px', '15px']} variants={item} name={chat && friends?.username} src={chat && friends?.pic} />
       <Text variants={item} fontSize='md'>{chat && friends?.username}</Text>
     </Box>
   )

@@ -42,10 +42,10 @@ const Static = ({ noPadding, children, fetchAgain, setFetchAgain }) => {
               <Box
                 className="main-content-section"
                 position="fixed"
-                h={["calc(100vh - 154px)", "calc(100vh - 140px)"]}
+                h={["calc(100vh - 128px)", "calc(100vh - 140px)"]}
                 right={["0", "30px"]}
                 left={["0", "290px"]}
-                mt={["82px", "100px"]}
+                mt={["56px", "100px"]}
                 bg="#fff"
                 borderRadius={["0", "10px"]}
               >
@@ -61,7 +61,7 @@ const Static = ({ noPadding, children, fetchAgain, setFetchAgain }) => {
                 <Box
                   overflowY="auto"
                   h="100%"
-                  p={noPadding ? "0px" : "40px"}
+                  p={['10px 20px', noPadding ? "0px" : "40px"]}
                 >
                   {children}
                 </Box>

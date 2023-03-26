@@ -253,7 +253,7 @@ const Settings = () => {
     return (
         <>
             <Static>
-                <Heading pb='30px' as='h1' size='lg' fontWeight='500'>Settings</Heading>
+                <Heading pb={['10px', '30px']} as='h1' size='lg' fontWeight='500'>Settings</Heading>
                 <ul className="tab-nav">
                     <li onClick={() => setActiveTab(1)} className={activeTab === 1 ? "active" : ""}>
                         My Details
