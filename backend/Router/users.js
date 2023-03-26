@@ -1,8 +1,9 @@
 const router = require("express").Router();
 
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
-const generateToken = require("../config/generateToken");
+const { generateToken, generateRefreshToken } = require("../config/generateToken");
 const { protect } = require("../middleware/authMiddleware");
 
 require("dotenv").config();
@@ -16,6 +17,32 @@ const client = require("twilio")(accountSID, authToken);
 const Chat = require("../models/Conversation");
 const User = require("../models/User");
 const EventTable = require("../models/EventTable");
+
+let refreshTokens = [];
+
+// send new access token
+router.post("/token", (req, res) => {
+    const refreshToken = req.body.token;
+
+    if (refreshToken == null) return res.sendStatus(401);
+
+    if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403);
+
+    jwt.verify(refreshToken, process.env.REFRESH_JWT_SECRET, (err, user) => {
+        if (err) return res.sendStatus(403);
+        refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
+
+        const newAccessToken = generateToken(user.id);
+        const newRefreshToken = generateRefreshToken(user.id);
+
+        refreshTokens.push(refreshToken);
+
+        res.status(200).json({
+            token :newAccessToken,
+            refreshToken: newRefreshToken,
+        });
+    });
+});
 
 // register
 router.post("/register", async (req, res) => {
@@ -35,16 +62,22 @@ router.post("/register", async (req, res) => {
 
         //save user and send response
         const user = await newUser.save();
-        console.log(user)
+
+        const accessToken = generateToken(user._id);
+        const refreshToken = generateRefreshToken(user._id);
+        refreshTokens.push(refreshToken);
+        
+        // console.log(user)
         res.status(200).json({
             _id: user._id,
             username: user.username,
             number: user.number,
             isAdmin: user.isAdmin,
             pic: user.pic,
-            token: generateToken(user._id)
+            token: accessToken,
+            refreshToken: refreshToken
         })
-
+        
     } catch (err) {
         res.status(500).json(err)
         console.log(err)
@@ -54,29 +87,34 @@ router.post("/register", async (req, res) => {
 //login
 router.post("/login", async (req, res) => {
     try {
-
+        
         // find the user
         const user = await User.findOne({ username: req.body.username })
         // console.log(user)
-
+        
         if (!user) {
             return res.status(400).json("Wrong Username or Password")
         }
-
+        
         // validate password
         const validPassword = await bcrypt.compare(req.body.password, user.password);
-
+        
         if (!validPassword) {
             return res.status(400).json("Wrong Username or Password")
         }
 
+        const accessToken = generateToken(user._id);
+        const refreshToken = generateRefreshToken(user._id);
+        refreshTokens.push(refreshToken);
+        
         // send res
         res.status(200).json({
             _id: user._id,
             username: user.username,
             number: user.number,
             pic: user.pic,
-            token: generateToken(user._id)
+            token: accessToken,
+            refreshToken: refreshToken
         })
 
 

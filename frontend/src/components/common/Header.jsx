@@ -78,7 +78,7 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
       setSearchResultsEvents(data.events);
       setSearching(false)
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       setSearching(false)
     }
   };
