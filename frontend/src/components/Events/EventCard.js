@@ -36,7 +36,6 @@ const EventCard = ({
   setFetchAgain
 }) => {
   const user = JSON.parse(localStorage.getItem('user'));
-  console.log(fetchAgain)
 
   const { selectedChat } = useContext(AppContext);
 

@@ -36,7 +36,7 @@ const EventModal = ({ type, createEventLoading, isOpenCreateEvent, onCloseCreate
                         </FormControl>
                         <Flex gap='6'>
                             <FormControl className={"filled"}>
-                                <Input type='date' value={date.split('T')[0]} onChange={(e) => setDate(e.target.value)} />
+                                <Input type='date' value={date?.split('T')[0]} onChange={(e) => setDate(e.target.value)} />
                             </FormControl>
                             <FormControl className={"filled"}>
                                 <Input type='time' value={time} onChange={
