@@ -22,23 +22,31 @@ let refreshTokens = [];
 
 // send new access token
 router.post("/token", (req, res) => {
+    //take the refresh token from the user
     const refreshToken = req.body.token;
-
-    if (refreshToken == null) return res.sendStatus(401);
-
-    if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403);
-
+    
+    //send error if there is no token or it's invalid
+    if (!refreshToken) return res.status(401).json("You are not authenticated!");
+    if (!refreshTokens.includes(refreshToken)) {
+        return res.status(403).json("Refresh token is not valid!");
+    }
+    
     jwt.verify(refreshToken, process.env.REFRESH_JWT_SECRET, (err, user) => {
         if (err) return res.sendStatus(403);
+        
         refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
 
+        console.log("refresh token after filter ", refreshTokens)
+        console.log("user id ", user.id)
+        
         const newAccessToken = generateToken(user.id);
         const newRefreshToken = generateRefreshToken(user.id);
-
-        refreshTokens.push(refreshToken);
-
+        
+        refreshTokens.push(newRefreshToken);
+        console.log("refresh token after pushing ", refreshTokens)
+        
         res.status(200).json({
-            token :newAccessToken,
+            token: newAccessToken,
             refreshToken: newRefreshToken,
         });
     });
@@ -50,7 +58,7 @@ router.post("/register", async (req, res) => {
         // generate  new password
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(req.body.password, salt)
-
+        
         //create new user
         const newUser = new User({
             username: req.body.username,
@@ -59,10 +67,10 @@ router.post("/register", async (req, res) => {
             pic: req.body.pic
         })
         // console.log(newUser);
-
+        
         //save user and send response
         const user = await newUser.save();
-
+        
         const accessToken = generateToken(user._id);
         const refreshToken = generateRefreshToken(user._id);
         refreshTokens.push(refreshToken);
@@ -106,6 +114,7 @@ router.post("/login", async (req, res) => {
         const accessToken = generateToken(user._id);
         const refreshToken = generateRefreshToken(user._id);
         refreshTokens.push(refreshToken);
+        console.log("first refresh token ", refreshTokens)
         
         // send res
         res.status(200).json({
@@ -367,6 +376,11 @@ router.put("/update-user-info", protect, async (req, res) => {
         })
 });
 
-
+router.post("/logout", (req, res) => {
+    const refreshToken = req.body.token;
+    refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
+    console.log(refreshTokens, "refreshTokens after logout filter")
+    res.status(200).json("You logged out successfully.");
+});
 
 module.exports = router;

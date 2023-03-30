@@ -80,7 +80,7 @@ io.on("connection", (socket) => {
                 })
                 .catch(err => console.log("Online ", err))
         } else {
-            console.log("User not found")
+            console.log("Socket 83: User not found")
         }
     });
 
@@ -103,7 +103,7 @@ io.on("connection", (socket) => {
                             console.log(err);
                         });
                 } else {
-                    console.log("User not found");
+                    console.log("Socket 106: User not found");
                 }
             })
             .catch(err => console.log(err))
