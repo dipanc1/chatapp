@@ -92,7 +92,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user, getMeetingAndToken }) => {
             };
             setLoading(true);
             const { data } = await axios.get(`${backend_url}/message/${selectedChat._id}`, config);
-            setMessages(data);
+            setMessages(data.messages);
             setLoading(false);
             socket.emit('join chat', selectedChat._id);
         } catch (error) {

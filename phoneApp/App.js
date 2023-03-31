@@ -15,6 +15,7 @@ import Login from './screens/Login';
 import Register from './screens/Register';
 import Chat from './screens/Chat';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const newColorTheme = {
   text: {
@@ -72,7 +73,7 @@ const newColorTheme = {
 
 const theme = extendTheme({ colors: newColorTheme });
 const Stack = createNativeStackNavigator();
-
+const Tab = createBottomTabNavigator();
 
 const App = () => {
   const [user, setUser] = React.useState(null);
@@ -99,20 +100,30 @@ const App = () => {
   return (
     <NativeBaseProvider theme={theme}>
       <PhoneAppContextProvider>
-        {user ?
-          <Chat user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
-          :
-          <NavigationContainer>
+        <NavigationContainer>
+          {user ?
+            <Tab.Navigator>
+              <Tab.Screen name="Live Stream" options={{
+                headerShown: false,
+              }}>
+                {props => <Chat {...props} user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+              </Tab.Screen>
+            </Tab.Navigator>
+            :
             <Stack.Navigator intialRouteName="Login">
-              <Stack.Screen name="Login">
+              <Stack.Screen name="Login" options={{
+                headerShown: false,
+              }}>
                 {props => <Login {...props} setUser={setUser} />}
               </Stack.Screen>
-              <Stack.Screen name="Register">
+              <Stack.Screen name="Register" options={{
+                headerShown: false,
+              }}>
                 {props => <Register {...props} />}
               </Stack.Screen>
             </Stack.Navigator>
-          </NavigationContainer>
-        }
+          }
+        </NavigationContainer>
       </PhoneAppContextProvider>
     </NativeBaseProvider>
   );

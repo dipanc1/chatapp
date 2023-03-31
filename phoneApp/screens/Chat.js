@@ -155,46 +155,44 @@ const Chat = ({ user, fetchAgain, setFetchAgain }) => {
 
     return (
         <SocketContextProvider>
-            <NavigationContainer>
 
-                <Navbar user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
-                {stream ?
-                    <MeetingProvider
-                        config={{
-                            meetingId,
-                            micEnabled: false,
-                            webcamEnabled: admin,
-                            name: user.username
-                        }}
-                        token={token}
-                    >
-                        <MeetingConsumer>
-                            {() =>
-                                <Streaming admin={admin} fetchAgain={fetchAgain} user={user} meetingId={meetingId} setFetchAgain={setFetchAgain} />
-                            }
-                        </MeetingConsumer>
-                        {!fullScreen && <Members user={user} />}
-                    </MeetingProvider>
-                    :
-                    <>
-                        <Searchbar search={search} handleSearch={handleSearch} placeholder={"Search People or Groups"} />
+            <Navbar user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+            {stream ?
+                <MeetingProvider
+                    config={{
+                        meetingId,
+                        micEnabled: false,
+                        webcamEnabled: admin,
+                        name: user.username
+                    }}
+                    token={token}
+                >
+                    <MeetingConsumer>
+                        {() =>
+                            <Streaming admin={admin} fetchAgain={fetchAgain} user={user} meetingId={meetingId} setFetchAgain={setFetchAgain} />
+                        }
+                    </MeetingConsumer>
+                    {!fullScreen && <Members user={user} />}
+                </MeetingProvider>
+                :
+                <>
+                    <Searchbar search={search} handleSearch={handleSearch} placeholder={"Search People or Groups"} />
 
-                        <Tab.Navigator {...{ screenOptions, sceneContainerStyle }}>
-                            <Tab.Screen
-                                name="Conversations"
-                            >
-                                {props => <Conversations  {...props} user={user} conversations={conversations} search={search} setSearch={setSearch} searchResultsUsers={searchResultsUsers} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
-                            </Tab.Screen>
-                            <Tab.Screen
-                                name="Groups"
-                                screenOptions={{ presentation: 'modal' }}
-                            >
-                                {props => <Groups {...props} user={user} groupConversations={groupConversations} search={search} setSearch={setSearch} searchResultsGroups={searchResultsGroups} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} getMeetingAndToken={getMeetingAndToken} />}
-                            </Tab.Screen>
-                        </Tab.Navigator>
-                    </>
-                }
-            </NavigationContainer>
+                    <Tab.Navigator {...{ screenOptions, sceneContainerStyle }}>
+                        <Tab.Screen
+                            name="Users"
+                        >
+                            {props => <Conversations  {...props} user={user} conversations={conversations} search={search} setSearch={setSearch} searchResultsUsers={searchResultsUsers} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+                        </Tab.Screen>
+                        <Tab.Screen
+                            name="Groups"
+                            screenOptions={{ presentation: 'modal' }}
+                        >
+                            {props => <Groups {...props} user={user} groupConversations={groupConversations} search={search} setSearch={setSearch} searchResultsGroups={searchResultsGroups} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} getMeetingAndToken={getMeetingAndToken} />}
+                        </Tab.Screen>
+                    </Tab.Navigator>
+                </>
+            }
         </SocketContextProvider>
     )
 }
