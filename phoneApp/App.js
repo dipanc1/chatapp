@@ -7,7 +7,7 @@
  */
 
 import React from 'react';
-import { Box, extendTheme, NativeBaseProvider } from 'native-base';
+import { Box, extendTheme, Icon, NativeBaseProvider } from 'native-base';
 import { NavigationContainer } from '@react-navigation/native';
 import { PhoneAppContextProvider } from './context/PhoneAppContext';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -16,6 +16,11 @@ import Register from './screens/Register';
 import Chat from './screens/Chat';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import AllGroups from './screens/AllGroups';
+import Settings from './screens/Settings';
+import LogoutButton from './components/Miscellaneous/LogoutButton';
+import Events from './screens/Events';
+import { Image } from 'react-native';
 
 const newColorTheme = {
   text: {
@@ -77,7 +82,19 @@ const Tab = createBottomTabNavigator();
 
 const App = () => {
   const [user, setUser] = React.useState(null);
-  const [fetchAgain, setFetchAgain] = React.useState(false)
+  const [fetchAgain, setFetchAgain] = React.useState(false);
+  const CDN_IMAGES = "https://ik.imagekit.io/sahildhingra";
+
+  const TabBarIcon = ({ size, color, icon }) => {
+    return (
+      <Icon size={size} color={color} as={<Image
+        style={{ width: 20, height: 20 }}
+        source={{
+          uri: `${CDN_IMAGES}/${icon}.png`,
+        }}
+      />} />
+    );
+  };
 
   React.useEffect(() => {
     const getUserDetails = async () => {
@@ -105,8 +122,30 @@ const App = () => {
             <Tab.Navigator>
               <Tab.Screen name="Live Stream" options={{
                 headerShown: false,
+                tabBarIcon: ({ size, focused, color }) => TabBarIcon({ icon: 'explore', size, color })
               }}>
                 {props => <Chat {...props} user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+              </Tab.Screen>
+              <Tab.Screen name="Events" options={{
+                tabBarIcon: ({ size, focused, color }) => TabBarIcon({ icon: 'events', size, color })
+              }}>
+                {props => <Events {...props} />}
+              </Tab.Screen>
+              <Tab.Screen name="Groups" options={{
+                tabBarIcon: ({ size, focused, color }) => TabBarIcon({ icon: 'groups', size, color })
+              }}>
+                {props => <AllGroups {...props} />}
+              </Tab.Screen>
+              <Tab.Screen name="Settings" options={{
+                tabBarIcon: ({ size, focused, color }) => TabBarIcon({ icon: 'settings', size, color })
+              }}>
+                {props => <Settings {...props} />}
+              </Tab.Screen>
+              <Tab.Screen name="Logout" options={{
+                headerShown: false,
+                tabBarIcon: ({ size, focused, color }) => TabBarIcon({ icon: 'logout', size, color })
+              }}>
+                {props => <LogoutButton {...props} setUser={setUser} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
               </Tab.Screen>
             </Tab.Navigator>
             :

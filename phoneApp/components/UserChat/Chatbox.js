@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Box, Button, Flex, HStack, Icon, IconButton, Input, ScrollView, Text, VStack } from 'native-base'
+import { Box, Button, FlatList, Flex, HStack, Icon, IconButton, Input, ScrollView, Spinner, Text, VStack } from 'native-base'
 import React from 'react'
 import Lottie from 'lottie-react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
@@ -25,10 +25,12 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user, getMeetingAndToken }) => {
 
     const [meetingIdExists, setMeetingIdExists] = React.useState(false);
     const [online, setOnline] = React.useState(false);
+    const [page, setPage] = React.useState(2);
     const [socketConnected, setSocketConnected] = React.useState(false);
     const [newMessage, setNewMessage] = React.useState();
     const [profile, setProfile] = React.useState(null);
     const [messages, setMessages] = React.useState([]);
+    const [hasMore, setHasMore] = React.useState(true);
     const [loading, setLoading] = React.useState(false);
     const [typing, setTyping] = React.useState(false);
     const [isTyping, setIsTyping] = React.useState(false);
@@ -77,7 +79,11 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user, getMeetingAndToken }) => {
         if (selectedChat && !selectedChat.isGroupChat) {
             CheckOnlineStatus(selectedChat?.users.find(member => member._id !== user._id)._id);
         }
+
         fetchMessages();
+
+        setPage(2);
+
         selectedChatCompare = selectedChat;
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedChat])
@@ -91,13 +97,35 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user, getMeetingAndToken }) => {
                 }
             };
             setLoading(true);
-            const { data } = await axios.get(`${backend_url}/message/${selectedChat._id}`, config);
+            const { data } = await axios.get(`${backend_url}/message/${selectedChat._id}/1`, config);
             setMessages(data.messages);
+            setHasMore(data.hasMore);
             setLoading(false);
             socket.emit('join chat', selectedChat._id);
         } catch (error) {
             //TODO: ADD ALERTS
             console.log(error);
+        }
+    }
+
+    const fetchMoreMessages = async () => {
+        if (!selectedChat) return;
+        setPage(page + 1);
+        setLoading(true);
+        try {
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${user.token}`
+                }
+            };
+            const { data } = await axios.get(`${backend_url}/message/${selectedChat._id}/${page}`, config);
+            setMessages([...messages, ...data.messages]);
+            setHasMore(data.hasMore);
+            setLoading(false);
+            // console.log("Fetch more", page, data);
+        } catch (error) {
+            console.log(error);
+            setLoading(false);
         }
     }
 
@@ -117,7 +145,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user, getMeetingAndToken }) => {
             }, config);
 
             socket.emit("new message", data);
-            setMessages([...messages, data]);
+            setMessages([data.message, ...messages]);
             // console.log(data);
         } catch (error) {
             console.log(error);
@@ -227,33 +255,42 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user, getMeetingAndToken }) => {
                 }
                 {/* MIDDLE PART */}
                 <Box flex={'1'}>
-                    <ScrollView
+                    <FlatList
                         ref={scrollViewRef}
-                        onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
-                    >
-                        {messages?.map((m, i) => (
+                        onEndReached={fetchMoreMessages}
+                        onEndReachedThreshold={0.5}
+                        inverted
+                        ListFooterComponent={loading ? <Spinner size={'lg'} color={'primary.300'} /> : null}
+                        data={messages}
+                        renderItem={({ item, i }) => (
+                            // <ScrollView
+                            //     ref={scrollViewRef}
+                            //     onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
+                            // >
                             <Message
                                 profile={profile}
-                                key={m._id}
-                                messages={m}
-                                own={m.sender._id === user._id}
+                                key={item._id}
+                                messages={item}
+                                own={item.sender._id === user._id}
                                 sameSender={(i < messages.length - 1 &&
-                                    (messages[i + 1].sender._id !== m.sender._id ||
+                                    (messages[i + 1].sender._id !== item.sender._id ||
                                         messages[i + 1].sender._id === undefined) &&
                                     messages[i].sender._id !== user._id) || (i === messages.length - 1 &&
                                         messages[messages.length - 1].sender._id !== user._id &&
                                         messages[messages.length - 1].sender._id)}
                                 sameTime={(i < messages.length - 1) && format(messages[i].createdAt) === format(messages[i + 1].createdAt)}
                             />
-                        ))}
-                        {isTyping ? (
-                            <View>
-                                <Lottie source={animation} autoPlay loop />
-                            </View>
-                        ) : (
-                            <></>
                         )}
-                    </ScrollView>
+                        keyExtractor={(m) => m._id}
+                    />
+                    {isTyping ? (
+                        <View>
+                            <Lottie source={animation} autoPlay loop />
+                        </View>
+                    ) : (
+                        <></>
+                    )}
+
                 </Box>
 
                 {/* BOTTOM PART */}
