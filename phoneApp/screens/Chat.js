@@ -15,7 +15,7 @@ import { MeetingProvider, MeetingConsumer } from '@videosdk.live/react-sdk';
 
 const Tab = createMaterialTopTabNavigator();
 
-const Chat = ({ user, fetchAgain, setFetchAgain }) => {
+const Chat = ({ user, fetchAgain, setFetchAgain, navigation }) => {
     const { chats, dispatch, stream, fullScreen, selectedChat } = React.useContext(PhoneAppContext);
 
     const [conversations, setConversations] = React.useState([])

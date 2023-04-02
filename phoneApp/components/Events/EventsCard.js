@@ -4,7 +4,6 @@ import OptionsModal from '../UserModals/OptionsModal'
 
 const EventsCard = () => {
   return (
-    // use flatlist or scrollview to render multiple cards
     <FlatList data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]} renderItem={() =>
       <Box alignItems="center" my={'4'}>
         <Box maxW="80" rounded="lg" overflow="hidden" borderColor="coolGray.200" borderWidth="1" _dark={{
@@ -29,7 +28,7 @@ const EventsCard = () => {
                 <Heading size="md" ml="-1">
                   The Garden City
                 </Heading>
-                <OptionsModal />
+                <OptionsModal group={false} />
               </HStack>
             </Stack>
             <HStack alignItems="center" space={4} justifyContent="space-between">
