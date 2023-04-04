@@ -129,12 +129,12 @@ const App = () => {
               <Tab.Screen name="Events" options={{
                 tabBarIcon: ({ size, focused, color }) => TabBarIcon({ icon: 'events', size, color })
               }}>
-                {props => <Events {...props} />}
+                {props => <Events {...props} user={user} />}
               </Tab.Screen>
               <Tab.Screen name="Groups" options={{
                 tabBarIcon: ({ size, focused, color }) => TabBarIcon({ icon: 'groups', size, color })
               }}>
-                {props => <AllGroups {...props} />}
+                {props => <AllGroups {...props} user={user} />}
               </Tab.Screen>
               <Tab.Screen name="Settings" options={{
                 tabBarIcon: ({ size, focused, color }) => TabBarIcon({ icon: 'settings', size, color })

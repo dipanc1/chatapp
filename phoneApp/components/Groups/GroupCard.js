@@ -1,11 +1,13 @@
-import { Box, Center, FlatList, HStack, Text, VStack } from 'native-base';
+import { Box, Center, FlatList, HStack, Icon, Text, VStack } from 'native-base';
 import React from 'react'
 import OptionsModal from '../UserModals/OptionsModal';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-const GroupCard = () => {
 
+const GroupCard = ({ data, user }) => {
+  
   return (
-    <FlatList data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]} renderItem={() =>
+    <FlatList data={data} renderItem={({ item, i }) => (
       <Center px={3} my={5}>
         <VStack
           bg={`primary.100`}
@@ -21,9 +23,12 @@ const GroupCard = () => {
 
           <HStack w={'72'} py={'5'} px={'3'} alignItems={'center'} justifyContent={'space-between'}>
             <Text fontSize={'3xl'} color={'primary.300'}>
-              Vikram
+              {item.chatName}
             </Text>
-            <OptionsModal group={true}/>
+            {user?._id === item.groupAdmin._id &&
+              <Icon as={MaterialIcons} name='verified' color={'primary.300'} size={5} />
+            }
+            <OptionsModal group={true} />
           </HStack>
 
           <HStack w={'72'} py={'5'} px={'3'} alignItems={'center'} justifyContent={'space-between'}>
@@ -33,7 +38,7 @@ const GroupCard = () => {
                 Members
               </Text>
               <Text color={'primary.400'}>
-                10
+                {item.users.length}
               </Text>
             </VStack>
 
@@ -42,7 +47,7 @@ const GroupCard = () => {
                 Upcoming Events
               </Text>
               <Text color={'primary.400'} textAlign={'right'}>
-                1
+                {item.events.length}
               </Text>
             </VStack>
 
@@ -50,7 +55,9 @@ const GroupCard = () => {
 
         </VStack>
       </Center >
-    } />
+    )}
+      keyExtractor={(item) => item._id}
+    />
   )
 }
 

@@ -2,9 +2,10 @@ import React from 'react'
 import { AspectRatio, Box, VStack, HStack, Heading, Image, Stack, Text, FlatList } from 'native-base'
 import OptionsModal from '../UserModals/OptionsModal'
 
-const EventsCard = () => {
+const EventsCard = ({ data }) => {
+
   return (
-    <FlatList data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]} renderItem={() =>
+    <FlatList data={data} renderItem={({ item }) =>
       <Box alignItems="center" my={'4'}>
         <Box maxW="80" rounded="lg" overflow="hidden" borderColor="coolGray.200" borderWidth="1" _dark={{
           borderColor: "coolGray.600",
@@ -15,31 +16,23 @@ const EventsCard = () => {
         }} _light={{
           backgroundColor: "gray.50"
         }}>
-          <Box>
-            <AspectRatio w="100%" ratio={16 / 9}>
-              <Image source={{
-                uri: "https://www.holidify.com/images/cmsuploads/compressed/Bangalore_citycover_20190613234056.jpg"
-              }} alt="image" />
-            </AspectRatio>
-          </Box>
-          <Stack p="4" space={3}>
-            <Stack space={2}>
-              <HStack space={'24'} alignItems="center">
-                <Heading size="md" ml="-1">
-                  The Garden City
-                </Heading>
-                <OptionsModal group={false} />
-              </HStack>
-            </Stack>
-            <HStack alignItems="center" space={4} justifyContent="space-between">
-              <HStack alignItems="center">
-                <Text color="coolGray.600" _dark={{
-                  color: "warmGray.200"
-                }} fontWeight="400">
-                  6 mins ago
-                </Text>
-              </HStack>
+          <AspectRatio w="100%" ratio={4 / 3}>
+            <Image source={{
+              uri: item?.thumbnail ?? "https://www.telemonks.com/wp-content/themes/appon/assets/images/no-image/No-Image-Found-400x264.png"
+            }} alt="image" />
+          </AspectRatio>
+          <Stack p="4" space={2}>
+            <HStack space={'24'} alignItems="center" justifyContent={'space-between'}>
+              <Heading size="md">
+                {item?.name}
+              </Heading>
+              <OptionsModal group={false} />
             </HStack>
+            <Text color="coolGray.600" _dark={{
+              color: "warmGray.200"
+            }} fontWeight="400">
+              {item?.time} AM
+            </Text>
           </Stack>
         </Box>
       </Box>

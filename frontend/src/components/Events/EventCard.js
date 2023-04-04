@@ -298,7 +298,7 @@ const EventCard = ({
     <>
       <NavLink>
         <GridItem bg='#EAE4FF' w='100%' overflow='hidden' borderRadius='10px'>
-          <Image onClick={() => selectEvent(chatId)} src={imageUrl} w='100%' height='220px' objectFit='cover' />
+          <Image onClick={() => selectEvent(chatId)} src={imageUrl ?? "https://www.telemonks.com/wp-content/themes/appon/assets/images/no-image/No-Image-Found-400x264.png"} w='100%' height='220px' objectFit='cover' />
           <Flex alignItems='center' justifyContent='space-between' px='20px' py='10px'>
             <Box>
               <Text flex='1' fontSize='18px'>
