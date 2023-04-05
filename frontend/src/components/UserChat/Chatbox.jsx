@@ -18,7 +18,7 @@ import { useLocation } from 'react-router-dom'
 
 var selectedChatCompare;
 
-export const ChatBoxComponent = ({ flex, height, selectedChat, fetchAgain, setFetchAgain, user, toast }) => {
+export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selectedChat, fetchAgain, setFetchAgain, user, toast }) => {
   const socket = React.useContext(SocketContext);
   const { notification, dispatch } = React.useContext(AppContext);
 
@@ -188,6 +188,14 @@ export const ChatBoxComponent = ({ flex, height, selectedChat, fetchAgain, setFe
 
   return (
     <>
+      {stream && (
+        <>
+        <Box onClick={() => setToggleChat(false)} p='10px' background='#f0ecfb' display={['flex', 'none']} justifyContent='space-between' alignItems='center'>
+            <Text>Messages</Text>
+            <Image src="https://ik.imagekit.io/sahildhingra/down-arrow.png" h='20px' />
+        </Box>
+        </>
+      )}
       {/* MIDDLE PART  */}
       {loading ?
         (
