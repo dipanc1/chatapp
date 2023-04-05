@@ -443,7 +443,7 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
                             </>
                         </Box>
                     </Box>
-                    <Box overflow='auto' flex='1'>
+                    <Box p={['0 20px', '0']} overflow='auto' flex='1'>
                         <Heading pt='20px' pb='15px' as='h1' size='lg' fontWeight='500'>{eventInfo.title}</Heading>
                         <Text as='h2' size='lg' fontWeight='500' pb='35px'>
                             Host: {selectedChat.groupAdmin.username.toUpperCase()}

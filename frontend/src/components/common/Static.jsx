@@ -5,7 +5,7 @@ import { Box, Flex } from "@chakra-ui/react";
 import SideBar from "./SideBar";
 import Header from "./Header";
 
-const Static = ({ noPadding, children, fetchAgain, setFetchAgain }) => {
+const Static = ({ noSmPadding, noPadding, children, fetchAgain, setFetchAgain }) => {
   const cookies = new Cookies();
   let cookieVal = cookies.get("maximized");
 
@@ -61,7 +61,7 @@ const Static = ({ noPadding, children, fetchAgain, setFetchAgain }) => {
                 <Box
                   overflowY="auto"
                   h="100%"
-                  p={['10px 20px', noPadding ? "0px" : "40px"]}
+                  p={[noSmPadding ? '0' : '10px 20px', noPadding ? "0px" : "40px"]}
                 >
                   {children}
                 </Box>

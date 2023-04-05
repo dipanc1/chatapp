@@ -102,7 +102,7 @@ const Chat = () => {
   return (
     <SocketContextProvider>
       <RoomProvider>
-        <Static noPadding fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}>
+        <Static noSmPadding noPadding fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}>
           <Box overflow={['hidden', 'auto']} position='relative' h={stream ? '100%' : '100%'} display={[!stream ? 'flex' : 'block', 'block', 'flex', ]}>
             {stream ?
               <StreamingPeer setToggleChat={setToggleChat} admin={admin} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
@@ -140,7 +140,7 @@ const Chat = () => {
               </>
             }
             <Box
-              h={[toggleChat ? stream ? '70%' : '30%' : '0%', stream ? 'calc(100vh - 141px)' : '100%']}
+              h={[toggleChat ? stream ? '70%' : '0%' : '0%', stream ? 'calc(100vh - 141px)' : '100%']}
               overflow='hidden'
               // h={stream ? toggleChat ? ['70%', 'calc(100vh - 141px)'] : 'calc(100vh - 141px)' : '100%'}
               position={['absolute', 'sticky']}

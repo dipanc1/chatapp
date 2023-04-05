@@ -371,7 +371,7 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
                 </Button>
                 {
                   toggleProfiledd && (
-                    <Box className='header-dd' width='100%' borderRadius='4px' overflow='hidden' position='absolute' top='calc(100% + 20px)' right='0' background='#fff' boxShadow='0px 3px 24px rgb(159 133 247 / 60%)'>
+                    <Box className='header-dd' width='fit-content' borderRadius='4px' overflow='hidden' position='absolute' top={['calc(100% + 10px)', 'calc(100% + 20px)']} right='0' background='#fff' boxShadow='0px 3px 24px rgb(159 133 247 / 60%)'>
                       <UnorderedList listStyleType='none' p='10px 0' ms='0'>
                         <ListItem ps='0'>
                           <ProfileModal>
