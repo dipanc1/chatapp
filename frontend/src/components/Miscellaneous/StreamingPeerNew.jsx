@@ -61,7 +61,7 @@ const IconButtonGeneric = ({
     );
 };
 
-const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
+const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
     const user = JSON.parse(localStorage.getItem("user"));
     const [recording, setRecording] = React.useState(false);
     const stopButton = useRef(null);
@@ -305,23 +305,26 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
     // const { [screenSharingId]: sharing, ...peersToShow } = peers;
 
     return (
-        <Box flex={["12", "9", "9", "9"]}>
+        <Box height={"100%"} flex={["12", "9", "9", "9"]}>
             {id && streamState !== null ? (
                 <Box
                     display={"flex"}
                     justifyContent={"space-between"}
                     flexDirection={"column"}
-                    p=" 50px 25px 0"
+                    p={["0", "50px 25px 0"]}
+                    height={["100%", "auto"]}
                 >
                     <Box
                         className="video-container"
                         width={"100%"}
-                        boxShadow="0px 3px 24px rgba(159, 133, 247, 0.6)"
+                        boxShadow={['unset',"0px 3px 24px rgba(159, 133, 247, 0.6)"]}
                         borderRadius="5px"
                         overflow="hidden"
                         position="relative"
+                        height={["30%", "auto"]}
+                        flexShrink='0'
                     >
-                        <Box transform="rotateY(180deg)">
+                        <Box transform="rotateY(180deg)" height={["100%", "unset"]}>
                             {admin && screenSharingId !== me?.id && (
                                 <Videoplayer
                                     width={"100%"}
@@ -440,7 +443,7 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
                             </>
                         </Box>
                     </Box>
-                    <Box>
+                    <Box overflow='auto' flex='1'>
                         <Heading pt='20px' pb='15px' as='h1' size='lg' fontWeight='500'>{eventInfo.title}</Heading>
                         <Text as='h2' size='lg' fontWeight='500' pb='35px'>
                             Host: {selectedChat.groupAdmin.username.toUpperCase()}
@@ -497,6 +500,10 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
                             />
                         </Box>
                     )}
+                    <Box onClick={() => setToggleChat(true)} p='10px' background='#f0ecfb' display={['flex', 'none']} justifyContent='space-between' alignItems='center'>
+                        <Text>Messages</Text>
+                        <Image src="https://ik.imagekit.io/sahildhingra/down-arrow.png" h='20px' transform='rotate(180deg)' />
+                    </Box>
                 </Box>
             ) : (
                 <Box

@@ -24,7 +24,7 @@ import { useNavigate } from 'react-router-dom';
 import { FiUpload } from 'react-icons/fi';
 import EventModal from '../UserModals/EventModal'
 
-export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, admin }) => {
+export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, setFetchAgain, admin }) => {
   const user = JSON.parse(localStorage.getItem('user'));
 
   const { selectedChat, dispatch, stream, fullScreen } = React.useContext(AppContext);
@@ -471,7 +471,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
             {/* Chat Tab */}
             {stream &&
               <TabPanel p='0' h='100%' display='flex' flexDirection='column'>
-                <ChatBoxComponent flex='1' height={fullScreen ? '65vh' : '20vh'} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} selectedChat={selectedChat} user={user} toast={toast} />
+                <ChatBoxComponent setToggleChat={setToggleChat} stream={stream} flex='1' height={fullScreen ? '65vh' : '20vh'} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} selectedChat={selectedChat} user={user} toast={toast} />
               </TabPanel>
             }
 
@@ -751,7 +751,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
   )
 }
 
-const Members = ({ fetchAgain, setFetchAgain, token, meetingId, admin }) => {
+const Members = ({ setToggleChat, fetchAgain, setFetchAgain, token, meetingId, admin }) => {
 
   return (
     // <Box
@@ -766,12 +766,11 @@ const Members = ({ fetchAgain, setFetchAgain, token, meetingId, admin }) => {
     //   boxShadow={'dark-lg'}>
     <Box
       bg={'whiteColor'}
-      display={['none', 'none', 'none', 'block']}
+      display={['block', 'block', 'block', 'block']}
       borderLeft='1px solid #EAE4FF'
       h='100%'
     >
-
-      <MembersComponent admin={admin} token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+      <MembersComponent setToggleChat={setToggleChat} admin={admin} token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
 
     </Box>
   )
