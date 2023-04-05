@@ -3,10 +3,12 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import EventsCard from '../components/Events/EventsCard';
 import { backend_url } from '../production';
 import axios from 'axios';
+import { PhoneAppContext } from '../context/PhoneAppContext';
 
 const Tab = createMaterialTopTabNavigator();
 
 const Events = ({ user }) => {
+    const { dispatch } = React.useContext(PhoneAppContext);
 
     const [eventsList, setEventsList] = React.useState([]);
     const [upcomingEventsList, setUpcomingEventsList] = React.useState([]);
@@ -58,6 +60,41 @@ const Events = ({ user }) => {
 
         fetchAllEvents();
     }, [user.token, fetchAgain]);
+
+    const selectEvent = async (chatId) => {
+        try {
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${user.token}`,
+                },
+            };
+            const { data } = await axios.get(
+                `${backend_url}/conversation/${chatId}`,
+                config
+            );
+            setChatId(data._id);
+            setChatName(data.chatName);
+
+            if (!data.users.map((u) => u._id === user._id).includes(true)) {
+                onOpenJoinEvent();
+            } else {
+                dispatch({ type: "SET_SELECTED_CHAT", payload: data });
+                navigate(`/video-chat`);
+            }
+
+        } catch (error) {
+            // console.log(error)
+            toast({
+                title: "Error Occured!",
+                description: "Failed to Load the Events",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "bottom-left",
+            });
+        }
+    };
 
     return (
         <Tab.Navigator screenOptions={{
