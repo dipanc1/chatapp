@@ -561,7 +561,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
               <Flex
                 display={['block', 'none', 'none', 'none']}
               >
-                <DetailsModal />
+                <DetailsModal admin={admin} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
               </Flex>
 
             </Box>
