@@ -5,10 +5,14 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import Participants from '../Miscellaneous/Participants';
 import Settings from '../Miscellaneous/Settings';
 import Chatbox from './Chatbox';
+import EventsCard from '../Events/EventsCard';
+import { PhoneAppContext } from '../../context/PhoneAppContext';
 
 const Tab = createMaterialTopTabNavigator();
 
 //TODO: Change color of the tab bar
+
+let eventsTab = false;
 
 const Members = ({ user, fetchAgain, setFetchAgain, getMeetingAndToken }) => {
   const screenOptions = {
@@ -23,11 +27,15 @@ const Members = ({ user, fetchAgain, setFetchAgain, getMeetingAndToken }) => {
     tabBarItemStyle: {
       padding: 0,
       margin: 0,
+      width: 150,
     },
   };
+
   const sceneContainerStyle = {
     backgroundColor: '#F5F7FB',
   };
+
+  const { selectedChat } = React.useContext(PhoneAppContext)
 
   return (
     <Tab.Navigator {...{ screenOptions, sceneContainerStyle }}>
@@ -37,7 +45,12 @@ const Members = ({ user, fetchAgain, setFetchAgain, getMeetingAndToken }) => {
         {props => <Chatbox {...props} getMeetingAndToken={getMeetingAndToken} user={user} />}
       </Tab.Screen>
       <Tab.Screen
-        name="Participants"
+        name="Events"
+      >
+        {props => <EventsCard {...props} user={user} data={selectedChat?.events} screen={eventsTab} />}
+      </Tab.Screen>
+      <Tab.Screen
+        name="Members"
       >
         {props => <Participants {...props} user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
       </Tab.Screen>

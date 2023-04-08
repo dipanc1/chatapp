@@ -1,34 +1,56 @@
-import { View, Text } from 'react-native'
 import React from 'react'
-import { Modal } from 'native-base'
+import { Button, AlertDialog, Text } from 'native-base'
+import axios from 'axios';
+import { PhoneAppContext } from '../../context/PhoneAppContext';
+import { backend_url } from '../../production';
 
-const JoinGroupModal = () => {
-    return (
-        <Modal isOpen={showModal} onClose={() => setShowModal(false)} _backdrop={{
-            _dark: {
-                bg: "coolGray.800"
+const JoinGroupModal = ({ showModal, setShowModal, chatName, user, navigation, chatId }) => {
+    const cancelRef = React.useRef(null);
+    const onClose = () => setShowModal(false);
+
+    const { dispatch } = React.useContext(PhoneAppContext);
+
+    const handleJoinGroup = async () => {
+        const config = {
+            headers: {
+                Authorization: `Bearer ${user.token}`,
             },
-            bg: "warmGray.50"
-        }}>
-            <Modal.Header>
-                <Text color={'primary.600'} fontSize={'2xl'} bold>You have to join {chatName} group to join this event?</Text>
-            </Modal.Header>
-            <Modal.Content maxWidth="350" maxH="800">
-                <Modal.Body>
+        };
+        const { data } = await axios.put(
+            `${backend_url}/conversation/groupadd`,
+            {
+                chatId,
+                userId: user._id,
+            },
+            config
+        );
 
+        dispatch({ type: "SET_SELECTED_CHAT", payload: data });
+        navigation.navigate(`Groups`);
+        setShowModal(false);
+    }
+
+    return (
+        <AlertDialog leastDestructiveRef={cancelRef} isOpen={showModal} onClose={onClose}>
+            <AlertDialog.Content>
+                <AlertDialog.Header>
+                    <Text color={'primary.600'} fontSize={'2xl'} bold>You have to join {chatName} group to join this event?</Text>
+                </AlertDialog.Header>
+                <AlertDialog.Body>
                     <Text>
                         Are you sure you want to join this group? You can always leave later.
                     </Text>
-
-                    <Button variant={'outline'} colorScheme="violet" rounded={'lg'} w={'100%'}>
+                </AlertDialog.Body>
+                <AlertDialog.Footer>
+                    <Button mx={'3'} variant={'outline'} colorScheme="violet" rounded={'lg'} onPress={onClose} ref={cancelRef}>
                         No
                     </Button>
-                    <Button rounded={'lg'} bg={'primary.300'} w={'100%'}>
+                    <Button rounded={'lg'} bg={'primary.300'} onPress={handleJoinGroup} >
                         Yes
                     </Button>
-                </Modal.Body>
-            </Modal.Content>
-        </Modal >
+                </AlertDialog.Footer>
+            </AlertDialog.Content>
+        </AlertDialog>
     )
 }
 

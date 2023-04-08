@@ -34,7 +34,7 @@ const Chat = ({ user, fetchAgain, setFetchAgain, navigation }) => {
     React.useEffect(() => {
         fetchChats();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [fetchAgain])
+    }, [fetchAgain, selectedChat])
 
     const screenOptions = {
         unmountOnBlur: false,

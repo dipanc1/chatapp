@@ -131,7 +131,7 @@ const App = () => {
               }}>
                 {props => <Events {...props} user={user} />}
               </Tab.Screen>
-              <Tab.Screen name="Groups" options={{
+              <Tab.Screen name="AllGroups" options={{
                 tabBarIcon: ({ size, focused, color }) => TabBarIcon({ icon: 'groups', size, color })
               }}>
                 {props => <AllGroups {...props} user={user} />}

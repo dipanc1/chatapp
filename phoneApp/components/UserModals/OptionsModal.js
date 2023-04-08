@@ -2,7 +2,7 @@ import { Box, Button, Icon, IconButton, Popover, Text } from 'native-base';
 import React from 'react'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
-const OptionsModal = ({ group }) => {
+const OptionsModal = ({ group, deleteEvent, eventId }) => {
   return (
     <Box alignItems="center">
       <Popover trigger={triggerProps => {
@@ -32,7 +32,7 @@ const OptionsModal = ({ group }) => {
                     <Button leftIcon={<Icon size={'lg'} as={<MaterialIcons name="edit" size={40} />} />} colorScheme="coolGray" variant="ghost">
                       <Text fontSize={'md'}>Edit</Text>
                     </Button>
-                    <Button leftIcon={<Icon size={'lg'} color={'red.400'} as={<MaterialIcons name="delete" size={40} />} />} variant={'ghost'}>
+                    <Button onPress={() => deleteEvent(eventId)} leftIcon={<Icon size={'lg'} color={'red.400'} as={<MaterialIcons name="delete" size={40} />} />} variant={'ghost'}>
                       <Text color={'red.400'} fontSize={'md'}>Delete</Text>
                     </Button>
                   </>

@@ -7,6 +7,8 @@ import { PhoneAppContext } from '../context/PhoneAppContext';
 
 const Tab = createMaterialTopTabNavigator();
 
+let eventsTab = true;
+
 const Events = ({ user, navigation }) => {
     const { dispatch } = React.useContext(PhoneAppContext);
 
@@ -15,8 +17,7 @@ const Events = ({ user, navigation }) => {
     const [previousEventsList, setPreviousEventsList] = React.useState([]);
     const [chatId, setChatId] = React.useState();
     const [chatName, setChatName] = React.useState("");
-    const [fetchAgain, setFetchAgain] = React.useState(false);
-    const [eventsTab, setEventsTab] = React.useState(false);
+    const [showModal, setShowModal] = React.useState(false);
 
     React.useEffect(() => {
         const fetchAllEvents = async () => {
@@ -60,7 +61,7 @@ const Events = ({ user, navigation }) => {
         };
 
         fetchAllEvents();
-    }, [user.token, fetchAgain]);
+    }, [user.token]);
 
     const selectEvent = async (chatId) => {
         try {
@@ -78,10 +79,10 @@ const Events = ({ user, navigation }) => {
             setChatName(data.chatName);
 
             if (!data.users.map((u) => u._id === user._id).includes(true)) {
-                onOpenJoinEvent();
+                setShowModal(true)
             } else {
                 dispatch({ type: "SET_SELECTED_CHAT", payload: data });
-                () => navigation.navigate(`Users`);
+                navigation.navigate(`Groups`);
             }
 
         } catch (error) {
@@ -103,15 +104,16 @@ const Events = ({ user, navigation }) => {
             tabBarItemStyle: { width: 150 },
         }}>
             <Tab.Screen name="Group Events">
-                {props => <EventsCard {...props} data={eventsList} screen={eventsTab} />}
+                {props => <EventsCard {...props} user={user} data={eventsList} screen={eventsTab} selectEvent={selectEvent} chatName={chatName} showModal={setShowModal} chatId={chatId} />}
             </Tab.Screen>
             <Tab.Screen name="Upcoming Events">
-                {props => <EventsCard {...props} data={upcomingEventsList} screen={eventsTab} />}
+                {props => <EventsCard {...props} user={user} data={upcomingEventsList} screen={eventsTab} selectEvent={selectEvent} chatName={chatName} showModal={setShowModal} chatId={chatId} />}
             </Tab.Screen>
             <Tab.Screen name="Previous Events">
-                {props => <EventsCard {...props} data={previousEventsList} screen={eventsTab} />}
+                {props => <EventsCard {...props} user={user} data={previousEventsList} screen={eventsTab} selectEvent={selectEvent} chatName={chatName} showModal={showModal} setShowModal={setShowModal} chatId={chatId} />}
             </Tab.Screen>
         </Tab.Navigator>
+
     )
 }
 

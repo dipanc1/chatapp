@@ -277,7 +277,7 @@ const EventCard = ({
         if (fetchAgain !== undefined) setFetchAgain(!fetchAgain);
       });
     } catch (error) {
-      axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
+      await axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
         selectedChat.events = res.data;
       }).catch((err) => {
         console.log(err);

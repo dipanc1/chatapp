@@ -5,7 +5,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 
 const GroupCard = ({ data, user }) => {
-  
+
   return (
     <FlatList data={data} renderItem={({ item, i }) => (
       <Center px={3} my={5}>
@@ -26,9 +26,11 @@ const GroupCard = ({ data, user }) => {
               {item.chatName}
             </Text>
             {user?._id === item.groupAdmin._id &&
-              <Icon as={MaterialIcons} name='verified' color={'primary.300'} size={5} />
+              <>
+                <Icon as={MaterialIcons} name='verified' color={'primary.300'} size={5} />
+                <OptionsModal group={true} />
+              </>
             }
-            <OptionsModal group={true} />
           </HStack>
 
           <HStack w={'72'} py={'5'} px={'3'} alignItems={'center'} justifyContent={'space-between'}>
