@@ -10,6 +10,7 @@ const Static = ({ noSmPadding, noPadding, children, fetchAgain, setFetchAgain })
   let cookieVal = cookies.get("maximized");
 
   const [maximizedValue, setMaximizedValue] = useState(cookieVal);
+  const [toggleSidebar, setToggleSidebar] = useState(false)
 
   const handleExpand = () => {
     if (cookies.get("maximized") == "true") {
@@ -26,28 +27,32 @@ const Static = ({ noSmPadding, noPadding, children, fetchAgain, setFetchAgain })
       <div className={maximizedValue === "true" ? "maximized-view" : "s"}>
         <Box 
           minH="100vh"
-          py={["0", "20px"]}
-          px={["0", "30px"]} 
+          py={["0", "0", "20px"]}
+          px={["0", "0", "30px"]} 
           bg="backgroundColor"
         >
           <Flex height="100%">
             <Box height="100%">
-              <SideBar />
+              <SideBar 
+                toggleSidebar={toggleSidebar}
+              />
             </Box>
             <Box ps="260px" flex="1">
               <Header
                 fetchAgain={fetchAgain}
                 setFetchAgain={setFetchAgain}
+                toggleSidebar={toggleSidebar}
+                setToggleSidebar={setToggleSidebar}
               />
               <Box
                 className="main-content-section"
                 position="fixed"
-                h={["calc(100vh - 128px)", "calc(100vh - 140px)"]}
-                right={["0", "30px"]}
-                left={["0", "290px"]}
-                mt={["56px", "100px"]}
+                h={["calc(100vh - 57px)", "calc(100vh - 57px)", "calc(100vh - 140px)"]}
+                right={["0", "0", "30px"]}
+                left={["0", "0", "290px"]}
+                mt={["56px", "56px", "100px"]}
                 bg="#fff"
-                borderRadius={["0", "10px"]}
+                borderRadius={["0", "0", "10px"]}
               >
                 <button
                   onClick={handleExpand}

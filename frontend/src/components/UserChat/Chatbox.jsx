@@ -190,7 +190,7 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
     <>
       {stream && (
         <>
-        <Box onClick={() => setToggleChat(false)} p='10px' background='#f0ecfb' display={['flex', 'none']} justifyContent='space-between' alignItems='center'>
+        <Box onClick={() => setToggleChat(false)} p='10px' background='#f0ecfb' display={['flex', 'flex', 'none']} justifyContent='space-between' alignItems='center'>
             <Text>Messages</Text>
             <Image src="https://ik.imagekit.io/sahildhingra/down-arrow.png" h='20px' />
         </Box>
@@ -508,7 +508,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
                 variants={variants}
                 style={{ margin: selectedChat?.isGroupChat ? '8px' : null }}>
                 <Box
-                  display={['block', 'none']}
+                  display={['block', 'block', 'none']}
                   pe='10px'
                   onClick={() => {
                     dispatch({ type: "SET_SELECTED_CHAT", payload: null });
@@ -544,32 +544,35 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
                   {selectedChat?.isGroupChat ? selectedChat?.chatName.toUpperCase() : profile?.username}
                 </Text>
               </Box>
-              <Box display='flex' alignItems='center'>
-                {
-                  selectedChat && (
-                    selectedChat?.isGroupChat && (
-                      <Button
-                        background="transparent"
-                        borderRadius="100%"
-                        ms="15px"
-                        h='40px'
-                        w='40px'
-                        p='0'
-                        onClick={onOpen}
-                      >
-                        <Img
-                          h='22px'
-                          src="https://ik.imagekit.io/sahildhingra/settings.png" alt="" />
-                      </Button>
+              <Flex>
+                <Box display='flex' alignItems='center'>
+                  {
+                    selectedChat && (
+                      selectedChat?.isGroupChat && (
+                        <Button
+                          background="transparent"
+                          borderRadius="100%"
+                          ms="15px"
+                          me='10px'
+                          h='40px'
+                          w='40px'
+                          p='0'
+                          onClick={onOpen}
+                        >
+                          <Img
+                            h='22px'
+                            src="https://ik.imagekit.io/sahildhingra/settings.png" alt="" />
+                        </Button>
+                      )
                     )
-                  )
-                }
+                  }
 
-              </Box>
-              <Flex
-                display={['block', 'none', 'none', 'none']}
-              >
-                <DetailsModal admin={admin} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+                </Box>
+                <Flex
+                  display={['block', 'block', 'none', 'none']}
+                >
+                  <DetailsModal admin={admin} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+                </Flex>
               </Flex>
 
             </Box>
