@@ -225,18 +225,18 @@
     display: flex;
 }
 
-@media (max-width:480px) {
+@media (max-width:768px) {
     .sidebar .sidebar-nav a p {
-        display: none;
+        /* display: none; */
     }
 
     .sidebar-nav li a {
         padding: 13px;
-        width: fit-content;
+        width: 100%;
     }
 
     .sidebar-nav li a img {
-        margin-right: unset;
+        /* margin-right: unset; */
     }
 
     .expand-btn {

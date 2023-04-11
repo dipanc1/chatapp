@@ -26,7 +26,7 @@ import axios from 'axios';
 import { AppContext } from '../../context/AppContext';
 import UserCard from '../UserItems/UserCard';
 
-const Header = ({ fetchAgain, setFetchAgain }) => {
+const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) => {
 	const user = JSON.parse(localStorage.getItem('user'));
 	const { dispatch, chats, loading, notification, pushNotification, userInfo } = useContext(AppContext);
 	const [toggleProfiledd, setToggleProfiledd] = useState(false)
@@ -229,17 +229,20 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
 
   return (
     <>
-      <Box className='header' zIndex='9' position='fixed' right={['0', '30px']} left={['0','290px']} boxShadow={'Base'} bg={'white'} p={['7px 10px', '20px']} borderRadius={['0', '10px']}>
+      <Box className='header' zIndex='9' position='fixed' right={['0', '0', '30px']} left={['0','0','290px']} boxShadow={'Base'} bg={'white'} p={['7px 10px', '7px 10px', '20px']} borderRadius={['0', '0', '10px']}>
         <Flex alignItems='center'>
-          <Box className='logo-header' display='none'>
-            <Image display={['none', 'block']} height={['25px', '35px']} mx='auto' src={CDN_IMAGES + "/chatapp-logo.png"} alt="ChatApp" />
-            <Image display={['block', 'none!important']} height={['25px', '35px']} mx='auto' src={CDN_IMAGES + "/chatapp-logo-small.png"} alt="ChatApp" />
+          <Box onClick={() => setToggleSidebar(!toggleSidebar)}>
+            <Image display={['block', 'block', 'none']} height={['25px', '35px']} mr='15px' src={CDN_IMAGES + "/menu.png"} alt="Menu" />
           </Box>
-          <Box transition='all 0.3s ease-in-out' p={['15px 20px', '0']} display={['block', 'block']} w={['100%', 'auto']} zIndex={['1']} top={['0']} transform={[toggleSearch ? 'unset' : 'translateY(100%)', 'unset']} right={['0']} position={['absolute', 'relative']} height={['100vh', 'auto']} mx='auto' minW={['unset', '400px']} bg='#fff'>
-            <Box onClick={() => setToggleSearch(false)} p='10px' display={['block', 'none']} zIndex='2' position='absolute' top={['17px', '2px']} left={['17px', '12px']}>
+          <Box className='logo-header' display='none'>
+            <Image display={['none', 'none', 'block']} height={['25px', '35px']} mx='auto' src={CDN_IMAGES + "/chatapp-logo.png"} alt="ChatApp" />
+            <Image display={['block', 'block', 'none!important']} height={['25px', '35px']} mx='auto' src={CDN_IMAGES + "/chatapp-logo-small.png"} alt="ChatApp" />
+          </Box>
+          <Box transition='all 0.3s ease-in-out' p={['15px 20px', '15px 20px', '0']} display={['block', 'block']} w={['100%', '100%', 'auto']} zIndex={['1']} top={['0']} transform={[toggleSearch ? 'unset' : 'translateY(100%)', toggleSearch ? 'unset' : 'translateY(100%)', 'unset']} right={['0']} position={['absolute', 'absolute', 'relative']} height={['100vh', '100vh', 'auto']} mx='auto' minW={['unset', 'unset', '400px']} bg='#fff'>
+            <Box onClick={() => setToggleSearch(false)} p='10px' display={['block', 'block', 'none']} zIndex='2' position='absolute' top={['17px', '17px', '2px']} left={['17px', '17px', '12px']}>
               <Image opacity='0.8' h='15px' src={CDN_IMAGES + '/search-back.png'} />
             </Box>
-            <Input disabled={loading} onChange={(e) => handleSearch(e)} value={search} placeholder='Search Users / Groups / Events' py={'13px'} px={['30px', '21px']} bg={'#F4F1FF'} border={'0'} />
+            <Input disabled={loading} onChange={(e) => handleSearch(e)} value={search} placeholder='Search Users / Groups / Events' py={'13px'} px={['30px', '30px', '21px']} bg={'#F4F1FF'} border={'0'} />
             {
               searching && (
                 <Box zIndex='1' position='absolute' top={['17px', '2px']} right={['30px', '12px']}>
@@ -318,10 +321,10 @@ const Header = ({ fetchAgain, setFetchAgain }) => {
               }
             </Box>
           </Box>
-          <Flex ms={['auto', '0']}>
+          <Flex ms={['auto', 'auto', '0']}>
             <Flex alignItems='center'>
-              <Image onClick={() => setToggleSearch(true)} display={['block', 'none']} px='18px' height='21px' src={CDN_IMAGES + "/search-icon.png"} />
-              <Link display={['none', 'block']} href='/video-chat'>
+              <Image onClick={() => setToggleSearch(true)} display={['block', 'block', 'none']} px='18px' height='21px' src={CDN_IMAGES + "/search-icon.png"} />
+              <Link display={['none', 'none', 'block']} href='/video-chat'>
                 <Image height='23px' me='20px' src={CDN_IMAGES + "/messages.png"} />
               </Link>
               <Menu>
