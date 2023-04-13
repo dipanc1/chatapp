@@ -14,9 +14,8 @@ const Tab = createMaterialTopTabNavigator();
 
 let eventsTab = false;
 
-const Members = ({ user, fetchAgain, setFetchAgain, getMeetingAndToken }) => {
+const Members = ({ user, fetchAgain, setFetchAgain }) => {
   const screenOptions = {
-    unmountOnBlur: false,
     headerShown: false,
     tabBarLabelStyle: {
       fontSize: 15,
@@ -24,6 +23,7 @@ const Members = ({ user, fetchAgain, setFetchAgain, getMeetingAndToken }) => {
     },
     tabBarActiveTintColor: '#9F85F7',
     tabBarInactiveTintColor: 'grey',
+    tabBarScrollEnabled: true,
     tabBarItemStyle: {
       padding: 0,
       margin: 0,
@@ -42,17 +42,17 @@ const Members = ({ user, fetchAgain, setFetchAgain, getMeetingAndToken }) => {
       <Tab.Screen
         name="Chat"
       >
-        {props => <Chatbox {...props} getMeetingAndToken={getMeetingAndToken} user={user} />}
-      </Tab.Screen>
-      <Tab.Screen
-        name="Events"
-      >
-        {props => <EventsCard {...props} user={user} data={selectedChat?.events} screen={eventsTab} />}
+        {props => <Chatbox {...props} user={user} />}
       </Tab.Screen>
       <Tab.Screen
         name="Members"
       >
         {props => <Participants {...props} user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+      </Tab.Screen>
+      <Tab.Screen
+        name="Events"
+      >
+        {props => <EventsCard {...props} user={user} data={selectedChat?.events} screen={eventsTab} />}
       </Tab.Screen>
       <Tab.Screen
         name="Settings"

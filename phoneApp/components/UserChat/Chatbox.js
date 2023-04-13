@@ -10,12 +10,12 @@ import { format } from 'timeago.js'
 import { SocketContext } from '../../context/socketContext'
 import animation from '../../assets/typing.json'
 import animationData from '../../assets/red-dot.json';
-import StreamModal from '../UserModals/StreamModal'
+import StreamModal from '../UserModals/StreamModalPeer'
 import { View } from 'react-native'
 
 var selectedChatCompare;
 
-const Chatbox = ({ fetchAgain, setFetchAgain, user, getMeetingAndToken }) => {
+const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
 
     const socket = React.useContext(SocketContext);
 
@@ -301,7 +301,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user, getMeetingAndToken }) => {
 
             </Flex>
 
-            <StreamModal admin={admin} user={user} getMeetingAndToken={getMeetingAndToken} open={open} setOpen={setOpen} />
+            <StreamModal admin={admin} user={user} open={open} setOpen={setOpen} />
         </>
 
     )

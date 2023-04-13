@@ -1,40 +1,28 @@
 import {
     Box,
     Button,
-    Divider,
     Flex,
     Heading,
     HStack,
     IconButton,
     Image,
     Text,
-    useDisclosure,
     useToast,
     VStack,
 } from "@chakra-ui/react";
-import { useMeeting, useParticipant } from "@videosdk.live/react-sdk";
 import axios from "axios";
-import React, { useContext, useEffect, useMemo, useRef } from "react";
-import { AiOutlineCloseSquare } from "react-icons/ai";
+import React, { useContext, useEffect, useRef } from "react";
 import {
-    BsCameraVideo,
-    BsCameraVideoOff,
     BsFullscreen,
     BsFullscreenExit,
-    BsMic,
-    BsMicMute,
     BsRecordCircle,
     BsRecordCircleFill,
 } from "react-icons/bs";
-import { MdScreenShare } from "react-icons/md";
-import ReactPlayer from "react-player";
 import { AppContext } from "../../context/AppContext";
 import { backend_url } from "../../baseApi";
 import { MembersComponent } from "../UserChat/Members";
-import EndLeaveModal from "../UserModals/EndLeaveModal";
 import { RoomContext } from "../../context/RoomContext";
 import Videoplayer from "./Videoplayer";
-import { useCallback } from "react";
 import { NavLink } from "react-router-dom";
 
 const IconButtonGeneric = ({

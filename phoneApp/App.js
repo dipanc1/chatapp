@@ -13,7 +13,6 @@ import { PhoneAppContextProvider } from './context/PhoneAppContext';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './screens/Login';
 import Register from './screens/Register';
-import Chat from './screens/Chat';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AllGroups from './screens/AllGroups';
@@ -21,6 +20,7 @@ import Settings from './screens/Settings';
 import LogoutButton from './components/Miscellaneous/LogoutButton';
 import Events from './screens/Events';
 import { Image } from 'react-native';
+import VideoChat from './screens/VideoChat';
 
 const newColorTheme = {
   text: {
@@ -124,7 +124,7 @@ const App = () => {
                 headerShown: false,
                 tabBarIcon: ({ size, focused, color }) => TabBarIcon({ icon: 'explore', size, color })
               }}>
-                {props => <Chat {...props} user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+                {props => <VideoChat {...props} user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
               </Tab.Screen>
               <Tab.Screen name="Events" options={{
                 tabBarIcon: ({ size, focused, color }) => TabBarIcon({ icon: 'events', size, color })
