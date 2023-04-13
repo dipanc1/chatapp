@@ -9,6 +9,22 @@ const StreamModal = ({ user, open, setOpen, admin }) => {
     const [disabled, setDisabled] = React.useState(false)
     const [meetingId, setMeetingId] = React.useState(null);
 
+    const startMeeting = async () => {
+        // setDisabled(true);
+        // const config = {
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         'Authorization': `Bearer ${user.token}`
+        //     }
+        // }
+        // const { data } = await axios.get(`${backend_url}/conversation/streaming/${selectedChat._id}`, config);
+        // setMeetingId(data);
+        // // console.warn("STREAM MODAL which is joinscreen", data, "MEETING ID", meetingId);
+        // await getMeetingAndToken(data);
+        // setOpen(false);
+        // dispatch({ type: 'SET_STREAM', payload: true });
+    }
+
     return (
         <Modal isOpen={open} onClose={() => setOpen(false)} safeAreaTop={true}>
             <Modal.Content maxWidth="350">
