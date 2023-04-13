@@ -211,15 +211,15 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
         )
         :
         (
-          <div
+          <Box
             id="scrollableDiv"
             style={{
               flex: flex,
               height: height,
               overflow: 'auto',
-              display: 'flex',
               flexDirection: 'column-reverse',
             }}
+            padding={['75px 0 65px', '75px 0 65px', '0']}
           >
             {/*Put the scroll bar always on the bottom*/}
             <InfiniteScroll
@@ -275,7 +275,7 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
                 <></>
               )}
             </InfiniteScroll>
-          </div>
+          </Box>
         )}
 
       {/* BOTTOM PART  */}
@@ -285,6 +285,10 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
         justifyContent={'space-between'}
         background="#F6F3FF"
         padding="15px 30px"
+        position={['fixed', 'fixed', 'unset']}
+        bottom={'0'}
+        left='0'
+        right='0'
       >
         <Input
           mr={'10px'}
@@ -497,6 +501,11 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
               animate="visible"
               variants={variants}
               background="#F6F3FF"
+              position={['fixed', 'fixed', 'unset']}
+              top='0'
+              left='0'
+              right='0'
+              zIndex='1'
             >
               <Box
                 display="flex"

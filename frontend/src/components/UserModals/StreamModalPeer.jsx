@@ -73,7 +73,7 @@ const StreamModalPeer = ({
             <span>{children}</span> :
             <>
                 <Button
-                    background="#fff"
+                    background="#f1edff"
                     borderRadius="100%"
                     h='40px'
                     w='40px'

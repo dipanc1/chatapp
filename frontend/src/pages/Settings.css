@@ -1,3 +1,10 @@
+.tab-nav {
+    display: flex;
+    white-space: pre;
+    overflow: auto;
+    padding-bottom: 5px;
+}
+
 .tab-nav li {
     display: inline-block;
     padding: 10px 35px;
