@@ -297,9 +297,36 @@ const EventCard = ({
   return (
     <>
       <NavLink>
-        <GridItem bg='#EAE4FF' w='100%' overflow='hidden' borderRadius='10px'>
-          <Image onClick={() => selectEvent(chatId)} src={imageUrl ?? "https://www.telemonks.com/wp-content/themes/appon/assets/images/no-image/No-Image-Found-400x264.png"} w='100%' height='220px' objectFit='cover' />
-          <Flex alignItems='center' justifyContent='space-between' px='20px' py='10px'>
+        <GridItem position='relative' bg='#EAE4FF' w='100%' overflow='hidden' borderRadius='10px'>
+          <Box position='absolute' right='0' top='0' zIndex='1'>
+            <Button type='button' onClick={() => setToggleEventMenu(!toggleEventMenu)} bg='transparent'>
+              <Image height='22px' src='https://ik.imagekit.io/sahildhingra/3dot-menu.png' />
+            </Button>
+            {
+              toggleEventMenu && (
+                <Box overflow='hidden' className='lightHover' width='fit-content' position='absolute' borderRadius='10px' boxShadow='md' background='#fff' right='5px' top='calc(100% + 5px)'>
+                  <UnorderedList listStyleType='none' ms='0'>
+                    <ListItem onClick={() => {
+                      setToggleEventMenu(!toggleEventMenu);
+                      onOpenEditEvent();
+                    }} p='10px 50px 10px 20px' display='flex' alignItems='center'>
+                      <Image h='22px' me='15px' src="https://ik.imagekit.io/sahildhingra/draw.png" />
+                      <Text>Edit</Text>
+                    </ListItem>
+                    <ListItem onClick={() => {
+                      deleteEvent(id);
+                      setToggleEventMenu(!toggleEventMenu);
+                    }} p='10px 50px 10px 20px' display='flex' alignItems='center'>
+                      <Image h='22px' me='15px' src="https://ik.imagekit.io/sahildhingra/trash.png" />
+                      <Text color='#FF0000'>Delete</Text>
+                    </ListItem>
+                  </UnorderedList>
+                </Box>
+              )
+            }
+          </Box>
+          <Image onClick={() => selectEvent(chatId)} src={imageUrl ?? "https://ik.imagekit.io/sahildhingra/default-no-image-wide.jpg"} w='100%' height='220px' objectFit='cover' />
+          <Flex alignItems='center' justifyContent='space-between' px='10px' py='10px'>
             <Box>
               <Text flex='1' fontSize='18px'>
                 {title}
@@ -313,33 +340,6 @@ const EventCard = ({
                 <StreamModalPeer admin={admin} title={title} date={date} time={time} imageUrl={imageUrl} description={description} />
               </Box>
             }
-            <Box position='relative' zIndex='1'>
-              <Button type='button' onClick={() => setToggleEventMenu(!toggleEventMenu)} bg='transparent'>
-                <Image height='22px' src='https://ik.imagekit.io/sahildhingra/3dot-menu.png' />
-              </Button>
-              {
-                toggleEventMenu && (
-                  <Box overflow='hidden' className='lightHover' width='fit-content' position='absolute' borderRadius='10px' boxShadow='md' background='#fff' right='0' bottom='100%'>
-                    <UnorderedList listStyleType='none' ms='0'>
-                      <ListItem onClick={() => {
-                        setToggleEventMenu(!toggleEventMenu);
-                        onOpenEditEvent();
-                      }} p='10px 50px 10px 20px' display='flex' alignItems='center'>
-                        <Image h='22px' me='15px' src="https://ik.imagekit.io/sahildhingra/draw.png" />
-                        <Text>Edit</Text>
-                      </ListItem>
-                      <ListItem onClick={() => {
-                        deleteEvent(id);
-                        setToggleEventMenu(!toggleEventMenu);
-                      }} p='10px 50px 10px 20px' display='flex' alignItems='center'>
-                        <Image h='22px' me='15px' src="https://ik.imagekit.io/sahildhingra/trash.png" />
-                        <Text color='#FF0000'>Delete</Text>
-                      </ListItem>
-                    </UnorderedList>
-                  </Box>
-                )
-              }
-            </Box>
           </Flex>
         </GridItem>
       </NavLink>

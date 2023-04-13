@@ -485,6 +485,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
                 height='100%'
               >
                 <Box
+                  w='100%'
                   h='50%'
                   overflow='auto'
                   flex='1'

@@ -142,7 +142,7 @@ function Events() {
         </Box>
         <div className="tab-content">
           <div className={"tab-content-item " + (activeTab === 1 ? "current" : "")}>
-            <Grid mb={['30px', '70px']} templateColumns={['repeat(1, 1fr)' ,'repeat(3, 1fr)']} gap='2rem' rowGap={['1.5rem', '3rem']}>
+            <Grid mb={['30px', '70px']} templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)', 'repeat(3, 1fr)']} gap='2rem' rowGap={['1.5rem', '3rem']}>
               {
                 eventsList?.map((eventItem, index) => {
                   return (
