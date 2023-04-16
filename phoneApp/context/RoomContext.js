@@ -9,6 +9,7 @@ import { addUserIdAction, ADD_PEER_STREAM, REMOVE_PEER_STREAM } from "../reducer
 // import leaveSound from '../sounds/leave.mp3';
 import { PhoneAppContext } from "./PhoneAppContext";
 import { mediaDevices } from "react-native-webrtc";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ENDPOINT = "https://peerjs.wildcrypto.com";
 
@@ -30,43 +31,36 @@ export const RoomProvider = ({ children, user }) => {
 
     const { stream } = React.useContext(PhoneAppContext);
 
-    const enterRoom = (roomId) => {
+    const enterRoom = async (roomId) => {
         console.warn("Room ID ::: >>>", roomId);
-        // localStorage.setItem("roomId", roomId);
+        await AsyncStorage.setItem('roomId', roomId)
     };
 
     const getUsers = ({ participants }) => {
         console.warn("Get Users ::: >>>", participants);
-        // const participantsArray = Object.entries(participants).map(([peerId]) => ({ peerId }));
-        // setParticipantsArray(participantsArray.map(x => x.peerId));
     }
 
     const removePeer = (peerId) => {
         console.warn("Remove Peer ::: >>>", peerId, "typeof peerId ::: >>>", typeof peerId);
-        // setParticipantsArray(participantsArray.filter((peerid) => peerid !== peerId));
-        // console.log("Participants Array ::: >>>", participantsArray);
-        // dispatch({
-        //     type: REMOVE_PEER_STREAM,
-        //     payload: {
-        //         peerId,
-        //     }
-        // });
+        setParticipantsArray(participantsArray.filter((peerid) => peerid !== peerId));
+        console.log("Participants Array ::: >>>", participantsArray);
+        dispatch({
+            type: REMOVE_PEER_STREAM,
+            payload: {
+                peerId,
+            }
+        });
         // playLeave();
     }
 
+    let isVoiceOnly = false;
+    let cameraCount = 0;
+    let localMediaStream;
     React.useEffect(() => {
-        // const savedId = localStorage.getItem("userId");
-        // const meId = savedId || uuidV4();
-
-        // localStorage.setItem("userId", meId);
-
         // mediaDevices.getUserMedia({ audio: true, video: true }, function (stream) {
         //     stream.getTracks().forEach(x => x.stop());
         // }, err => console.log(err));
 
-        let isVoiceOnly = false;
-        let cameraCount = 0;
-        let localMediaStream;
 
         const cameraCounts = async () => {
 
@@ -104,7 +98,8 @@ export const RoomProvider = ({ children, user }) => {
                     videoTrack.enabled = false;
                 };
 
-                localMediaStream = mediaStream;
+                // localMediaStream = mediaStream;
+                setStreamState(mediaStream);
             } catch (err) {
                 // Handle Error
                 console.log(err)
@@ -142,26 +137,25 @@ export const RoomProvider = ({ children, user }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // const shareScreen = () => {
-    //     if (screenSharingId) {
-    //         mediaDevices.getUserMedia({ video: true, audio: true }).then(switchScreen);
-    //     } else {
-    //         mediaDevices.getDisplayMedia({}).then((stream) => {
-    //             switchScreen(stream);
-    //             setScreenStream(stream)
-    //         })
-    //     }
-    // }
+    const shareScreen = () => {
+        if (screenSharingId) {
+            mediaDevices.getUserMedia({ video: true, audio: true }).then(switchScreen);
+        } else {
+            mediaDevices.getDisplayMedia({}).then((stream) => {
+                switchScreen(stream);
+                setScreenStream(stream)
+            })
+        }
+    }
 
-    // const switchScreen = (stream) => {
-    //     // setStreamState(stream);
-    //     setScreenSharingId(screenSharingId ? "" : me?.id);
+    const switchScreen = (stream) => {
+        setScreenSharingId(screenSharingId ? "" : me?.id);
 
-    //     Object.values(me?.connections).forEach((connection) => {
-    //         const videoTrack = stream?.getTracks().find((track) => track.kind === "video");
-    //         connection[0].peerConnection.getSenders().find((sender) => sender.track.kind === "video").replaceTrack(videoTrack).catch(err => console.error(err));
-    //     });
-    // }
+        Object.values(me?.connections).forEach((connection) => {
+            const videoTrack = stream?.getTracks().find((track) => track.kind === "video");
+            connection[0].peerConnection.getSenders().find((sender) => sender.track.kind === "video").replaceTrack(videoTrack).catch(err => console.error(err));
+        });
+    }
 
 
     React.useEffect(() => {
@@ -230,24 +224,25 @@ export const RoomProvider = ({ children, user }) => {
 
     }, [me, streamState, userId])
 
-    // useEffect(() => {
-    //     setUserId(user._id);
-    // }, [userId])
+    React.useEffect(() => {
+        setUserId(user._id);
+    }, [userId])
 
     return (
         <RoomContext.Provider
             value={{
-                // ws,
-                // me,
-                // streamState,
-                // peers,
-                // shareScreen,
-                // screenSharingId,
-                // setRoomId,
-                // userId,
-                // setUserId,
-                // screenStream,
-                // participantsArray,
+                ws,
+                me,
+                streamState,
+                peers,
+                shareScreen,
+                screenSharingId,
+                setRoomId,
+                userId,
+                setUserId,
+                screenStream,
+                participantsArray,
+                localMediaStream,
             }}>
             {children}
         </RoomContext.Provider>
