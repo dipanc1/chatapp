@@ -3,11 +3,65 @@ import { Button, Flex, Heading, Modal, Text, VStack } from 'native-base';
 import React from 'react'
 import { PhoneAppContext } from '../../context/PhoneAppContext';
 import { backend_url } from '../../production';
+import { RoomContext } from '../../context/RoomContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const StreamModal = ({ user, open, setOpen, admin }) => {
-    const { selectedChat, dispatch } = React.useContext(PhoneAppContext);
-    const [disabled, setDisabled] = React.useState(false)
-    const [meetingId, setMeetingId] = React.useState(null);
+const StreamModal = ({ open, setOpen, admin }) => {
+    const [roomId, setRoomId] = React.useState(null);
+    const { dispatch } = React.useContext(PhoneAppContext);
+
+    const { ws } = React.useContext(RoomContext);
+
+
+    React.useEffect(() => {
+        const roomIds = async () => {
+            try {
+                const value = await AsyncStorage.getItem('roomId')
+                return value != null ? value : null
+            } catch (e) {
+                // read error
+                console.log(e)
+            }
+        }
+
+        roomIds().then((res) => {
+            setRoomId(res);
+        })
+    }, [])
+
+
+    const createRoom = () => {
+        ws.emit("create-room", roomId ? roomId : null);
+        dispatch({
+            type: "SET_STREAM"
+        })
+        // dispatch({
+        //     type: "SET_EVENT_INFO",
+        //     payload: {
+        //         title,
+        //         date,
+        //         time,
+        //         imageUrl,
+        //         description
+        //     }
+        // })
+    };
+
+    const joinRoom = () => {
+        dispatch({
+            type: "SET_STREAM"
+        })
+        // dispatch({
+        //     type: "SET_EVENT_INFO",
+        //     payload: {
+        //         title,
+        //         date,
+        //         time,
+        //         imageUrl,
+        //         description
+        //     }
+        // })
+    };
 
     return (
         <Modal isOpen={open} onClose={() => setOpen(false)} safeAreaTop={true}>
@@ -23,7 +77,7 @@ const StreamModal = ({ user, open, setOpen, admin }) => {
                         </VStack>
 
                         <VStack space={'3'}>
-                            <Button disabled={disabled} rounded={'lg'} bg={'primary.300'} w={'100%'} onPress={startMeeting}>
+                            <Button rounded={'lg'} bg={'primary.300'} w={'100%'} onPress={admin ? createRoom : joinRoom}>
                                 {admin ? 'Share' : 'Join'}
                             </Button>
                             <Button variant={'outline'} colorScheme="violet" rounded={'lg'} w={'100%'} onPress={() => setOpen(false)}>
