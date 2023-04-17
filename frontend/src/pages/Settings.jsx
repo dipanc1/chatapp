@@ -277,10 +277,10 @@ const Settings = () => {
                         Help
                     </li>
                 </ul>
-                <div className="tab-content">
+                <Box pb={['20px', '0']} className="tab-content">
                     <div className={"tab-content-item " + (activeTab === 1 ? "current" : "")}>
                         <form onSubmit={handleUpdateProfile}>
-                            <Grid mt='70px' templateColumns='repeat(2, 1fr)' gap='5rem' rowGap='3rem' className='form-wrapper form-details'>
+                            <Grid mt='70px' templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)']} gap='5rem' rowGap={['1rem', '3rem']} className='form-wrapper form-details'>
                                 <GridItem w='100%'>
                                     <FormControl className="filled">
                                         <Input pt='25px' pb='20px' type='text' onChange={e => setUsername(e.target.value)} value={username} />
@@ -321,7 +321,7 @@ const Settings = () => {
                                     </FormControl>
                                 </GridItem>
                             </Grid>
-                            <Flex pt='50px' alignItems='center' justifyContent='end'>
+                            <Flex pt={['20px', '50px']} alignItems='center' justifyContent='end'>
                                 <Button type='submit' bg="buttonPrimaryColor" color={"white"}>
                                     <Image h='18px' pe='15px' src='https://ik.imagekit.io/sahildhingra/edit.png' />
                                     <Text>Edit Profile</Text>
@@ -331,7 +331,7 @@ const Settings = () => {
                     </div>
                     <div className={"tab-themes tab-content-item " + (activeTab === 2 ? "current" : "")}>
                         <RadioGroup>
-                            <Grid ps='10px' mt='50px' templateColumns='repeat(3, 1fr)' gap='2rem' rowGap='3rem'>
+                            <Grid ps='10px' mt='50px' templateColumns={['repeat(1, 1fr)', 'repeat(3, 1fr)']} gap='2rem' rowGap={['1.5rem', '3rem']}>
                                 <Radio value='1' alignItems='start' checked='checked'>
                                     <Box display='block'>
                                         <Text pb='15px' fontWeight='700'>
@@ -357,7 +357,7 @@ const Settings = () => {
                                     </Box>
                                 </Radio>
                             </Grid>
-                            <Flex pt='70px' alignItems='center' justifyContent='end'>
+                            <Flex pt={['50px', '70px']} alignItems='center' justifyContent='end'>
                                 <NavLink className='btn btn-primary' to="#">
                                     <Text>Save Theme</Text>
                                 </NavLink>
@@ -369,7 +369,7 @@ const Settings = () => {
                             <Text mt='40px' fontSize='18px' color='#6C4545' fontWeight='600'>
                                 Please enter your current password to change your password
                             </Text>
-                            <Grid mt='20px' templateColumns='repeat(2, 1fr)' gap='5rem' rowGap='3rem' className='form-wrapper'>
+                            <Grid mt='20px' templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)']} gap='5rem' rowGap={['1rem', '3rem']} className='form-wrapper'>
                                 <GridItem w='100%'>
                                     <FormControl className={"filled"}>
                                         <Input autoComplete='current-password' type='password' value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
@@ -378,7 +378,7 @@ const Settings = () => {
                                 </GridItem>
                             </Grid>
                             <Box h='1px' background='#EAE4FF' mt='20px' mb='50px'></Box>
-                            <Grid mt='30px' templateColumns='repeat(2, 1fr)' gap='4.5rem' rowGap='3rem' className='form-wrapper'>
+                            <Grid mt='30px' templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)']} gap='4.5rem' rowGap={['1rem', '3rem']} className='form-wrapper'>
                                 <GridItem w='100%'>
                                     <FormControl className={"filled"}>
                                         <Input autoComplete='new-password' type='password' value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
@@ -392,7 +392,7 @@ const Settings = () => {
                                     </FormControl>
                                 </GridItem>
                             </Grid>
-                            <Flex pt='40px' alignItems='center' justifyContent='end'>
+                            <Flex pt={['15px', '40px']} alignItems='center' justifyContent='end'>
                                 <Button disabled={currentPassword === "" || newPassword === "" || confirmPassword === ""} type='submit'>
                                     <Text>Update Password</Text>
                                 </Button>
@@ -404,7 +404,7 @@ const Settings = () => {
                             Choose what kind of notifications you want to see in your app.
                         </Text>
                         <Box h='1px' background='#EAE4FF' my='30px'></Box>
-                        <Grid alignItems='center' templateColumns='repeat(2, 1fr)' gap='4.5rem'>
+                        <Grid alignItems='center' templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)']} gap={['1.5rem', '4.5rem']}>
                             <GridItem>
                                 <Text color='#6C4545' fontWeight='700'>
                                     Messages
@@ -430,7 +430,7 @@ const Settings = () => {
                         <Text mt='40px' mb='30px' fontSize='18px' color='#6C4545' fontWeight='600'>
                             Current Active Plan
                         </Text>
-                        <Grid ps='10px' mt='40px' mb='60px' templateColumns='repeat(3, 1fr)' gap='2rem' rowGap='3rem'>
+                        <Grid ps='10px' mt='40px' mb={['40px', '60px']} templateColumns={['repeat(1, 1fr)' ,'repeat(3, 1fr)']} gap='2rem' rowGap={['1.5rem', '3rem']}>
                             <GridItem p='20px' pb='30px' border='1px solid #EAE4FF' borderRadius='10px' textAlign='center'>
                                 <Text fontSize='24px' fontWeight='700'>
                                     Basic
@@ -465,7 +465,7 @@ const Settings = () => {
                             Other Available Plans
                         </Text>
 
-                        <Grid ps='10px' mt='40px' mb='60px' templateColumns='repeat(3, 1fr)' gap='2rem' rowGap='3rem'>
+                        <Grid ps='10px' mt='40px' mb={['40px' ,'60px']} templateColumns={['repeat(1, 1fr)' ,'repeat(3, 1fr)']} gap='2rem' rowGap={['1.5rem', '3rem']}>
                             <GridItem p='20px' pb='30px' border='1px solid #EAE4FF' borderRadius='10px' textAlign='center'>
                                 <Text fontSize='24px' fontWeight='700'>
                                     Basic
@@ -563,8 +563,8 @@ const Settings = () => {
                         </Flex>
                     </div>
                     <div className={"tab-content-item " + (activeTab === 6 ? "current" : "")}>
-                        <Flex pt='40px' alignItems='center' justifyContent='space-between'>
-                            <Text fontSize='18px' color='#6C4545' fontWeight='600'>
+                        <Box display={['block', 'flex']} pt='40px' alignItems='center' justifyContent='space-between'>
+                            <Text pb={['12px', '0']} fontSize='18px' color='#6C4545' fontWeight='600'>
                                 Payment Methods
                             </Text>
                             <NavLink className='btn btn-primary' to="#">
@@ -573,7 +573,7 @@ const Settings = () => {
                                     <Text>Add New</Text>
                                 </Flex>
                             </NavLink>
-                        </Flex>
+                        </Box>
                         <Box h='1px' background='#EAE4FF' my='30px'></Box>
                         <Text mt='40px' mb='30px' fontSize='18px' color='#6C4545' fontWeight='600'>
                             Invoices
@@ -662,8 +662,8 @@ const Settings = () => {
                         </TableContainer>
                     </div>
                     <div className={"tab-content-item " + (activeTab === 7 ? "current" : "")}>
-                        <Flex pt='40px' alignItems='center' justifyContent='space-between'>
-                            <Text fontSize='18px' color='#6C4545' fontWeight='600'>
+                        <Box display={['block', 'flex']} pt='40px' alignItems='center' justifyContent='space-between'>
+                            <Text pb={['12px', '0']} fontSize='18px' color='#6C4545' fontWeight='600'>
                                 Support Portal
                             </Text>
                             <NavLink className='btn btn-primary' to="#">
@@ -672,8 +672,8 @@ const Settings = () => {
                                     <Text>Raise Ticket</Text>
                                 </Flex>
                             </NavLink>
-                        </Flex>
-                        <Grid ps='10px' mt='40px' mb='60px' templateColumns='repeat(3, 1fr)' gap='2rem' rowGap='3rem'>
+                        </Box>
+                        <Grid ps='10px' mt='40px' mb={['40px', '60px']} templateColumns={['repeat(1, 1fr)', 'repeat(3, 1fr)']} gap='2rem' rowGap={['1rem', '3rem']}>
                             <GridItem p='20px' border='1px solid #EAE4FF' borderRadius='10px' textAlign='center'>
                                 <Text fontWeight='700'>
                                     Live Chat
@@ -795,7 +795,7 @@ const Settings = () => {
                             </Accordion>
                         </Box>
                     </div>
-                </div>
+                </Box>
             </Static>
         </>
     )
