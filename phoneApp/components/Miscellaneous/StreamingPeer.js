@@ -136,7 +136,7 @@ const Streaming = ({ fetchAgain, setFetchAgain, user, admin }) => {
             peer.userId === selectedChat.groupAdmin._id &&
             peer.stream !== undefined
     );
-    console.warn(adminVideo, "adminVideo");
+    // console.warn(adminVideo, "adminVideo", peers);
 
     React.useEffect(() => {
         setRoomId(id);

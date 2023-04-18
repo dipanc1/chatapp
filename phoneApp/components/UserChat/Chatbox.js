@@ -10,7 +10,7 @@ import { format } from 'timeago.js'
 import { SocketContext } from '../../context/socketContext'
 import animation from '../../assets/typing.json'
 import animationData from '../../assets/red-dot.json';
-import StreamModal from '../UserModals/StreamModalPeer'
+import StreamModal from '../UserModals/StreamModalWeb'
 import { View } from 'react-native'
 
 var selectedChatCompare;
