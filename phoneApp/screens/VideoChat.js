@@ -103,7 +103,7 @@ const VideoChat = ({ user, fetchAgain, setFetchAgain }) => {
 
     return (
         <SocketContextProvider>
-            <RoomProvider user={user}>
+            {/* <RoomProvider user={user}> */}
                 <Navbar user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
                 {stream ?
                     <>
@@ -129,7 +129,7 @@ const VideoChat = ({ user, fetchAgain, setFetchAgain }) => {
                         </Tab.Navigator>
                     </>
                 }
-            </RoomProvider>
+            {/* </RoomProvider> */}
         </SocketContextProvider>
     )
 }

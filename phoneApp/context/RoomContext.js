@@ -1,5 +1,4 @@
 import React from "react";
-import Peer from 'react-native-peerjs';
 import socketIOClient from "socket.io-client";
 import uuid from 'react-native-uuid';
 import { peerReducer } from "../reducers/peerReducer";
@@ -109,9 +108,9 @@ export const RoomProvider = ({ children, user }) => {
         mediaStreams();
 
         const meId = uuid.v4();
-        const peer = new Peer(meId);
+        // const peer = new Peer(meId);
 
-        setMe(peer);
+        // setMe(peer);
 
         ws.on("room-created", enterRoom);
 
