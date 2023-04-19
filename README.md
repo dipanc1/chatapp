@@ -15,6 +15,8 @@
 #### when hitting api to take user from select event from all app to group or to event send the data only which is needed
 #### use httponly cookies for refresh token
 #### use userinfo global state in all components
+#### disable side bar in live stream
+#### group add partciapnts box height fix
 
 ## Phone App
 
