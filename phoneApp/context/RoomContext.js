@@ -7,7 +7,7 @@ import { addUserIdAction, ADD_PEER_STREAM, REMOVE_PEER_STREAM } from "../reducer
 // import joinSound from '../sounds/join.mp3';
 // import leaveSound from '../sounds/leave.mp3';
 import { PhoneAppContext } from "./PhoneAppContext";
-import { mediaDevices } from "react-native-webrtc";
+// import { mediaDevices } from "react-native-webrtc";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ENDPOINT = "https://peerjs.wildcrypto.com";

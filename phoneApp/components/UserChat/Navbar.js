@@ -3,11 +3,13 @@ import { Avatar, Box, Center, HStack, Icon, IconButton, StatusBar, Text } from '
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import ProfileModal from '../UserModals/ProfileModal';
 import NavbarModal from '../UserModals/NavbarModal';
+import Searchbar from '../Miscellaneous/Searchbar';
 
 
-const Navbar = ({ user, fetchAgain, setFetchAgain }) => {
+const Navbar = ({ user, fetchAgain, setFetchAgain, handleSearch, search, setSearch }) => {
     const [showModal, setShowModal] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
+    const [searchbar, setSearchbar] = useState(false);
 
     return (
         <>
@@ -15,16 +17,20 @@ const Navbar = ({ user, fetchAgain, setFetchAgain }) => {
                 <StatusBar bg="primary.200" barStyle="light-content" />
                 <Box safeAreaTop bg="primary.200" />
                 <HStack bg="primary.200" px="3" py="3" justifyContent="space-between" alignItems="center" w="100%">
-                    <Text color="black" fontSize="20" fontWeight="bold">
+                    {!searchbar ? <Text color="black" fontSize="20" fontWeight="bold">
                         ChatApp
-                    </Text>
+                    </Text> :
+                        <Searchbar search={search} setSearch={setSearch} handleSearch={handleSearch} setSearchbar={setSearchbar} placeholder={"Search People or Groups"} />}
                     <HStack alignItems="center">
-                        <IconButton icon={<Icon size="xl" as={MaterialIcons} name="notifications" color="black" />} />
-                        <IconButton icon={
-                            <Avatar bg="green.500" alignSelf="center" size="sm" source={{
-                                uri: user.pic
-                            }} />
-                        } onPress={() => setShowModal(true)} />
+                        {!searchbar && <>
+                            <IconButton icon={<Icon size="xl" as={MaterialIcons} name="search" color="black" />} onPress={() => setSearchbar(true)} />
+                            <IconButton icon={
+                                <Avatar bg="green.500" alignSelf="center" size="sm" source={{
+                                    uri: user.pic
+                                }} />
+                            } onPress={() => setShowModal(true)} />
+                        </>
+                        }
                     </HStack>
                 </HStack>
             </Center>

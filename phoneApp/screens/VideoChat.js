@@ -3,14 +3,13 @@ import Navbar from '../components/UserChat/Navbar'
 import Conversations from '../components/UserChat/Conversations'
 import Groups from '../components/UserChat/Groups'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import Searchbar from '../components/Miscellaneous/Searchbar';
 import axios from 'axios';
 import { backend_url } from '../production';
 import { PhoneAppContext } from '../context/PhoneAppContext';
 import { SocketContextProvider } from '../context/socketContext';
 import Members from '../components/UserChat/Members';
 import { RoomProvider } from '../context/RoomContext';
-import Streaming from '../components/Miscellaneous/StreamingPeer';
+// import Streaming from '../components/Miscellaneous/StreamingPeer';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -104,15 +103,14 @@ const VideoChat = ({ user, fetchAgain, setFetchAgain }) => {
     return (
         <SocketContextProvider>
             {/* <RoomProvider user={user}> */}
-                <Navbar user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+                <Navbar user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} search={search} setSearch={setSearch} handleSearch={handleSearch} />
                 {stream ?
                     <>
-                        <Streaming admin={admin} user={user} />
-                        {!fullScreen && <Members user={user} />}
+                        {/* <Streaming admin={admin} user={user} />
+                        {!fullScreen && <Members user={user} />} */}
                     </>
                     :
                     <>
-                        <Searchbar search={search} handleSearch={handleSearch} placeholder={"Search People or Groups"} />
 
                         <Tab.Navigator {...{ screenOptions, sceneContainerStyle }}>
                             <Tab.Screen
