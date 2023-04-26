@@ -6,7 +6,7 @@ import NavbarModal from '../UserModals/NavbarModal';
 import Searchbar from '../Miscellaneous/Searchbar';
 
 
-const Navbar = ({ user, fetchAgain, setFetchAgain, handleSearch, search, setSearch }) => {
+const Navbar = ({ user, fetchAgain, setFetchAgain, handleSearch, search, setSearch, navigation }) => {
     const [showModal, setShowModal] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [searchbar, setSearchbar] = useState(false);
@@ -35,7 +35,7 @@ const Navbar = ({ user, fetchAgain, setFetchAgain, handleSearch, search, setSear
                 </HStack>
             </Center>
             <NavbarModal setFetchAgain={setFetchAgain} fetchAgain={fetchAgain} user={user} showModal={showModal} setShowModal={setShowModal} setModalVisible={setModalVisible} />
-            <ProfileModal user={user} modalVisible={modalVisible} setModalVisible={setModalVisible} />
+            <ProfileModal user={user} modalVisible={modalVisible} setModalVisible={setModalVisible} navigation={navigation} />
         </>
     )
 }

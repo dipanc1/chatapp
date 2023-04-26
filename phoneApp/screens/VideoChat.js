@@ -13,7 +13,7 @@ import { RoomProvider } from '../context/RoomContext';
 
 const Tab = createMaterialTopTabNavigator();
 
-const VideoChat = ({ user, fetchAgain, setFetchAgain }) => {
+const VideoChat = ({ user, fetchAgain, setFetchAgain, navigation }) => {
 
     const { chats, dispatch, stream, fullScreen, selectedChat } = React.useContext(PhoneAppContext);
 
@@ -103,30 +103,30 @@ const VideoChat = ({ user, fetchAgain, setFetchAgain }) => {
     return (
         <SocketContextProvider>
             {/* <RoomProvider user={user}> */}
-                <Navbar user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} search={search} setSearch={setSearch} handleSearch={handleSearch} />
-                {stream ?
-                    <>
-                        {/* <Streaming admin={admin} user={user} />
+            <Navbar user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} search={search} setSearch={setSearch} handleSearch={handleSearch} navigation={navigation} />
+            {stream ?
+                <>
+                    {/* <Streaming admin={admin} user={user} />
                         {!fullScreen && <Members user={user} />} */}
-                    </>
-                    :
-                    <>
+                </>
+                :
+                <>
 
-                        <Tab.Navigator {...{ screenOptions, sceneContainerStyle }}>
-                            <Tab.Screen
-                                name="Users"
-                            >
-                                {props => <Conversations  {...props} user={user} conversations={conversations} search={search} setSearch={setSearch} searchResultsUsers={searchResultsUsers} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
-                            </Tab.Screen>
-                            <Tab.Screen
-                                name="Groups"
-                                screenOptions={{ presentation: 'modal' }}
-                            >
-                                {props => <Groups {...props} user={user} groupConversations={groupConversations} search={search} setSearch={setSearch} searchResultsGroups={searchResultsGroups} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
-                            </Tab.Screen>
-                        </Tab.Navigator>
-                    </>
-                }
+                    <Tab.Navigator {...{ screenOptions, sceneContainerStyle }}>
+                        <Tab.Screen
+                            name="Users"
+                        >
+                            {props => <Conversations  {...props} user={user} conversations={conversations} search={search} setSearch={setSearch} searchResultsUsers={searchResultsUsers} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+                        </Tab.Screen>
+                        <Tab.Screen
+                            name="Groups"
+                            screenOptions={{ presentation: 'modal' }}
+                        >
+                            {props => <Groups {...props} user={user} groupConversations={groupConversations} search={search} setSearch={setSearch} searchResultsGroups={searchResultsGroups} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+                        </Tab.Screen>
+                    </Tab.Navigator>
+                </>
+            }
             {/* </RoomProvider> */}
         </SocketContextProvider>
     )

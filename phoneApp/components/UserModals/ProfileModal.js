@@ -1,7 +1,8 @@
-import { Avatar, Button, Modal, Text, VStack } from 'native-base';
+import { Avatar, Button, Flex, HStack, Modal, Text, VStack } from 'native-base';
 import React from 'react'
 
-const ProfileModal = ({ user, modalVisible, setModalVisible }) => {
+const ProfileModal = ({ user, modalVisible, setModalVisible, navigation }) => {
+
   return (
     <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)} _backdrop={{
       _dark: {
@@ -23,14 +24,12 @@ const ProfileModal = ({ user, modalVisible, setModalVisible }) => {
             <Text fontSize={'md'} color={'primary.600'} mt="2"> Phone Number: +{user.number}</Text>
           </VStack>
         </Modal.Body>
-        <Modal.Footer>
-          <Button.Group space={2}>
-            <Button bg={'primary.300'} onPress={() => {
-              setModalVisible(false);
-            }}>
-              Close
-            </Button>
-          </Button.Group>
+        <Modal.Footer justifyContent={'center'}>
+          <Button bg={'primary.300'} onPress={() => {
+            navigation.navigate(`Settings`);
+          }}>
+            Edit Profile
+          </Button>
         </Modal.Footer>
       </Modal.Content>
     </Modal>
