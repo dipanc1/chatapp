@@ -2,7 +2,7 @@ import React from 'react'
 import { Avatar, Box, Button, Divider, Flex, FormControl, HStack, Icon, IconButton, Image, Input, InputGroup, InputLeftAddon, Radio, Switch, Text, VStack } from 'native-base'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-const SettingCard = ({ name }) => {
+const SettingCard = ({ name, user }) => {
     const [value, setValue] = React.useState('light');
 
     return (
@@ -14,7 +14,7 @@ const SettingCard = ({ name }) => {
                             <VStack space={3}>
                                 <Box display={'flex'} alignItems={'center'}>
                                     <Avatar bg="pink.600" alignSelf="center" size="xl" source={{
-                                        uri: ("https://images.unsplash.com/photo-1601233749202-95d04d5b3c00?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2876&q=80")
+                                        uri: (user?.pic)
                                     }}>
                                         GG
                                     </Avatar>
@@ -27,7 +27,7 @@ const SettingCard = ({ name }) => {
                                         Username
                                     </FormControl.Label>
                                     <Input
-                                        placeholder='dipan'
+                                        placeholder={user.username}
                                         w={{
                                             base: '84%',
                                             md: '285px'
@@ -39,7 +39,7 @@ const SettingCard = ({ name }) => {
                                         Phone Number
                                     </FormControl.Label>
                                     <Input
-                                        placeholder='(+91) 1234567890'
+                                        placeholder={"+" + user.number}
                                         isDisabled={true}
                                         w={{
                                             base: '84%',

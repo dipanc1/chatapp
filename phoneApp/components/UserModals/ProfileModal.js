@@ -26,7 +26,7 @@ const ProfileModal = ({ user, modalVisible, setModalVisible, navigation }) => {
         </Modal.Body>
         <Modal.Footer justifyContent={'center'}>
           <Button bg={'primary.300'} onPress={() => {
-            navigation.navigate(`Settings`);
+            navigation.navigate(`Settings`, { screen: `My Details` })
           }}>
             Edit Profile
           </Button>

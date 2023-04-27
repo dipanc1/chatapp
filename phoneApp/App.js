@@ -143,7 +143,7 @@ const App = () => {
               }}>
                 {props => <Events {...props} user={user} />}
               </Tab.Screen>
-              <Tab.Screen name="Groups" options={{
+              <Tab.Screen name="Groups" navigationKey="AllGroups" options={{
                 tabBarIcon: ({ size, focused, color }) => TabBarIcon({ icon: 'groups', size, color })
               }}>
                 {props => <AllGroups {...props} user={user} />}
@@ -151,7 +151,7 @@ const App = () => {
               <Tab.Screen name="Settings" options={{
                 tabBarIcon: ({ size, focused, color }) => TabBarIcon({ icon: 'settings', size, color })
               }}>
-                {props => <Settings {...props} />}
+                {props => <Settings {...props} user={user} />}
               </Tab.Screen>
             </Tab.Navigator>
             :

@@ -6,12 +6,12 @@ import TabNavigatorStyled from '../components/Miscellaneous/TabNavigatorStyled';
 
 const Tab = createMaterialTopTabNavigator();
 
-const Settings = () => {
+const Settings = ({ user }) => {
 
     return (
         <TabNavigatorStyled>
             <Tab.Screen name="My Details">
-                {props => <SettingCard {...props} name={"My Details"} />}
+                {props => <SettingCard {...props} name={"My Details"} user={user} />}
             </Tab.Screen>
             <Tab.Screen name="Themes">
                 {props => <SettingCard {...props} name={"Themes"} />}
