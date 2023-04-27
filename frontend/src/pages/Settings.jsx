@@ -36,9 +36,10 @@ import {
 } from '@chakra-ui/react';
 import "./Settings.css"
 import axios from 'axios';
-import { backend_url, pictureUpload } from '../baseApi';
+import { backend_url, pictureUpload, stripePublicKey } from '../baseApi';
 import { FiUpload } from 'react-icons/fi';
 import { AppContext } from '../context/AppContext';
+import FullScreenLoader from '../components/common/FullScreenLoader';
 
 const Settings = () => {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -56,6 +57,9 @@ const Settings = () => {
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [selectedImage, setSelectedImage] = React.useState(null);
+
+    const [subscribeData, setSubscribeData] = useState({});
+    const [paymentLoading, setPaymentLoading] = useState(false)
 
     // TODO: Disable button and tabs while making API calls and other checks
 
@@ -81,6 +85,26 @@ const Settings = () => {
         currentUserDetails();
     }, [user.token])
 
+    const handlePlanSelection = (id, name, amount) => {
+        const newSubscribeData = {
+            id: id, 
+            name: name,
+            amount: amount
+        }
+        setSubscribeData(newSubscribeData);
+        console.log(subscribeData)
+    }
+
+    const handleSubscribe = async () => {
+        setPaymentLoading(true)
+        const response = await axios.post(`${backend_url}/checkout/create-checkout-session`, { subscribeData });
+        const sessionId = response.data.id;
+        const stripe = await window.Stripe(stripePublicKey);
+        const result = await stripe.redirectToCheckout({ sessionId });
+        if (result.error) {
+          console.error(result.error);
+        }
+    }
 
     const handleChangePassword = async (e) => {
         e.preventDefault();
@@ -248,10 +272,13 @@ const Settings = () => {
         }
     }
 
-
-
     return (
         <>
+            {
+                paymentLoading && (
+                    <FullScreenLoader />
+                )
+            }
             <Static>
                 <Heading pb={['10px', '30px']} as='h1' size='lg' fontWeight='500'>Settings</Heading>
                 <ul className="tab-nav">
@@ -466,12 +493,12 @@ const Settings = () => {
                         </Text>
 
                         <Grid ps='10px' mt='40px' mb={['40px' ,'60px']} templateColumns={['repeat(1, 1fr)' ,'repeat(3, 1fr)']} gap='2rem' rowGap={['1.5rem', '3rem']}>
-                            <GridItem p='20px' pb='30px' border='1px solid #EAE4FF' borderRadius='10px' textAlign='center'>
+                            <GridItem cursor='pointer' boxShadow={subscribeData.id === 1 && '0 0px 10px rgba(159,133,247,0.5)'} onClick={() => handlePlanSelection(1, "Basic Membership", 50)} p='20px' pb='30px' border='1px solid #EAE4FF' borderRadius='10px' textAlign='center'>
                                 <Text fontSize='24px' fontWeight='700'>
                                     Basic
                                 </Text>
                                 <Text mt='4px' fontWeight='700' mx='auto' color='#7B7A7A'>
-                                    $0/mo
+                                    $99/mo
                                 </Text>
                                 <Box mt='25px' pt='25px' borderTop='1px solid #EAE4FF' textAlign='left'>
                                     <Flex justifyContent='start'>
@@ -494,7 +521,7 @@ const Settings = () => {
                                     </Flex>
                                 </Box>
                             </GridItem>
-                            <GridItem p='20px' pb='30px' border='1px solid #EAE4FF' borderRadius='10px' textAlign='center'>
+                            <GridItem cursor='pointer' boxShadow={subscribeData.id === 2 && '0 0px 10px rgba(159,133,247,0.5)'} onClick={() => handlePlanSelection(2, "Preimum Membership", 100)} p='20px' pb='30px' border='1px solid #EAE4FF' borderRadius='10px' textAlign='center'>
                                 <Text fontSize='24px' fontWeight='700'>
                                     Premium
                                 </Text>
@@ -522,7 +549,7 @@ const Settings = () => {
                                     </Flex>
                                 </Box>
                             </GridItem>
-                            <GridItem p='20px' pb='30px' border='1px solid #EAE4FF' borderRadius='10px' textAlign='center'>
+                            <GridItem cursor='pointer' boxShadow={subscribeData.id === 3 && '0 0px 10px rgba(159,133,247,0.5)'} onClick={() => handlePlanSelection(3, "Elite Membership", 150)} p='20px' pb='30px' border='1px solid #EAE4FF' borderRadius='10px' textAlign='center'>
                                 <Text fontSize='24px' fontWeight='700'>
                                     Elite
                                 </Text>
@@ -552,7 +579,7 @@ const Settings = () => {
                             </GridItem>
                         </Grid>
                         <Flex alignItems='center' justifyContent='end'>
-                            <NavLink className='btn btn-primary' to="#">
+                            <NavLink className='btn btn-primary' onClick={handleSubscribe}>
                                 <Text>Change Plan</Text>
                             </NavLink>
                         </Flex>
