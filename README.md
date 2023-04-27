@@ -16,7 +16,6 @@
 #### use httponly cookies for refresh token
 #### use userinfo global state in all components
 #### disable side bar in live stream
-#### group add partciapnts box height fix
 
 ## Phone App
 

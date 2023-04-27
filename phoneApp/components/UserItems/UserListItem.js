@@ -1,6 +1,5 @@
 import React from 'react'
 import { Avatar, Box, HStack, Text } from 'native-base'
-import { TouchableOpacity } from 'react-native'
 
 const UserListItem = ({ user }) => {
 

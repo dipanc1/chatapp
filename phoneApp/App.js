@@ -17,7 +17,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AllGroups from './screens/AllGroups';
 import Settings from './screens/Settings';
-import LogoutButton from './components/Miscellaneous/LogoutButton';
 import Events from './screens/Events';
 import { Image } from 'react-native';
 import VideoChat from './screens/VideoChat';
@@ -87,12 +86,13 @@ const App = () => {
 
   const TabBarIcon = ({ size, color, icon }) => {
     return (
-      <Icon size={size} color={color} as={<Image
-        style={{ width: 20, height: 20 }}
-        source={{
-          uri: `${CDN_IMAGES}/${icon}.png`,
-        }}
-      />} />
+      <Icon color={color} size={size}
+        as={<Image
+          style={{ width: 20, height: 20, tintColor: color }}
+          source={{
+            uri: `${CDN_IMAGES}/${icon}.png`,
+          }}
+        />} />
     );
   };
 
@@ -119,10 +119,22 @@ const App = () => {
       <PhoneAppContextProvider>
         <NavigationContainer>
           {user ?
-            <Tab.Navigator>
+            <Tab.Navigator initialRouteName='Live Stream' screenOptions={
+              {
+                tabBarStyle: {
+                  borderTopWidth: 0,
+                  shadowOffset: { width: 0, height: 0 },
+                  shadowColor: 'transparent',
+                  elevation: 0,
+                },
+                tabBarActiveTintColor: '#9F85F7',
+                tabBarInactiveTintColor: '#737373',
+                headerShown: false,
+              }
+            }>
               <Tab.Screen name="Live Stream" options={{
                 headerShown: false,
-                tabBarIcon: ({ size, focused, color }) => TabBarIcon({ icon: 'explore', size, color })
+                tabBarIcon: ({ size, color }) => TabBarIcon({ icon: 'explore', size, color })
               }}>
                 {props => <VideoChat {...props} user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
               </Tab.Screen>
@@ -131,7 +143,7 @@ const App = () => {
               }}>
                 {props => <Events {...props} user={user} />}
               </Tab.Screen>
-              <Tab.Screen name="AllGroups" options={{
+              <Tab.Screen name="Groups" navigationKey="AllGroups" options={{
                 tabBarIcon: ({ size, focused, color }) => TabBarIcon({ icon: 'groups', size, color })
               }}>
                 {props => <AllGroups {...props} user={user} />}
@@ -139,13 +151,7 @@ const App = () => {
               <Tab.Screen name="Settings" options={{
                 tabBarIcon: ({ size, focused, color }) => TabBarIcon({ icon: 'settings', size, color })
               }}>
-                {props => <Settings {...props} />}
-              </Tab.Screen>
-              <Tab.Screen name="Logout" options={{
-                headerShown: false,
-                tabBarIcon: ({ size, focused, color }) => TabBarIcon({ icon: 'logout', size, color })
-              }}>
-                {props => <LogoutButton {...props} setUser={setUser} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+                {props => <Settings {...props} user={user} />}
               </Tab.Screen>
             </Tab.Navigator>
             :
@@ -164,7 +170,7 @@ const App = () => {
           }
         </NavigationContainer>
       </PhoneAppContextProvider>
-    </NativeBaseProvider>
+    </NativeBaseProvider >
   );
 };
 

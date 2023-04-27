@@ -73,10 +73,6 @@ const Groups = ({ user, groupConversations, searchResultsGroups, search, setSear
                 ))
               )
             }
-
-
-
-
           </ScrollView>
 
 

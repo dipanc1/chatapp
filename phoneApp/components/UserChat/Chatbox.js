@@ -1,6 +1,8 @@
 import axios from 'axios'
 import { Box, Button, FlatList, Flex, HStack, Icon, IconButton, Input, ScrollView, Spinner, Text, VStack } from 'native-base'
 import React from 'react'
+import notifee from '@notifee/react-native';
+import { AndroidColor } from '@notifee/react-native';
 import Lottie from 'lottie-react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { PhoneAppContext } from '../../context/PhoneAppContext'
@@ -19,7 +21,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
 
     const socket = React.useContext(SocketContext);
 
-    const { dispatch, selectedChat, stream } = React.useContext(PhoneAppContext);
+    const { dispatch, selectedChat, stream, notification } = React.useContext(PhoneAppContext);
 
     const scrollViewRef = React.useRef();
 
@@ -35,8 +37,41 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
     const [typing, setTyping] = React.useState(false);
     const [isTyping, setIsTyping] = React.useState(false);
     const [open, setOpen] = React.useState(false);
+    const [pushNotification, setPushNotification] = React.useState([]);
 
     const admin = selectedChat?.isGroupChat && selectedChat?.groupAdmin._id === user._id;
+
+    async function onDisplayNotification(newMessageReceived) {
+        // Create a channel (required for Android)
+        const channelId = await notifee.createChannel({
+            id: 'default',
+            name: 'Default Channel',
+        });
+
+        // Display a notification
+        await notifee.displayNotification({
+            title: newMessageReceived.sender.username,
+            body: newMessageReceived.sender.username + ": " + newMessageReceived.content,
+            android: {
+                channelId,
+                person: {
+                    name: newMessageReceived.sender.username,
+                    icon: newMessageReceived.sender.pic,
+                },
+                // actions: [
+                //     {
+                //         title: 'Reply',
+                //         pressAction: {
+                //             id: 'reply',
+                //         },
+                //         icon: 'ic_launcher',
+                //         input: true,
+                //         placeholder: 'Type your reply',
+                //     },
+                // ],
+            },
+        });
+    }
 
     React.useEffect(() => {
         socket.emit("setup", user);
@@ -50,16 +85,22 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
     React.useEffect(() => {
         socket.on("message received", (newMessageReceived) => {
             if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
-                if (!notification.includes(newMessageReceived)) {
-                    dispatch({ type: 'SET_NOTIFICATION', payload: [newMessageReceived] });
-                    //   console.log(newMessageReceived);
-                    setFetchAgain(!fetchAgain);
+                if (pushNotification.includes(newMessageReceived)) {
+                    console.log("new message received", newMessageReceived)
+                    setPushNotification([...pushNotification, newMessageReceived]);
+                    onDisplayNotification(newMessageReceived);
                 }
+                // if (!notification.includes(newMessageReceived)) {
+                //     console.log("new message received", newMessageReceived)
+                //     onDisplayNotification(newMessageReceived);
+                //     dispatch({ type: 'SET_NOTIFICATION', payload: [newMessageReceived] });
+                //     setFetchAgain(!fetchAgain);
+                // }
             } else {
                 setMessages([...messages, newMessageReceived]);
             }
         })
-    });
+    }, []);
 
 
     React.useEffect(() => {
@@ -144,7 +185,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
                 chatId: selectedChat._id
             }, config);
 
-            socket.emit("new message", data);
+            socket.emit("new message", data.message);
             setMessages([data.message, ...messages]);
             // console.log(data);
         } catch (error) {
@@ -269,7 +310,6 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
                             // >
                             <Message
                                 profile={profile}
-                                key={item._id}
                                 messages={item}
                                 own={item.sender._id === user._id}
                                 sameSender={(i < messages.length - 1 &&

@@ -26,7 +26,7 @@ const JoinGroupModal = ({ showModal, setShowModal, chatName, user, navigation, c
         );
 
         dispatch({ type: "SET_SELECTED_CHAT", payload: data });
-        navigation.navigate(`Groups`);
+        navigation.navigate(`Live Stream`);
         setShowModal(false);
     }
 
