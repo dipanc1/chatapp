@@ -2,35 +2,14 @@ import { View, Text } from 'react-native'
 import React from 'react'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import SettingCard from '../components/Settings/SettingCard';
+import TabNavigatorStyled from '../components/Miscellaneous/TabNavigatorStyled';
 
 const Tab = createMaterialTopTabNavigator();
 
 const Settings = () => {
-    const screenOptions = {
-        unmountOnBlur: false,
-        headerShown: false,
-        tabBarLabelStyle: {
-            fontSize: 15,
-            fontWeight: 'bold',
-        },
-        tabBarActiveTintColor: '#9F85F7',
-        tabBarInactiveTintColor: 'grey',
-        tabBarItemStyle: {
-            padding: 0,
-            margin: 0,
-        },
-        tabBarIndicatorStyle: {
-            backgroundColor: '#9F85F7',
-        },
-        tabBarScrollEnabled: true,
-        tabBarItemStyle: { width: 150 },
-    };
-    const sceneContainerStyle = {
-        backgroundColor: '#F5F7FB',
-    };
 
     return (
-        <Tab.Navigator {...{ screenOptions, sceneContainerStyle }}>
+        <TabNavigatorStyled>
             <Tab.Screen name="My Details">
                 {props => <SettingCard {...props} name={"My Details"} />}
             </Tab.Screen>
@@ -52,7 +31,7 @@ const Settings = () => {
             <Tab.Screen name="Help">
                 {props => <SettingCard {...props} />}
             </Tab.Screen>
-        </Tab.Navigator>
+        </TabNavigatorStyled>
     )
 }
 

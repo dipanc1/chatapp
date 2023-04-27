@@ -4,9 +4,9 @@ import EventsCard from '../components/Events/EventsCard';
 import { backend_url } from '../production';
 import axios from 'axios';
 import { PhoneAppContext } from '../context/PhoneAppContext';
+import TabNavigatorStyled from '../components/Miscellaneous/TabNavigatorStyled';
 
 const Tab = createMaterialTopTabNavigator();
-
 let eventsTab = true;
 
 const Events = ({ user, navigation }) => {
@@ -99,10 +99,7 @@ const Events = ({ user, navigation }) => {
     };
 
     return (
-        <Tab.Navigator screenOptions={{
-            tabBarScrollEnabled: true,
-            tabBarItemStyle: { width: 150 },
-        }}>
+        <TabNavigatorStyled>
             <Tab.Screen name="Group Events">
                 {props => <EventsCard {...props} user={user} data={eventsList} screen={eventsTab} selectEvent={selectEvent} chatName={chatName} showModal={setShowModal} chatId={chatId} />}
             </Tab.Screen>
@@ -112,7 +109,7 @@ const Events = ({ user, navigation }) => {
             <Tab.Screen name="Previous Events">
                 {props => <EventsCard {...props} user={user} data={previousEventsList} screen={eventsTab} selectEvent={selectEvent} chatName={chatName} showModal={showModal} setShowModal={setShowModal} chatId={chatId} />}
             </Tab.Screen>
-        </Tab.Navigator>
+        </TabNavigatorStyled>
 
     )
 }

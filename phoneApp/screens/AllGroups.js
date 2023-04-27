@@ -3,6 +3,7 @@ import GroupCard from '../components/Groups/GroupCard';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { backend_url } from '../production';
 import axios from 'axios';
+import TabNavigatorStyled from '../components/Miscellaneous/TabNavigatorStyled';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -58,13 +59,10 @@ const AllGroups = ({ user }) => {
 
         fetchChats();
         listGroups();
-    }, [user.token])
+    }, [user.token]);
 
     return (
-        <Tab.Navigator screenOptions={{
-            tabBarScrollEnabled: true,
-            tabBarItemStyle: { width: 150 },
-        }}>
+        <TabNavigatorStyled>
             <Tab.Screen name="All Groups">
                 {props => <GroupCard {...props} data={groupsList} user={user} />}
             </Tab.Screen>
@@ -74,7 +72,7 @@ const AllGroups = ({ user }) => {
             <Tab.Screen name="My Groups">
                 {props => <GroupCard {...props} data={groupConversations} />}
             </Tab.Screen>
-        </Tab.Navigator>
+        </TabNavigatorStyled>
     )
 }
 
