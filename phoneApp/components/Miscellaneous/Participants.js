@@ -14,7 +14,7 @@ const Participants = ({ user, fetchAgain, setFetchAgain }) => {
 
   const handleRemove = async (user1) => {
     if (selectedChat.groupAdmin._id !== user._id && user1._id !== user._id) {
-      return Alert.alert('You are not the admin of this group chat')
+      return alert('You are not the admin of this group chat')
     }
     try {
       setLoading(true);
@@ -55,10 +55,8 @@ const Participants = ({ user, fetchAgain, setFetchAgain }) => {
 
           <ScrollView>
             {selectedChat.isGroupChat && selectedChat?.users.map(u =>
-              <TouchableOpacity key={u?._id} onPress={
-                () => handleRemove(u)
-              }>
-                <ParticipantListItem user1={u} user={user} />
+              <TouchableOpacity key={u?._id}>
+                <ParticipantListItem user1={u} user={user} handleRemove={handleRemove} />
               </TouchableOpacity>
             )}
           </ScrollView>
