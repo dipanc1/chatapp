@@ -13,6 +13,9 @@ import Settings from './pages/Settings';
 import VideoChat from './pages/VideoChat';
 import Groups from './pages/Groups';
 import Search from './pages/Search';
+import Checkout from './pages/Checkout';
+import SubscribedSuccessfully from './pages/SubscribedSuccessfully';
+import ErrorSubscribing from './pages/ErrorSubscribing';
 
 //TODO: delete console statements
 
@@ -33,6 +36,9 @@ function App() {
           <Route path="/video-chat" element={<VideoChat />} />
           <Route path="/groups" element={<Groups />} />
           <Route path="/search" element={<Search />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/subscribed-successfully" element={<SubscribedSuccessfully />} />
+          <Route path="/error-subscribing" element={<ErrorSubscribing />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AnimatePresence>
