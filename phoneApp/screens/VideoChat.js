@@ -48,6 +48,9 @@ const VideoChat = ({ user, fetchAgain, setFetchAgain, navigation }) => {
             padding: 0,
             margin: 0,
         },
+        tabBarIndicatorStyle: {
+            backgroundColor: '#9F85F7',
+        },
     };
     const sceneContainerStyle = {
         backgroundColor: '#F5F7FB',

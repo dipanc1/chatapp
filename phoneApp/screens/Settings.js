@@ -6,11 +6,31 @@ import SettingCard from '../components/Settings/SettingCard';
 const Tab = createMaterialTopTabNavigator();
 
 const Settings = () => {
+    const screenOptions = {
+        unmountOnBlur: false,
+        headerShown: false,
+        tabBarLabelStyle: {
+            fontSize: 15,
+            fontWeight: 'bold',
+        },
+        tabBarActiveTintColor: '#9F85F7',
+        tabBarInactiveTintColor: 'grey',
+        tabBarItemStyle: {
+            padding: 0,
+            margin: 0,
+        },
+        tabBarIndicatorStyle: {
+            backgroundColor: '#9F85F7',
+        },
+        tabBarScrollEnabled: true,
+        tabBarItemStyle: { width: 150 },
+    };
+    const sceneContainerStyle = {
+        backgroundColor: '#F5F7FB',
+    };
+
     return (
-        <Tab.Navigator screenOptions={{
-            tabBarScrollEnabled: true,
-            tabBarItemStyle: { width: 150 },
-        }}>
+        <Tab.Navigator {...{ screenOptions, sceneContainerStyle }}>
             <Tab.Screen name="My Details">
                 {props => <SettingCard {...props} name={"My Details"} />}
             </Tab.Screen>

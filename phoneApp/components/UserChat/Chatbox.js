@@ -185,7 +185,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
                 chatId: selectedChat._id
             }, config);
 
-            socket.emit("new message", data);
+            socket.emit("new message", data.message);
             setMessages([data.message, ...messages]);
             // console.log(data);
         } catch (error) {
@@ -310,7 +310,6 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
                             // >
                             <Message
                                 profile={profile}
-                                key={item._id}
                                 messages={item}
                                 own={item.sender._id === user._id}
                                 sameSender={(i < messages.length - 1 &&
