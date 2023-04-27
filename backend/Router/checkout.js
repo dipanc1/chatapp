@@ -20,10 +20,6 @@ router.post('/create-checkout-session', async (req, res) => {
     mode: 'payment',
     success_url: 'https://chatapp.wildcrypto.com/subscribed-successfully',
     cancel_url: 'https://chatapp.wildcrypto.com/error-subscribing',
-    customer_email: "sahil@gmail.com",
-    metadata: {
-      phone_number: '+1234567890',
-    },
   });
 
   console.log(session, "<-- sesion server")

@@ -10,7 +10,7 @@ const otpRoute = require("./router/otp");
 const conversationRoute = require("./router/conversation");
 const messageRoute = require("./router/messages");
 const meetingRoute = require("./router/meetings");
-const checkoutRoute = require("./Router/checkout")
+const checkoutRoute = require("./router/checkout")
 
 require("dotenv").config();
 
