@@ -82,7 +82,14 @@ const Events = ({ user, navigation }) => {
                 setShowModal(true)
             } else {
                 dispatch({ type: "SET_SELECTED_CHAT", payload: data });
-                navigation.navigate(`Live Stream`, { screen: `Groups` });
+                navigation.navigate(`Live Stream`, {
+                    params: {
+                        screen: `Groups`,
+                        params: {
+                            screen: `Chat`
+                        }
+                    }
+                });
             }
 
         } catch (error) {

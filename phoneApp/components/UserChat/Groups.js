@@ -65,7 +65,10 @@ const Groups = ({ user, groupConversations, searchResultsGroups, search, setSear
                 :
                 groupConversations.map((group, index) => (
                   <TouchableOpacity key={group._id}
-                    onPress={() => dispatch({ type: 'SET_SELECTED_CHAT', payload: group })}>
+                    onPress={() => {
+                      dispatch({ type: 'SET_SELECTED_CHAT', payload: group })
+                    }
+                    }>
                     <Flex justifyContent={'flex-start'} p={'2'}>
                       <GroupListItem group={group} />
                     </Flex>

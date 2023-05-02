@@ -7,7 +7,7 @@ import Conversation from '../Miscellaneous/Conversation'
 import { TouchableOpacity } from 'react-native'
 import { backend_url } from '../../production'
 
-const Conversations = ({ fetchAgain, setFetchAgain, conversations, user, searchResultsUsers, search, setSearch }) => {
+const Conversations = ({ fetchAgain, setFetchAgain, conversations, user, searchResultsUsers, search, setSearch, navigation }) => {
   const { dispatch, selectedChat } = React.useContext(PhoneAppContext);
 
   // add user to conversation
@@ -41,16 +41,19 @@ const Conversations = ({ fetchAgain, setFetchAgain, conversations, user, searchR
       <ScrollView showsVerticalScrollIndicator={false}>
         {search.length > 0 ?
           searchResultsUsers?.map((user, index) => (
-            <TouchableOpacity key={user?._id} onPress={
-              () => accessChat(user?._id)
+            <TouchableOpacity key={user?._id} onPress={() => {
+                accessChat(user?._id)
+                navigation.getParent()?.setOptions({ tabBarVisible: false })
+              }
             }>
               <UserListItem user={user} />
             </TouchableOpacity>
           ))
           : conversations.map((chat, index) => (
-            <TouchableOpacity key={chat?._id} onPress={
-              () => dispatch({ type: 'SET_SELECTED_CHAT', payload: chat })
-            }>
+            <TouchableOpacity key={chat?._id} onPress={() => {
+              dispatch({ type: 'SET_SELECTED_CHAT', payload: chat })
+              navigation.getParent()?.setOptions({ tabBarVisible: false })
+            }}>
               <Conversation user={user} chat={chat} />
             </TouchableOpacity>
           ))}

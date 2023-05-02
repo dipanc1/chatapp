@@ -130,6 +130,7 @@ const App = () => {
                 tabBarActiveTintColor: '#9F85F7',
                 tabBarInactiveTintColor: '#737373',
                 headerShown: false,
+                tabBarHideOnKeyboard: true,
               }
             }>
               <Tab.Screen name="Live Stream" options={{

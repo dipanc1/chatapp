@@ -5,6 +5,7 @@ import { PhoneAppContext } from '../../context/PhoneAppContext'
 import { backend_url } from '../../production'
 import ParticipantListItem from '../UserItems/ParticipantListItem'
 import AddModal from '../UserModals/AddModal'
+import axios from 'axios'
 
 const Participants = ({ user, fetchAgain, setFetchAgain }) => {
 

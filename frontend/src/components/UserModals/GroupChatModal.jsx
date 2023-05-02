@@ -17,7 +17,8 @@ import {
     useToast,
     Spinner,
     Box,
-    IconButton
+    IconButton,
+    Text
 } from "@chakra-ui/react";
 import {
     ViewIcon
@@ -124,9 +125,9 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
     }
 
     const handleGroup = (userToAdd) => {
-        if (selectedUsers.includes(userToAdd)) {
+        if (selectedUsers.find(user => user._id === userToAdd._id)) {
             toast({
-                title: "User already added",
+                title: "User Already Added!",
                 status: "warning",
                 duration: 5000,
                 isClosable: true,
@@ -203,10 +204,10 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
                             </Box>
                         ) :
                             <Box
-                                maxHeight={'48'}
+                                height={'48'}
                                 overflowY={'scroll'}
                             >
-                                {searchResults.map((user) => (
+                                {searchResults.length > 0 ? searchResults.map((user) => (
                                     <Box
                                         _hover={{
                                             background: '#b5cbfe',
@@ -222,7 +223,21 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
                                         onClick={() => handleGroup(user)}>
                                         <UserListItem user={user} />
                                     </Box>
-                                ))
+                                )) : 
+                                <Box
+                                    display={'flex'}
+                                    alignItems={'center'}
+                                    justifyContent={'center'}
+                                    height={'100%'}
+                                >
+                                    <Text
+                                        fontSize={'x-large'}
+                                        fontWeight={'bold'}
+                                        color={'#9F85F7'}
+                                    >
+                                        No Results Found
+                                    </Text>
+                                </Box>
                                 }
                             </Box>
                         }

@@ -79,7 +79,7 @@ const EventsCard = ({ data, screen, selectEvent, chatName, user, showModal, setS
         }}>
           <AspectRatio w="100%" ratio={4 / 3}>
             <Image source={{
-              uri: item?.thumbnail ?? "https://www.telemonks.com/wp-content/themes/appon/assets/images/no-image/No-Image-Found-400x264.png"
+              uri: item?.thumbnail ?? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSO4x5DoFLdcrUSSjGFMyTkoCJSLREShpkety_TZHXi&s"
             }} alt="image" />
           </AspectRatio>
         </TouchableOpacity>

@@ -3,7 +3,6 @@ import Navbar from '../components/UserChat/Navbar'
 import Conversations from '../components/UserChat/Conversations'
 import Groups from '../components/UserChat/Groups'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { NavigationContainer } from '@react-navigation/native'
 import Searchbar from '../components/Miscellaneous/Searchbar';
 import axios from 'axios';
 import { backend_url } from '../production';
@@ -15,7 +14,7 @@ import { MeetingProvider, MeetingConsumer } from '@videosdk.live/react-sdk';
 
 const Tab = createMaterialTopTabNavigator();
 
-const Chat = ({ user, fetchAgain, setFetchAgain, navigation }) => {
+const Chat = ({ user, fetchAgain, setFetchAgain }) => {
     const { chats, dispatch, stream, fullScreen, selectedChat } = React.useContext(PhoneAppContext);
 
     const [conversations, setConversations] = React.useState([])

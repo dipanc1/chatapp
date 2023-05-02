@@ -7,7 +7,7 @@ import TabNavigatorStyled from '../components/Miscellaneous/TabNavigatorStyled';
 
 const Tab = createMaterialTopTabNavigator();
 
-const AllGroups = ({ user }) => {
+const AllGroups = ({ user, navigation }) => {
     const [groupsList, setGroupsList] = React.useState([])
     const [groupConversations, setGroupConversations] = React.useState([]);
 
@@ -64,13 +64,13 @@ const AllGroups = ({ user }) => {
     return (
         <TabNavigatorStyled>
             <Tab.Screen name="All Groups">
-                {props => <GroupCard {...props} data={groupsList} user={user} />}
+                {props => <GroupCard {...props} navigation={navigation} data={groupsList} user={user} />}
             </Tab.Screen>
             <Tab.Screen name="Joined Groups">
-                {props => <GroupCard {...props} data={groupConversations} user={user} />}
+                {props => <GroupCard {...props} navigation={navigation} data={groupConversations} user={user} />}
             </Tab.Screen>
             <Tab.Screen name="My Groups">
-                {props => <GroupCard {...props} data={groupConversations} />}
+                {props => <GroupCard {...props} navigation={navigation} data={groupConversations} />}
             </Tab.Screen>
         </TabNavigatorStyled>
     )

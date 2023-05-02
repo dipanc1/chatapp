@@ -1,5 +1,4 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Participants from '../Miscellaneous/Participants';
@@ -28,6 +27,9 @@ const Members = ({ user, fetchAgain, setFetchAgain }) => {
       padding: 0,
       margin: 0,
       width: 150,
+    },
+    tabBarIndicatorStyle: {
+      backgroundColor: '#9F85F7',
     },
   };
 

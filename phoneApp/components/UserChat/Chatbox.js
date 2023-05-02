@@ -275,7 +275,10 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
                             {online ? 'Online' : 'Offline'}
                         </Text>}
 
-                        <IconButton onPress={() => dispatch({ type: 'SET_SELECTED_CHAT', payload: null })} icon={<MaterialIcons name="keyboard-arrow-down" size={24} color={'black'} />} />
+                        <IconButton onPress={() => {
+                            dispatch({ type: 'SET_SELECTED_CHAT', payload: null })
+                        }
+                        } icon={<MaterialIcons name="keyboard-arrow-down" size={24} color={'black'} />} />
 
                         {selectedChat?.isGroupChat && (admin || meetingIdExists) &&
                             <>

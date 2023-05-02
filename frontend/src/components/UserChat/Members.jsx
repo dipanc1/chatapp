@@ -562,7 +562,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
                 <ModalContent>
                   <ModalHeader>Add Member</ModalHeader>
                   <ModalCloseButton />
-                  <ModalBody maxHeight={'lg'} overflow={'scroll'} overflowX={'hidden'}>
+                  <ModalBody maxHeight={'lg'} overflow={'hidden'}>
                     <Input
                       value={search}
                       placeholder="Search Member" onChange={handleSearch}
@@ -574,9 +574,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
                         display={'flex'}
                         alignItems={'center'}
                         justifyContent={'center'}
-                        my={2}
-                        maxHeight={fullScreen ? '48' : '8'}
-                        overflowY={'scroll'}
+                        height={fullScreen ? '48' : '8'}
                       >
                         <Spinner
                           thickness='4px'
@@ -587,9 +585,9 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
                         />
                       </Box>
                       :
-                      <Box maxHeight={fullScreen ? '48' : '8'}
+                      <Box height={fullScreen ? '48' : '8'}
                         overflowY={'scroll'}>
-                        {search.length > 0 &&
+                        {search.length > 0 ?
                           searchResults?.map(user => (
                             <Box
                               my={'2'}
@@ -609,7 +607,15 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
                             >
                               <UserListItem user={user} />
                             </Box>
-                          ))}
+                          ))
+                          :
+                          <Box display={'flex'} alignItems={'center'} justifyContent={'center'}
+                            height={'100%'} >
+                            <Text fontSize={'x-large'}
+                              fontWeight={'bold'}
+                              color={'#9F85F7'} >Search for a user</Text>
+                          </Box>
+                        }
                       </Box>
                     }
                   </ModalBody>

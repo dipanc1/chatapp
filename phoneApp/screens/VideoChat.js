@@ -119,13 +119,13 @@ const VideoChat = ({ user, fetchAgain, setFetchAgain, navigation }) => {
                         <Tab.Screen
                             name="Users"
                         >
-                            {props => <Conversations  {...props} user={user} conversations={conversations} search={search} setSearch={setSearch} searchResultsUsers={searchResultsUsers} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+                            {props => <Conversations  {...props} user={user} conversations={conversations} search={search} setSearch={setSearch} searchResultsUsers={searchResultsUsers} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} navigation={navigation} />}
                         </Tab.Screen>
                         <Tab.Screen
                             name="Groups"
                             screenOptions={{ presentation: 'modal' }}
                         >
-                            {props => <Groups {...props} user={user} groupConversations={groupConversations} search={search} setSearch={setSearch} searchResultsGroups={searchResultsGroups} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+                            {props => <Groups {...props} user={user} groupConversations={groupConversations} search={search} setSearch={setSearch} searchResultsGroups={searchResultsGroups} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} navigation={navigation} />}
                         </Tab.Screen>
                     </Tab.Navigator>
                 </>

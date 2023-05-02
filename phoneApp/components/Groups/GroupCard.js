@@ -4,7 +4,7 @@ import OptionsModal from '../UserModals/OptionsModal';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 
-const GroupCard = ({ data, user }) => {
+const GroupCard = ({ data, user, navigation }) => {
 
   return (
     <FlatList data={data} renderItem={({ item, i }) => (
@@ -28,7 +28,7 @@ const GroupCard = ({ data, user }) => {
             {user?._id === item.groupAdmin._id &&
               <>
                 <Icon as={MaterialIcons} name='verified' color={'primary.300'} size={5} />
-                <OptionsModal group={true} />
+                <OptionsModal chat={item} group={true} navigation={navigation} />
               </>
             }
           </HStack>
