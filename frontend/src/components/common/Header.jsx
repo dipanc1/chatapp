@@ -324,9 +324,6 @@ const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) 
           <Flex ms={['auto', 'auto', '0']}>
             <Flex alignItems='center'>
               <Image onClick={() => setToggleSearch(true)} display={['block', 'block', 'none']} px='18px' height='21px' src={CDN_IMAGES + "/search-icon.png"} />
-              <Link display={['none', 'none', 'block']} href='/video-chat'>
-                <Image height='23px' me='20px' src={CDN_IMAGES + "/messages.png"} />
-              </Link>
               <Menu>
                 <MenuButton position='relative'>
                   {

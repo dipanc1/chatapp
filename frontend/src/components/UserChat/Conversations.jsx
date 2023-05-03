@@ -5,12 +5,8 @@ import { backend_url } from "../../baseApi";
 import Conversation from "../Miscellaneous/Conversation";
 import GroupChat from "../Miscellaneous/GroupChat";
 import GroupChatModal from "../UserModals/GroupChatModal";
-import GroupListItem from "../UserItems/GroupListItem";
-import UserListItem from "../UserItems/UserListItem";
 import {
-    Input,
     Text,
-    Divider,
     Spinner,
     Box,
     Button,
@@ -22,11 +18,11 @@ import {
     TabPanels,
     TabPanel,
 } from "@chakra-ui/react";
-import { AddIcon, ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
+import { AddIcon } from "@chakra-ui/icons";
 
 export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
-    const { dispatch, chats, selectedChat, conversations, groupConversations, loading } = React.useContext(AppContext);
-    
+    const { dispatch, chats, selectedChat, conversations, groupConversations, loading, userInfo } = React.useContext(AppContext);
+
     const user = JSON.parse(localStorage.getItem("user"));
     const toast = useToast();
 
@@ -44,12 +40,8 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                 config
             );
 
-            // setConversations(data.filter((friend) => !friend.isGroupChat));
             dispatch({ type: "SET_CONVERSATIONS", payload: data });
             dispatch({ type: "SET_GROUP_CONVERSATIONS", payload: data });
-            // setGroupConversations(
-            //     data.filter((friend) => friend.isGroupChat && friend.chatName)
-            // );
 
             if (
                 !chats.find(
@@ -135,13 +127,10 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                         my={"0.2rem"}
                                         borderRadius="lg"
                                         key={c._id}
-                                        onClick={() => {
-                                            dispatch({
-                                                type: "SET_SELECTED_CHAT",
-                                                payload: c,
-                                            });
-                                            dispatch({ type: "SET_MOBILE" });
-                                        }}
+                                        onClick={() => selectedChat?._id === c._id ? null : dispatch({
+                                            type: "SET_SELECTED_CHAT",
+                                            payload: c,
+                                        })}
                                     >
                                         <Conversation chat={c} />
                                     </Box>
@@ -215,13 +204,10 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                         my={"0.2rem"}
                                         borderRadius="lg"
                                         key={c._id}
-                                        onClick={() => {
-                                            dispatch({
-                                                type: "SET_SELECTED_CHAT",
-                                                payload: c,
-                                            });
-                                            dispatch({ type: "SET_MOBILE" });
-                                        }}
+                                        onClick={() => selectedChat?._id === c._id ? null : dispatch({
+                                            type: "SET_SELECTED_CHAT",
+                                            payload: c,
+                                        })}
                                     >
                                         <GroupChat chat={c} />
                                     </Box>
@@ -250,7 +236,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                         No Groups
                                     </Text>
                                     <GroupChatModal
-                                        user={user}
+                                        user={userInfo}
                                         fetchAgain={fetchAgain}
                                         setFetchAgain={setFetchAgain}
                                     >
@@ -273,7 +259,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                         </Box>
                         <Box mt='20px' textAlign='center'>
                             <GroupChatModal
-                                user={user}
+                                user={userInfo}
                                 fetchAgain={fetchAgain}
                                 setFetchAgain={setFetchAgain}
                             >
@@ -292,7 +278,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                         </Box>
                     </TabPanel>
                 </TabPanels>
-            </Tabs>
+            </Tabs >
         </>
     );
 };

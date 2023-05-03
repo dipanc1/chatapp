@@ -1,7 +1,4 @@
-import axios from 'axios';
-import { motion } from 'framer-motion';
-import { useContext, useEffect, useState } from 'react'
-import { AppContext } from '../../context/AppContext';
+import { useEffect, useState } from 'react'
 import {
   Box,
   Text,
@@ -10,15 +7,10 @@ import {
 
 const Conversation = ({ chat }) => {
   const user = JSON.parse(localStorage.getItem('user'));
-  // const [loggedUser, setLoggedUser] = useState();
-  // const selectedChat = useContext(AppContext);
-  // const { dispatch } = useContext(AppContext);
   const [friends, setFriends] = useState([]);
 
   useEffect(() => {
-    // console.log(chat.users.find(member => member._id !== user._id));
     setFriends((chat.users.find(member => member._id !== user._id)))
-    // console.log(friends);
   }, [chat, friends, user._id])
 
   const list = {

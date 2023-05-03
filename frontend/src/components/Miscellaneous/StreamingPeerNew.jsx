@@ -305,7 +305,7 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
                     <Box
                         className="video-container"
                         width={"100%"}
-                        boxShadow={['unset',"0px 3px 24px rgba(159, 133, 247, 0.6)"]}
+                        boxShadow={['unset', "0px 3px 24px rgba(159, 133, 247, 0.6)"]}
                         borderRadius="5px"
                         overflow="hidden"
                         position="relative"

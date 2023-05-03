@@ -41,6 +41,13 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
     socket.on("typing", () => setIsTyping(true));
     socket.on("stop typing", () => setIsTyping(false));
     socket.emit("user-online", user);
+
+    return () => {
+      socket.off("connected");
+      socket.off("typing");
+      socket.off("stop typing");
+      socket.off("user-online");
+    }
   }, []);
 
 
@@ -163,6 +170,10 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
         setMessages([newMessageReceived, ...messages]);
       }
     })
+
+    return () => {
+      socket.off("message received");
+    }
   });
 
   const typingHandler = (e) => {

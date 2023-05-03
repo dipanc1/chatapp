@@ -18,14 +18,14 @@ import Static from "../components/common/Static"
 
 const Chat = () => {
   const user = JSON.parse(localStorage.getItem('user'));
-  const { stream, selectedChat } = useContext(AppContext);
+  const { stream, selectedChat, userInfo } = useContext(AppContext);
 
   const [meetingId, setMeetingId] = React.useState(null);
   const [fetchAgain, setFetchAgain] = React.useState(false);
   const [token, setToken] = React.useState(null);
   const [toggleChat, setToggleChat] = React.useState(false)
 
-  const admin = selectedChat?.isGroupChat && selectedChat?.groupAdmin._id === user._id;
+  const admin = selectedChat?.isGroupChat && selectedChat?.groupAdmin._id === userInfo._id;
 
   const toast = useToast();
   let navigate = useNavigate();

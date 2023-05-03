@@ -24,11 +24,13 @@ const SideBar = ({
       title: "Events",
       url: "event",
       icon: "events",
+      disable: stream,
     },
     {
       title: "Groups",
       url: "groups",
       icon: "groups",
+      disable: stream,
     },
     // {
     // 	'title': 'Messages',
@@ -42,10 +44,10 @@ const SideBar = ({
       title: "Settings",
       url: "settings",
       icon: "settings",
+      disable: stream,
     },
   ];
 
-  // TODO: Disable the events if the user is streaming
 
   const handleLogout = () => {
     localStorage.removeItem('user');
@@ -86,20 +88,22 @@ const SideBar = ({
           <List flex={["unset"]} display={["block"]}>
             {NavMenu.map((navitem) => {
               return (
-                <ListItem flex={["unset"]} py={"4px"} fontWeight={"600"}>
-                  <NavLink to={"/" + navitem.url}>
-                    <Image
-                      src={
-                        CDN_IMAGES +
-                        "/" +
-                        navitem.icon +
-                        ".png"
-                      }
-                      alt={navitem.title}
-                    />
-                    <Text>{navitem.title}</Text>
-                  </NavLink>
-                </ListItem>
+                !navitem?.disable && (
+                  <ListItem flex={["unset"]} py={"4px"} fontWeight={"600"}>
+                    <NavLink to={"/" + navitem.url}>
+                      <Image
+                        src={
+                          CDN_IMAGES +
+                          "/" +
+                          navitem.icon +
+                          ".png"
+                        }
+                        alt={navitem.title}
+                      />
+                      <Text>{navitem.title}</Text>
+                    </NavLink>
+                  </ListItem>
+                )
               );
             })}
           </List>

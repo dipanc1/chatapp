@@ -30,7 +30,7 @@ export const RoomProvider = ({ children }) => {
     const [roomId, setRoomId] = useState("");
     const [participantsArray, setParticipantsArray] = useState([]);
 
-    const { stream, selectedChat, userInfo } = useContext(AppContext);
+    const { stream } = useContext(AppContext);
 
     const enterRoom = (roomId) => {
         // console.warn("Room ID ::: >>>", roomId);
@@ -38,7 +38,7 @@ export const RoomProvider = ({ children }) => {
     };
 
     const getUsers = ({ participants }) => {
-        console.warn("Get Users ::: >>>", participants);
+        // console.warn("Get Users ::: >>>", participants);
         // const participantsArray = Object.entries(participants).map(([peerId]) => ({ peerId }));
         // setParticipantsArray(participantsArray.map(x => x.peerId));
     }
