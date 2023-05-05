@@ -1,9 +1,41 @@
 import React from 'react'
 import { Avatar, Box, Button, Divider, Flex, FormControl, HStack, Icon, IconButton, Image, Input, InputGroup, InputLeftAddon, Radio, Switch, Text, VStack } from 'native-base'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { View, Platform } from 'react-native';
+import { WebView } from 'react-native-webview';
+import queryString from 'query-string';
+import axios from 'axios';
+import { backend_url } from '../../production';
 
 const SettingCard = ({ name, user }) => {
     const [value, setValue] = React.useState('light');
+    const [subscribeData, setSubscribeData] = React.useState({});
+    const [loading, setLoading] = React.useState(false);
+    const [url, setUrl] = React.useState(null);
+
+    const handleCheckout = async () => {
+        console.log("<----")
+        setLoading(true);
+        const newSubscribeData = {
+            id: 12, 
+            name: "BASIC MEMBERSHIP",
+            amount: 1500,
+            currency: 'usd'
+        }
+        const response = await axios.post(`${backend_url}/checkout/create-checkout-session`, queryString.stringify({
+            amount: 1000, // The amount to charge, in cents
+            currency: 'usd', // The currency to charge in
+            // Any additional parameters you need to pass to the Checkout API
+          }), {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+            },
+          });
+      
+          const { url } = response.data;
+          setUrl(url);
+          setLoading(false);
+    };
 
     return (
         <Flex flex={1} align={'center'} justify={'center'} position={'relative'} bg={"primary.200"}>
@@ -184,6 +216,108 @@ const SettingCard = ({ name, user }) => {
                                     </HStack>
                                     <Divider bg="primary.500" thickness="1" orientation="horizontal" />
                                 </Box>
+
+                                <View style={{ flex: 1 }}>
+                                    {url ? (
+                                        <WebView source={{ uri: url }} />
+                                    ) : (
+                                        <Button title="Checkout" onPress={handleCheckout} disabled={loading} />
+                                    )}
+                                </View>
+                                
+                                {
+                                    loading && (
+                                        <Text>Loading....</Text>
+                                    )
+                                }
+
+                                <Box ps='10px' mt='40px' mb={['40px' ,'60px']}>
+                                    <Box cursor='pointer' boxShadow={subscribeData.id === 1 && '0 0px 10px rgba(159,133,247,0.5)'} onClick={() => handlePlanSelection(1, "Basic Membership", 50)} p='20px' pb='30px' border='1px solid #EAE4FF' borderRadius='10px' textAlign='center'>
+                                        <Text fontSize='24px' fontWeight='700'>
+                                            Basic
+                                        </Text>
+                                        <Text mt='4px' fontWeight='700' mx='auto' color='#7B7A7A'>
+                                            $99/mo
+                                        </Text>
+                                        <Box mt='25px' pt='25px' borderTop='1px solid #EAE4FF' textAlign='left'>
+                                            <Flex flexDirection={"row"}>
+                                                <Image flexShrink='0' me='15px' h='20px' src='https://ik.imagekit.io/sahildhingra/check-mark.png' />
+                                                <Text fontWeight='600' color='#7B7A7A'>
+                                                    2 Channels
+                                                </Text>
+                                            </Flex>
+                                            <Flex py='15px'>
+                                                <Image me='15px' h='20px' src='https://ik.imagekit.io/sahildhingra/check-mark.png' />
+                                                <Text fontWeight='600' color='#7B7A7A'>
+                                                    4 Users
+                                                </Text>
+                                            </Flex>
+                                            <Flex>
+                                                <Image me='15px' h='20px' src='https://ik.imagekit.io/sahildhingra/check-mark.png' />
+                                                <Text fontWeight='600' color='#7B7A7A'>
+                                                    6 On-screen Guests
+                                                </Text>
+                                            </Flex>
+                                        </Box>
+                                    </Box>
+                                    {/* <Box cursor='pointer' boxShadow={subscribeData.id === 2 && '0 0px 10px rgba(159,133,247,0.5)'} onClick={() => handlePlanSelection(2, "Preimum Membership", 100)} p='20px' pb='30px' border='1px solid #EAE4FF' borderRadius='10px' textAlign='center'>
+                                        <Text fontSize='24px' fontWeight='700'>
+                                            Premium
+                                        </Text>
+                                        <Text mt='4px' fontWeight='700' mx='auto' color='#7B7A7A'>
+                                            $114/mo
+                                        </Text>
+                                        <Box mt='25px' pt='25px' borderTop='1px solid #EAE4FF' textAlign='left'>
+                                            <Flex justifyContent='start'>
+                                                <Image me='15px' h='20px' src='https://ik.imagekit.io/sahildhingra/check-mark.png' />
+                                                <Text fontWeight='600' color='#7B7A7A'>
+                                                    5 Channels
+                                                </Text>
+                                            </Flex>
+                                            <Flex py='15px' justifyContent='start'>
+                                                <Image me='15px' h='20px' src='https://ik.imagekit.io/sahildhingra/check-mark.png' />
+                                                <Text fontWeight='600' color='#7B7A7A'>
+                                                    4 Users
+                                                </Text>
+                                            </Flex>
+                                            <Flex justifyContent='start'>
+                                                <Image me='15px' h='20px' src='https://ik.imagekit.io/sahildhingra/check-mark.png' />
+                                                <Text fontWeight='600' color='#7B7A7A'>
+                                                    10 On-screen Guests
+                                                </Text>
+                                            </Flex>
+                                        </Box>
+                                    </Box>
+                                    <Box cursor='pointer' boxShadow={subscribeData.id === 3 && '0 0px 10px rgba(159,133,247,0.5)'} onClick={() => handlePlanSelection(3, "Elite Membership", 150)} p='20px' pb='30px' border='1px solid #EAE4FF' borderRadius='10px' textAlign='center'>
+                                        <Text fontSize='24px' fontWeight='700'>
+                                            Elite
+                                        </Text>
+                                        <Text mt='4px' fontWeight='700' mx='auto' color='#7B7A7A'>
+                                            $127/mo
+                                        </Text>
+                                        <Box mt='25px' pt='25px' borderTop='1px solid #EAE4FF' textAlign='left'>
+                                            <Flex justifyContent='start'>
+                                                <Image me='15px' h='20px' src='https://ik.imagekit.io/sahildhingra/check-mark.png' />
+                                                <Text fontWeight='600' color='#7B7A7A'>
+                                                    8 Channels
+                                                </Text>
+                                            </Flex>
+                                            <Flex py='15px' justifyContent='start'>
+                                                <Image me='15px' h='20px' src='https://ik.imagekit.io/sahildhingra/check-mark.png' />
+                                                <Text fontWeight='600' color='#7B7A7A'>
+                                                    6 Users
+                                                </Text>
+                                            </Flex>
+                                            <Flex justifyContent='start'>
+                                                <Image me='15px' h='20px' src='https://ik.imagekit.io/sahildhingra/check-mark.png' />
+                                                <Text fontWeight='600' color='#7B7A7A'>
+                                                    12 On-screen Guests
+                                                </Text>
+                                            </Flex>
+                                        </Box>
+                                    </Box> */}
+                                </Box>
+
                             </Box>
                         )
                     case 'Billing':
