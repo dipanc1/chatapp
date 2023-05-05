@@ -1,40 +1,45 @@
 import React from 'react'
-import { Avatar, Box, Button, Divider, Flex, FormControl, HStack, Icon, IconButton, Image, Input, InputGroup, InputLeftAddon, Radio, Switch, Text, VStack } from 'native-base'
+import { Avatar, Box, Button, Center, Divider, Flex, FormControl, HStack, Icon, IconButton, Image, Input, InputGroup, InputLeftAddon, Radio, ScrollView, Switch, Text, VStack } from 'native-base'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { View, Platform } from 'react-native';
-import { WebView } from 'react-native-webview';
-import queryString from 'query-string';
 import axios from 'axios';
 import { backend_url } from '../../production';
+import { TouchableOpacity } from 'react-native';
 
 const SettingCard = ({ name, user }) => {
     const [value, setValue] = React.useState('light');
     const [subscribeData, setSubscribeData] = React.useState({});
-    const [loading, setLoading] = React.useState(false);
-    const [url, setUrl] = React.useState(null);
 
-    const handleCheckout = async () => {
-        console.log("<----")
-        setLoading(true);
+    const plans = [
+        {
+            name: 'Basic',
+            price: '$99/month',
+            channels: '2 Channels',
+            activeUsers: '4 Users',
+            screens: '6 On-Screen Guests',
+        },
+        {
+            name: 'Premium',
+            price: '$114/month',
+            channels: '5 Channels',
+            activeUsers: '4 Users',
+            screens: '10 On-Screen Guests',
+        },
+        {
+            name: 'Elite',
+            price: '$127/month',
+            channels: '8 Channels',
+            activeUsers: '6 Users',
+            screens: '12 On-Screen Guests',
+        },
+    ];
+
+    const handlePlanSelection = (id, name, amount) => {
         const newSubscribeData = {
-            id: 12, 
-            name: "BASIC MEMBERSHIP",
-            amount: 1500,
-            currency: 'usd'
+            id: id,
+            name: name,
+            amount: amount
         }
-        const response = await axios.post(`${backend_url}/checkout/create-checkout-session`, queryString.stringify({
-            amount: 1000, // The amount to charge, in cents
-            currency: 'usd', // The currency to charge in
-            // Any additional parameters you need to pass to the Checkout API
-          }), {
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-            },
-          });
-      
-          const { url } = response.data;
-          setUrl(url);
-          setLoading(false);
+        setSubscribeData(newSubscribeData);
     };
 
     return (
@@ -194,131 +199,67 @@ const SettingCard = ({ name, user }) => {
                         )
                     case 'Plans':
                         return (
-                            <Box>
-                                <Text fontSize={'xl'} fontWeight={'bold'} color={'amber.400'} my={'2'}>Choose your plan</Text>
-                                <Box>
-                                    <Divider bg="primary.500" thickness="1" orientation="horizontal" />
-                                    <HStack justifyContent={'space-between'} alignItems={'center'}>
-                                        <VStack textAlign={'left'} w={'1/3'}>
-                                            <Text fontSize={'md'} fontWeight={'bold'} color={'amber.400'} my={'2'}>
-                                                Basic
-                                            </Text>
-                                            <Text fontSize={'md'} color={'primary.600'} my={'2'} ml={'auto'}>
-                                                This is the basic plan
-                                            </Text>
+                            <ScrollView>
+                                <VStack m={"16"} space="10">
+                                    <Text fontSize={'xl'} fontWeight={'bold'} color={'amber.800'} my={'2'}>Current Active Plan</Text>
+                                    <Center borderWidth={"1"} borderColor={"primary.500"} borderRadius={"4"} rounded="lg" w={"64"} h={"56"}>
+                                        <Text fontSize={'xl'} fontWeight={'bold'} color={'primary.600'}>Basic</Text>
+                                        <Text fontSize={'md'} fontWeight={'bold'} color={'primary.500'}>$0/mo</Text>
+                                        <Divider bg="primary.500" thickness="0.5" orientation="horizontal" w={"56"} my={"4"} />
+                                        <VStack alignItems={'flex-start'} space={'2'} m={'2'}>
+                                            <HStack justifyContent={'space-between'} alignItems={'flex-start'}>
+                                                <Image source={{
+                                                    uri: ('https://ik.imagekit.io/sahildhingra/check-mark.png')
+                                                }} alt="Alternate Text" size="2xs" mx={"4"} />
+                                                <Text fontSize={'md'} fontWeight={'bold'} color={'primary.500'}>2 Channels</Text>
+                                            </HStack>
+                                            <HStack justifyContent={'space-between'} alignItems={'center'}>
+                                                <Image source={{
+                                                    uri: ('https://ik.imagekit.io/sahildhingra/check-mark.png')
+                                                }} alt="Alternate Text" mx={"4"} size="2xs" />
+                                                <Text fontSize={'md'} fontWeight={'bold'} color={'primary.500'}>4 Users</Text>
+                                            </HStack>
+                                            <HStack justifyContent={'space-between'} alignItems={'center'}>
+                                                <Image source={{
+                                                    uri: ('https://ik.imagekit.io/sahildhingra/check-mark.png')
+                                                }} alt="Alternate Text" mx={"4"} size="2xs" />
+                                                <Text fontSize={'md'} fontWeight={'bold'} color={'primary.500'}>6 On-screen Guests</Text>
+                                            </HStack>
                                         </VStack>
-                                        <HStack>
-                                            <Switch size={'lg'} defaultIsChecked onTrackColor={'primary.300'} />
-                                            <Text fontSize={'md'} color={'primary.600'} m={'2'}>
-                                                Active
-                                            </Text>
-                                        </HStack>
-                                    </HStack>
-                                    <Divider bg="primary.500" thickness="1" orientation="horizontal" />
-                                </Box>
-
-                                <View style={{ flex: 1 }}>
-                                    {url ? (
-                                        <WebView source={{ uri: url }} />
-                                    ) : (
-                                        <Button title="Checkout" onPress={handleCheckout} disabled={loading} />
-                                    )}
-                                </View>
-                                
-                                {
-                                    loading && (
-                                        <Text>Loading....</Text>
-                                    )
-                                }
-
-                                <Box ps='10px' mt='40px' mb={['40px' ,'60px']}>
-                                    <Box cursor='pointer' boxShadow={subscribeData.id === 1 && '0 0px 10px rgba(159,133,247,0.5)'} onClick={() => handlePlanSelection(1, "Basic Membership", 50)} p='20px' pb='30px' border='1px solid #EAE4FF' borderRadius='10px' textAlign='center'>
-                                        <Text fontSize='24px' fontWeight='700'>
-                                            Basic
-                                        </Text>
-                                        <Text mt='4px' fontWeight='700' mx='auto' color='#7B7A7A'>
-                                            $99/mo
-                                        </Text>
-                                        <Box mt='25px' pt='25px' borderTop='1px solid #EAE4FF' textAlign='left'>
-                                            <Flex flexDirection={"row"}>
-                                                <Image flexShrink='0' me='15px' h='20px' src='https://ik.imagekit.io/sahildhingra/check-mark.png' />
-                                                <Text fontWeight='600' color='#7B7A7A'>
-                                                    2 Channels
-                                                </Text>
-                                            </Flex>
-                                            <Flex py='15px'>
-                                                <Image me='15px' h='20px' src='https://ik.imagekit.io/sahildhingra/check-mark.png' />
-                                                <Text fontWeight='600' color='#7B7A7A'>
-                                                    4 Users
-                                                </Text>
-                                            </Flex>
-                                            <Flex>
-                                                <Image me='15px' h='20px' src='https://ik.imagekit.io/sahildhingra/check-mark.png' />
-                                                <Text fontWeight='600' color='#7B7A7A'>
-                                                    6 On-screen Guests
-                                                </Text>
-                                            </Flex>
-                                        </Box>
-                                    </Box>
-                                    {/* <Box cursor='pointer' boxShadow={subscribeData.id === 2 && '0 0px 10px rgba(159,133,247,0.5)'} onClick={() => handlePlanSelection(2, "Preimum Membership", 100)} p='20px' pb='30px' border='1px solid #EAE4FF' borderRadius='10px' textAlign='center'>
-                                        <Text fontSize='24px' fontWeight='700'>
-                                            Premium
-                                        </Text>
-                                        <Text mt='4px' fontWeight='700' mx='auto' color='#7B7A7A'>
-                                            $114/mo
-                                        </Text>
-                                        <Box mt='25px' pt='25px' borderTop='1px solid #EAE4FF' textAlign='left'>
-                                            <Flex justifyContent='start'>
-                                                <Image me='15px' h='20px' src='https://ik.imagekit.io/sahildhingra/check-mark.png' />
-                                                <Text fontWeight='600' color='#7B7A7A'>
-                                                    5 Channels
-                                                </Text>
-                                            </Flex>
-                                            <Flex py='15px' justifyContent='start'>
-                                                <Image me='15px' h='20px' src='https://ik.imagekit.io/sahildhingra/check-mark.png' />
-                                                <Text fontWeight='600' color='#7B7A7A'>
-                                                    4 Users
-                                                </Text>
-                                            </Flex>
-                                            <Flex justifyContent='start'>
-                                                <Image me='15px' h='20px' src='https://ik.imagekit.io/sahildhingra/check-mark.png' />
-                                                <Text fontWeight='600' color='#7B7A7A'>
-                                                    10 On-screen Guests
-                                                </Text>
-                                            </Flex>
-                                        </Box>
-                                    </Box>
-                                    <Box cursor='pointer' boxShadow={subscribeData.id === 3 && '0 0px 10px rgba(159,133,247,0.5)'} onClick={() => handlePlanSelection(3, "Elite Membership", 150)} p='20px' pb='30px' border='1px solid #EAE4FF' borderRadius='10px' textAlign='center'>
-                                        <Text fontSize='24px' fontWeight='700'>
-                                            Elite
-                                        </Text>
-                                        <Text mt='4px' fontWeight='700' mx='auto' color='#7B7A7A'>
-                                            $127/mo
-                                        </Text>
-                                        <Box mt='25px' pt='25px' borderTop='1px solid #EAE4FF' textAlign='left'>
-                                            <Flex justifyContent='start'>
-                                                <Image me='15px' h='20px' src='https://ik.imagekit.io/sahildhingra/check-mark.png' />
-                                                <Text fontWeight='600' color='#7B7A7A'>
-                                                    8 Channels
-                                                </Text>
-                                            </Flex>
-                                            <Flex py='15px' justifyContent='start'>
-                                                <Image me='15px' h='20px' src='https://ik.imagekit.io/sahildhingra/check-mark.png' />
-                                                <Text fontWeight='600' color='#7B7A7A'>
-                                                    6 Users
-                                                </Text>
-                                            </Flex>
-                                            <Flex justifyContent='start'>
-                                                <Image me='15px' h='20px' src='https://ik.imagekit.io/sahildhingra/check-mark.png' />
-                                                <Text fontWeight='600' color='#7B7A7A'>
-                                                    12 On-screen Guests
-                                                </Text>
-                                            </Flex>
-                                        </Box>
-                                    </Box> */}
-                                </Box>
-
-                            </Box>
+                                    </Center>
+                                    <Divider bg="primary.400" thickness="1" orientation="horizontal" />
+                                    <Text fontSize={'xl'} fontWeight={'bold'} color={'amber.800'}>Other Available Plans</Text>
+                                    {plans.map((plan, index) => (
+                                        <TouchableOpacity onPress={() => handlePlanSelection(index + 1, index === 0 ? "Basic Membership" : index === 1 ? "Premium Membership" : "Elite Membership", index === 0 ? 50 : index === 1 ? 100 : 150)} key={index}>
+                                            <Center shadow={(subscribeData.id === 1 && index === 0) ? 1 : (subscribeData.id === 2 && index === 1) ? 1 : (subscribeData.id === 3 && index === 2) ? 1 : "none"} borderWidth={"1"} borderColor={"primary.500"} borderRadius={"4"} rounded="lg" w={"64"} h={"56"}>
+                                                <Text fontSize={'xl'} fontWeight={'bold'} color={'primary.600'}>{plan.name}</Text>
+                                                <Text fontSize={'md'} fontWeight={'bold'} color={'primary.500'}>{plan.price}</Text>
+                                                <Divider bg="primary.500" thickness="0.5" orientation="horizontal" w={"56"} my={"4"} />
+                                                <VStack alignItems={'flex-start'} space={'2'} m={'2'}>
+                                                    <HStack justifyContent={'space-between'} alignItems={'flex-start'}>
+                                                        <Image source={{
+                                                            uri: ('https://ik.imagekit.io/sahildhingra/check-mark.png')
+                                                        }} alt="Alternate Text" size="2xs" mx={"4"} />
+                                                        <Text fontSize={'md'} fontWeight={'bold'} color={'primary.500'}>{plan.channels}</Text>
+                                                    </HStack>
+                                                    <HStack justifyContent={'space-between'} alignItems={'center'}>
+                                                        <Image source={{
+                                                            uri: ('https://ik.imagekit.io/sahildhingra/check-mark.png')
+                                                        }} alt="Alternate Text" mx={"4"} size="2xs" />
+                                                        <Text fontSize={'md'} fontWeight={'bold'} color={'primary.500'}>{plan.activeUsers}</Text>
+                                                    </HStack>
+                                                    <HStack justifyContent={'space-between'} alignItems={'center'}>
+                                                        <Image source={{
+                                                            uri: ('https://ik.imagekit.io/sahildhingra/check-mark.png')
+                                                        }} alt="Alternate Text" mx={"4"} size="2xs" />
+                                                        <Text fontSize={'md'} fontWeight={'bold'} color={'primary.500'}>{plan.screens}</Text>
+                                                    </HStack>
+                                                </VStack>
+                                            </Center>
+                                        </TouchableOpacity>
+                                    ))}
+                                </VStack>
+                            </ScrollView>
                         )
                     case 'Billing':
                         return (
@@ -333,7 +274,7 @@ const SettingCard = ({ name, user }) => {
                 }
             })()}
 
-        </Flex>
+        </Flex >
     )
 }
 

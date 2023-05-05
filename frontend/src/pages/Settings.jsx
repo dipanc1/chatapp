@@ -45,7 +45,6 @@ const Settings = () => {
     const user = JSON.parse(localStorage.getItem('user'));
 
     const toast = useToast();
-    const navigate = useNavigate();
     const fileInputRef = React.createRef();
     const { pushNotification, dispatch, userInfo } = useContext(AppContext);
 
@@ -92,7 +91,6 @@ const Settings = () => {
             amount: amount
         }
         setSubscribeData(newSubscribeData);
-        console.log(subscribeData)
     }
 
     const handleSubscribe = async () => {
