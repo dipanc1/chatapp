@@ -27,7 +27,7 @@ import EventModal from '../UserModals/EventModal'
 export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, setFetchAgain, admin }) => {
   const user = JSON.parse(localStorage.getItem('user'));
 
-  const { selectedChat, dispatch, stream, fullScreen } = React.useContext(AppContext);
+  const { selectedChat, dispatch, stream, fullScreen, userInfo } = React.useContext(AppContext);
 
   const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure()
   const { isOpen: isOpenCreateEvent, onOpen: onOpenCreateEvent, onClose: onCloseCreateEvent } = useDisclosure()
@@ -256,7 +256,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
   }
 
   const handleRemove = async (user1) => {
-    if (selectedChat.groupAdmin._id !== user._id && user1._id !== user._id) {
+    if (selectedChat.groupAdmin._id !== userInfo._id && user1._id !== user._id) {
       return toast({
         title: "Error Occured!",
         description: "You are not the admin of this group",
@@ -282,7 +282,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
         config
       );
 
-      user1._id === user._id ? dispatch({ type: 'SET_SELECTED_CHAT', payload: '' }) : dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
+      user1._id === userInfo._id ? dispatch({ type: 'SET_SELECTED_CHAT', payload: '' }) : dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
       setFetchAgain(!fetchAgain);
       setLoading(false);
       toast({
@@ -317,7 +317,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
         position: "bottom-left",
       });
     }
-    if (selectedChat.groupAdmin._id !== user._id) {
+    if (selectedChat.groupAdmin._id !== userInfo._id) {
       return toast({
         title: "Error Occured!",
         description: "You are not the admin of this group chat",
@@ -682,7 +682,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
                     body={'Are you sure you want to leave this group?'}
                     confirmButton={'Leave'}
                     confirmFunction={() => {
-                      handleRemove(user);
+                      handleRemove(userInfo);
                       onConfirmClose();
                     }}
                     isOpen={isConfirmOpen}
@@ -724,16 +724,16 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
             minHeight={'sm'}
             overflowX={'hidden'}
           >
-            <Avatar my={'10'} size={'2xl'} name={selectedChat?.users.find(member => member._id !== user._id)?.username} src={selectedChat?.users.find(member => member._id !== user._id)?.pic} />
+            <Avatar my={'10'} size={'2xl'} name={selectedChat?.users.find(member => member._id !== userInfo._id)?.username} src={selectedChat?.users.find(member => member._id !== userInfo._id)?.pic} />
 
             <BsPerson />
             <Text as='samp' mb={'5'}>
-              {selectedChat?.users.find(member => member._id !== user._id)?.username}
+              {selectedChat?.users.find(member => member._id !== userInfo._id)?.username}
             </Text>
 
             <BsTelephone />
             <Text as='samp'>
-              {selectedChat?.users.find(member => member._id !== user._id)?.number}
+              {selectedChat?.users.find(member => member._id !== userInfo._id)?.number}
             </Text>
 
           </Box>

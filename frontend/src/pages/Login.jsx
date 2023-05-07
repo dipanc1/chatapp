@@ -145,7 +145,6 @@ const Login = () => {
         setDisable(true)
         try {
             const res = await axios.post(`${backend_url}/users/login`, user);
-            dispatch({ type: 'SET_USER_INFO', payload: res.data })
             localStorage.setItem("user", JSON.stringify(res.data));
             // console.log("working!!", res)
             navigate('/video-chat')

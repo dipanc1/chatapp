@@ -37,7 +37,7 @@ function Events() {
   const toast = useToast();
   const navigate = useNavigate();
 
-  const { dispatch } = useContext(AppContext);
+  const { dispatch, userInfo } = useContext(AppContext);
   const { isOpen: isOpenJoinEvent, onOpen: onOpenJoinEvent, onClose: onCloseJoinEvent } = useDisclosure();
 
   const user = JSON.parse(localStorage.getItem('user'));
@@ -100,7 +100,7 @@ function Events() {
       setChatId(data._id);
       setChatName(data.chatName);
 
-      if (!data.users.map((u) => u._id === user._id).includes(true)) {
+      if (!data.users.map((u) => u._id === userInfo._id).includes(true)) {
         onOpenJoinEvent();
       } else {
         dispatch({ type: "SET_SELECTED_CHAT", payload: data });

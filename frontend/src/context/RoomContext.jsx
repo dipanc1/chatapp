@@ -30,7 +30,7 @@ export const RoomProvider = ({ children }) => {
     const [roomId, setRoomId] = useState("");
     const [participantsArray, setParticipantsArray] = useState([]);
 
-    const { stream } = useContext(AppContext);
+    const { stream, userInfo } = useContext(AppContext);
 
     const enterRoom = (roomId) => {
         // console.warn("Room ID ::: >>>", roomId);
@@ -183,8 +183,10 @@ export const RoomProvider = ({ children }) => {
     }, [me, playJoin, streamState, userId])
 
     useEffect(() => {
-        setUserId(JSON.parse(localStorage.getItem("user"))._id);
-    }, [userId])
+        if (userInfo?._id) {
+            setUserId(userInfo._id);
+        }
+    }, [userId, userInfo?._id])
 
     return (
         <RoomContext.Provider

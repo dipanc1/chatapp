@@ -13,7 +13,6 @@ import Settings from './pages/Settings';
 import VideoChat from './pages/VideoChat';
 import Groups from './pages/Groups';
 import Search from './pages/Search';
-import Checkout from './pages/Checkout';
 import SubscribedSuccessfully from './pages/SubscribedSuccessfully';
 import ErrorSubscribing from './pages/ErrorSubscribing';
 

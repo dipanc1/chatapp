@@ -22,12 +22,15 @@ import EventCard from '../components/Events/EventCard';
 import GroupCard from '../components/Groups/GroupCard';
 import axios from 'axios';
 import { backend_url } from '../baseApi';
+import { AppContext } from '../context/AppContext';
 
 function Groups() {
   const user = JSON.parse(localStorage.getItem('user'));
   const [groupsList, setGroupsList] = useState([])
   const [activeTab, setActiveTab] = useState(1)
   const [groupConversations, setGroupConversations] = React.useState([]);
+
+  const { userInfo } = React.useContext(AppContext);
 
   const toast = useToast();
 
@@ -112,14 +115,14 @@ function Groups() {
             {
               groupsList.length ?
                 (
-                  <Grid className='bg-variants' mb='70px' templateColumns={['repeat(1, 1fr)' ,'repeat(2, 1fr)']} gap='2rem' rowGap={['1.5rem', '3rem']}>
+                  <Grid className='bg-variants' mb='70px' templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)']} gap='2rem' rowGap={['1.5rem', '3rem']}>
                     {groupsList.map((groupItem) => (
                       <GroupCard
                         key={groupItem._id}
                         name={groupItem.chatName}
                         members={groupItem.users.length}
                         upcomingEvents={groupItem.events.length}
-                        isAdmin={user._id === groupItem.groupAdmin._id}
+                        isAdmin={userInfo._id === groupItem.groupAdmin._id}
                       />
                     ))}
                   </Grid>
@@ -140,14 +143,14 @@ function Groups() {
             {
               groupConversations.length ?
                 (
-                  <Grid className='bg-variants' mb='70px' templateColumns={['repeat(1, 1fr)' ,'repeat(2, 1fr)']} gap='2rem' rowGap={['1.5rem', '3rem']}>
+                  <Grid className='bg-variants' mb='70px' templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)']} gap='2rem' rowGap={['1.5rem', '3rem']}>
                     {groupConversations.map((groupItem) => (
                       <GroupCard
                         key={groupItem._id}
                         name={groupItem.chatName}
                         members={groupItem.users.length}
                         upcomingEvents={groupItem.events.length}
-                        isAdmin={user._id === groupItem.groupAdmin._id}
+                        isAdmin={userInfo._id === groupItem.groupAdmin._id}
                       />
                     ))}
                   </Grid>
@@ -168,9 +171,9 @@ function Groups() {
             {
               groupConversations.length ?
                 (
-                  <Grid className='bg-variants' mb='70px' templateColumns={['repeat(1, 1fr)' ,'repeat(2, 1fr)']} gap='2rem' rowGap={['1.5rem', '3rem']}>
+                  <Grid className='bg-variants' mb='70px' templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)']} gap='2rem' rowGap={['1.5rem', '3rem']}>
                     {groupConversations.map((groupItem) => {
-                      if (user._id === groupItem.groupAdmin._id) {
+                      if (userInfo._id === groupItem.groupAdmin._id) {
                         const adminStatus = true;
                         return (
                           <GroupCard
