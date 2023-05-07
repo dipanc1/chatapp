@@ -88,7 +88,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                 </TabList>
 
                 <TabPanels>
-                    <TabPanel px="0">
+                    <TabPanel p="0">
                         <Box
                             display={"flex"}
                             flexDirection={"column"}
@@ -120,12 +120,12 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                         bg={
                                             selectedChat?._id === c._id
                                                 ? "selectPrimaryColor"
-                                                : "selectSecondaryColor"
+                                                : ""
                                         }
                                         p={2}
                                         cursor={"pointer"}
-                                        my={"0.2rem"}
-                                        borderRadius="lg"
+                                        borderBottom="1px solid #EAE4Ff"
+                                        mb="1px"
                                         key={c._id}
                                         onClick={() => selectedChat?._id === c._id ? null : dispatch({
                                             type: "SET_SELECTED_CHAT",
@@ -163,7 +163,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                             ) : null}
                         </Box>
                     </TabPanel>
-                    <TabPanel px='0'>
+                    <TabPanel p='0'>
 
 
                         <Box
@@ -197,12 +197,12 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                         bg={
                                             selectedChat?._id === c._id
                                                 ? "selectPrimaryColor"
-                                                : "selectSecondaryColor"
+                                                : ""
                                         }
                                         p={2}
                                         cursor={"pointer"}
-                                        my={"0.2rem"}
-                                        borderRadius="lg"
+                                        borderBottom="1px solid #EAE4Ff"
+                                        mb="1px"
                                         key={c._id}
                                         onClick={() => selectedChat?._id === c._id ? null : dispatch({
                                             type: "SET_SELECTED_CHAT",

@@ -457,7 +457,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
                 <>
                   <Tab flex='1'>Events</Tab>
 
-                  <Tab flex='1'>{stream ? 'Participants' : 'Members'}</Tab>
+                  <Tab flex='1'>{stream ? 'Participants' : `Members (${selectedChat?.users.length})`}</Tab>
 
                   <Tab display='none' flex='1'>Settings</Tab>
                 </>
@@ -521,16 +521,13 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
                 flexDirection={'column'}
                 height='100%'
               >
-                <Box>
-                  <Text ps='4' py='5px'>
-                    {selectedChat?.users.length} members
-                  </Text>
-                </Box>
                 <Box
                   h='50%'
                   overflow='auto'
                   flex='1'
                   p='4'
+                  pt='0'
+                  px='0'
                 >
                   <Accordion allowToggle>
                     {selectedChat?.users.map(u =>

@@ -16,7 +16,7 @@ const ChatOnline = ({ stream, id, user1, handleFunction }) => {
             <AccordionItem key={id} minWidth={stream ? '19vw' : '12vw'}>
                 <h2>
                     <AccordionButton
-                        backgroundColor={'selectSecondaryColor'}
+                        backgroundColor={''}
                         borderTopRadius={'md'}
                         _expanded={{ bg: 'selectPrimaryColor' }}
                         _hover={
