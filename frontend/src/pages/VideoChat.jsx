@@ -64,7 +64,7 @@ const Chat = () => {
         errorToast("Something went wrong");
       }
     };
-    getToken();
+    // getToken();
   }, [])
 
   const getMeetingId = async (token) => {
@@ -103,34 +103,18 @@ const Chat = () => {
     <SocketContextProvider>
       <RoomProvider>
         <Static noSmPadding noPadding fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}>
-          <Box overflow={['hidden', 'hidden', 'auto']} position='relative' h={stream ? '100%' : '100%'} display={[!stream ? 'flex' : 'block', 'block', 'flex', ]}>
+          <Box overflow={['hidden', 'hidden', 'auto']} position='relative' h={stream ? '100%' : '100%'} display={[!stream ? 'flex' : 'block', 'block', 'flex',]}>
             {stream ?
               <StreamingPeer setToggleChat={setToggleChat} admin={admin} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
-              // (stream && token && meetingId) ?
-              //   <MeetingProvider
-              //     config={{
-              //       meetingId,
-              //       micEnabled: false,
-              //       webcamEnabled: admin ? true : false,
-              //       name: user.username
-              //     }}
-              //     token={token}
-              //   >
-              //     <MeetingConsumer>
-              //       {() =>
-              //         <Streaming admin={admin} meetingId={meetingId} setFetchAgain={setFetchAgain} token={token} fetchAgain={fetchAgain} />
-              //       }
-              //     </MeetingConsumer>
-              //   </MeetingProvider>
               :
               <>
                 <Box width={['100%', '100%', 'auto']} flex={['1', '1', '2', '3']}>
                   {user.token && <Conversations fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
                 </Box>
-                <Box 
-                  transform={selectedChat===null ? ["translateX(100%)", "translateX(100%)", 'unset'] : ["translateX(0)", "translateX(0)", 'unset']} 
-                  position={['absolute', 'absolute', 'relative']} 
-                  h='100%' 
+                <Box
+                  transform={selectedChat === null ? ["translateX(100%)", "translateX(100%)", 'unset'] : ["translateX(0)", "translateX(0)", 'unset']}
+                  position={['absolute', 'absolute', 'relative']}
+                  h='100%'
                   w='100%'
                   flex={['12', '12', '7.5', '7.5']}
                   top={['0', '0', 'unset']}
@@ -151,7 +135,7 @@ const Chat = () => {
               bottom={['0', '0', 'unset']}
               width={['100%', '100%', 'auto']}
               transition='all 0.25s ease-in-out'
-              // height={['70%', 'auto']}
+            // height={['70%', 'auto']}
             >
               {user.token && <Members setToggleChat={setToggleChat} admin={admin} token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
             </Box>

@@ -21,7 +21,7 @@ import { useNavigate } from 'react-router-dom';
 import { FiUpload } from 'react-icons/fi';
 
 const CreateEvent = () => {
-	const { selectedChat, dispatch } = useContext(AppContext);
+	const { selectedChat, userInfo } = useContext(AppContext);
 	const user = JSON.parse(localStorage.getItem("user"));
 	const [name, setEventName] = useState("");
 	const [description, setDescription] = useState("");
@@ -44,7 +44,7 @@ const CreateEvent = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
-		if (selectedChat.groupAdmin._id !== user._id) return alert("You are not the admin of this group");
+		if (selectedChat.groupAdmin._id !== userInfo._id) return alert("You are not the admin of this group");
 
 		if (name === "" || description === "" || date === "" || time === "") return alert("Feilds cannot be empty");
 

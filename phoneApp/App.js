@@ -20,6 +20,8 @@ import Settings from './screens/Settings';
 import Events from './screens/Events';
 import { Image } from 'react-native';
 import VideoChat from './screens/VideoChat';
+import { StripeProvider } from '@stripe/stripe-react-native';
+import { stripePublicKeyLive } from './production';
 
 const newColorTheme = {
   text: {
@@ -115,63 +117,65 @@ const App = () => {
   }, [fetchAgain]);
 
   return (
-    <NativeBaseProvider theme={theme}>
-      <PhoneAppContextProvider>
-        <NavigationContainer>
-          {user ?
-            <Tab.Navigator initialRouteName='Live Stream' screenOptions={
-              {
-                tabBarStyle: {
-                  borderTopWidth: 0,
-                  shadowOffset: { width: 0, height: 0 },
-                  shadowColor: 'transparent',
-                  elevation: 0,
-                },
-                tabBarActiveTintColor: '#9F85F7',
-                tabBarInactiveTintColor: '#737373',
-                headerShown: false,
-                tabBarHideOnKeyboard: true,
-              }
-            }>
-              <Tab.Screen name="Live Stream" options={{
-                headerShown: false,
-                tabBarIcon: ({ size, color }) => TabBarIcon({ icon: 'explore', size, color })
-              }}>
-                {props => <VideoChat {...props} user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
-              </Tab.Screen>
-              <Tab.Screen name="Events" options={{
-                tabBarIcon: ({ size, focused, color }) => TabBarIcon({ icon: 'events', size, color })
-              }}>
-                {props => <Events {...props} user={user} />}
-              </Tab.Screen>
-              <Tab.Screen name="Groups" navigationKey="AllGroups" options={{
-                tabBarIcon: ({ size, focused, color }) => TabBarIcon({ icon: 'groups', size, color })
-              }}>
-                {props => <AllGroups {...props} user={user} />}
-              </Tab.Screen>
-              <Tab.Screen name="Settings" options={{
-                tabBarIcon: ({ size, focused, color }) => TabBarIcon({ icon: 'settings', size, color })
-              }}>
-                {props => <Settings {...props} user={user} />}
-              </Tab.Screen>
-            </Tab.Navigator>
-            :
-            <Stack.Navigator intialRouteName="Login">
-              <Stack.Screen name="Login" options={{
-                headerShown: false,
-              }}>
-                {props => <Login {...props} setUser={setUser} />}
-              </Stack.Screen>
-              <Stack.Screen name="Register" options={{
-                headerShown: false,
-              }}>
-                {props => <Register {...props} />}
-              </Stack.Screen>
-            </Stack.Navigator>
-          }
-        </NavigationContainer>
-      </PhoneAppContextProvider>
-    </NativeBaseProvider >
+    <StripeProvider publishableKey={stripePublicKeyLive}>
+      <NativeBaseProvider theme={theme}>
+        <PhoneAppContextProvider>
+          <NavigationContainer>
+            {user ?
+              <Tab.Navigator initialRouteName='Live Stream' screenOptions={
+                {
+                  tabBarStyle: {
+                    borderTopWidth: 0,
+                    shadowOffset: { width: 0, height: 0 },
+                    shadowColor: 'transparent',
+                    elevation: 0,
+                  },
+                  tabBarActiveTintColor: '#9F85F7',
+                  tabBarInactiveTintColor: '#737373',
+                  headerShown: false,
+                  tabBarHideOnKeyboard: true,
+                }
+              }>
+                <Tab.Screen name="Live Stream" options={{
+                  headerShown: false,
+                  tabBarIcon: ({ size, color }) => TabBarIcon({ icon: 'explore', size, color })
+                }}>
+                  {props => <VideoChat {...props} user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+                </Tab.Screen>
+                <Tab.Screen name="Events" options={{
+                  tabBarIcon: ({ size, focused, color }) => TabBarIcon({ icon: 'events', size, color })
+                }}>
+                  {props => <Events {...props} user={user} />}
+                </Tab.Screen>
+                <Tab.Screen name="Groups" navigationKey="AllGroups" options={{
+                  tabBarIcon: ({ size, focused, color }) => TabBarIcon({ icon: 'groups', size, color })
+                }}>
+                  {props => <AllGroups {...props} user={user} />}
+                </Tab.Screen>
+                <Tab.Screen name="Settings" options={{
+                  tabBarIcon: ({ size, focused, color }) => TabBarIcon({ icon: 'settings', size, color })
+                }}>
+                  {props => <Settings {...props} user={user} />}
+                </Tab.Screen>
+              </Tab.Navigator>
+              :
+              <Stack.Navigator intialRouteName="Login">
+                <Stack.Screen name="Login" options={{
+                  headerShown: false,
+                }}>
+                  {props => <Login {...props} setUser={setUser} />}
+                </Stack.Screen>
+                <Stack.Screen name="Register" options={{
+                  headerShown: false,
+                }}>
+                  {props => <Register {...props} />}
+                </Stack.Screen>
+              </Stack.Navigator>
+            }
+          </NavigationContainer>
+        </PhoneAppContextProvider>
+      </NativeBaseProvider>
+    </StripeProvider>
   );
 };
 

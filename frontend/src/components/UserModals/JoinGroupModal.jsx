@@ -19,7 +19,7 @@ import { AppContext } from '../../context/AppContext';
 const JoinGroupModal = ({ isOpenJoinEvent, onCloseJoinEvent, chatId, chatName }) => {
     const cancelRef = useRef();
     const navigate = useNavigate();
-    const { dispatch } = useContext(AppContext);
+    const { dispatch, userInfo } = useContext(AppContext);
     const user = JSON.parse(localStorage.getItem('user'));
 
     const handleJoinGroup = async () => {
@@ -32,7 +32,7 @@ const JoinGroupModal = ({ isOpenJoinEvent, onCloseJoinEvent, chatId, chatName })
             `${backend_url}/conversation/groupadd`,
             {
                 chatId,
-                userId: user._id,
+                userId: userInfo._id,
             },
             config
         );
