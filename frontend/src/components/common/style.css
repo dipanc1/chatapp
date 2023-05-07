@@ -334,3 +334,7 @@
 .lightHover li:hover {
     background: #eee;
 }
+
+.w-100 {
+    width: 100%;
+}

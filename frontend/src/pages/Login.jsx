@@ -192,25 +192,50 @@ const Login = () => {
                 opacity={['0', '0', '0', '0.5']}
                 bottom={'56'}
             />
-            <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
-                <Stack align={'center'}>
-                    <Heading fontSize={'4xl'}>{forgetPassword ? (otpSent ? 'Enter OTP' : 'Forgot Password') : 'Sign in to your account'}</Heading>
-                    <Text color={'greyTextColor'}>
-                        {forgetPassword ? (otpSent ? 'Enter Otp and New Password to reset the password' : 'Enter your registered mobile number to reset password') : 'Login to you account and get all access to chats'}
-                    </Text>
-                </Stack>
-                <Box
+            <Box
+                display={'flex'}
+                maxW='800px'
+                background='#fff'
+                borderRadius='10px'
+                boxShadow={'lg'}
+                zIndex='0'
+                overflow={'hidden'}
+                p='2'
+            >
+                <Box 
+                    background={'#dcd2ff'}
+                    flex={'1'}
+                    display={'flex'}
+                    alignItems={'center'}
+                    borderRadius={'5px'}
+                    flexShrink={'0'}
+                >
+                    <Image
+                        src={'https://ik.imagekit.io/sahildhingra/signup-vector.png'}
+                    />
+                </Box>
+                <Box 
+                    p='5'
+                    px='10'
+                    flex={'1'}
+                >
+                    <Stack align={'center'}>
+                        <Heading fontSize={'4xl'}>{forgetPassword ? (otpSent ? 'Enter OTP' : 'Forgot Password') : 'Welcome Back!'}</Heading>
+                        <Text color={'greyTextColor'}>
+                            {forgetPassword ? (otpSent ? 'Enter Otp and New Password to reset the password' : 'Enter your registered mobile number to reset password') : 'Login to get access to chats and live streams'}
+                        </Text>
+                    </Stack>
+                    <Box
                     rounded={'lg'}
-                    minH={'70vh'}
-                    w={['86vw', '86vw', '25vw']}
                     display={'flex'}
                     flexDirection={'column'}
                     alignItems={'center'}
                     justifyContent={'center'}
                     bg={useColorModeValue('white', 'gray.700')}
-                    boxShadow={'lg'}
-                    p={8}>
-                    <form onSubmit={handleSubmit}>
+                    p={8}
+                    px='0'
+                    >
+                    <form className='w-100' onSubmit={handleSubmit}>
                         <Stack spacing={4}>
                             {forgetPassword ? (
                                 otpSent ?
@@ -312,7 +337,8 @@ const Login = () => {
                         </Text>
                     </HStack>
                 </Box>
-            </Stack>
+                </Box>
+            </Box>
         </Flex>
     )
 }
