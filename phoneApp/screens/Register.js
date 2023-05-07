@@ -7,7 +7,7 @@ import PhoneInput from 'react-native-phone-number-input';
 import { StyleSheet } from 'react-native';
 import OTPTextView from 'react-native-otp-textinput';
 import { PhoneAppContext } from '../context/PhoneAppContext';
-import { backend_url } from '../production';
+import { backend_url, pictureUpload } from '../production';
 import axios from 'axios';
 import { launchImageLibrary } from 'react-native-image-picker';
 
@@ -29,11 +29,9 @@ const Register = ({ navigation }) => {
     const otpInput = useRef(null);
     const number1 = React.useContext(PhoneAppContext)
 
-    const cloudName = 'dipanc1';
     const apiUrlMobile = `${backend_url}/mobile`;
     const apiUrlOtp = `${backend_url}/otp`;
     const apiUrlRegister = `${backend_url}/users/register`;
-    const pictureUpload = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
 
 
     const handleVerify = () => {
