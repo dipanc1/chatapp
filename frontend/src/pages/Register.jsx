@@ -23,6 +23,7 @@ import {
     Avatar,
     IconButton,
     FormHelperText,
+    Image,
 } from '@chakra-ui/react';
 import { AiOutlineUser } from 'react-icons/ai';
 import { FiUpload } from 'react-icons/fi';
@@ -251,134 +252,171 @@ const Register = () => {
             align={'center'}
             justify={'center'}
             bg={'backgroundColor'}>
-            <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
-                <Stack align={'center'}>
-                    <Heading fontSize={'4xl'} textAlign={'center'}>
-                        Sign up
-                    </Heading>
-                    <Text color={'greyTextColor'}>
-                        Verify your phone number to start your registration process
-                    </Text>
-                </Stack>
-                <Box
+            <Box
+                display={'flex'}
+                maxW='800px'
+                background='#fff'
+                borderRadius='10px'
+                boxShadow={'lg'}
+                zIndex='0'
+                overflow={'hidden'}
+                p='2'
+            >
+                <Box 
+                    background={'#dcd2ff'}
+                    flex={'1'}
+                    display={'flex'}
+                    alignItems={'center'}
+                    borderRadius={'5px'}
+                    flexShrink={'0'}
+                >
+                    <Image
+                        src={'https://ik.imagekit.io/sahildhingra/new-user-vector.png'}
+                    />
+                </Box>
+                <Box 
+                    p='5'
+                    px='10'
+                    flex={'1'}
+                >
+                    <Stack align={'center'}>
+                        <Heading fontSize={'4xl'}>Get Started Now!</Heading>
+                        <Text pt='2' color={'greyTextColor'}>
+                            Enter phone number to create an account
+                        </Text>
+                    </Stack>
+                    <Box
                     rounded={'lg'}
-                    minH={'70vh'}
-                    w={['90vw', '80vw', '80vw', '25vw']}
                     display={'flex'}
                     flexDirection={'column'}
                     alignItems={'center'}
                     justifyContent={'center'}
                     bg={useColorModeValue('white', 'gray.700')}
-                    boxShadow={'lg'}
-                    p={8}>
-                    <Stack spacing={10}>
-                        <form>
-                            {verify &&
-                                <PhoneNumber number={number} setNumber={setNumber} />
-                            }
-                            {!otp &&
-                                <Flex justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
-
-                                    <Flex justifyContent={''} alignItems={'flex-end'} flexDirection={'row'}>
-                                        <Avatar
-                                            size={'xl'}
-                                            src={selectedImage ? URL.createObjectURL(selectedImage) : ''}
-                                            alt={'Avatar Alt'}
-                                        />
-                                        <IconButton
-                                            aria-label="upload picture"
-                                            icon={<FiUpload />}
-                                            onClick={() => fileInputRef.current.click()}
-                                            size="xs"
-                                            colorScheme="teal"
-                                            variant="outline"
-                                            mt={'3'}
-                                        />
-                                        <input
-                                            type="file"
-                                            ref={fileInputRef}
-                                            onChange={imageChange}
-                                            style={{ display: 'none' }}
-                                            required
-                                        />
+                    px='0'
+                    >
+                    <Box
+                        rounded={'lg'}
+                        display={'flex'}
+                        flexDirection={'column'}
+                        alignItems={'center'}
+                        justifyContent={'center'}
+                        bg={useColorModeValue('white', 'gray.700')}
+                        p={8}
+                        px='0'
+                        w='100%'
+                    >
+                        <Stack 
+                            width='100%'
+                        spacing={10}>
+                            <form className='w-100'>
+                                {verify &&
+                                    <PhoneNumber number={number} setNumber={setNumber} />
+                                }
+                                {!otp &&
+                                    <Flex justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
+    
+                                        <Flex justifyContent={''} alignItems={'flex-end'} flexDirection={'row'}>
+                                            <Avatar
+                                                size={'xl'}
+                                                src={selectedImage ? URL.createObjectURL(selectedImage) : ''}
+                                                alt={'Avatar Alt'}
+                                            />
+                                            <IconButton
+                                                aria-label="upload picture"
+                                                icon={<FiUpload />}
+                                                onClick={() => fileInputRef.current.click()}
+                                                size="xs"
+                                                colorScheme="teal"
+                                                variant="outline"
+                                                mt={'3'}
+                                            />
+                                            <input
+                                                type="file"
+                                                ref={fileInputRef}
+                                                onChange={imageChange}
+                                                style={{ display: 'none' }}
+                                                required
+                                            />
+                                        </Flex>
+    
+    
+                                        <FormControl id="username" isRequired>
+                                            <FormLabel>User Name</FormLabel>
+                                            <InputGroup>
+                                                <InputLeftElement
+                                                    pointerEvents='none'
+                                                    children={<AiOutlineUser color='greyTextColor' />}
+                                                />
+                                                <Input
+                                                    focusBorderColor={(username.length > 2 && formhelpUsername === "Username not available") ? '#FF4343' : '#9F85F7'}
+                                                    type="text" id="username"
+                                                    name='username'
+                                                    value={username}
+                                                    placeholder='Enter User Name'
+                                                    maxLength={20}
+                                                    minLength={2}
+                                                    onChange={handleUsername}
+                                                />
+                                            </InputGroup>
+                                            {username.length > 2 && <FormHelperText>{formhelpUsername}</FormHelperText>}
+                                        </FormControl>
+    
+                                        <Password password={password} confirmPassword={confirmPassword} handleConfirmPassword={handleConfirmPassword} handlePassword={handlePassword} />
+    
                                     </Flex>
-
-
-                                    <FormControl id="username" isRequired>
-                                        <FormLabel>User Name</FormLabel>
-                                        <InputGroup>
-                                            <InputLeftElement
-                                                pointerEvents='none'
-                                                children={<AiOutlineUser color='greyTextColor' />}
-                                            />
-                                            <Input
-                                                focusBorderColor={(username.length > 2 && formhelpUsername === "Username not available") ? '#FF4343' : '#9F85F7'}
-                                                type="text" id="username"
-                                                name='username'
-                                                value={username}
-                                                placeholder='Enter User Name'
-                                                maxLength={20}
-                                                minLength={2}
-                                                onChange={handleUsername}
-                                            />
-                                        </InputGroup>
-                                        {username.length > 2 && <FormHelperText>{formhelpUsername}</FormHelperText>}
-                                    </FormControl>
-
-                                    <Password password={password} confirmPassword={confirmPassword} handleConfirmPassword={handleConfirmPassword} handlePassword={handlePassword} />
-
-                                </Flex>
-                            }
-                            {(!verify && otp) &&
-                                <>
-                                    <Otp OTP={OTP} handleOtp={handleOtp} />
-                                    <ResendOTP renderButton={renderButton} renderTime={renderTime} maxTime={120} onClick={handleVerify} />
-                                </>
-
-                            }
-                            <Stack spacing={10} pt={8}>
-                                {verify ?
-                                    <Button
-                                        type="submit"
-                                        onClick={handleVerify}
-                                        loadingText={loading && "Submitting"}
-                                        size="lg"
-                                        bg={'buttonPrimaryColor'}
-                                        color={'white'}
-                                        _hover={{
-                                            bg: 'backgroundColor',
-                                            color: 'text'
-                                        }}>
-                                        Verify Phone Number
-                                    </Button> : null}
-
-                                {!otp ?
-                                    <Button
-                                        type="submit"
-                                        onClick={handleRegister}
-                                        disabled={!(password === confirmPassword && username.length !== 0 && password.length >= 8) || loading}
-                                        isLoading={loading}
-                                        loadingText={"Registering"}
-                                        size="lg"
-                                        bg={'buttonPrimaryColor'}
-                                        color={'white'}
-                                        _hover={{
-                                            bg: 'backgroundColor',
-                                            color: 'text'
-                                        }}>
-                                        Register
-                                    </Button> : null}
-                            </Stack>
-                        </form>
-                    </Stack>
-                    <Stack direction={'row'} pt={10}>
-                        <Text>Already a user?</Text>
-                        <Link to="/">
-                            <Text color={'buttonPrimaryColor'}>Login</Text>
-                        </Link>
-                    </Stack>
+                                }
+                                {(!verify && otp) &&
+                                    <>
+                                        <Otp OTP={OTP} handleOtp={handleOtp} />
+                                        <ResendOTP renderButton={renderButton} renderTime={renderTime} maxTime={120} onClick={handleVerify} />
+                                    </>
+    
+                                }
+                                <Stack spacing={10} pt={8}>
+                                    {verify ?
+                                        <Button
+                                            type="submit"
+                                            onClick={handleVerify}
+                                            loadingText={loading && "Submitting"}
+                                            size="lg"
+                                            bg={'buttonPrimaryColor'}
+                                            color={'white'}
+                                            _hover={{
+                                                bg: 'backgroundColor',
+                                                color: 'text'
+                                            }}>
+                                            Verify Phone Number
+                                        </Button> : null}
+    
+                                    {!otp ?
+                                        <Button
+                                            type="submit"
+                                            onClick={handleRegister}
+                                            disabled={!(password === confirmPassword && username.length !== 0 && password.length >= 8) || loading}
+                                            isLoading={loading}
+                                            loadingText={"Registering"}
+                                            size="lg"
+                                            bg={'buttonPrimaryColor'}
+                                            color={'white'}
+                                            _hover={{
+                                                bg: 'backgroundColor',
+                                                color: 'text'
+                                            }}>
+                                            Register
+                                        </Button> : null}
+                                </Stack>
+                            </form>
+                        </Stack>
+                        <Stack direction={'row'} pt={10}>
+                            <Text>Already a user?</Text>
+                            <Link to="/">
+                                <Text color={'buttonPrimaryColor'}>Login</Text>
+                            </Link>
+                        </Stack>
+                    </Box>
+                    </Box>
                 </Box>
-            </Stack >
+            </Box>
         </Flex >
     )
 }

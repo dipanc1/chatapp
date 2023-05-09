@@ -210,9 +210,16 @@ const Login = () => {
                     borderRadius={'5px'}
                     flexShrink={'0'}
                 >
-                    <Image
-                        src={'https://ik.imagekit.io/sahildhingra/signup-vector.png'}
-                    />
+                    {forgetPassword ? (
+                            <Image
+                                src={'https://ik.imagekit.io/sahildhingra/forgot-password-vector.png'}
+                            />
+                        ) : (
+                            <Image
+                                src={'https://ik.imagekit.io/sahildhingra/signup-vector.png'}
+                            />
+                        )
+                    }
                 </Box>
                 <Box 
                     p='5'
@@ -220,9 +227,9 @@ const Login = () => {
                     flex={'1'}
                 >
                     <Stack align={'center'}>
-                        <Heading fontSize={'4xl'}>{forgetPassword ? (otpSent ? 'Enter OTP' : 'Forgot Password') : 'Welcome Back!'}</Heading>
-                        <Text color={'greyTextColor'}>
-                            {forgetPassword ? (otpSent ? 'Enter Otp and New Password to reset the password' : 'Enter your registered mobile number to reset password') : 'Login to get access to chats and live streams'}
+                        <Heading fontSize={'4xl'}>{forgetPassword ? (otpSent ? 'Enter OTP' : 'Forgot Password?') : 'Welcome Back!'}</Heading>
+                        <Text textAlign='center' pt='2' color={'greyTextColor'}>
+                            {forgetPassword ? (otpSent ? 'Enter Otp and New Password to reset the password' : 'No worries, Enter your registered mobile number to reset password') : 'Login to get access to chats and live streams'}
                         </Text>
                     </Stack>
                     <Box
@@ -248,9 +255,6 @@ const Login = () => {
                                     </>
                                     :
                                     <>
-                                        <Image
-                                            src={'./images/reset-password.png'}
-                                        />
                                         <PhoneNumber number={number} setNumber={setNumber} />
                                     </>
                             ) : (
