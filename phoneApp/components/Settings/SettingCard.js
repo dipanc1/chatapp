@@ -5,6 +5,8 @@ import axios from 'axios';
 import { backend_url } from '../../production';
 import { TouchableOpacity } from 'react-native';
 import { useStripe } from '@stripe/stripe-react-native';
+import Accordion from 'react-native-collapsible/Accordion';
+
 
 const SettingCard = ({ name, user }) => {
     const [value, setValue] = React.useState('light');
@@ -37,6 +39,30 @@ const SettingCard = ({ name, user }) => {
         },
     ];
 
+    const helpData = [
+        {
+            name: 'Live Chat',
+            icon: 'https://ik.imagekit.io/sahildhingra/chat.png',
+            description: 'Chat with our top customer support executives',
+        },
+        {
+            name: 'Email Us',
+            icon: 'https://ik.imagekit.io/sahildhingra/mail.png',
+            description: 'Write us an email. We usually revert within 24hrs',
+        },
+        {
+            name: 'Phone',
+            icon: 'https://ik.imagekit.io/sahildhingra/telephone.png',
+            description: 'Get on call with our experts',
+        }
+    ];
+
+    const dataArray = [
+        { title: "First Element", content: "Lorem ipsum dolor sit amet" },
+        { title: "Second Element", content: "Lorem ipsum dolor sit amet" },
+        { title: "Third Element", content: "Lorem ipsum dolor sit amet" }
+    ];
+
     const handlePlanSelection = (id, name, amount) => {
         const newSubscribeData = {
             id: id,
@@ -46,60 +72,42 @@ const SettingCard = ({ name, user }) => {
         setSubscribeData(newSubscribeData);
     };
 
-    const fetchPaymentSheetParams = async () => {
-        const response = await fetch(`${backend_url}/payment-sheet`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-        const { paymentIntent, ephemeralKey, customer } = await response.json();
-
-        return {
-            paymentIntent,
-            ephemeralKey,
-            customer,
-        };
-    };
-
     const initializePaymentSheet = async () => {
-        const {
-            paymentIntent,
-            ephemeralKey,
-            customer,
-            publishableKey,
-        } = await fetchPaymentSheetParams();
+        const response = await axios.post(`${backend_url}/checkout/payment-sheet`, {
+            amount: subscribeData["amount"],
+        }).catch((err) => console.log(err))
+
+        const { paymentIntent } = response.data;
 
         const { error } = await initPaymentSheet({
-            merchantDisplayName: "Example, Inc.",
-            customerId: customer,
-            customerEphemeralKeySecret: ephemeralKey,
+            merchantDisplayName: "ChatApp, Inc.",
             paymentIntentClientSecret: paymentIntent,
-            // Set `allowsDelayedPaymentMethods` to true if your business can handle payment
-            //methods that complete payment after a delay, like SEPA Debit and Sofort.
-            allowsDelayedPaymentMethods: true,
             defaultBillingDetails: {
-                name: 'Jane Doe',
+                name: 'John Wick',
             }
         });
         if (!error) {
             setLoading(true);
         }
-    };
+
+    }
 
     const openPaymentSheet = async () => {
         const { error } = await presentPaymentSheet();
 
         if (error) {
-            Alert.alert(`Error code: ${error.code}`, error.message);
+            alert(`Error code: ${error.code}`, error.message);
         } else {
-            Alert.alert('Success', 'Your order is confirmed!');
+            alert('Success', 'Your order is confirmed!');
         }
     };
 
     React.useEffect(() => {
-        // initializePaymentSheet();
-    }, []);
+        if (subscribeData["amount"] < 0 || subscribeData["amount"] === undefined || subscribeData === {}) {
+            return;
+        }
+        initializePaymentSheet();
+    }, [subscribeData]);
 
     return (
         <Flex flex={1} align={'center'} justify={'center'} position={'relative'} bg={"primary.200"}>
@@ -317,7 +325,9 @@ const SettingCard = ({ name, user }) => {
                                             </Center>
                                         </TouchableOpacity>
                                     ))}
-                                    <Button disabled={!loading} onPress={openPaymentSheet} bg={'primary.300'} color={'white'} _text={{ fontWeight: 'bold' }} my={'4'} mx={'auto'}>
+                                    <Button _disabled={{
+                                        bg: 'primary.500',
+                                    }} isDisabled={!loading} bg={'primary.300'} color={'white'} _text={{ fontWeight: 'bold' }} my={'4'} mx={'auto'} onPress={openPaymentSheet}>
                                         Change Plan
                                     </Button>
 
@@ -347,7 +357,32 @@ const SettingCard = ({ name, user }) => {
                         )
                     default:
                         return (
-                            <Text fontSize={'xl'} fontWeight={'bold'} color={'amber.400'} my={'2'}>Help</Text>
+                            <ScrollView>
+                                <Box width={"96"} p="5" rounded="lg">
+                                    <VStack my={"10"} space="3" justifyContent={"center"} alignItems={"flex-start"}>
+                                        <Text fontSize={'xl'} fontWeight={'bold'} color={'white'} my={'2'}>Support Portal</Text>
+                                        <Button bg={'primary.300'} color={'white'} _text={{ fontWeight: 'bold' }} leftIcon={<Icon as={MaterialIcons} name="add-circle-outline" size={5} />}>
+                                            Raise a Ticket
+                                        </Button>
+                                    </VStack>
+                                    <VStack my={"3"} space="3" justifyContent={"center"} alignItems={"center"}>
+                                        {helpData.map((help, index) => (
+                                            <Center key={help.name} borderWidth={"1"} borderColor={"primary.300"} borderRadius={"4"} rounded="lg" w={"64"} h={"56"} justifyContent={"space-between"} py={"3"}>
+                                                <Text fontSize={'xl'} fontWeight={'bold'} color={'primary.600'}>{help.name}</Text>
+                                                <Image source={{ uri: (help.icon) }} alt="Alternate Text" size="lg" />
+                                                <Text fontSize={'md'} fontWeight={'bold'} color={'primary.500'} textAlign={"center"}>
+                                                    {help.description}
+                                                </Text>
+                                            </Center>
+                                        ))}
+                                    </VStack>
+                                    <Divider bg="primary.500" thickness="1" orientation="horizontal" mt={"4"} />
+                                    <VStack my={"8"} space="3" justifyContent={"center"} alignItems={"flex-start"}>
+                                        <Text fontSize={'xl'} fontWeight={'bold'} color={'white'} my={'2'}>Frequency Asked Questions</Text>
+                                        
+                                    </VStack>
+                                </Box>
+                            </ScrollView>
                         )
                 }
             })()}
