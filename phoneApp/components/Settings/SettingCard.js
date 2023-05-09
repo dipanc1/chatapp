@@ -1,12 +1,10 @@
 import React from 'react'
-import { Avatar, Box, Button, Center, Divider, Flex, FormControl, HStack, Icon, IconButton, Image, Input, InputGroup, InputLeftAddon, Radio, ScrollView, Spacer, Switch, Text, VStack } from 'native-base'
+import { Accordion, Avatar, Box, Button, Center, Divider, Flex, FormControl, HStack, Icon, IconButton, Image, Input, InputGroup, InputLeftAddon, Radio, ScrollView, Spacer, Switch, Text, VStack } from 'native-base'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import { backend_url } from '../../production';
 import { TouchableOpacity } from 'react-native';
 import { useStripe } from '@stripe/stripe-react-native';
-import Accordion from 'react-native-collapsible/Accordion';
-
 
 const SettingCard = ({ name, user }) => {
     const [value, setValue] = React.useState('light');
@@ -379,7 +377,6 @@ const SettingCard = ({ name, user }) => {
                                     <Divider bg="primary.500" thickness="1" orientation="horizontal" mt={"4"} />
                                     <VStack my={"8"} space="3" justifyContent={"center"} alignItems={"flex-start"}>
                                         <Text fontSize={'xl'} fontWeight={'bold'} color={'white'} my={'2'}>Frequency Asked Questions</Text>
-                                        
                                     </VStack>
                                 </Box>
                             </ScrollView>

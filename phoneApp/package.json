@@ -19,7 +19,6 @@
     "@react-navigation/native": "^6.0.11",
     "@react-navigation/native-stack": "^6.7.0",
     "@stripe/stripe-react-native": "0.27.1",
-    "accordion-collapse-react-native": "^1.1.1",
     "axios": "^0.27.2",
     "lottie-react-native": "^5.1.4",
     "native-base": "^3.4.11",

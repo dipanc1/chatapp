@@ -10,7 +10,7 @@ const Static = ({ noSmPadding, noPadding, children, fetchAgain, setFetchAgain })
   let cookieVal = cookies.get("maximized");
 
   const [maximizedValue, setMaximizedValue] = useState(cookieVal);
-  const [toggleSidebar, setToggleSidebar] = useState(false)
+  const [toggleSidebar, setToggleSidebar] = useState(false);
 
   const handleExpand = () => {
     if (cookies.get("maximized") == "true") {
