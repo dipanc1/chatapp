@@ -21,7 +21,7 @@ import Events from './screens/Events';
 import { Image } from 'react-native';
 import VideoChat from './screens/VideoChat';
 import { StripeProvider } from '@stripe/stripe-react-native';
-import { stripePublicKeyLive } from './production';
+import { stripePublicKeyLive, stripePublicKey } from './production';
 
 const newColorTheme = {
   text: {
@@ -117,7 +117,7 @@ const App = () => {
   }, [fetchAgain]);
 
   return (
-    <StripeProvider publishableKey={stripePublicKeyLive}>
+    <StripeProvider publishableKey={stripePublicKey}>
       <NativeBaseProvider theme={theme}>
         <PhoneAppContextProvider>
           <NavigationContainer>
