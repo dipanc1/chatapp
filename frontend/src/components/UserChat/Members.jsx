@@ -671,7 +671,6 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
                     Add Member
                   </Button>
 
-                  {/* Confirm Add Member */}
                   <EndLeaveModal
                     leastDestructiveRef={cancelRef}
                     onClose={onConfirmClose}

@@ -72,7 +72,7 @@ const SettingCard = ({ name, user }) => {
 
     const initializePaymentSheet = async () => {
         const response = await axios.post(`${backend_url}/checkout/payment-sheet`, {
-            amount: subscribeData["amount"],
+            amount: subscribeData["amount"] / 100,
         }).catch((err) => console.log(err))
 
         const { paymentIntent } = response.data;
@@ -96,7 +96,7 @@ const SettingCard = ({ name, user }) => {
         if (error) {
             alert(`Error code: ${error.code}`, error.message);
         } else {
-            alert('Success', 'Your order is confirmed!');
+            alert('Success', 'Your are now a premium user!');
         }
     };
 

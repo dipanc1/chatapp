@@ -10,11 +10,12 @@ import { format } from 'timeago.js'
 import { HiUserRemove } from 'react-icons/hi'
 import EndLeaveModal from '../UserModals/EndLeaveModal'
 import { backend_url } from '../../baseApi'
-import { Modal, ModalBody, ModalCloseButton, ModalContent, useDisclosure, ModalFooter, ModalHeader, ModalOverlay, Avatar, AvatarBadge, Box, Button, Divider, Flex, Image, Img, Input, Spinner, Text, useToast } from '@chakra-ui/react'
+import { Avatar, AvatarBadge, Box, Button, Divider, Flex, Image, Img, Input, Spinner, Text, useDisclosure, useToast } from '@chakra-ui/react'
 import { FiSend } from 'react-icons/fi'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import StreamModalPeer from '../UserModals/StreamModalPeer'
 import { useLocation } from 'react-router-dom'
+import GroupSettingsModal from '../UserModals/GroupSettingsModal'
 
 var selectedChatCompare;
 
@@ -201,10 +202,10 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
     <>
       {stream && (
         <>
-        <Box onClick={() => setToggleChat(false)} p='10px' background='#f0ecfb' display={['flex', 'flex', 'none']} justifyContent='space-between' alignItems='center'>
+          <Box onClick={() => setToggleChat(false)} p='10px' background='#f0ecfb' display={['flex', 'flex', 'none']} justifyContent='space-between' alignItems='center'>
             <Text>Messages</Text>
             <Image src="https://ik.imagekit.io/sahildhingra/down-arrow.png" h='20px' />
-        </Box>
+          </Box>
         </>
       )}
       {/* MIDDLE PART  */}
@@ -320,7 +321,7 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
 }
 
 const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) => {
-  const { dispatch, fullScreen } = React.useContext(AppContext);
+  const { dispatch } = React.useContext(AppContext);
   const [groupChatName, setGroupChatName] = React.useState('');
   const [renameLoading, setRenameLoading] = React.useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -592,52 +593,16 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
             <ChatBoxComponent flex='1' height={'78%'} setOnline={setOnline} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} user={user} toast={toast} selectedChat={selectedChat} meetingId={meetingId} />
 
             {/* Group Settings Modal */}
-            <Modal isOpen={isOpen} onClose={onClose}>
-              <ModalOverlay />
-              <ModalContent>
-                <ModalHeader>Settings</ModalHeader>
-                <ModalCloseButton />
-
-                <ModalBody>
-                  <hr />
-                  {renameLoading ?
-                    <Box display={'flex'}
-                      alignItems={'center'}
-                      justifyContent={'center'}
-                      my={2}>
-                      <Spinner
-                        thickness='4px'
-                        speed='0.7s'
-                        emptyColor='gray.200'
-                        color='buttonPrimaryColor'
-                        size='md'
-                      />
-                    </Box>
-                    :
-                    <Box display={'flex'} flexDirection={'column'} mt="30px" mb={fullScreen ? '50px' : '2'}>
-                      <Input
-                        mr={'2'}
-                        value={groupChatName}
-                        placeholder={selectedChat?.chatName}
-                        _placeholder={{ color: 'inherit' }}
-                        onChange={(e) => setGroupChatName(e.target.value)}
-                      />
-                    </Box>
-                  }
-                </ModalBody>
-
-                <ModalFooter justifyContent='space-between'>
-                  <Box my={fullScreen ? '2' : '0'}>
-                    <Button size={fullScreen ? 'md' : 'sm'} onClick={onConfirmOpen} rightIcon={<HiUserRemove />} colorScheme='red' variant='outline'>
-                      Leave Group
-                    </Button>
-                  </Box>
-                  <button className='btn btn-primary' onClick={handleRename}>
-                    Update
-                  </button>
-                </ModalFooter>
-              </ModalContent>
-            </Modal>
+            <GroupSettingsModal
+              isOpen={isOpen}
+              onClose={onClose}
+              chatName={selectedChat?.chatName}
+              groupChatName={groupChatName}
+              setGroupChatName={setGroupChatName}
+              handleRename={handleRename}
+              renameLoading={renameLoading}
+              onConfirmOpen={onConfirmOpen}
+            />
 
             <EndLeaveModal
               leastDestructiveRef={cancelRef}

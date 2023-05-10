@@ -8,8 +8,6 @@ import {
   Grid,
   Text,
   Heading,
-  Button,
-  Container,
   Flex,
   Image,
   UnorderedList,
@@ -18,7 +16,6 @@ import {
 } from '@chakra-ui/react';
 
 import Static from "../components/common/Static"
-import EventCard from '../components/Events/EventCard';
 import GroupCard from '../components/Groups/GroupCard';
 import axios from 'axios';
 import { backend_url } from '../baseApi';
@@ -29,6 +26,7 @@ function Groups() {
   const [groupsList, setGroupsList] = useState([])
   const [activeTab, setActiveTab] = useState(1)
   const [groupConversations, setGroupConversations] = React.useState([]);
+  const [fetchAgain, setFetchAgain] = useState(false);
 
   const { userInfo } = React.useContext(AppContext);
 
@@ -82,7 +80,7 @@ function Groups() {
 
     fetchChats();
     listGroups();
-  }, [toast, user.token])
+  }, [toast, user.token, fetchAgain])
 
 
   return (
@@ -119,10 +117,13 @@ function Groups() {
                     {groupsList.map((groupItem) => (
                       <GroupCard
                         key={groupItem._id}
+                        chatId={groupItem._id}
                         name={groupItem.chatName}
                         members={groupItem.users.length}
                         upcomingEvents={groupItem.events.length}
                         isAdmin={userInfo._id === groupItem.groupAdmin._id}
+                        fetchAgain={fetchAgain}
+                        setFetchAgain={setFetchAgain}
                       />
                     ))}
                   </Grid>
@@ -147,10 +148,13 @@ function Groups() {
                     {groupConversations.map((groupItem) => (
                       <GroupCard
                         key={groupItem._id}
+                        chatId={groupItem._id}
                         name={groupItem.chatName}
                         members={groupItem.users.length}
                         upcomingEvents={groupItem.events.length}
                         isAdmin={userInfo._id === groupItem.groupAdmin._id}
+                        fetchAgain={fetchAgain}
+                        setFetchAgain={setFetchAgain}
                       />
                     ))}
                   </Grid>
@@ -177,10 +181,14 @@ function Groups() {
                         const adminStatus = true;
                         return (
                           <GroupCard
+                            key={groupItem._id}
+                            chatId={groupItem._id}
                             name={groupItem.chatName}
                             members={groupItem.users.length}
                             upcomingEvents={groupItem.events.length}
                             isAdmin={adminStatus}
+                            fetchAgain={fetchAgain}
+                            setFetchAgain={setFetchAgain}
                           />
                         )
                       }

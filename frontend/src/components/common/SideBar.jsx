@@ -89,7 +89,7 @@ const SideBar = ({
             {NavMenu.map((navitem) => {
               return (
                 !navitem?.disable && (
-                  <ListItem flex={["unset"]} py={"4px"} fontWeight={"600"}>
+                  <ListItem key={navitem.title} flex={["unset"]} py={"4px"} fontWeight={"600"}>
                     <NavLink to={"/" + navitem.url}>
                       <Image
                         src={
