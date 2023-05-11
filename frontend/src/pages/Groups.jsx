@@ -20,6 +20,7 @@ import GroupCard from '../components/Groups/GroupCard';
 import axios from 'axios';
 import { backend_url } from '../baseApi';
 import { AppContext } from '../context/AppContext';
+import GroupChatModal from '../components/UserModals/GroupChatModal';
 
 function Groups() {
   const user = JSON.parse(localStorage.getItem('user'));
@@ -88,12 +89,18 @@ function Groups() {
       <Static>
         <Flex pb={['10px', '30px']} alignItems='center' justifyContent='space-between'>
           <Heading as='h1' size='lg' fontWeight='500'>Groups</Heading>
-          <NavLink className='btn btn-primary' to="/video-chat">
-            <Flex alignItems='center'>
-              <Image h='18px' pe='15px' src='https://ik.imagekit.io/sahildhingra/add.png?ik-sdk-version=javascript-1.4.3&updatedAt=1673025917620' />
-              <Text>Create New</Text>
-            </Flex>
-          </NavLink>
+          <GroupChatModal
+            user={userInfo}
+            fetchAgain={fetchAgain}
+            setFetchAgain={setFetchAgain}
+          >
+            <NavLink className='btn btn-primary'>
+              <Flex alignItems='center'>
+                <Image h='18px' pe='15px' src='https://ik.imagekit.io/sahildhingra/add.png?ik-sdk-version=javascript-1.4.3&updatedAt=1673025917620' />
+                <Text>Create New</Text>
+              </Flex>
+            </NavLink>
+          </GroupChatModal>
         </Flex>
 
 
@@ -119,7 +126,8 @@ function Groups() {
                         key={groupItem._id}
                         chatId={groupItem._id}
                         name={groupItem.chatName}
-                        members={groupItem.users.length}
+                        members={groupItem.users}
+                        admin={groupItem.groupAdmin}
                         upcomingEvents={groupItem.events.length}
                         isAdmin={userInfo._id === groupItem.groupAdmin._id}
                         fetchAgain={fetchAgain}
@@ -150,9 +158,10 @@ function Groups() {
                         key={groupItem._id}
                         chatId={groupItem._id}
                         name={groupItem.chatName}
-                        members={groupItem.users.length}
+                        members={groupItem.users}
                         upcomingEvents={groupItem.events.length}
                         isAdmin={userInfo._id === groupItem.groupAdmin._id}
+                        admin={groupItem.groupAdmin}
                         fetchAgain={fetchAgain}
                         setFetchAgain={setFetchAgain}
                       />
@@ -184,9 +193,10 @@ function Groups() {
                             key={groupItem._id}
                             chatId={groupItem._id}
                             name={groupItem.chatName}
-                            members={groupItem.users.length}
+                            members={groupItem.users}
                             upcomingEvents={groupItem.events.length}
                             isAdmin={adminStatus}
+                            admin={groupItem.groupAdmin}
                             fetchAgain={fetchAgain}
                             setFetchAgain={setFetchAgain}
                           />

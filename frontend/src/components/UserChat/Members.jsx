@@ -1,11 +1,9 @@
 import React, {
-  useContext,
   useState,
 } from 'react'
 import ChatOnline from '../Miscellaneous/ChatOnline'
 import { AppContext } from '../../context/AppContext'
 import axios from 'axios'
-import UserListItem from '../UserItems/UserListItem'
 import { backend_url, pictureUpload } from '../../baseApi'
 import { HiUserRemove } from 'react-icons/hi'
 import {
@@ -16,13 +14,11 @@ import { GrUserAdd } from 'react-icons/gr'
 import { BsTelephone, BsPerson } from 'react-icons/bs'
 import { ChatBoxComponent } from './Chatbox'
 import EndLeaveModal from '../UserModals/EndLeaveModal'
-import { RoomContext } from '../../context/RoomContext'
 import EventCard from '../Events/EventCard'
 import { NavLink } from 'react-router-dom'
 
-import { useNavigate } from 'react-router-dom';
-import { FiUpload } from 'react-icons/fi';
 import EventModal from '../UserModals/EventModal'
+import AddMembersModal from '../UserModals/AddMembersModal'
 
 export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, setFetchAgain, admin }) => {
   const user = JSON.parse(localStorage.getItem('user'));
@@ -31,7 +27,6 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
 
   const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure()
   const { isOpen: isOpenCreateEvent, onOpen: onOpenCreateEvent, onClose: onCloseCreateEvent } = useDisclosure()
-
   const { isOpen: isConfirmOpen, onOpen: onConfirmOpen, onClose: onConfirmClose } = useDisclosure()
 
   const cancelRef = React.useRef()
@@ -554,76 +549,8 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
               <EventModal type={"Create"} createEventLoading={createEventLoading} isOpenCreateEvent={isOpenCreateEvent} onCloseCreateEvent={onCloseCreateEvent} name={name} setEventName={setEventName} description={description} setDescription={setDescription} date={date} setDate={setDate} time={time} setTime={setTime} selectedImage={selectedImage} imageChange={imageChange} handleSubmit={handleCreateEvent} fileInputRef={fileInputRef} />
 
               {/* Add Member Modal */}
-              <Modal size={['xs', 'xs', 'xl', 'lg']} isOpen={isAddOpen} onClose={onAddClose}>
-                <ModalOverlay />
-                <ModalContent>
-                  <ModalHeader>Add Member</ModalHeader>
-                  <ModalCloseButton />
-                  <ModalBody maxHeight={'lg'} overflow={'hidden'}>
-                    <Input
-                      value={search}
-                      placeholder="Search Member" onChange={handleSearch}
-                      focusBorderColor='#9F85F7'
-                    />
-                    {loading
-                      ?
-                      <Box
-                        display={'flex'}
-                        alignItems={'center'}
-                        justifyContent={'center'}
-                        height={fullScreen ? '48' : '8'}
-                      >
-                        <Spinner
-                          thickness='4px'
-                          speed='0.6s'
-                          emptyColor='gray.200'
-                          color='buttonPrimaryColor'
-                          size='xl'
-                        />
-                      </Box>
-                      :
-                      <Box height={fullScreen ? '48' : '8'}
-                        overflowY={'scroll'}>
-                        {search.length > 0 ?
-                          searchResults?.map(user => (
-                            <Box
-                              my={'2'}
-                              _hover={{
-                                background: '#b5cbfe',
-                                color: 'white',
-                              }}
-                              bg={'#E8E8E8'}
-                              p={2}
-                              cursor={'pointer'}
-                              mx={'2rem'}
-                              borderRadius="lg"
-                              key={user._id}
-                              onClick={
-                                () => handleAddUser(user._id)
-                              }
-                            >
-                              <UserListItem user={user} />
-                            </Box>
-                          ))
-                          :
-                          <Box display={'flex'} alignItems={'center'} justifyContent={'center'}
-                            height={'100%'} >
-                            <Text fontSize={'x-large'}
-                              fontWeight={'bold'}
-                              color={'#9F85F7'} >Search for a user</Text>
-                          </Box>
-                        }
-                      </Box>
-                    }
-                  </ModalBody>
+              <AddMembersModal isAddOpen={isAddOpen} onAddClose={onAddClose} handleSearch={handleSearch} search={search} searchResults={searchResults} loading={loading} handleAddUser={handleAddUser} fullScreen={fullScreen} />
 
-                  <ModalFooter>
-                    <Button backgroundColor={'buttonPrimaryColor'} color={'white'} mr={3} onClick={onAddClose}>
-                      Close
-                    </Button>
-                  </ModalFooter>
-                </ModalContent>
-              </Modal>
             </TabPanel>
 
 
