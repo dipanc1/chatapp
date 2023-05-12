@@ -128,7 +128,7 @@ function Groups() {
                         name={groupItem.chatName}
                         members={groupItem.users}
                         admin={groupItem.groupAdmin}
-                        upcomingEvents={groupItem.events.length}
+                        upcomingEvents={groupItem.events}
                         isAdmin={userInfo._id === groupItem.groupAdmin._id}
                         fetchAgain={fetchAgain}
                         setFetchAgain={setFetchAgain}
@@ -159,7 +159,7 @@ function Groups() {
                         chatId={groupItem._id}
                         name={groupItem.chatName}
                         members={groupItem.users}
-                        upcomingEvents={groupItem.events.length}
+                        upcomingEvents={groupItem.events}
                         isAdmin={userInfo._id === groupItem.groupAdmin._id}
                         admin={groupItem.groupAdmin}
                         fetchAgain={fetchAgain}
@@ -194,7 +194,7 @@ function Groups() {
                             chatId={groupItem._id}
                             name={groupItem.chatName}
                             members={groupItem.users}
-                            upcomingEvents={groupItem.events.length}
+                            upcomingEvents={groupItem.events}
                             isAdmin={adminStatus}
                             admin={groupItem.groupAdmin}
                             fetchAgain={fetchAgain}

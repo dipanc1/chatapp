@@ -2,9 +2,10 @@ import { Box, Flex, Image, ListItem, Text, UnorderedList, useDisclosure, useToas
 import React, { useState } from 'react'
 import GroupSettingsModal from '../UserModals/GroupSettingsModal';
 import axios from 'axios';
-import { backend_url } from '../../baseApi';
+import { backend_url, pictureUpload } from '../../baseApi';
 import AddMembersModal from '../UserModals/AddMembersModal';
 import { AppContext } from '../../context/AppContext';
+import EventModal from '../UserModals/EventModal';
 
 const GroupCard = ({
   chatId,
@@ -23,13 +24,228 @@ const GroupCard = ({
   const [renameLoading, setRenameLoading] = React.useState(false);
   const [search, setSearch] = React.useState('');
   const [searchResults, setSearchResults] = React.useState([]);
+  const [eventName, setEventName] = useState("");
+  const [description, setDescription] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [selectedImage, setSelectedImage] = React.useState(null);
+  const [createEventLoading, setCreateEventLoading] = useState(false)
+
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure()
+  const { isOpen: isOpenCreateEvent, onOpen: onOpenCreateEvent, onClose: onCloseCreateEvent } = useDisclosure()
+
 
   const { userInfo, fullScreen } = React.useContext(AppContext);
 
   const toast = useToast();
+
+  
+  const fileInputRef = React.createRef();
+
+  const imageChange = (e) => {
+    if (e.target.files && e.target.files.length > 0 && (e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/png')) {
+      setSelectedImage(e.target.files[0]);
+    } else {
+      alert('Please select a valid image file');
+    }
+  }
+
+  const handleCreateEvent = async (e) => {
+    setCreateEventLoading(true)
+    e.preventDefault();
+
+    if (admin._id !== user._id) {
+      setCreateEventLoading(false)
+      toast({
+        title: "You are not the admin of this group",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setEventName("");
+      setDescription("");
+      setDate("");
+      setTime("");
+      setSelectedImage(null);
+      return;
+    }
+
+    if (name === "" || description === "" || date === "" || time === "") {
+      setCreateEventLoading(false)
+      toast({
+        title: "Please fill all the fields",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      return;
+    }
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    };
+
+
+    if (selectedImage === null) {
+      await axios.put(`${backend_url}/conversation/event/${chatId}`, {
+        name,
+        description,
+        date,
+        time
+      }, config)
+        .then(async (res) => {
+          await axios.get(`${backend_url}/conversation/event/${chatId}`, config).then((res) => {
+            toast({
+              title: "Event Created!",
+              description: "Event created successfully",
+              status: "success",
+              duration: 5000,
+              isClosable: true,
+              position: "bottom-left",
+            });
+            setCreateEventLoading(false);
+            setEventName("");
+            setDescription("");
+            setDate("");
+            setTime("");
+            setSelectedImage(null);
+            onCloseCreateEvent();
+            setFetchAgain(!fetchAgain);
+          }).catch((err) => {
+            console.log(err);
+            toast({
+              title: "Error Occured!",
+              description: "Something went wrong",
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+              position: "bottom-left",
+            });
+            setCreateEventLoading(false);
+            setEventName("");
+            setDescription("");
+            setDate("");
+            setTime("");
+            setSelectedImage(null);
+            onCloseCreateEvent();
+          })
+        })
+        .catch((err) => {
+          console.log(err);
+          toast({
+            title: "Error Occured!",
+            description: "Something went wrong",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom-left",
+          });
+          setCreateEventLoading(false);
+          setEventName("");
+          setDescription("");
+          setDate("");
+          setTime("");
+          setSelectedImage(null);
+          onCloseCreateEvent();
+        });
+    } else {
+      const formData = new FormData();
+      formData.append('api_key', '835688546376544')
+      formData.append('file', selectedImage);
+      formData.append('upload_preset', 'chat-app');
+
+      await axios.post(pictureUpload, formData)
+        .then(async (res) => {
+          await axios.put(`${backend_url}/conversation/event/${chatId}`, {
+            name,
+            description,
+            date,
+            time,
+            thumbnail: res.data.url
+          }, config)
+            .then(async (res) => {
+              await axios.get(`${backend_url}/conversation/event/${chatId}`, config).then((res) => {
+                upcomingEvents = res.data;
+                toast({
+                  title: "Event Created!",
+                  description: "Event created successfully",
+                  status: "success",
+                  duration: 5000,
+                  isClosable: true,
+                  position: "bottom-left",
+                });
+                setCreateEventLoading(false);
+                setEventName("");
+                setDescription("");
+                setDate("");
+                setTime("");
+                setSelectedImage(null);
+                onCloseCreateEvent();
+              }).catch((err) => {
+                console.log(err);
+                toast({
+                  title: "Error Occured!",
+                  description: "Something went wrong",
+                  status: "error",
+                  duration: 5000,
+                  isClosable: true,
+                  position: "bottom-left",
+                });
+                setCreateEventLoading(false);
+                setEventName("");
+                setDescription("");
+                setDate("");
+                setTime("");
+                setSelectedImage(null);
+                onCloseCreateEvent();
+              })
+            })
+            .catch((err) => {
+              console.log(err);
+              toast({
+                title: "Error Occured!",
+                description: "Something went wrong",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "bottom-left",
+              });
+              setCreateEventLoading(false);
+              setEventName("");
+              setDescription("");
+              setDate("");
+              setTime("");
+              setSelectedImage(null);
+              onCloseCreateEvent();
+            });
+        })
+        .catch((err) => {
+          console.log(err);
+          toast({
+            title: "Error Occured!",
+            description: "Something went wrong",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom-left",
+          });
+          setCreateEventLoading(false);
+          setEventName("");
+          setDescription("");
+          setDate("");
+          setTime("");
+          setSelectedImage(null);
+          onCloseCreateEvent();
+        });
+    }
+
+  }
 
   const handleRename = async () => {
     if (!groupChatName) {
@@ -187,7 +403,7 @@ const GroupCard = ({
                       <Image h='22px' me='15px' src="https://ik.imagekit.io/sahildhingra/user.png" />
                       <Text>Add Member</Text>
                     </ListItem>
-                    <ListItem cursor={"pointer"} whiteSpace='pre' p='10px 50px 10px 20px' display='flex' alignItems='center'>
+                    <ListItem cursor={"pointer"} onClick={onOpenCreateEvent} whiteSpace='pre' p='10px 50px 10px 20px' display='flex' alignItems='center'>
                       <Image h='22px' me='15px' src="https://ik.imagekit.io/sahildhingra/events.png" />
                       <Text>Create Event</Text>
                     </ListItem>
@@ -209,7 +425,7 @@ const GroupCard = ({
         </Box>
         <Box textAlign="right">
           <Text color="#032E2B" fontWeight="600" as="h3">Upcoming Events</Text>
-          <Text color="#737373">{upcomingEvents}</Text>
+          <Text color="#737373">{upcomingEvents.length}</Text>
         </Box>
       </Flex>
       <GroupSettingsModal
@@ -224,6 +440,9 @@ const GroupCard = ({
       />
 
       <AddMembersModal isAddOpen={isAddOpen} onAddClose={onAddClose} handleSearch={handleSearch} search={search} searchResults={searchResults} loading={loading} handleAddUser={handleAddUser} fullScreen={fullScreen} />
+
+      {/* Create Event Modal */}
+      <EventModal type={"Create"} createEventLoading={createEventLoading} isOpenCreateEvent={isOpenCreateEvent} onCloseCreateEvent={onCloseCreateEvent} name={eventName} setEventName={setEventName} description={description} setDescription={setDescription} date={date} setDate={setDate} time={time} setTime={setTime} selectedImage={selectedImage} imageChange={imageChange} handleSubmit={handleCreateEvent} fileInputRef={fileInputRef} />
     </Box>
   )
 }
