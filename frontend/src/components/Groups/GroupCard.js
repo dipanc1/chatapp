@@ -384,7 +384,7 @@ const GroupCard = ({
       <Flex justifyContent="space-between">
         <Flex>
           <Flex>
-            <Text as="h2" color="#9F85F7" fontSize="26px" fontWeight="500">{name}</Text>
+            <Text cursor={'default'} as="h2" color="#9F85F7" fontSize="26px" fontWeight="500">{name}</Text>
           </Flex>
           {
             isAdmin && (
