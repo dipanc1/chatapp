@@ -74,7 +74,12 @@ const newColorTheme = {
   },
   secondary: {
     100: '#9F85F7',
-  }
+  },
+  plans: {
+    100: '#9F85F7',
+    200: '#3CC4B7',
+    300: '#FFD700',
+  },
 };
 
 const theme = extendTheme({ colors: newColorTheme });

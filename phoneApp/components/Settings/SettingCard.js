@@ -5,11 +5,14 @@ import axios from 'axios';
 import { backend_url } from '../../production';
 import { TouchableOpacity } from 'react-native';
 import { useStripe } from '@stripe/stripe-react-native';
+import Accordian from '../Miscellaneous/Accordian';
 
 const SettingCard = ({ name, user }) => {
     const [value, setValue] = React.useState('light');
     const [subscribeData, setSubscribeData] = React.useState({});
     const [loading, setLoading] = React.useState(false);
+    const [accordianOpen, setAccordianOpen] = React.useState(false);
+    const [accordianIndex, setAccordianIndex] = React.useState(0);
 
     const { initPaymentSheet, presentPaymentSheet } = useStripe();
 
@@ -55,11 +58,28 @@ const SettingCard = ({ name, user }) => {
         }
     ];
 
-    const dataArray = [
-        { title: "First Element", content: "Lorem ipsum dolor sit amet" },
-        { title: "Second Element", content: "Lorem ipsum dolor sit amet" },
-        { title: "Third Element", content: "Lorem ipsum dolor sit amet" }
+    const faqData = [
+        { title: "How to add new payment method?", content: "Lorem ipsum dolor sit amet" },
+        { title: "Show can I download invoice for my payment?", content: "Lorem ipsum dolor fjrwejk jnfglwrntfgio uhfowrnfgio uiofhilwer sit amet" },
+        { title: "Need help with resetting the password?", content: "Lorem ipsum dolor jfgoerg jkgnfjowr gjk jnfjlwnfio jknfjwsnofj wjkkbnfjklwn jkf mkjnfgnwejor jobnjowefow jkn fjkownfio wejk jofniowrenfgj werjo uj iouru sit amet" },
+        { title: "How can I upgrade my existing plan?", content: "Lorem ipsum dolonfuwrenof uinfuinwejf wuien uiehfbuiewn fjo ewuibnfie uinfjiwenfuinewj uin ujewnuifn weojinrfiufnjwern jf jifnuiwenfji wefjibfji rfji rweji fjwrbfjewnrfjwerujfbewuiobfguiqwerbfguiqui rtuiweg uifu  hfhuherwui h8hf uioewhfuioh uifguo ehuif uerh eui houieh r sit amet" },
+        { title: "How can I cancel my subscription?", content: "Lorem ipsum dolor sit amet jfheui ufuewui egdf iouy ioe uiofhioh iohf if hoof hujf hojf hjkf khjf  fhuie" },
+        { title: "How can I delete my account?", content: "Lorem ipsum dolor sit amet" }
     ];
+
+    const invoices = [
+        { id: 6, planType: "Elite", purchasedOn: "12th June, 2021", expiringOn: "12th July, 2021", amount: "$127" },
+        { id: 1, planType: "Premium", purchasedOn: "12th May, 2021", expiringOn: "12th June, 2021", amount: "$114" },
+        { id: 2, planType: "Basic", purchasedOn: "12th April, 2021", expiringOn: "12th May, 2021", amount: "$99" },
+        { id: 3, planType: "Basic", purchasedOn: "12th March, 2021", expiringOn: "12th April, 2021", amount: "$99" },
+        { id: 4, planType: "Basic", purchasedOn: "12th February, 2021", expiringOn: "12th March, 2021", amount: "$99" },
+        { id: 5, planType: "Basic", purchasedOn: "12th January, 2021", expiringOn: "12th February, 2021", amount: "$99" },
+    ];
+
+    const openAccordian = (index) => {
+        setAccordianOpen(!accordianOpen);
+        setAccordianIndex(index);
+    }
 
     const handlePlanSelection = (id, name, amount) => {
         const newSubscribeData = {
@@ -346,9 +366,12 @@ const SettingCard = ({ name, user }) => {
                                     <Divider bg="primary.500" thickness="1" orientation="horizontal" />
                                     <VStack my={"10"} space="3" justifyContent={"center"} alignItems={"flex-start"}>
                                         <Text fontSize={'xl'} fontWeight={'bold'} color={'white'} my={'2'}>Invoices</Text>
-                                        <Button bg={'primary.300'} color={'white'} _text={{ fontWeight: 'bold' }}>
-                                            Download Invoices
-                                        </Button>
+                                        <VStack my={"8"} space="3" justifyContent={"center"} alignItems={"center"}>
+                                            {invoices.map((invoice, index) => (
+                                                <Accordian data={invoice} index={index} openAccordian={openAccordian} accordianOpen={accordianOpen} accordianIndex={accordianIndex} invoices={true} />
+                                            ))
+                                            }
+                                        </VStack>
                                     </VStack>
                                 </Box>
                             </ScrollView>
@@ -375,9 +398,14 @@ const SettingCard = ({ name, user }) => {
                                         ))}
                                     </VStack>
                                     <Divider bg="primary.500" thickness="1" orientation="horizontal" mt={"4"} />
-                                    <VStack my={"8"} space="3" justifyContent={"center"} alignItems={"flex-start"}>
+                                    <Box my={"8"}>
                                         <Text fontSize={'xl'} fontWeight={'bold'} color={'white'} my={'2'}>Frequency Asked Questions</Text>
-                                    </VStack>
+                                        <VStack my={"8"} space="3" justifyContent={"center"} alignItems={"center"}>
+                                            {faqData.map((data, index) => (
+                                                <Accordian data={data} index={index} openAccordian={openAccordian} accordianOpen={accordianOpen} accordianIndex={accordianIndex} invoices={false} />
+                                            ))}
+                                        </VStack>
+                                    </Box>
                                 </Box>
                             </ScrollView>
                         )
