@@ -5,10 +5,14 @@ const Chat = require("../models/Conversation");
 const EventTable = require("../models/EventTable");
 
 const asyncHandler = require("express-async-handler");
+const { protect } = require("../middleware/authMiddleware");
+const { generateChatToken } = require("../config/generateToken");
+const jwt = require("jsonwebtoken");
+
 
 
 //new chat
-router.post("/", asyncHandler(async (req, res) => {
+router.post("/", protect, asyncHandler(async (req, res) => {
 
     const { userId } = req.body;
 
@@ -56,7 +60,7 @@ router.post("/", asyncHandler(async (req, res) => {
 
 
 //get all chats of user
-router.get("/", async (req, res) => {
+router.get("/", protect, async (req, res) => {
     try {
         Chat.find({
             users: { $elemMatch: { $eq: req.user._id } }
@@ -80,7 +84,7 @@ router.get("/", async (req, res) => {
 
 
 // get all group chats with pagination
-router.get("/all/:page", asyncHandler(async (req, res) => {
+router.get("/all/:page", protect, asyncHandler(async (req, res) => {
     const { page } = req.params;
     const limit = 10;
     const skip = (page - 1) * limit;
@@ -102,7 +106,7 @@ router.get("/all/:page", asyncHandler(async (req, res) => {
 
 
 // get chat by id
-router.get("/:id", asyncHandler(async (req, res) => {
+router.get("/:id", protect, asyncHandler(async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -123,8 +127,50 @@ router.get("/:id", asyncHandler(async (req, res) => {
 }));
 
 
+// get encrypted chatid by chatid
+router.get("/encrypted/:id", protect, asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const encryptedChatId = generateChatToken(id);
+        res.status(200).json({
+            encryptedChatId
+        });
+    } catch (error) {
+        res.status(500).send("Something went wrong")
+    }
+}));
+
+
+// get chat by encrypted id
+router.get("/encrypted/chat/:id", asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        jwt.verify(id, process.env.CHATID_SECRET, async (err, decoded) => {
+            if (err) {
+                return res.status(500).send("Something went wrong")
+            }
+
+            const findChat = await Chat.findById(decoded.id)
+                .populate("users", "-password")
+                .populate("groupAdmin", "-password")
+                .populate("events");
+
+            if (!findChat) {
+                return res.status(404).send("No chat found")
+            }
+
+            res.status(200).json(findChat);
+        })
+    } catch (error) {
+        res.status(500).send("Something went wrong")
+    }
+}));
+
+
 // create groups
-router.post("/group", asyncHandler(async (req, res) => {
+router.post("/group", protect, asyncHandler(async (req, res) => {
     if (!req.body.users || !req.body.name) {
         return res.status(400).send("All Feilds are required")
     }
@@ -155,7 +201,7 @@ router.post("/group", asyncHandler(async (req, res) => {
 
 
 //renaming group
-router.put("/rename", asyncHandler(async (req, res) => {
+router.put("/rename", protect, asyncHandler(async (req, res) => {
     const { chatId, chatName } = req.body;
     const updatedChat = await Chat.findByIdAndUpdate(chatId, { chatName }, { new: true })
         .populate("users", "-password")
@@ -170,13 +216,18 @@ router.put("/rename", asyncHandler(async (req, res) => {
 
 
 // adding in group
-router.put("/groupadd", asyncHandler(async (req, res) => {
+router.put("/groupadd", protect, asyncHandler(async (req, res) => {
     const { chatId, userId } = req.body;
 
     const isUser = await Chat.findOne({ _id: chatId, users: { $elemMatch: { $eq: userId } } });
 
     if (isUser) {
-        return res.status(400).send("User is already in the group");
+        return await Chat.findOne({ _id: chatId })
+            .populate("users", "-password")
+            .populate("groupAdmin", "-password")
+            .then((results) => {
+                res.status(200).json(results);
+            })
     }
 
     const added = await Chat.findByIdAndUpdate(chatId, {
@@ -184,6 +235,7 @@ router.put("/groupadd", asyncHandler(async (req, res) => {
     }, { new: true })
         .populate("users", "-password")
         .populate("groupAdmin", "-password")
+        .populate("events");
 
     if (!added) {
         return res.status(404).send("Chat not found")
@@ -194,7 +246,7 @@ router.put("/groupadd", asyncHandler(async (req, res) => {
 
 
 // removing people from group
-router.put("/groupremove", asyncHandler(async (req, res) => {
+router.put("/groupremove", protect, asyncHandler(async (req, res) => {
     const { chatId, userId } = req.body;
 
     // check if group admin leave make some other admin
@@ -221,7 +273,7 @@ router.put("/groupremove", asyncHandler(async (req, res) => {
 
 
 // start streaming
-router.put("/stream", asyncHandler(async (req, res) => {
+router.put("/stream", protect, asyncHandler(async (req, res) => {
     // console.log(req.body)
     const { data } = req.body;
 
@@ -243,7 +295,7 @@ router.put("/stream", asyncHandler(async (req, res) => {
 
 
 // stop streaming
-router.put("/stop-stream", asyncHandler(async (req, res) => {
+router.put("/stop-stream", protect, asyncHandler(async (req, res) => {
     // console.log(req.body)
     const { data } = req.body;
 
@@ -263,7 +315,7 @@ router.put("/stop-stream", asyncHandler(async (req, res) => {
 
 
 // get streaming meeting id
-router.get("/streaming/:chatid", asyncHandler(async (req, res) => {
+router.get("/streaming/:chatid", protect, asyncHandler(async (req, res) => {
 
     const { chatid } = req.params;
 
@@ -280,7 +332,7 @@ router.get("/streaming/:chatid", asyncHandler(async (req, res) => {
 
 
 // add an event to the group conversation
-router.put("/event/:chatId", asyncHandler(async (req, res) => {
+router.put("/event/:chatId", protect, asyncHandler(async (req, res) => {
     const { name, description, date, time, thumbnail } = req.body;
     const { chatId } = req.params;
 
@@ -322,7 +374,7 @@ router.put("/event/:chatId", asyncHandler(async (req, res) => {
 
 
 // edit event 
-router.put("/event/edit/:eventId", asyncHandler(async (req, res) => {
+router.put("/event/edit/:eventId", protect, asyncHandler(async (req, res) => {
     const { name, description, date, time, thumbnail, chatId } = req.body;
     const { eventId } = req.params;
     const userId = req.user._id;
@@ -351,7 +403,7 @@ router.put("/event/edit/:eventId", asyncHandler(async (req, res) => {
 
 
 // delete event
-router.delete("/event/delete/:eventId/:chatId", asyncHandler(async (req, res) => {
+router.delete("/event/delete/:eventId/:chatId", protect, asyncHandler(async (req, res) => {
     const { eventId, chatId } = req.params;
     const userId = req.user._id;
 
@@ -383,7 +435,7 @@ router.delete("/event/delete/:eventId/:chatId", asyncHandler(async (req, res) =>
 
 
 // get events of a particular group
-router.get("/event/:chatId", asyncHandler(async (req, res) => {
+router.get("/event/:chatId", protect, asyncHandler(async (req, res) => {
     const { chatId } = req.params;
 
     const findGroupById = await Chat.findById(chatId).populate("events");
@@ -397,7 +449,7 @@ router.get("/event/:chatId", asyncHandler(async (req, res) => {
 
 
 // get all events with pagination
-router.get("/event/all/:page", asyncHandler(async (req, res) => {
+router.get("/event/all/:page", protect, asyncHandler(async (req, res) => {
     const { page } = req.params;
     const limit = 10;
     const skip = (page - 1) * limit;

@@ -18,9 +18,14 @@ const generateRefreshToken = (id) => {
         expiresIn: EXPIRES_IN,
     });
 };
-    
+
+const generateChatToken = (id) => {
+    const SECRET_KEY = process.env.CHATID_SECRET;
+    return jwt.sign({ id }, SECRET_KEY);
+};
 
 module.exports = {
     generateToken,
     generateRefreshToken,
+    generateChatToken,
 };

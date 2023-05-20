@@ -22,6 +22,7 @@ import { AddIcon } from "@chakra-ui/icons";
 
 export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
     const { dispatch, chats, selectedChat, conversations, groupConversations, loading, userInfo } = React.useContext(AppContext);
+    const [tabIndex, setTabIndex] = React.useState(0);
 
     const user = JSON.parse(localStorage.getItem("user"));
     const toast = useToast();
@@ -65,6 +66,9 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
 
     React.useEffect(() => {
         fetchChats();
+        if (selectedChat && selectedChat?.isGroupChat) {
+            setTabIndex(1);
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [fetchAgain, selectedChat]);
 
@@ -81,7 +85,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
     return (
         <>
 
-            <Tabs>
+            <Tabs tabIndex={tabIndex}>
                 <TabList>
                     <Tab flex="1">Users</Tab>
                     <Tab flex="1">Groups</Tab>

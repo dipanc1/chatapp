@@ -1,10 +1,20 @@
 import React from 'react'
 import {
-    Box, Button, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Text
+    Box, Button, HStack, Input, InputGroup, InputLeftAddon, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Text
 } from '@chakra-ui/react'
 import UserListItem from '../UserItems/UserListItem'
 
-const AddMembersModal = ({ isAddOpen, onAddClose, handleSearch, handleAddUser, loading, search, searchResults, fullScreen }) => {
+const AddMembersModal = ({ isAddOpen, onAddClose, handleSearch, handleAddUser, loading, search, searchResults, fullScreen, chatIdValue }) => {
+    const [hasCopied, setHasCopied] = React.useState(false)
+    React.useEffect(() => {
+        setHasCopied(false)
+    }, [chatIdValue])
+
+    const copyLink = () => {
+        setHasCopied(true)
+        navigator.clipboard.writeText(chatIdValue)
+    }
+
 
     return (
         <Modal size={['xs', 'xs', 'xl', 'lg']} isOpen={isAddOpen} onClose={onAddClose}>
@@ -13,9 +23,23 @@ const AddMembersModal = ({ isAddOpen, onAddClose, handleSearch, handleAddUser, l
                 <ModalHeader>Add Member</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody maxHeight={'lg'} overflow={'hidden'}>
+                    <HStack mb={2}>
+                        <InputGroup>
+                            <InputLeftAddon children="Invite Link" />
+                            <Input
+                                placeholder={"Copy Link"}
+                                value={chatIdValue}
+                                disabled
+                                mr={2}
+                                focusBorderColor='#9F85F7'
+                            />
+                            <Button onClick={copyLink}>{hasCopied ? "Copied!" : "Copy"}</Button>
+                        </InputGroup>
+                    </HStack>
                     <Input
                         value={search}
-                        placeholder="Search Member" onChange={handleSearch}
+                        placeholder="Search Member"
+                        onChange={handleSearch}
                         focusBorderColor='#9F85F7'
                     />
                     {loading

@@ -25,11 +25,14 @@ export const AppContextProvider = ({ children }) => {
   const user = JSON.parse(localStorage.getItem("user"));
   const navigate = useNavigate();
   const location = useLocation();
+  const match = location.pathname.match(/join-group\/(.*)/);
+  const matchLogin = location.pathname.match(/join-group\/(.*)\/login/);
+  const matchRegister = location.pathname.match(/join-group\/(.*)\/register/);
   const [state, dispatch] = useReducer(AppReducer, INITIAL_STATE);
 
   useEffect(() => {
     const getUserInfo = async () => {
-      if (location.pathname === "/register" || location.pathname === "/") {
+      if (location.pathname === "/register" || location.pathname === "/" || matchRegister || matchLogin || match) {
         return;
       }
       if (!user) {

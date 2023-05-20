@@ -7,6 +7,7 @@ import {
     IconButton,
     Image,
     Text,
+    Tooltip,
     useToast,
     VStack,
 } from "@chakra-ui/react";
@@ -19,7 +20,7 @@ import {
     BsRecordCircleFill,
 } from "react-icons/bs";
 import { AppContext } from "../../context/AppContext";
-import { backend_url } from "../../baseApi";
+import { backend_url, videoUpload } from "../../baseApi";
 import { MembersComponent } from "../UserChat/Members";
 import { RoomContext } from "../../context/RoomContext";
 import Videoplayer from "./Videoplayer";
@@ -32,20 +33,23 @@ const IconButtonGeneric = ({
     size,
     display,
     disable,
+    toolTip,
 }) => {
     return (
-        <IconButton
-            bg="whiteColor"
-            variant="solid"
-            color={color}
-            aria-label="Call Sage"
-            fontSize="20px"
-            onClick={onClick}
-            icon={icon}
-            size={size}
-            display={display}
-            disabled={disable}
-        />
+        <Tooltip label={toolTip} aria-label='A tooltip'>
+            <IconButton
+                bg="whiteColor"
+                variant="solid"
+                color={color}
+                aria-label="Call Sage"
+                fontSize="20px"
+                onClick={onClick}
+                icon={icon}
+                size={size}
+                display={display}
+                isDisabled={disable}
+            />
+        </Tooltip>
     );
 };
 
@@ -69,10 +73,7 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
         setRoomId,
         userId,
         screenStream,
-        screenShare,
     } = useContext(RoomContext);
-
-    // console.warn("StreamingPeer which is container", id);
 
     const CDN_IMAGES = "https://ik.imagekit.io/sahildhingra";
     const toast = useToast();
@@ -172,10 +173,8 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
     if (streamState !== null) {
         recorder = new MediaRecorder(streamState);
         recorder.ondataavailable = (e) => {
-            console.log(e.data);
             if (e.data.size > 0) {
                 recordedChunks.push(e.data);
-                console.log(recordedChunks);
                 download();
             } else {
                 console.log("Recording failed");
@@ -183,16 +182,22 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
         };
     }
 
-    const download = () => {
+    const download = async () => {
         const blob = new Blob(recordedChunks, {
-            type: "video/mp4",
+            type: "video/webm",
         });
         const url = URL.createObjectURL(blob);
+        const formData = new FormData();
+        formData.append('api_key', '835688546376544')
+        formData.append('file', blob);
+        formData.append('upload_preset', 'chat-app');
+        const { data } = await axios.post(videoUpload, formData)
+        console.log(data, "download")
         const a = document.createElement("a");
         document.body.appendChild(a);
         a.style = "display: none";
         a.href = url;
-        a.download = "test.mp4";
+        a.download = `${selectedChat.chatName + " " + new Date()}.webm`;
         a.click();
         window.URL.revokeObjectURL(url);
     };
@@ -369,38 +374,44 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
                                         size={"md"}
                                         display={"flex"}
                                         disable={recording}
+                                        toolTip={"Start Recording"}
                                     />
-
-                                    <IconButton
-                                        bg="whiteColor"
-                                        variant="solid"
-                                        color={"tomato"}
-                                        aria-label="Call Sage"
-                                        fontSize="20px"
-                                        icon={<BsRecordCircleFill />}
-                                        size={"md"}
-                                        display={"flex"}
-                                        ref={stopButton}
-                                        disabled={!recording}
-                                    />
-                                    <button onClick={shareScreen}>
-                                        {
-                                            screenShare ? (
-                                                <img src="https://ik.imagekit.io/sahildhingra/screen-share.png" alt="share-screen" />
-                                            ) : (
-                                                <img src="https://ik.imagekit.io/sahildhingra/stop-screen-share.png" alt="share-screen" />
-                                            )
-                                        }
-                                    </button>
-                                    <button onClick={admin ? endStream : leaveStream}>
-                                        <img src="https://ik.imagekit.io/sahildhingra/hang-up.png" alt="end" />
-                                    </button>
+                                    <Tooltip label={"Stop Recording"} aria-label='A tooltip'>
+                                        <IconButton
+                                            bg="whiteColor"
+                                            variant="solid"
+                                            color={"tomato"}
+                                            aria-label="Call Sage"
+                                            fontSize="20px"
+                                            icon={<BsRecordCircleFill />}
+                                            size={"md"}
+                                            display={"flex"}
+                                            ref={stopButton}
+                                            isDisabled={!recording}
+                                        />
+                                    </Tooltip>
+                                    <Tooltip label={screenStream?.active ? 'Stop Sharing Screen' : 'Start Sharing Screen'} aria-label='A tooltip'>
+                                        <button onClick={shareScreen}>
+                                            {
+                                                screenStream?.active ? (
+                                                    <img src="https://ik.imagekit.io/sahildhingra/stop-screen-share.png" alt="share-screen" />
+                                                ) : (
+                                                    <img src="https://ik.imagekit.io/sahildhingra/screen-share.png" alt="share-screen" />
+                                                )
+                                            }
+                                        </button>
+                                    </Tooltip>
+                                    <Tooltip label={"End Meeting"} aria-label='A tooltip'>
+                                        <button onClick={endStream}>
+                                            <img src="https://ik.imagekit.io/sahildhingra/hang-up.png" alt="end" />
+                                        </button>
+                                    </Tooltip>
                                 </HStack>
                             )}
                             {
                                 !admin && (
                                     <HStack justifyContent='center'>
-                                        <button onClick={admin ? endStream : leaveStream}>
+                                        <button onClick={leaveStream}>
                                             <img src="https://ik.imagekit.io/sahildhingra/hang-up.png" alt="end" />
                                         </button>
                                     </HStack>

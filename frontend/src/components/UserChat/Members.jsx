@@ -43,7 +43,8 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [selectedImage, setSelectedImage] = React.useState(null);
-  const [createEventLoading, setCreateEventLoading] = useState(false)
+  const [createEventLoading, setCreateEventLoading] = useState(false);
+  const [chatIdValue, setChatIdValue] = React.useState('');
 
   const fileInputRef = React.createRef();
 
@@ -432,6 +433,32 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
     }
   }
 
+  const openMembersModal = async () => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.get(
+        `${backend_url}/conversation/encrypted/${selectedChat._id}`,
+        config
+      );
+      onAddOpen();
+      setChatIdValue(data.encryptedChatId);
+    } catch (error) {
+      toast({
+        title: "Error Occured!",
+        description: "Failed to Load the Members",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      })
+    }
+
+  }
 
   return (
     selectedChat ? (
@@ -535,21 +562,22 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
 
                   </Accordion>
                 </Box>
-                <Box py='25px' textAlign='center'>
-                  <NavLink onClick={onAddOpen} className='btn btn-primary'>
+
+                {admin && (<Box py='25px' textAlign='center'>
+                  <NavLink onClick={openMembersModal} className='btn btn-primary'>
                     <Flex alignItems='center'>
                       <Image h='18px' pe='15px' src='https://ik.imagekit.io/sahildhingra/add.png?ik-sdk-version=javascript-1.4.3&updatedAt=1673025917620' />
                       <Text>Add Member</Text>
                     </Flex>
                   </NavLink>
-                </Box>
+                </Box>)}
               </Box>
 
               {/* Create Event Modal */}
               <EventModal type={"Create"} createEventLoading={createEventLoading} isOpenCreateEvent={isOpenCreateEvent} onCloseCreateEvent={onCloseCreateEvent} name={name} setEventName={setEventName} description={description} setDescription={setDescription} date={date} setDate={setDate} time={time} setTime={setTime} selectedImage={selectedImage} imageChange={imageChange} handleSubmit={handleCreateEvent} fileInputRef={fileInputRef} />
 
               {/* Add Member Modal */}
-              <AddMembersModal isAddOpen={isAddOpen} onAddClose={onAddClose} handleSearch={handleSearch} search={search} searchResults={searchResults} loading={loading} handleAddUser={handleAddUser} fullScreen={fullScreen} />
+              <AddMembersModal chatIdValue={`${backend_url}/join-group/${chatIdValue}`} isAddOpen={isAddOpen} onAddClose={onAddClose} handleSearch={handleSearch} search={search} searchResults={searchResults} loading={loading} handleAddUser={handleAddUser} fullScreen={fullScreen} />
 
             </TabPanel>
 
@@ -647,16 +675,16 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
             minHeight={'sm'}
             overflowX={'hidden'}
           >
-            <Avatar my={'10'} size={'2xl'} name={selectedChat?.users.find(member => member._id !== userInfo._id)?.username} src={selectedChat?.users.find(member => member._id !== userInfo._id)?.pic} />
+            <Avatar my={'10'} size={'2xl'} name={selectedChat?.users.find(member => member._id !== userInfo?._id)?.username} src={selectedChat?.users.find(member => member._id !== userInfo?._id)?.pic} />
 
             <BsPerson />
             <Text as='samp' mb={'5'}>
-              {selectedChat?.users.find(member => member._id !== userInfo._id)?.username}
+              {selectedChat?.users.find(member => member._id !== userInfo?._id)?.username}
             </Text>
 
             <BsTelephone />
             <Text as='samp'>
-              {selectedChat?.users.find(member => member._id !== userInfo._id)?.number}
+              {selectedChat?.users.find(member => member._id !== userInfo?._id)?.number}
             </Text>
 
           </Box>

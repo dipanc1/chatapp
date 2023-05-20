@@ -41,7 +41,7 @@ mongoose.connect(
 app.use(bodyParser.json());
 app.use("/", otpRoute)
 app.use("/users", userRoute);
-app.use("/conversation", protect, conversationRoute);
+app.use("/conversation", conversationRoute);
 app.use("/message", protect, messageRoute);
 app.use("/meetings", meetingRoute);
 app.use("/checkout", checkoutRoute);
