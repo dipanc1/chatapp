@@ -225,6 +225,7 @@ router.put("/groupadd", protect, asyncHandler(async (req, res) => {
         return await Chat.findOne({ _id: chatId })
             .populate("users", "-password")
             .populate("groupAdmin", "-password")
+            .populate("events")
             .then((results) => {
                 res.status(200).json(results);
             })
