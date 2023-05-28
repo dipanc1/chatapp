@@ -11,7 +11,7 @@ const jwt = require("jsonwebtoken");
 
 
 
-//new chat
+// new chat
 router.post("/", protect, asyncHandler(async (req, res) => {
 
     const { userId } = req.body;
@@ -59,7 +59,7 @@ router.post("/", protect, asyncHandler(async (req, res) => {
 }));
 
 
-//get all chats of user
+// get all chats of user
 router.get("/", protect, async (req, res) => {
     try {
         Chat.find({
@@ -171,7 +171,7 @@ router.get("/encrypted/chat/:id", asyncHandler(async (req, res) => {
 
 // create groups
 router.post("/group", protect, asyncHandler(async (req, res) => {
-    if (!req.body.users || !req.body.name) {
+    if (!req.body.users || !req.body.name || !req.body.description) {
         return res.status(400).send("All Feilds are required")
     }
 
@@ -185,6 +185,7 @@ router.post("/group", protect, asyncHandler(async (req, res) => {
     try {
         const groupChat = await Chat.create({
             chatName: req.body.name,
+            description: req.body.description,
             isGroupChat: true,
             users: users,
             groupAdmin: req.user
@@ -200,7 +201,7 @@ router.post("/group", protect, asyncHandler(async (req, res) => {
 }));
 
 
-//renaming group
+// renaming group
 router.put("/rename", protect, asyncHandler(async (req, res) => {
     const { chatId, chatName } = req.body;
     const updatedChat = await Chat.findByIdAndUpdate(chatId, { chatName }, { new: true })
@@ -257,6 +258,12 @@ router.put("/groupremove", protect, asyncHandler(async (req, res) => {
         if (newAdmin) {
             await Chat.findByIdAndUpdate(chatId, { groupAdmin: newAdmin.users[0] });
         }
+    }
+
+    // check if last user tries to leave the group don't let it leave
+    const isLastUser = await Chat.findOne({ _id: chatId, users: { $size: 1 } });
+    if (isLastUser) {
+        return res.status(400).send("You are the last member of this group")
     }
 
     const removed = await Chat.findByIdAndUpdate(chatId, {

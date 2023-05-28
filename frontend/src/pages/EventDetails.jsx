@@ -7,8 +7,6 @@ import {
     Grid,
     GridItem,
     Heading,
-	List,
-    ListItem,
 	Image
 } from '@chakra-ui/react';
 

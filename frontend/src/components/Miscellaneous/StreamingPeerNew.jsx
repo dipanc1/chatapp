@@ -20,7 +20,7 @@ import {
     BsRecordCircleFill,
 } from "react-icons/bs";
 import { AppContext } from "../../context/AppContext";
-import { backend_url, videoUpload } from "../../baseApi";
+import { backend_url } from "../../baseApi";
 import { MembersComponent } from "../UserChat/Members";
 import { RoomContext } from "../../context/RoomContext";
 import Videoplayer from "./Videoplayer";
@@ -187,12 +187,6 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
             type: "video/webm",
         });
         const url = URL.createObjectURL(blob);
-        const formData = new FormData();
-        formData.append('api_key', '835688546376544')
-        formData.append('file', blob);
-        formData.append('upload_preset', 'chat-app');
-        const { data } = await axios.post(videoUpload, formData)
-        console.log(data, "download")
         const a = document.createElement("a");
         document.body.appendChild(a);
         a.style = "display: none";

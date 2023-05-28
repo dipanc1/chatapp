@@ -44,9 +44,9 @@ export const RoomProvider = ({ children }) => {
     }
 
     const removePeer = (peerId) => {
-        console.warn("Remove Peer ::: >>>", peerId, "typeof peerId ::: >>>", typeof peerId);
+        // console.warn("Remove Peer ::: >>>", peerId, "typeof peerId ::: >>>", typeof peerId);
         setParticipantsArray(participantsArray.filter((peerid) => peerid !== peerId));
-        console.log("Participants Array ::: >>>", participantsArray);
+        // console.log("Participants Array ::: >>>", participantsArray);
         dispatch({
             type: REMOVE_PEER_STREAM,
             payload: {

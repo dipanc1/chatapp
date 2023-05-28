@@ -10,14 +10,12 @@
 #### if token fails then redirect to login page
 #### using accesstoken as well as refreshtokens
 #### delete images from cloudinary too
-#### user search limit to 10
+#### cloudinary sensitive data in backend
 #### user chats limit to 10
-#### when hitting api to take user from select event from all app to group or to event send the data only which is needed
 #### use httponly cookies for refresh token
-#### use userinfo global state in all components
 #### add group details while creating a group
-#### admin cannot leave the group
-#### automatically download the video after meeting ends and start recording as soon as meeting starts and upload it to cloudflare
+#### admin cannot leave the group?
+#### reload chat button
 
 ## Phone App
 

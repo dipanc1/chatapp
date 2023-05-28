@@ -16,7 +16,7 @@ import {
   useToast
 } from '@chakra-ui/react';
 import { AppContext } from '../../context/AppContext';
-import { backend_url, pictureUpload } from '../../baseApi';
+import { api_key, backend_url, pictureUpload, upload_preset } from '../../baseApi';
 import axios from 'axios';
 import EventModal from '../UserModals/EventModal';
 import StreamModalPeer from '../UserModals/StreamModalPeer';
@@ -37,7 +37,7 @@ const EventCard = ({
 }) => {
   const user = JSON.parse(localStorage.getItem('user'));
 
-  const { selectedChat } = useContext(AppContext);
+  const { selectedChat, userInfo } = useContext(AppContext);
 
   const [toggleEventMenu, setToggleEventMenu] = useState(false);
   const [name, setEventName] = useState(title);
@@ -100,7 +100,7 @@ const EventCard = ({
     setEditEventLoading(true)
     e.preventDefault();
 
-    if (selectedChat.groupAdmin._id !== user._id) {
+    if (selectedChat.groupAdmin._id !== userInfo._id) {
       setEditEventLoading(false);
       toast({
         title: "You are not the admin of this group",
@@ -182,9 +182,9 @@ const EventCard = ({
         });
     } else {
       const formData = new FormData();
-      formData.append('api_key', '835688546376544')
+      formData.append('api_key', api_key)
       formData.append('file', selectedImage);
-      formData.append('upload_preset', 'chat-app');
+      formData.append('upload_preset', upload_preset);
 
       await axios.put(pictureUpload, formData)
         .then(async (res) => {
@@ -244,7 +244,7 @@ const EventCard = ({
   }
 
   const deleteEvent = async (id) => {
-    if (selectedChat.groupAdmin._id !== user._id) {
+    if (selectedChat.groupAdmin._id !== userInfo._id) {
       toast({
         title: "You are not the admin of this group",
         status: "error",

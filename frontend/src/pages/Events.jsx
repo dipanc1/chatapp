@@ -2,19 +2,14 @@ import React, {
   useEffect,
   useState
 } from 'react'
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Grid,
-  Text,
   Heading,
-  Button,
-  Container,
   Flex,
-  Image,
   useToast,
   useDisclosure,
-  Spinner
 } from '@chakra-ui/react';
 
 import Static from "../components/common/Static"

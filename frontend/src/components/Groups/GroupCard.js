@@ -2,7 +2,7 @@ import { Box, Flex, Image, ListItem, Text, UnorderedList, useDisclosure, useToas
 import React, { useState } from 'react'
 import GroupSettingsModal from '../UserModals/GroupSettingsModal';
 import axios from 'axios';
-import { backend_url, pictureUpload } from '../../baseApi';
+import { api_key, backend_url, pictureUpload, upload_preset } from '../../baseApi';
 import AddMembersModal from '../UserModals/AddMembersModal';
 import { AppContext } from '../../context/AppContext';
 import EventModal from '../UserModals/EventModal';
@@ -56,7 +56,7 @@ const GroupCard = ({
     setCreateEventLoading(true)
     e.preventDefault();
 
-    if (admin._id !== user._id) {
+    if (admin._id !== userInfo._id) {
       setCreateEventLoading(false)
       toast({
         title: "You are not the admin of this group",
@@ -156,9 +156,9 @@ const GroupCard = ({
         });
     } else {
       const formData = new FormData();
-      formData.append('api_key', '835688546376544')
+      formData.append('api_key', api_key)
       formData.append('file', selectedImage);
-      formData.append('upload_preset', 'chat-app');
+      formData.append('upload_preset', upload_preset);
 
       await axios.post(pictureUpload, formData)
         .then(async (res) => {
@@ -318,7 +318,7 @@ const GroupCard = ({
 
   const handleAddUser = async (user1) => {
     // console.warn("USER ID TO ADD", selectedChat.users.map(user => user._id).includes(user1));
-    if (members.map(user => user._id).includes(user1)) {
+    if (members.map(user => userInfo._id).includes(user1)) {
       return toast({
         title: "Error Occured!",
         description: "User already in group chat",

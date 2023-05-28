@@ -362,13 +362,13 @@ const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) 
                 </Portal>
               </Menu>
               <Box position='relative' ms='7px'>
-                <Button onClick={() => setToggleProfiledd(!toggleProfiledd)} className='btn-default' ms={['5px', '15px']} display='flex' alignItems='center' bg='transparent'>
-                  <Image borderRadius='full' objectFit='cover' boxSize={['30px', '40px']} src={user.pic} alt='Profile Pic' />
+                {userInfo && <Button onClick={() => setToggleProfiledd(!toggleProfiledd)} className='btn-default' ms={['5px', '15px']} display='flex' alignItems='center' bg='transparent'>
+                  <Image borderRadius='full' objectFit='cover' boxSize={['30px', '40px']} src={userInfo.pic} alt='Profile Pic' />
                   <Text display={["none", "block"]} ps='15px' pe='10px'>
                     {userInfo?.username}
                   </Text>
                   <Image display={["none", "block"]} height='17px' src={CDN_IMAGES + "/down-arrow.png"} alt='' />
-                </Button>
+                </Button>}
                 {
                   toggleProfiledd && (
                     <Box className='header-dd' width='fit-content' borderRadius='4px' overflow='hidden' position='absolute' top={['calc(100% + 10px)', 'calc(100% + 20px)']} right='0' background='#fff' boxShadow='0px 3px 24px rgb(159 133 247 / 60%)'>

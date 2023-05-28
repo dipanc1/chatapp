@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box, Flex, Grid, Heading, Text, UnorderedList } from '@chakra-ui/react'
+import { Box, Grid, Heading, UnorderedList } from '@chakra-ui/react'
 
 import Static from '../components/common/Static'
 import GroupCard from '../components/Groups/GroupCard';
@@ -8,50 +8,11 @@ import EventCard from '../components/Events/EventCard';
 import { useContext } from 'react';
 import { AppContext } from '../context/AppContext';
 
-const groups = [
-  {
-    "name": "Cultural Group",
-    "members": "17",
-    "upcomingEvents": "2",
-    "isAdmin": false
-  },
-  {
-    "name": "Religious Group",
-    "members": "21",
-    "upcomingEvents": "4",
-    "isAdmin": true
-  },
-  {
-    "name": "Common",
-    "members": "21",
-    "upcomingEvents": "4",
-    "isAdmin": true
-  },
-  {
-    "name": "Fun Activites",
-    "members": "21",
-    "upcomingEvents": "4",
-    "isAdmin": false
-  },
-  {
-    "name": "Common",
-    "members": "21",
-    "upcomingEvents": "4",
-    "isAdmin": false
-  },
-  {
-    "name": "Fun Activites",
-    "members": "21",
-    "upcomingEvents": "4",
-    "isAdmin": true
-  }
-]
 
 const Search = () => {
   const { searchResults } = useContext(AppContext);
   const [activeTab, setActiveTab] = useState(1);
 
-  console.log(searchResults)
   return (
     <>
       <Static>

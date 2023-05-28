@@ -2,7 +2,6 @@ import './global-styles.scss';
 import { Routes, Route } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import Login from './pages/Login'
-import Chat from './pages/Chat'
 import Register from './pages/Register'
 import Plans from './pages/Plans'
 import Events from './pages/Events';
@@ -27,7 +26,6 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="register" element={<Register />} />
-          <Route path="chat" element={<Chat />} />
           <Route path="plans" element={<Plans />} />
           <Route path="event" element={<Events />} />
           <Route path="event/create" element={<CreateEvent />} />

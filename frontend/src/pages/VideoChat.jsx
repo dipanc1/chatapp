@@ -1,13 +1,10 @@
 import React, { useContext } from 'react'
 import { useNavigate } from "react-router-dom";
-import { Box, Flex, useToast } from '@chakra-ui/react'
-import Navbar from '../components/UserChat/Navbar'
+import { Box, useToast } from '@chakra-ui/react'
 import Conversations from '../components/UserChat/Conversations'
 import Chatbox from '../components/UserChat/Chatbox'
-import Members, { MembersComponent } from '../components/UserChat/Members'
+import Members from '../components/UserChat/Members'
 import { AppContext } from '../context/AppContext';
-import Streaming from '../components/Miscellaneous/Streaming';
-import { MeetingConsumer, MeetingProvider } from '@videosdk.live/react-sdk';
 import { SocketContextProvider } from '../context/SocketContext';
 import { backend_url } from '../baseApi';
 import StreamingPeer from '../components/Miscellaneous/StreamingPeerNew';
@@ -46,26 +43,26 @@ const Chat = () => {
     }
   }, [navigate, user]);
 
-  React.useEffect(() => {
-    const getToken = async () => {
-      try {
-        const response = await fetch(`${backend_url}/meetings/get-token`, {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user.token}`,
-          },
-        });
-        const { token } = await response.json();
-        setToken(token);
-      } catch (e) {
-        // console.log(e);
-        errorToast("Something went wrong");
-      }
-    };
-    // getToken();
-  }, [])
+  // React.useEffect(() => {
+  //   const getToken = async () => {
+  //     try {
+  //       const response = await fetch(`${backend_url}/meetings/get-token`, {
+  //         method: "GET",
+  //         headers: {
+  //           Accept: "application/json",
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${user.token}`,
+  //         },
+  //       });
+  //       const { token } = await response.json();
+  //       setToken(token);
+  //     } catch (e) {
+  //       // console.log(e);
+  //       errorToast("Something went wrong");
+  //     }
+  //   };
+  //   getToken();
+  // }, [])
 
   const getMeetingId = async (token) => {
     try {

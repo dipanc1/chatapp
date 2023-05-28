@@ -7,13 +7,11 @@ import Lottie from "lottie-react";
 import animationData from '../../animations/typing.json'
 import DetailsModal from '../UserModals/DetailsModal'
 import { format } from 'timeago.js'
-import { HiUserRemove } from 'react-icons/hi'
 import EndLeaveModal from '../UserModals/EndLeaveModal'
 import { backend_url } from '../../baseApi'
 import { Avatar, AvatarBadge, Box, Button, Divider, Flex, Image, Img, Input, Spinner, Text, useDisclosure, useToast } from '@chakra-ui/react'
 import { FiSend } from 'react-icons/fi'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import StreamModalPeer from '../UserModals/StreamModalPeer'
 import { useLocation } from 'react-router-dom'
 import GroupSettingsModal from '../UserModals/GroupSettingsModal'
 
@@ -21,7 +19,7 @@ var selectedChatCompare;
 
 export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selectedChat, fetchAgain, setFetchAgain, user, toast }) => {
   const socket = React.useContext(SocketContext);
-  const { notification, dispatch } = React.useContext(AppContext);
+  const { notification, dispatch, userInfo } = React.useContext(AppContext);
 
   const [messages, setMessages] = React.useState([]);
   const [page, setPage] = React.useState(2);
@@ -49,6 +47,7 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
       socket.off("stop typing");
       socket.off("user-online");
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
 
@@ -262,12 +261,12 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
                   <Message
                     key={m._id}
                     messages={m}
-                    own={m.sender._id === user._id}
+                    own={m.sender._id === userInfo._id}
                     sameSender={(i < messages.length - 1 &&
                       (messages[i + 1].sender._id !== m.sender._id ||
                         messages[i + 1].sender._id === undefined) &&
-                      messages[i].sender._id !== user._id) || (i === messages.length - 1 &&
-                        messages[messages.length - 1].sender._id !== user._id &&
+                      messages[i].sender._id !== userInfo._id) || (i === messages.length - 1 &&
+                        messages[messages.length - 1].sender._id !== userInfo._id &&
                         messages[messages.length - 1].sender._id)}
                     sameTime={(i < messages.length - 1) && format(messages[i].createdAt) === format(messages[i + 1].createdAt)}
                   />
@@ -321,7 +320,7 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
 }
 
 const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) => {
-  const { dispatch } = React.useContext(AppContext);
+  const { dispatch, userInfo } = React.useContext(AppContext);
   const [groupChatName, setGroupChatName] = React.useState('');
   const [renameLoading, setRenameLoading] = React.useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -335,10 +334,10 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
 
   const toast = useToast();
   const [loading, setLoading] = React.useState(false)
-  const admin = selectedChat?.isGroupChat && selectedChat?.groupAdmin._id === user._id;
+  const admin = selectedChat?.isGroupChat && selectedChat?.groupAdmin._id === userInfo._id;
 
   const handleRemove = async (user1) => {
-    if (selectedChat.groupAdmin._id !== user._id && user1._id !== user._id) {
+    if (selectedChat.groupAdmin._id !== userInfo._id && user1._id !== userInfo._id) {
       return toast({
         title: "Error Occured!",
         description: "You are not the admin of this group",
@@ -364,7 +363,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
         config
       );
 
-      user1._id === user._id ? dispatch({ type: 'SET_SELECTED_CHAT', payload: '' }) : dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
+      user1._id === userInfo._id ? dispatch({ type: 'SET_SELECTED_CHAT', payload: '' }) : dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
       setFetchAgain(!fetchAgain);
       setLoading(false);
       toast({
@@ -404,7 +403,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
         chatName: groupChatName,
         chatId: selectedChat._id
       }
-      const { data } = await axios.put(`${backend_url}/conversation/rename`, body, config)
+      await axios.put(`${backend_url}/conversation/rename`, body, config)
       toast({
         title: "Group chat renamed",
         description: "Group chat renamed to " + groupChatName,
@@ -459,7 +458,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
       return;
     }
     try {
-      setProfile(selectedChat?.users.find(member => member._id !== user._id));
+      setProfile(selectedChat?.users.find(member => member._id !== userInfo._id));
     } catch (error) {
       // console.log(error);
       toast({
@@ -472,7 +471,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
       });
     }
     if (selectedChat && !selectedChat.isGroupChat) {
-      CheckOnlineStatus(selectedChat?.users.find(member => member._id !== user._id)._id);
+      CheckOnlineStatus(selectedChat?.users.find(member => member._id !== userInfo._id)._id);
     }
     selectedChatCompare = selectedChat;
     // eslint-disable-next-line react-hooks/exhaustive-deps

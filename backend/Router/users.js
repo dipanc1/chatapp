@@ -24,27 +24,27 @@ let refreshTokens = [];
 router.post("/token", (req, res) => {
     //take the refresh token from the user
     const refreshToken = req.body.token;
-    
+
     //send error if there is no token or it's invalid
     if (!refreshToken) return res.status(401).json("You are not authenticated!");
     if (!refreshTokens.includes(refreshToken)) {
         return res.status(403).json("Refresh token is not valid!");
     }
-    
+
     jwt.verify(refreshToken, process.env.REFRESH_JWT_SECRET, (err, user) => {
         if (err) return res.sendStatus(403);
-        
+
         refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
 
         console.log("refresh token after filter ", refreshTokens)
         console.log("user id ", user.id)
-        
+
         const newAccessToken = generateToken(user.id);
         const newRefreshToken = generateRefreshToken(user.id);
-        
+
         refreshTokens.push(newRefreshToken);
         console.log("refresh token after pushing ", refreshTokens)
-        
+
         res.status(200).json({
             token: newAccessToken,
             refreshToken: newRefreshToken,
@@ -58,7 +58,7 @@ router.post("/register", async (req, res) => {
         // generate  new password
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(req.body.password, salt)
-        
+
         //create new user
         const newUser = new User({
             username: req.body.username,
@@ -67,14 +67,14 @@ router.post("/register", async (req, res) => {
             pic: req.body.pic
         })
         // console.log(newUser);
-        
+
         //save user and send response
         const user = await newUser.save();
-        
+
         const accessToken = generateToken(user._id);
         const refreshToken = generateRefreshToken(user._id);
         refreshTokens.push(refreshToken);
-        
+
         // console.log(user)
         res.status(200).json({
             _id: user._id,
@@ -85,7 +85,7 @@ router.post("/register", async (req, res) => {
             token: accessToken,
             refreshToken: refreshToken
         })
-        
+
     } catch (err) {
         res.status(500).json(err)
         console.log(err)
@@ -95,18 +95,18 @@ router.post("/register", async (req, res) => {
 //login
 router.post("/login", async (req, res) => {
     try {
-        
+
         // find the user
         const user = await User.findOne({ username: req.body.username })
         // console.log(user)
-        
+
         if (!user) {
             return res.status(400).json("Wrong Username or Password")
         }
-        
+
         // validate password
         const validPassword = await bcrypt.compare(req.body.password, user.password);
-        
+
         if (!validPassword) {
             return res.status(400).json("Wrong Username or Password")
         }
@@ -115,7 +115,7 @@ router.post("/login", async (req, res) => {
         const refreshToken = generateRefreshToken(user._id);
         refreshTokens.push(refreshToken);
         console.log("first refresh token ", refreshTokens)
-        
+
         // send res
         res.status(200).json({
             _id: user._id,
@@ -158,22 +158,28 @@ router.get("/check-online/:id", protect, async (req, res) => {
 // search query for users and groups excluding user logged in
 router.get("/", protect, async (req, res) => {
     const query = req.query.search;
+    const limit = 10;
 
     try {
+
         const users = await User.find({
             $or: [{ username: { $regex: query, $options: "i" } }]
-        }).find({ _id: { $ne: req.user._id } });
+        }).find({ _id: { $ne: req.user._id } }).limit(limit);
+
         const groups = await Chat.find({
             $or: [{ chatName: { $regex: query, $options: "i" } }]
-        }).find({ isGroupChat: true, _id: { $ne: req.user._id } });
+        }).find({ isGroupChat: true, _id: { $ne: req.user._id } }).limit(limit);
+
         const events = await EventTable.find({
             $or: [{ name: { $regex: query, $options: "i" } }]
-        });
+        }).limit(limit);
+
         res.status(200).json({
             users: users,
             groups: groups,
             events: events
-        })
+        });
+        
     } catch (err) {
         res.status(500).json(err)
         console.log(err)

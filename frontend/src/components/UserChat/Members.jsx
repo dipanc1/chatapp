@@ -4,11 +4,11 @@ import React, {
 import ChatOnline from '../Miscellaneous/ChatOnline'
 import { AppContext } from '../../context/AppContext'
 import axios from 'axios'
-import { backend_url, pictureUpload } from '../../baseApi'
+import { api_key, backend_url, pictureUpload, upload_preset } from '../../baseApi'
 import { HiUserRemove } from 'react-icons/hi'
 import {
   Accordion, Avatar,
-  Box, Button, Checkbox, Divider, Flex, FormControl, FormLabel, IconButton, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Tab, TabList, TabPanel, TabPanels, Tabs, Text, Textarea, useDisclosure, useToast,
+  Box, Button, Divider, Flex, Image, Input, Spinner, Tab, TabList, TabPanel, TabPanels, Tabs, Text, useDisclosure, useToast,
 } from '@chakra-ui/react'
 import { GrUserAdd } from 'react-icons/gr'
 import { BsTelephone, BsPerson } from 'react-icons/bs'
@@ -60,7 +60,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
     setCreateEventLoading(true)
     e.preventDefault();
 
-    if (selectedChat.groupAdmin._id !== user._id) {
+    if (selectedChat.groupAdmin._id !== userInfo._id) {
       setCreateEventLoading(false)
       toast({
         title: "You are not the admin of this group",
@@ -160,9 +160,9 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
         });
     } else {
       const formData = new FormData();
-      formData.append('api_key', '835688546376544')
+      formData.append('api_key', api_key)
       formData.append('file', selectedImage);
-      formData.append('upload_preset', 'chat-app');
+      formData.append('upload_preset', upload_preset);
 
       await axios.post(pictureUpload, formData)
         .then(async (res) => {
@@ -252,7 +252,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
   }
 
   const handleRemove = async (user1) => {
-    if (selectedChat.groupAdmin._id !== userInfo._id && user1._id !== user._id) {
+    if (selectedChat.groupAdmin._id !== userInfo._id && user1._id !== userInfo._id) {
       return toast({
         title: "Error Occured!",
         description: "You are not the admin of this group",
@@ -553,11 +553,14 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
                 >
                   <Accordion allowToggle>
                     {selectedChat?.users.map(u =>
-                      <ChatOnline
-                        stream={stream}
-                        key={u._id}
-                        user1={u}
-                        handleFunction={() => handleRemove(u)} />
+                      <Box key={u._id}>
+                        <ChatOnline
+                          admin={admin}
+                          stream={stream}
+                          key={u._id}
+                          user1={u}
+                          handleFunction={() => handleRemove(u)} />
+                      </Box>
                     )}
 
                   </Accordion>

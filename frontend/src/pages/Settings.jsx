@@ -36,7 +36,7 @@ import {
 } from '@chakra-ui/react';
 import "./Settings.css"
 import axios from 'axios';
-import { backend_url, pictureUpload, stripePublicKey } from '../baseApi';
+import { api_key, backend_url, pictureUpload, stripePublicKey, upload_preset } from '../baseApi';
 import { FiUpload } from 'react-icons/fi';
 import { AppContext } from '../context/AppContext';
 import FullScreenLoader from '../components/common/FullScreenLoader';
@@ -217,9 +217,9 @@ const Settings = () => {
 
             if (selectedImage) {
                 const formData = new FormData();
-                formData.append('api_key', '835688546376544')
+                formData.append('api_key', api_key)
                 formData.append('file', selectedImage);
-                formData.append('upload_preset', 'chat-app');
+                formData.append('upload_preset', upload_preset);
                 await axios.post(pictureUpload, formData)
                     .then(async res =>
                         data = await axios.put(

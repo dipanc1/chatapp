@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const ConversationSchema = mongoose.Schema({
     chatName: { type: String, trim: true },
     isGroupChat: { type: Boolean, default: false },
+    description: { type: String, trim: true },
     users: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",

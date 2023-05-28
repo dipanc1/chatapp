@@ -5,7 +5,7 @@ import axios from 'axios';
 import { AppContext } from '../context/AppContext';
 import { Link, useMatch } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
-import { backend_url, pictureUpload } from '../baseApi';
+import { api_key, backend_url, pictureUpload, upload_preset } from '../baseApi';
 import {
     Flex,
     Box,
@@ -161,9 +161,9 @@ const Register = () => {
                 }
             } else {
                 const formData = new FormData();
-                formData.append('api_key', '835688546376544')
+                formData.append('api_key', api_key)
                 formData.append('file', selectedImage);
-                formData.append('upload_preset', 'chat-app');
+                formData.append('upload_preset', upload_preset);
                 if (match && match.pattern.path === "/join-group/:groupId/register") {
                     await axios.post(pictureUpload, formData)
                         .then(async res => {

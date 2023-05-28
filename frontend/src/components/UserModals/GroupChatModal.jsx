@@ -18,7 +18,8 @@ import {
     Spinner,
     Box,
     IconButton,
-    Text
+    Text,
+    Textarea
 } from "@chakra-ui/react";
 import {
     ViewIcon
@@ -32,7 +33,8 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
     const user = JSON.parse(localStorage.getItem('user'))
     const { dispatch, chats } = useContext(AppContext);
     const toast = useToast();
-    const [groupChatName, setGroupChatName] = useState();
+    const [groupChatName, setGroupChatName] = useState("");
+    const [groupChatDescription, setGroupChatDescription] = useState("");
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [search, setSearch] = useState('');
     const [searchResults, setSearchResults] = useState([]);
@@ -68,9 +70,9 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
     }
 
     const handleSubmit = async (e) => {
-        if (!groupChatName || !selectedUsers.length) {
+        if (!groupChatName || !selectedUsers.length || !groupChatDescription) {
             toast({
-                title: "Please enter a group chat name and select at least one user",
+                title: "Please enter a group chat name, group chat description and select at least one user",
                 status: "warning",
                 duration: 5000,
                 isClosable: true,
@@ -87,7 +89,7 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
                     'Authorization': `Bearer ${user.token}`
                 }
             }
-            const { data } = await axios.post(`${backend_url}/conversation/group`, { name: groupChatName, users: JSON.stringify(selectedUsers.map(u => u._id)) }, config);
+            const { data } = await axios.post(`${backend_url}/conversation/group`, { name: groupChatName, description: groupChatDescription, users: JSON.stringify(selectedUsers.map(u => u._id)) }, config);
 
             if (!chats.find(chat => chat._id === data._id)) {
                 dispatch({ type: 'SET_SELECTED_CHAT', payload: data })
@@ -164,11 +166,14 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
                     <ModalBody d="flex" flexDir="column" alignItems="center">
                         <FormControl>
                             <Input
-                                placeholder="Chat Name"
+                                placeholder="Group Name"
                                 mb={3}
                                 onChange={(e) => setGroupChatName(e.target.value)}
                                 focusBorderColor='#9F85F7'
                             />
+                        </FormControl>
+                        <FormControl>
+                            <Textarea placeholder="Group Description" mb={3} onChange={(e) => setGroupChatDescription(e.target.value)} focusBorderColor='#9F85F7' maxH={'100px'} />
                         </FormControl>
                         <FormControl>
                             <Input
@@ -223,21 +228,21 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
                                         onClick={() => handleGroup(user)}>
                                         <UserListItem user={user} />
                                     </Box>
-                                )) : 
-                                <Box
-                                    display={'flex'}
-                                    alignItems={'center'}
-                                    justifyContent={'center'}
-                                    height={'100%'}
-                                >
-                                    <Text
-                                        fontSize={'x-large'}
-                                        fontWeight={'bold'}
-                                        color={'#9F85F7'}
+                                )) :
+                                    <Box
+                                        display={'flex'}
+                                        alignItems={'center'}
+                                        justifyContent={'center'}
+                                        height={'100%'}
                                     >
-                                        No Results Found
-                                    </Text>
-                                </Box>
+                                        <Text
+                                            fontSize={'x-large'}
+                                            fontWeight={'bold'}
+                                            color={'#9F85F7'}
+                                        >
+                                            No Results Found
+                                        </Text>
+                                    </Box>
                                 }
                             </Box>
                         }
