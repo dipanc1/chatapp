@@ -16,6 +16,7 @@
 #### add group details while creating a group
 #### admin cannot leave the group?
 #### reload chat button
+#### if browser is not chrome give an error
 
 ## Phone App
 
