@@ -203,8 +203,9 @@ router.post("/group", protect, asyncHandler(async (req, res) => {
 
 // renaming group
 router.put("/rename", protect, asyncHandler(async (req, res) => {
-    const { chatId, chatName } = req.body;
-    const updatedChat = await Chat.findByIdAndUpdate(chatId, { chatName }, { new: true })
+    const { chatId, chatName, description } = req.body;
+
+    const updatedChat = await Chat.findByIdAndUpdate(chatId, { chatName, description }, { new: true })
         .populate("users", "-password")
         .populate("groupAdmin", "-password")
 

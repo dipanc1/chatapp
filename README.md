@@ -4,7 +4,6 @@
 
 #### make number unique in db model
 #### allowed origin to hosted address
-#### Group chat picture add
 #### if host accidently closes the stream then delete meeting token from database
 #### User cannot open when one session is going on multiple tabs/places
 #### if token fails then redirect to login page
@@ -13,8 +12,7 @@
 #### cloudinary sensitive data in backend
 #### user chats limit to 10
 #### use httponly cookies for refresh token
-#### add group details while creating a group
-#### reload chat button
+#### refresh chat button
 #### if browser is not chrome give an error
 
 ## Phone App

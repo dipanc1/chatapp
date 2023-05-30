@@ -23,11 +23,14 @@ export const AppContext = createContext(INITIAL_STATE);
 
 export const AppContextProvider = ({ children }) => {
   const user = JSON.parse(localStorage.getItem("user"));
+
   const navigate = useNavigate();
   const location = useLocation();
+
   const match = location.pathname.match(/join-group\/(.*)/);
   const matchLogin = location.pathname.match(/join-group\/(.*)\/login/);
   const matchRegister = location.pathname.match(/join-group\/(.*)\/register/);
+
   const [state, dispatch] = useReducer(AppReducer, INITIAL_STATE);
 
   useEffect(() => {

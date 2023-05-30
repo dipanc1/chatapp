@@ -47,7 +47,7 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
       socket.off("stop typing");
       socket.off("user-online");
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
 
@@ -322,6 +322,7 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
 const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) => {
   const { dispatch, userInfo } = React.useContext(AppContext);
   const [groupChatName, setGroupChatName] = React.useState('');
+  const [groupChatDescription, setGroupChatDescription] = React.useState('');
   const [renameLoading, setRenameLoading] = React.useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure()
   const user = JSON.parse(localStorage.getItem('user'));
@@ -387,8 +388,15 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
   }
 
   const handleRename = async () => {
-    if (!groupChatName) {
-      return
+    if (groupChatName === '' || groupChatDescription === '') {
+      return toast({
+        title: "Error Occured!",
+        description: "Please fill all the fields",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
     }
 
     try {
@@ -401,6 +409,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
       }
       const body = {
         chatName: groupChatName,
+        description: groupChatDescription,
         chatId: selectedChat._id
       }
       await axios.put(`${backend_url}/conversation/rename`, body, config)
@@ -414,6 +423,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
       });
       setRenameLoading(false);
       setGroupChatName('');
+      setGroupChatDescription('');
       setFetchAgain(!fetchAgain);
       dispatch({ type: 'SET_SELECTED_CHAT', payload: null })
       onClose();
@@ -601,6 +611,8 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
               handleRename={handleRename}
               renameLoading={renameLoading}
               onConfirmOpen={onConfirmOpen}
+              description={selectedChat?.description}
+              groupChatDescription={groupChatDescription} setGroupChatDescription={setGroupChatDescription}
             />
 
             <EndLeaveModal
