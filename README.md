@@ -14,7 +14,6 @@
 #### user chats limit to 10
 #### use httponly cookies for refresh token
 #### add group details while creating a group
-#### admin cannot leave the group?
 #### reload chat button
 
 ## Phone App

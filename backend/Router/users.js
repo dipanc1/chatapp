@@ -26,7 +26,7 @@ router.post("/token", (req, res) => {
     const refreshToken = req.body.token;
 
     //send error if there is no token or it's invalid
-    if (!refreshToken) return res.status(401).json("You are not authenticated!");
+    if (!refreshToken) return res.status(401).json("Your Refresh Token is not authenticated!");
     if (!refreshTokens.includes(refreshToken)) {
         return res.status(403).json("Refresh token is not valid!");
     }
@@ -77,11 +77,11 @@ router.post("/register", async (req, res) => {
 
         // console.log(user)
         res.status(200).json({
-            _id: user._id,
-            username: user.username,
-            number: user.number,
-            isAdmin: user.isAdmin,
-            pic: user.pic,
+            // _id: user._id,
+            // username: user.username,
+            // number: user.number,
+            // isAdmin: user.isAdmin,
+            // pic: user.pic,
             token: accessToken,
             refreshToken: refreshToken
         })
@@ -118,10 +118,10 @@ router.post("/login", async (req, res) => {
 
         // send res
         res.status(200).json({
-            _id: user._id,
-            username: user.username,
-            number: user.number,
-            pic: user.pic,
+            // _id: user._id,
+            // username: user.username,
+            // number: user.number,
+            // pic: user.pic,
             token: accessToken,
             refreshToken: refreshToken
         })
