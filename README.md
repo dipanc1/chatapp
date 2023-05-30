@@ -15,6 +15,7 @@
 #### use httponly cookies for refresh token
 #### add group details while creating a group
 #### reload chat button
+#### if browser is not chrome give an error
 
 ## Phone App
 
