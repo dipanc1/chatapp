@@ -18,11 +18,10 @@ import {
     TabPanels,
     TabPanel,
 } from "@chakra-ui/react";
-import { AddIcon } from "@chakra-ui/icons";
+import { AddIcon, RepeatIcon } from "@chakra-ui/icons";
 
 export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
     const { dispatch, chats, selectedChat, conversations, groupConversations, loading, userInfo } = React.useContext(AppContext);
-    const [tabIndex, setTabIndex] = React.useState(0);
 
     const user = JSON.parse(localStorage.getItem("user"));
     const toast = useToast();
@@ -66,9 +65,6 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
 
     React.useEffect(() => {
         fetchChats();
-        if (selectedChat && selectedChat?.isGroupChat) {
-            setTabIndex(1);
-        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [fetchAgain, selectedChat]);
 
@@ -85,7 +81,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
     return (
         <>
 
-            <Tabs tabIndex={tabIndex}>
+            <Tabs>
                 <TabList>
                     <Tab flex="1">Users</Tab>
                     <Tab flex="1">Groups</Tab>
@@ -139,7 +135,8 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                         <Conversation chat={c} />
                                     </Box>
                                 ))
-                            )}
+                            )
+                            }
                             {conversations.length === 0 &&
                                 !loading ? (
                                 <Box
@@ -165,6 +162,20 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                     </Text>
                                 </Box>
                             ) : null}
+                        </Box>
+                        <Box mt='20px' textAlign='center'>
+                            <Button
+                                color={"#3CC4B7"}
+                                _hover={{ scale: 1.05 }}
+                                variant="outline"
+                                size={"xs"}
+                                cursor="pointer"
+                                mr={"2"}
+                                colorScheme='blue'
+                                onClick={() => fetchChats()}
+                            >
+                                <RepeatIcon />
+                            </Button>
                         </Box>
                     </TabPanel>
                     <TabPanel p='0'>

@@ -338,7 +338,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
   const admin = selectedChat?.isGroupChat && selectedChat?.groupAdmin._id === userInfo._id;
 
   const handleRemove = async (user1) => {
-    if (selectedChat.groupAdmin._id !== userInfo._id && user1._id !== userInfo._id) {
+    if (user1._id !== userInfo._id) {
       return toast({
         title: "Error Occured!",
         description: "You are not the admin of this group",
@@ -355,7 +355,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.put(
+      await axios.put(
         `${backend_url}/conversation/groupremove`,
         {
           chatId: selectedChat._id,
@@ -364,7 +364,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
         config
       );
 
-      user1._id === userInfo._id ? dispatch({ type: 'SET_SELECTED_CHAT', payload: '' }) : dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
+      dispatch({ type: 'SET_SELECTED_CHAT', payload: null }) 
       setFetchAgain(!fetchAgain);
       setLoading(false);
       toast({
@@ -622,7 +622,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
               body={'Are you sure you want to leave this group?'}
               confirmButton={'Leave'}
               confirmFunction={() => {
-                handleRemove(user);
+                handleRemove(userInfo);
                 onConfirmClose();
               }}
               isOpen={isConfirmOpen}

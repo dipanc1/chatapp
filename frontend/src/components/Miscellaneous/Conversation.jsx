@@ -1,17 +1,18 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import {
   Box,
   Text,
   Avatar
 } from '@chakra-ui/react'
+import { AppContext } from '../../context/AppContext';
 
 const Conversation = ({ chat }) => {
-  const user = JSON.parse(localStorage.getItem('user'));
   const [friends, setFriends] = useState([]);
+  const { userInfo } = useContext(AppContext);
 
   useEffect(() => {
-    setFriends((chat.users.find(member => member._id !== user._id)))
-  }, [chat, friends, user._id])
+    setFriends((chat.users.find(member => member._id !== userInfo._id)))
+  }, [chat, friends, userInfo._id])
 
   const list = {
     visible: {

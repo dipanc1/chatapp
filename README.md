@@ -14,6 +14,7 @@
 #### use httponly cookies for refresh token
 #### refresh chat button
 #### if browser is not chrome give an error
+#### if camera permisson not given ask user to reload page and give permission
 
 ## Phone App
 
