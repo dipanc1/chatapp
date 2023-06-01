@@ -15,13 +15,19 @@ import Search from './pages/Search';
 import SubscribedSuccessfully from './pages/SubscribedSuccessfully';
 import ErrorSubscribing from './pages/ErrorSubscribing';
 import JoinGroup from './pages/JoinGroup';
+import { Box, Text } from '@chakra-ui/react';
 
 //TODO: delete console statements
 
 function App() {
+  let isChrome = navigator.userAgentData?.brands?.some(b => b.brand === 'Google Chrome');;
 
   return (
-    <div>
+    <div>{!isChrome ?
+      <Box minHeight={'100vh'} minWidth={'100vw'} bg={'buttonPrimaryColor'} display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
+        <Text fontSize={'2xl'} color={'white'}>This website is only supported on Google Chrome</Text>
+      </Box>
+      :
       <AnimatePresence exitBeforeEnter initial={false}>
         <Routes>
           <Route path="/" element={<Login />} />
@@ -44,6 +50,7 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AnimatePresence>
+    }
     </div>
   );
 }

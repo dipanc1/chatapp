@@ -92,8 +92,8 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                         <Box
                             display={"flex"}
                             flexDirection={"column"}
-                            maxHeight={"100%"}
-                            overflow={"auto"}
+                            maxHeight={'lg'}
+                            overflowY={"scroll"}
                             overflowX={"hidden"}
                             variants={variants}
                         >
@@ -179,13 +179,11 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                         </Box>
                     </TabPanel>
                     <TabPanel p='0'>
-
-
                         <Box
                             display={"flex"}
                             flexDirection={"column"}
-                            maxHeight={"100%"}
-                            overflow={"auto"}
+                            maxHeight={'lg'}
+                            overflowY={"scroll"}
                             overflowX={"hidden"}
                             variants={variants}
                         >

@@ -4,6 +4,8 @@ import Cookies from "universal-cookie";
 import { Box, Flex } from "@chakra-ui/react";
 import SideBar from "./SideBar";
 import Header from "./Header";
+import { RoomContext } from "../../context/RoomContext";
+import { useContext } from "react";
 
 const Static = ({ noSmPadding, noPadding, children, fetchAgain, setFetchAgain }) => {
   const cookies = new Cookies();
@@ -11,6 +13,7 @@ const Static = ({ noSmPadding, noPadding, children, fetchAgain, setFetchAgain })
 
   const [maximizedValue, setMaximizedValue] = useState(cookieVal);
   const [toggleSidebar, setToggleSidebar] = useState(false);
+  const { cameraPermission } = useContext(RoomContext);
 
   const handleExpand = () => {
     if (cookies.get("maximized") == "true") {
@@ -23,17 +26,17 @@ const Static = ({ noSmPadding, noPadding, children, fetchAgain, setFetchAgain })
   };
 
   return (
-    <>
+    cameraPermission ?
       <div className={maximizedValue === "true" ? "maximized-view" : "s"}>
-        <Box 
+        <Box
           minH="100vh"
           py={["0", "0", "20px"]}
-          px={["0", "0", "30px"]} 
+          px={["0", "0", "30px"]}
           bg="backgroundColor"
         >
           <Flex height="100%">
             <Box height="100%">
-              <SideBar 
+              <SideBar
                 toggleSidebar={toggleSidebar}
               />
             </Box>
@@ -75,7 +78,14 @@ const Static = ({ noSmPadding, noPadding, children, fetchAgain, setFetchAgain })
           </Flex>
         </Box>
       </div>
-    </>
+      :
+      <Box minHeight={'100vh'} minWidth={'100vw'} bg={'buttonPrimaryColor'} display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
+        <Box w='100%' textAlign='center'>
+          <Box fontSize='2xl' fontWeight='bold' mb='2'>Camera Permission Required</Box>
+          <Box fontSize='lg' mb='2'>Please allow camera permission to continue</Box>
+          <Box fontSize='lg' mb='2'>If you have already allowed camera permission, please refresh the page</Box>
+        </Box>
+      </Box>
   );
 };
 
