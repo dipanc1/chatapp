@@ -4,6 +4,8 @@ import { createRoot } from 'react-dom/client'
 import App from './App';
 import { BrowserRouter } from "react-router-dom";
 import { AppContextProvider } from './context/AppContext';
+import { SocketContextProvider } from './context/SocketContext';
+import { RoomProvider } from './context/RoomContext';
 
 const customTheme = extendTheme({
   semanticTokens: {
@@ -53,7 +55,11 @@ createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <ChakraProvider theme={customTheme}>
       <AppContextProvider>
-        <App />
+        <SocketContextProvider>
+          <RoomProvider>
+            <App />
+          </RoomProvider>
+        </SocketContextProvider>
       </AppContextProvider>
     </ChakraProvider>
   </BrowserRouter>,

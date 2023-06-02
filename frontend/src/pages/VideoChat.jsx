@@ -97,49 +97,45 @@ const Chat = () => {
   };
 
   return (
-    <SocketContextProvider>
-      <RoomProvider>
-        <Static noSmPadding noPadding fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}>
-          <Box overflow={['hidden', 'hidden', 'auto']} position='relative' h={stream ? '100%' : '100%'} display={[!stream ? 'flex' : 'block', 'block', 'flex',]}>
-            {stream ?
-              <StreamingPeer setToggleChat={setToggleChat} admin={admin} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
-              :
-              <>
-                <Box width={['100%', '100%', 'auto']} flex={['1', '1', '2', '3']}>
-                  {user.token && <Conversations fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
-                </Box>
-                <Box
-                  transform={selectedChat === null ? ["translateX(100%)", "translateX(100%)", 'unset'] : ["translateX(0)", "translateX(0)", 'unset']}
-                  position={['absolute', 'absolute', 'relative']}
-                  h='100%'
-                  w='100%'
-                  flex={['12', '12', '7.5', '7.5']}
-                  top={['0', '0', 'unset']}
-                  transition="all 0.25s ease-in-out"
-                >
-                  {user.token && <Chatbox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} getMeetingAndToken={getMeetingAndToken} />}
-                </Box>
-              </>
-            }
-            <Box
-              h={[toggleChat ? stream ? '70%' : '0%' : '0%', toggleChat ? stream ? '70%' : '0%' : '0%', stream ? 'calc(100vh - 141px)' : '100%']}
-              overflow='hidden'
-              // h={stream ? toggleChat ? ['70%', 'calc(100vh - 141px)'] : 'calc(100vh - 141px)' : '100%'}
-              position={['absolute', 'absolute', 'sticky']}
-              top={['unset', 'unset', '0']}
-              flex={(stream && token && meetingId) ? ['0', '0', '3', '3'] : ['12', '12', '5', '4']}
-              zIndex='1'
-              bottom={['0', '0', 'unset']}
-              width={['100%', '100%', 'auto']}
-              transition='all 0.25s ease-in-out'
-            // height={['70%', 'auto']}
-            >
-              {user.token && <Members setToggleChat={setToggleChat} admin={admin} token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+    <Static noSmPadding noPadding fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}>
+      <Box overflow={['hidden', 'hidden', 'auto']} position='relative' h={stream ? '100%' : '100%'} display={[!stream ? 'flex' : 'block', 'block', 'flex',]}>
+        {stream ?
+          <StreamingPeer setToggleChat={setToggleChat} admin={admin} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+          :
+          <>
+            <Box width={['100%', '100%', 'auto']} flex={['1', '1', '2', '3']}>
+              {user.token && <Conversations fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
             </Box>
-          </Box>
-        </Static>
-      </RoomProvider>
-    </SocketContextProvider>
+            <Box
+              transform={selectedChat === null ? ["translateX(100%)", "translateX(100%)", 'unset'] : ["translateX(0)", "translateX(0)", 'unset']}
+              position={['absolute', 'absolute', 'relative']}
+              h='100%'
+              w='100%'
+              flex={['12', '12', '7.5', '7.5']}
+              top={['0', '0', 'unset']}
+              transition="all 0.25s ease-in-out"
+            >
+              {user.token && <Chatbox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} getMeetingAndToken={getMeetingAndToken} />}
+            </Box>
+          </>
+        }
+        <Box
+          h={[toggleChat ? stream ? '70%' : '0%' : '0%', toggleChat ? stream ? '70%' : '0%' : '0%', stream ? 'calc(100vh - 141px)' : '100%']}
+          overflow='hidden'
+          // h={stream ? toggleChat ? ['70%', 'calc(100vh - 141px)'] : 'calc(100vh - 141px)' : '100%'}
+          position={['absolute', 'absolute', 'sticky']}
+          top={['unset', 'unset', '0']}
+          flex={(stream && token && meetingId) ? ['0', '0', '3', '3'] : ['12', '12', '5', '4']}
+          zIndex='1'
+          bottom={['0', '0', 'unset']}
+          width={['100%', '100%', 'auto']}
+          transition='all 0.25s ease-in-out'
+        // height={['70%', 'auto']}
+        >
+          {user.token && <Members setToggleChat={setToggleChat} admin={admin} token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+        </Box>
+      </Box>
+    </Static>
 
   )
 }
