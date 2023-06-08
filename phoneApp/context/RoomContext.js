@@ -28,7 +28,7 @@ export const RoomProvider = ({ children, user }) => {
     const [roomId, setRoomId] = React.useState("");
     const [participantsArray, setParticipantsArray] = React.useState([]);
 
-    const { stream } = React.useContext(PhoneAppContext);
+    const { userInfo } = React.useContext(PhoneAppContext);
 
     const enterRoom = async (roomId) => {
         console.warn("Room ID ::: >>>", roomId);
@@ -224,7 +224,7 @@ export const RoomProvider = ({ children, user }) => {
     }, [me, streamState, userId])
 
     React.useEffect(() => {
-        setUserId(user._id);
+        setUserId(userInfo?._id);
     }, [userId])
 
     return (

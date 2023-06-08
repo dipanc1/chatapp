@@ -1,8 +1,10 @@
 import { Avatar, Box, HStack, IconButton, Text } from 'native-base'
 import React from 'react'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import { PhoneAppContext } from '../../context/PhoneAppContext';
 
 const ParticipantListItem = ({ user1, user, handleRemove }) => {
+    const { userInfo } = React.useContext(PhoneAppContext);
 
     return (
         <Box borderBottomWidth="1" borderBottomColor={'primary.100'} p={'3'} mx={'4'}>
@@ -18,7 +20,7 @@ const ParticipantListItem = ({ user1, user, handleRemove }) => {
                         {user1?.username}
                     </Text>
                 </HStack>
-                {!(user._id === user1._id) &&
+                {!(userInfo._id === user1._id) &&
                     <IconButton
                         onPress={() => handleRemove(user1)}
                         icon={<MaterialIcons name="exit-to-app" size={24} color="#3cc4b7" />}

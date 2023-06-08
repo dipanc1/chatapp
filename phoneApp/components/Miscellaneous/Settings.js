@@ -6,7 +6,7 @@ import { backend_url } from '../../production';
 import axios from 'axios';
 
 const Settings = ({ user, fetchAgain, setFetchAgain }) => {
-  const { selectedChat, dispatch } = React.useContext(PhoneAppContext);
+  const { selectedChat, dispatch, userInfo } = React.useContext(PhoneAppContext);
   const [rename, setRename] = React.useState(false);
   const [groupChatName, setGroupChatName] = React.useState('');
   const [loading, setLoading] = React.useState(false);
@@ -54,7 +54,7 @@ const Settings = ({ user, fetchAgain, setFetchAgain }) => {
         config
       );
 
-      user1._id === user._id ? dispatch({ type: 'SET_SELECTED_CHAT', payload: '' }) : dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
+      user1._id === userInfo?._id ? dispatch({ type: 'SET_SELECTED_CHAT', payload: '' }) : dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
       setFetchAgain(!fetchAgain);
       setLoading(false);
       alert('You Left the Group Chat');

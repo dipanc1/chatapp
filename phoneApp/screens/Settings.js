@@ -1,17 +1,19 @@
 import { View, Text } from 'react-native'
-import React from 'react'
+import React, { useContext } from 'react'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import SettingCard from '../components/Settings/SettingCard';
 import TabNavigatorStyled from '../components/Miscellaneous/TabNavigatorStyled';
+import { PhoneAppContext } from '../context/PhoneAppContext';
 
 const Tab = createMaterialTopTabNavigator();
 
 const Settings = ({ user }) => {
+    const { userInfo } = useContext(PhoneAppContext);
 
     return (
         <TabNavigatorStyled>
             <Tab.Screen name="My Details">
-                {props => <SettingCard {...props} name={"My Details"} user={user} />}
+                {props => <SettingCard {...props} name={"My Details"} user={userInfo} />}
             </Tab.Screen>
             <Tab.Screen name="Themes">
                 {props => <SettingCard {...props} name={"Themes"} />}

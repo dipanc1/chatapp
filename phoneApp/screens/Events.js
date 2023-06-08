@@ -10,7 +10,7 @@ const Tab = createMaterialTopTabNavigator();
 let eventsTab = true;
 
 const Events = ({ user, navigation }) => {
-    const { dispatch } = React.useContext(PhoneAppContext);
+    const { dispatch, userInfo } = React.useContext(PhoneAppContext);
 
     const [eventsList, setEventsList] = React.useState([]);
     const [upcomingEventsList, setUpcomingEventsList] = React.useState([]);
@@ -78,7 +78,7 @@ const Events = ({ user, navigation }) => {
             setChatId(data._id);
             setChatName(data.chatName);
 
-            if (!data.users.map((u) => u._id === user._id).includes(true)) {
+            if (!data.users.map((u) => u._id === userInfo._id).includes(true)) {
                 setShowModal(true)
             } else {
                 dispatch({ type: "SET_SELECTED_CHAT", payload: data });

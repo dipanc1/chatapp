@@ -9,12 +9,12 @@ import axios from 'axios'
 
 const Participants = ({ user, fetchAgain, setFetchAgain }) => {
 
-  const { dispatch, selectedChat } = React.useContext(PhoneAppContext);
+  const { dispatch, selectedChat, userInfo } = React.useContext(PhoneAppContext);
   const [loading, setLoading] = React.useState(false);
   const [showModal, setShowModal] = React.useState(false);
 
   const handleRemove = async (user1) => {
-    if (selectedChat.groupAdmin._id !== user._id && user1._id !== user._id) {
+    if (selectedChat.groupAdmin._id !== userInfo?._id && user1._id !==userInfo?._id) {
       return alert('You are not the admin of this group chat')
     }
     try {
@@ -33,7 +33,7 @@ const Participants = ({ user, fetchAgain, setFetchAgain }) => {
         config
       );
 
-      user1._id === user._id ? dispatch({ type: 'SET_SELECTED_CHAT', payload: '' }) : dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
+      user1._id === userInfo?._id ? dispatch({ type: 'SET_SELECTED_CHAT', payload: '' }) : dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
       setLoading(false);
       alert('User removed from group chat');
     } catch (error) {

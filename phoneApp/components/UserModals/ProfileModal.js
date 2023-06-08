@@ -1,7 +1,9 @@
 import { Avatar, Button, Flex, HStack, Modal, Text, VStack } from 'native-base';
 import React from 'react'
+import { PhoneAppContext } from '../../context/PhoneAppContext';
 
-const ProfileModal = ({ user, modalVisible, setModalVisible, navigation }) => {
+const ProfileModal = ({ modalVisible, setModalVisible, navigation }) => {
+  const { userInfo } = React.useContext(PhoneAppContext);
 
   return (
     <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)} _backdrop={{
@@ -16,12 +18,12 @@ const ProfileModal = ({ user, modalVisible, setModalVisible, navigation }) => {
         <Modal.Body>
           <VStack justifyContent={'space-between'} alignItems={'center'}>
             <Avatar bg="purple.600" alignSelf="center" size="2xl" source={{
-              uri: user.pic
+              uri: userInfo?.pic
             }}>
-              {user.username}
+              {userInfo?.username}
             </Avatar>
-            <Text fontSize={'md'} color={'primary.600'} mt="2">{user.username}</Text>
-            <Text fontSize={'md'} color={'primary.600'} mt="2"> Phone Number: +{user.number}</Text>
+            <Text fontSize={'md'} color={'primary.600'} mt="2">{userInfo?.username}</Text>
+            <Text fontSize={'md'} color={'primary.600'} mt="2"> Phone Number: +{userInfo?.number}</Text>
           </VStack>
         </Modal.Body>
         <Modal.Footer justifyContent={'center'}>

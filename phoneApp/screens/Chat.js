@@ -15,7 +15,7 @@ import { MeetingProvider, MeetingConsumer } from '@videosdk.live/react-sdk';
 const Tab = createMaterialTopTabNavigator();
 
 const Chat = ({ user, fetchAgain, setFetchAgain }) => {
-    const { chats, dispatch, stream, fullScreen, selectedChat } = React.useContext(PhoneAppContext);
+    const { chats, dispatch, stream, fullScreen, selectedChat, userInfo } = React.useContext(PhoneAppContext);
 
     const [conversations, setConversations] = React.useState([])
     const [groupConversations, setGroupConversations] = React.useState([])
@@ -26,7 +26,7 @@ const Chat = ({ user, fetchAgain, setFetchAgain }) => {
     const [meetingId, setMeetingId] = React.useState(null);
     const [token, setToken] = React.useState(null);
 
-    const admin = selectedChat?.isGroupChat && selectedChat?.groupAdmin._id === user._id;
+    const admin = selectedChat?.isGroupChat && selectedChat?.groupAdmin._id === userInfo?._id;
 
     // console.log(admin, "admin");
 

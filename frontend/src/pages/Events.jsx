@@ -141,9 +141,9 @@ function Events() {
               {
                 eventsList?.map((eventItem, index) => {
                   return (
-                    <>
-                      <EventCard key={eventItem._id} selectEvent={selectEvent} chatId={eventItem.chatId} index={index} id={eventItem._id} date={eventItem.date} time={eventItem.time} title={eventItem.name} description={eventItem.description} imageUrl={eventItem?.thumbnail} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
-                    </>
+                    <div key={index}>
+                      <EventCard key={eventItem._id} selectEvent={selectEvent} chatId={eventItem.chatId} index={index} id={eventItem._id} date={eventItem.date} time={eventItem.time} title={eventItem.name} description={eventItem.description} imageUrl={eventItem?.thumbnail} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} eventsPage={true} />
+                    </div>
                   )
                 })
               }
@@ -151,23 +151,23 @@ function Events() {
 
           </div>
           <div className={"tab-themes tab-content-item " + (activeTab === 2 ? "current" : "")}>
-            <Grid mb={['30px', '70px']} templateColumns={['repeat(1, 1fr)' ,'repeat(3, 1fr)']} gap='2rem' rowGap={['1.5rem', '3rem']}>
+            <Grid mb={['30px', '70px']} templateColumns={['repeat(1, 1fr)', 'repeat(3, 1fr)']} gap='2rem' rowGap={['1.5rem', '3rem']}>
               {upcomingEventsList?.map((eventItem, index) => {
                 return (
-                  <>
-                    <EventCard key={eventItem._id} selectEvent={selectEvent} chatId={eventItem.chatId} index={index} id={eventItem._id} date={eventItem.date} time={eventItem.time} title={eventItem.name} description={eventItem.description} imageUrl={eventItem?.thumbnail} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
-                  </>
+                  <div key={index}>
+                    <EventCard key={eventItem._id} selectEvent={selectEvent} chatId={eventItem.chatId} index={index} id={eventItem._id} date={eventItem.date} time={eventItem.time} title={eventItem.name} description={eventItem.description} imageUrl={eventItem?.thumbnail} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} eventsPage={true} />
+                  </div>
                 )
               })}
             </Grid>
           </div>
           <div className={"tab-content-item " + (activeTab === 3 ? "current" : "")}>
-            <Grid mb={['30px', '70px']} templateColumns={['repeat(1, 1fr)' ,'repeat(3, 1fr)']} gap='2rem' rowGap={['1.5rem', '3rem']}>
+            <Grid mb={['30px', '70px']} templateColumns={['repeat(1, 1fr)', 'repeat(3, 1fr)']} gap='2rem' rowGap={['1.5rem', '3rem']}>
               {previousEventsList?.map((eventItem, index) => {
                 return (
-                  <>
-                    <EventCard key={eventItem._id} selectEvent={selectEvent} chatId={eventItem.chatId} index={index} id={eventItem._id} date={eventItem.date} time={eventItem.time} title={eventItem.name} description={eventItem.description} imageUrl={eventItem?.thumbnail} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
-                  </>
+                  <div key={index}>
+                    <EventCard key={eventItem._id} selectEvent={selectEvent} chatId={eventItem.chatId} index={index} id={eventItem._id} date={eventItem.date} time={eventItem.time} title={eventItem.name} description={eventItem.description} imageUrl={eventItem?.thumbnail} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} eventsPage={true} />
+                  </div>
                 )
               })}
             </Grid>

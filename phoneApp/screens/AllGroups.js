@@ -4,12 +4,15 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { backend_url } from '../production';
 import axios from 'axios';
 import TabNavigatorStyled from '../components/Miscellaneous/TabNavigatorStyled';
+import { PhoneAppContext } from '../context/PhoneAppContext';
 
 const Tab = createMaterialTopTabNavigator();
 
 const AllGroups = ({ user, navigation }) => {
     const [groupsList, setGroupsList] = React.useState([])
     const [groupConversations, setGroupConversations] = React.useState([]);
+    const { userInfo } = React.useContext(PhoneAppContext);
+
 
     React.useEffect(() => {
         // fetch all conversations
@@ -64,10 +67,10 @@ const AllGroups = ({ user, navigation }) => {
     return (
         <TabNavigatorStyled>
             <Tab.Screen name="All Groups">
-                {props => <GroupCard {...props} navigation={navigation} data={groupsList} user={user} />}
+                {props => <GroupCard {...props} navigation={navigation} data={groupsList} user={userInfo} />}
             </Tab.Screen>
             <Tab.Screen name="Joined Groups">
-                {props => <GroupCard {...props} navigation={navigation} data={groupConversations} user={user} />}
+                {props => <GroupCard {...props} navigation={navigation} data={groupConversations} user={userInfo} />}
             </Tab.Screen>
             <Tab.Screen name="My Groups">
                 {props => <GroupCard {...props} navigation={navigation} data={groupConversations} />}

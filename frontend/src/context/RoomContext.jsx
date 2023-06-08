@@ -141,6 +141,11 @@ export const RoomProvider = ({ children }) => {
         try {
             navigator.mediaDevices.getUserMedia({ video: stream, audio: stream }).then((stream) => {
                 setStreamState(stream);
+            }).catch((err) => {
+                console.error(err);
+                if (err.name === "NotAllowedError") {
+                    setCameraPermission(false);
+                }
             });
         } catch (error) {
             console.error(error);

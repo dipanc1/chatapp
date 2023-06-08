@@ -7,7 +7,7 @@ import { AppContext } from "../../context/AppContext";
 const SideBar = ({
   toggleSidebar
 }) => {
-  const { dispatch, stream } = useContext(AppContext);
+  const { dispatch, stream, selectedChat } = useContext(AppContext);
   const navigate = useNavigate();
   const CDN_IMAGES = "https://ik.imagekit.io/sahildhingra";
   const NavMenu = [
@@ -24,7 +24,7 @@ const SideBar = ({
       title: "Events",
       url: "event",
       icon: "events",
-      disable: stream,
+      disable: stream || selectedChat === null,
     },
     {
       title: "Groups",

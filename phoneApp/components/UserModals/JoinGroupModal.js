@@ -8,7 +8,7 @@ const JoinGroupModal = ({ showModal, setShowModal, chatName, user, navigation, c
     const cancelRef = React.useRef(null);
     const onClose = () => setShowModal(false);
 
-    const { dispatch } = React.useContext(PhoneAppContext);
+    const { dispatch, userInfo } = React.useContext(PhoneAppContext);
 
     const handleJoinGroup = async () => {
         const config = {
@@ -20,7 +20,7 @@ const JoinGroupModal = ({ showModal, setShowModal, chatName, user, navigation, c
             `${backend_url}/conversation/groupadd`,
             {
                 chatId,
-                userId: user._id,
+                userId: userInfo?._id,
             },
             config
         );

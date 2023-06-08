@@ -9,7 +9,7 @@ import UserListItem from '../UserItems/UserListItem';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const AddModal = ({ user, showModal, setShowModal, fetchAgain, setFetchAgain }) => {
-  const { dispatch, selectedChat } = React.useContext(PhoneAppContext);
+  const { dispatch, selectedChat, userInfo } = React.useContext(PhoneAppContext);
   const [search, setSearch] = React.useState('');
   const [searchResults, setSearchResults] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
@@ -37,7 +37,7 @@ const AddModal = ({ user, showModal, setShowModal, fetchAgain, setFetchAgain }) 
   }
 
   const handleAddUser = async (user1) => {
-    if (selectedChat.groupAdmin._id !== user._id) {
+    if (selectedChat.groupAdmin._id !== userInfo?._id) {
       return alert("You are not the admin")
     }
     if (selectedChat.users.map(user => user._id).includes(user1)) {

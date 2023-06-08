@@ -1,12 +1,14 @@
 import React from 'react'
 import { Avatar, Box, HStack, Text } from 'native-base'
 import { TouchableOpacity } from 'react-native'
+import { PhoneAppContext } from '../../context/PhoneAppContext';
 
 const Conversation = ({ chat, user }) => {
+    const { userInfo } = React.useContext(PhoneAppContext);
     const [friends, setFriends] = React.useState([]);
 
     React.useEffect(() => {
-        setFriends((chat?.users.find(member => member._id !== user._id)))
+        setFriends((chat?.users.find(member => member._id !== userInfo?._id)))
     }, [chat, friends])
 
     return (

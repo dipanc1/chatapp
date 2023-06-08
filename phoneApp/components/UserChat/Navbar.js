@@ -4,12 +4,15 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import ProfileModal from '../UserModals/ProfileModal';
 import NavbarModal from '../UserModals/NavbarModal';
 import Searchbar from '../Miscellaneous/Searchbar';
+import { PhoneAppContext } from '../../context/PhoneAppContext';
 
 
 const Navbar = ({ user, fetchAgain, setFetchAgain, handleSearch, search, setSearch, navigation }) => {
     const [showModal, setShowModal] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [searchbar, setSearchbar] = useState(false);
+
+    const { userInfo } = React.useContext(PhoneAppContext);
 
     return (
         <>
@@ -26,7 +29,7 @@ const Navbar = ({ user, fetchAgain, setFetchAgain, handleSearch, search, setSear
                             <IconButton icon={<Icon size="xl" as={MaterialIcons} name="search" color="black" />} onPress={() => setSearchbar(true)} />
                             <IconButton icon={
                                 <Avatar bg="green.500" alignSelf="center" size="sm" source={{
-                                    uri: user.pic
+                                    uri: userInfo?.pic
                                 }} />
                             } onPress={() => setShowModal(true)} />
                         </>

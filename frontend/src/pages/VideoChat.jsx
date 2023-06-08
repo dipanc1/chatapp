@@ -5,10 +5,8 @@ import Conversations from '../components/UserChat/Conversations'
 import Chatbox from '../components/UserChat/Chatbox'
 import Members from '../components/UserChat/Members'
 import { AppContext } from '../context/AppContext';
-import { SocketContextProvider } from '../context/SocketContext';
 import { backend_url } from '../baseApi';
 import StreamingPeer from '../components/Miscellaneous/StreamingPeerNew';
-import { RoomProvider } from '../context/RoomContext';
 
 import Static from "../components/common/Static"
 

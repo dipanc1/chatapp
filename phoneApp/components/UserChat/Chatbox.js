@@ -18,10 +18,9 @@ import { View } from 'react-native'
 var selectedChatCompare;
 
 const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
-
     const socket = React.useContext(SocketContext);
 
-    const { dispatch, selectedChat, stream, notification } = React.useContext(PhoneAppContext);
+    const { dispatch, selectedChat, stream, userInfo } = React.useContext(PhoneAppContext);
 
     const scrollViewRef = React.useRef();
 
@@ -39,7 +38,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
     const [open, setOpen] = React.useState(false);
     const [pushNotification, setPushNotification] = React.useState([]);
 
-    const admin = selectedChat?.isGroupChat && selectedChat?.groupAdmin._id === user._id;
+    const admin = selectedChat?.isGroupChat && selectedChat?.groupAdmin._id === userInfo?._id;
 
     async function onDisplayNotification(newMessageReceived) {
         // Create a channel (required for Android)
@@ -74,12 +73,12 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
     }
 
     React.useEffect(() => {
-        socket.emit("setup", user);
+        socket.emit("setup", userInfo);
         socket.on("connected", () => setSocketConnected(true));
         socket.on("typing", () => setIsTyping(true));
         socket.on("stop typing", () => setIsTyping(false));
         // user online
-        socket.emit("user-online", user);
+        socket.emit("user-online", userInfo);
     }, []);
 
     React.useEffect(() => {
@@ -105,7 +104,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
 
     React.useEffect(() => {
         try {
-            setProfile(selectedChat?.users.find(member => member._id !== user._id));
+            setProfile(selectedChat?.users.find(member => member._id !== userInfo?._id));
         } catch (error) {
             // console.log(error);
             toast({
@@ -118,7 +117,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
             });
         }
         if (selectedChat && !selectedChat.isGroupChat) {
-            CheckOnlineStatus(selectedChat?.users.find(member => member._id !== user._id)._id);
+            CheckOnlineStatus(selectedChat?.users.find(member => member._id !== userInfo?._id)._id);
         }
 
         fetchMessages();
@@ -314,12 +313,12 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
                             <Message
                                 profile={profile}
                                 messages={item}
-                                own={item.sender._id === user._id}
+                                own={item.sender._id === userInfo?._id}
                                 sameSender={(i < messages.length - 1 &&
                                     (messages[i + 1].sender._id !== item.sender._id ||
                                         messages[i + 1].sender._id === undefined) &&
-                                    messages[i].sender._id !== user._id) || (i === messages.length - 1 &&
-                                        messages[messages.length - 1].sender._id !== user._id &&
+                                    messages[i].sender._id !== userInfo?._id) || (i === messages.length - 1 &&
+                                        messages[messages.length - 1].sender._id !== userInfo?._id &&
                                         messages[messages.length - 1].sender._id)}
                                 sameTime={(i < messages.length - 1) && format(messages[i].createdAt) === format(messages[i + 1].createdAt)}
                             />

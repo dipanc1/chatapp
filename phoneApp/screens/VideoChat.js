@@ -15,7 +15,7 @@ const Tab = createMaterialTopTabNavigator();
 
 const VideoChat = ({ user, fetchAgain, setFetchAgain, navigation }) => {
 
-    const { chats, dispatch, stream, fullScreen, selectedChat } = React.useContext(PhoneAppContext);
+    const { chats, dispatch, stream, selectedChat, userInfo } = React.useContext(PhoneAppContext);
 
     const [conversations, setConversations] = React.useState([])
     const [groupConversations, setGroupConversations] = React.useState([])
@@ -26,9 +26,7 @@ const VideoChat = ({ user, fetchAgain, setFetchAgain, navigation }) => {
     const [meetingId, setMeetingId] = React.useState(null);
     const [token, setToken] = React.useState(null);
 
-    const admin = selectedChat?.isGroupChat && selectedChat?.groupAdmin._id === user._id;
-
-    // console.log(admin, "admin");
+    const admin = selectedChat?.isGroupChat && selectedChat?.groupAdmin._id === userInfo?._id;
 
     React.useEffect(() => {
         fetchChats();

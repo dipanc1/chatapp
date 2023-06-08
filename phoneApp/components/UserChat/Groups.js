@@ -12,7 +12,7 @@ import { backend_url } from '../../production'
 const Groups = ({ user, groupConversations, searchResultsGroups, search, setSearch, fetchAgain, setFetchAgain }) => {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false)
-  const { dispatch, selectedChat } = React.useContext(PhoneAppContext)
+  const { dispatch, selectedChat, userInfo } = React.useContext(PhoneAppContext);
 
   const handleAddUser = async (user1, groupId) => {
     const res = searchResultsGroups.map(group => group.users).includes(user1);
@@ -56,7 +56,7 @@ const Groups = ({ user, groupConversations, searchResultsGroups, search, setSear
               (search.length > 0 ?
                 searchResultsGroups.map((group, index) => (
                   <TouchableOpacity key={group._id}
-                    onPress={() => handleAddUser(user._id, group._id)}>
+                    onPress={() => handleAddUser(userInfo._id, group._id)}>
                     <Flex justifyContent={'flex-start'} p={'2'}>
                       <GroupListItem group={group} />
                     </Flex>
@@ -82,7 +82,7 @@ const Groups = ({ user, groupConversations, searchResultsGroups, search, setSear
           <Box position={'absolute'} bottom={'5'} right={'5'}>
             <IconButton onPress={() => setShowModal(true)} colorScheme={'cyan'} size={'md'} variant={"outline"} _icon={{ as: MaterialIcons, name: "add", size: "lg" }} />
           </Box>
-          <GroupChatModal showModal={showModal} setShowModal={setShowModal} user={user} />
+          <GroupChatModal showModal={showModal} setShowModal={setShowModal} user={userInfo} />
         </>}
     </>
   )

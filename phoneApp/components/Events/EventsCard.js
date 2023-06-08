@@ -9,10 +9,10 @@ import { backend_url } from '../../production'
 
 const EventsCard = ({ data, screen, selectEvent, chatName, user, showModal, setShowModal, chatId, navigation }) => {
 
-  const { selectedChat } = React.useContext(PhoneAppContext)
+  const { selectedChat, userInfo } = React.useContext(PhoneAppContext)
 
   const deleteEvent = async (id) => {
-    if (selectedChat.groupAdmin._id !== user._id) {
+    if (selectedChat.groupAdmin._id !== userInfo?._id) {
       // toast({
       //   title: "You are not the admin of this group",
       //   status: "error",
