@@ -82,8 +82,8 @@ const AddModal = ({ user, showModal, setShowModal, fetchAgain, setFetchAgain }) 
       <Modal.Content maxWidth="350" maxH="800">
         <Modal.Body>
           <VStack space={4} alignItems={'center'}>
-            <Text color={'primary.600'} fontSize={'2xl'} bold>User Search</Text>
-            <Text color={'primary.600'}>Search for a person to add in group</Text>
+            <Text color={'#42495d'} fontSize={'2xl'} bold>User Search</Text>
+            <Text color={'#42495d'}>Search for a person to add in group</Text>
             <FormControl>
               <FormControl.Label>Add a Member</FormControl.Label>
               <Input variant={'filled'} color={'primary.900'} placeholder="Search users" search={search} setSearch={setSearch} onChangeText={text => handleSearch(text)} />

@@ -22,8 +22,8 @@ const ProfileModal = ({ modalVisible, setModalVisible, navigation }) => {
             }}>
               {userInfo?.username}
             </Avatar>
-            <Text fontSize={'md'} color={'primary.600'} mt="2">{userInfo?.username}</Text>
-            <Text fontSize={'md'} color={'primary.600'} mt="2"> Phone Number: +{userInfo?.number}</Text>
+            <Text fontSize={'md'} color={'#42495d'} mt="2">{userInfo?.username}</Text>
+            <Text fontSize={'md'} color={'#42495d'} mt="2"> Phone Number: +{userInfo?.number}</Text>
           </VStack>
         </Modal.Body>
         <Modal.Footer justifyContent={'center'}>

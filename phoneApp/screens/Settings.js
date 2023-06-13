@@ -13,7 +13,7 @@ const Settings = ({ user }) => {
     return (
         <TabNavigatorStyled>
             <Tab.Screen name="My Details">
-                {props => <SettingCard {...props} name={"My Details"} user={userInfo} />}
+                {props => <SettingCard {...props} name={"My Details"} user={userInfo} userInfo={user} />}
             </Tab.Screen>
             <Tab.Screen name="Themes">
                 {props => <SettingCard {...props} name={"Themes"} />}

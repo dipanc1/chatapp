@@ -34,7 +34,7 @@ const JoinGroupModal = ({ showModal, setShowModal, chatName, user, navigation, c
         <AlertDialog leastDestructiveRef={cancelRef} isOpen={showModal} onClose={onClose}>
             <AlertDialog.Content>
                 <AlertDialog.Header>
-                    <Text color={'primary.600'} fontSize={'2xl'} bold>You have to join {chatName} group to join this event?</Text>
+                    <Text color={'#42495d'} fontSize={'2xl'} bold>You have to join {chatName} group to join this event?</Text>
                 </AlertDialog.Header>
                 <AlertDialog.Body>
                     <Text>

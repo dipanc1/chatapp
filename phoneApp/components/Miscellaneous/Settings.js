@@ -93,16 +93,8 @@ const Settings = ({ user, fetchAgain, setFetchAgain }) => {
           color={'#fff'}
           borderRadius={'lg'}
           size={'lg'}
-          bg={'primary.600'}>
+          bg={'#42495d'}>
           Leave Group
-        </Button>
-        <Button
-          leftIcon={<MaterialIcons color="#fff" size={24} name="delete" />}
-          size={'lg'}
-          borderRadius={'lg'}
-          bg={'primary.700'}
-          color={'#fff'}>
-          Delete Group
         </Button>
       </HStack>
     </Flex>

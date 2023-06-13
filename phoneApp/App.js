@@ -70,7 +70,7 @@ const newColorTheme = {
     600: '#42495d',
     700: '#ff4343',
     800: '#3CC4B7',
-    900: 'grey.900',
+    900: 'gray.900',
   },
   secondary: {
     100: '#9F85F7',
@@ -107,18 +107,14 @@ const App = () => {
     const getUserDetails = async () => {
       try {
         const jsonValue = await AsyncStorage.getItem('user')
-        return jsonValue != null ? JSON.parse(jsonValue) : null
+        setUser(jsonValue != null ? JSON.parse(jsonValue) : null)
       } catch (e) {
         // read error
         console.log(e)
       }
-
-      console.log('Done.')
     }
-    getUserDetails().then(res => {
-      setUser(res)
-    });
 
+    getUserDetails()
   }, [fetchAgain]);
 
   return (

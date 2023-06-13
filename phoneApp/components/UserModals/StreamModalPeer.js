@@ -69,9 +69,9 @@ const StreamModal = ({ open, setOpen, admin }) => {
                 <Modal.Body>
                     <Flex marginY={'24'} height={'64'} justifyContent={'space-between'}>
                         <VStack alignItems={'center'}>
-                            <Heading color={'primary.600'}>{admin ? 'Share the Video?' : 'Join the Video?'}
+                            <Heading color={'#42495d'}>{admin ? 'Share the Video?' : 'Join the Video?'}
                             </Heading>
-                            <Text color={'primary.600'}>
+                            <Text color={'#42495d'}>
                                 {admin ? 'You can share you screen with the members present in this group.' : 'You can join the video call with the members present in this group.'}
                             </Text>
                         </VStack>

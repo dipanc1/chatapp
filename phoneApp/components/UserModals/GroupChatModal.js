@@ -59,8 +59,8 @@ const GroupChatModal = ({ user, showModal, setShowModal }) => {
       <Modal.Content maxWidth="350" maxH="800">
         <Modal.Body>
           <VStack space={4} alignItems={'center'}>
-            <Text color={'primary.600'} fontSize={'2xl'} bold>Create a new Group</Text>
-            <Text color={'primary.600'}>You can add any users to this group</Text>
+            <Text color={'#42495d'} fontSize={'2xl'} bold>Create a new Group</Text>
+            <Text color={'#42495d'}>You can add any users to this group</Text>
             <FormControl>
               <FormControl.Label>Group Name</FormControl.Label>
               <Input variant={'filled'} color={'primary.900'} placeholder="Group name" />

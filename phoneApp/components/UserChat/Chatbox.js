@@ -130,20 +130,21 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
 
     const fetchMessages = async () => {
         if (!selectedChat) return;
+        setLoading(true);
         try {
             const config = {
                 headers: {
                     'Authorization': `Bearer ${user.token}`
                 }
             };
-            setLoading(true);
             const { data } = await axios.get(`${backend_url}/message/${selectedChat._id}/1`, config);
             setMessages(data.messages);
             setHasMore(data.hasMore);
-            setLoading(false);
             socket.emit('join chat', selectedChat._id);
+            setLoading(false);
         } catch (error) {
             //TODO: ADD ALERTS
+            setLoading(false);
             console.log(error);
         }
     }
@@ -266,11 +267,11 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
                 {!stream &&
                     <HStack justifyContent={'space-between'} alignItems={'center'} h={'16'}>
 
-                        <Text style={{ color: 'primary.600' }} fontWeight={'bold'} fontSize={'lg'} mx={'10'}>
+                        <Text style={{ color: '#42495d' }} fontWeight={'bold'} fontSize={'lg'} mx={'10'}>
                             {selectedChat?.isGroupChat ? selectedChat?.chatName : profile?.username}
                         </Text>
 
-                        {!selectedChat?.isGroupChat && <Text style={{ color: 'primary.600' }} fontWeight={'bold'} fontSize={'lg'} mx={'10'}>
+                        {!selectedChat?.isGroupChat && <Text style={{ color: '#42495d' }} fontWeight={'bold'} fontSize={'lg'} mx={'10'}>
                             {online ? 'Online' : 'Offline'}
                         </Text>}
 

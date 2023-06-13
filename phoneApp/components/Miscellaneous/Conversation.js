@@ -15,7 +15,7 @@ const Conversation = ({ chat, user }) => {
         <Box borderBottomWidth="1" borderBottomColor={'primary.100'} p={'3'} mx={'4'}>
             <HStack space={[2, 3]} justifyContent="space-between" >
                 <HStack alignItems={'center'}>
-                    {chat && <Avatar size="48px" source={{
+                    {chat && <Avatar width={"48px"} height={"48px"} source={{
                         uri: friends?.pic
                     }}>
                         {friends?.isOnline ? <Avatar.Badge bg="green.500" /> : <Avatar.Badge bg="red.500" />}

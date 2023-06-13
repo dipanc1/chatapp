@@ -16,7 +16,7 @@ const Message = ({ messages, own, sameSender, sameTime }) => {
                 <Flex m={'5'} width={'100%'}>
                     {!sameTime && <Text marginRight={own ? '0' : '10'} marginLeft={own ? '10' : '0'} fontSize={'xs'}>{format(messages.createdAt)}</Text>}
                     <Box rounded={'lg'} p={'2'} marginRight={own ? '0' : '10'} marginLeft={own ? '10' : '0'} bg={own ? 'primary.400' : 'primary.200'}>
-                        <Text style={{ color: own ? '#fff' : 'primary.600' }} color={'#fff'} fontSize={'lg'}>{messages.content}</Text>
+                        <Text style={{ color: own ? '#fff' : '#42495d' }} color={'#fff'} fontSize={'lg'}>{messages.content}</Text>
                     </Box>
                 </Flex>
             </HStack>

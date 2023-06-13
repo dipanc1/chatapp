@@ -28,7 +28,7 @@ const Navbar = ({ user, fetchAgain, setFetchAgain, handleSearch, search, setSear
                         {!searchbar && <>
                             <IconButton icon={<Icon size="xl" as={MaterialIcons} name="search" color="black" />} onPress={() => setSearchbar(true)} />
                             <IconButton icon={
-                                <Avatar bg="green.500" alignSelf="center" size="sm" source={{
+                                <Avatar bg="green.500" alignSelf="center" width={"32px"} height={"32px"} source={{
                                     uri: userInfo?.pic
                                 }} />
                             } onPress={() => setShowModal(true)} />
