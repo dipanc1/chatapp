@@ -178,19 +178,22 @@ const SettingCard = ({ name, user }) => {
 
     const handleUpdateProfile = async (e) => {
         e.preventDefault();
-        let data;
+        setLoading(true);
         if (!username) {
             alert("Username cannot be empty");
+            setLoading(false);
             return;
         }
 
         if (username.length < 3) {
             alert("Username should be atleast 3 characters long");
+            setLoading(false);
             return;
         }
 
         if (username.length > 20) {
             alert("Username should be less than 20 characters long");
+            setLoading(false);
             return;
         }
 
@@ -199,364 +202,352 @@ const SettingCard = ({ name, user }) => {
             const config = {
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${user.token}`,
+                    "Authorization": `Bearer ${userInfo.token}`,
                 },
             };
 
 
-            data = await axios.put(
+            const { data } = await axios.put(
                 `${backend_url}/users/update-user-info`, {
                 username,
                 pic,
             },
                 config
             );
-
-            toast({
-            title: "Success",
-            description: data.data.message,
-            status: "success",
-            duration: 4000,
-            isClosable: true,
-        });
-        setUsername(data.data.username);
-        setPic(data.data.pic);
-        dispatch({ type: "SET_USER_INFO", payload: data.data });
-    } catch (error) {
-        console.log(error);
-        toast({
-            title: "Error",
-            description: "Error updating profile",
-            status: "error",
-            duration: 4000,
-            isClosable: true,
-        });
-    }
-}
-
-React.useEffect(() => {
-    const getUserDetails = async () => {
-        try {
-            const jsonValue = await AsyncStorage.getItem('user')
-            setUser(jsonValue != null ? JSON.parse(jsonValue) : null)
-        } catch (e) {
-            // read error
-            console.log(e)
+            alert(data.message);
+            setUsername(data.username);
+            setPic(data.pic);
+            dispatch({ type: "SET_USER_INFO", payload: data });
+        } catch (error) {
+            console.log(error);
+            setLoading(false);
+            alert("Something went wrong");
         }
     }
 
-    getUserDetails()
-}, []);
+    React.useEffect(() => {
+        const getUserDetails = async () => {
+            try {
+                const jsonValue = await AsyncStorage.getItem('user')
+                setUser(jsonValue != null ? JSON.parse(jsonValue) : null)
+            } catch (e) {
+                // read error
+                console.log(e)
+            }
+        }
 
-React.useEffect(() => {
-    if (subscribeData["amount"] < 0 || subscribeData["amount"] === undefined || subscribeData === {}) {
-        return;
-    }
-    initializePaymentSheet();
-}, [subscribeData]);
+        getUserDetails()
+    }, []);
 
-return (
-    <Flex flex={1} align={'center'} justify={'center'} position={'relative'} bg={"primary.200"}>
-        {(function () {
-            switch (name) {
-                case 'My Details':
-                    return (
-                        <VStack space={3}>
-                            <Box display={'flex'} alignItems={'center'}>
-                                <Avatar bg="pink.600" alignSelf="center" size="xl" source={{
-                                    uri: pic
-                                }}>
-                                    {user.username}
-                                </Avatar>
-                                <IconButton variant={'ghost'} _icon={{
-                                    as: MaterialIcons, name: "edit"
-                                }} size={'md'} />
-                            </Box>
-                            <FormControl>
-                                <FormControl.Label _text={{ color: 'muted.700', fontSize: 'sm', fontWeight: 600 }}>
-                                    Username
-                                </FormControl.Label>
-                                <Input
-                                    placeholder={user.username}
-                                    w={{
-                                        base: '84%',
-                                        md: '285px'
-                                    }}
-                                    value={username}
-                                    onChangeText={(e) => setUsername(e)}
-                                />
-                            </FormControl>
-                            <FormControl>
-                                <FormControl.Label _text={{ color: 'muted.700', fontSize: 'sm', fontWeight: 600 }}>
-                                    Phone Number
-                                </FormControl.Label>
-                                <Input
-                                    placeholder={"+" + user.number}
-                                    isDisabled={true}
-                                    w={{
-                                        base: '84%',
-                                        md: '285px'
-                                    }}
-                                />
-                            </FormControl>
-                            <Button _icon={{
-                                as: MaterialIcons, name: "edit"
-                            }} size={'md'} mt="1" bgColor={'primary.300'}>
-                                Edit
-                            </Button>
-                        </VStack>
-                    )
-                case 'Themes':
-                    return (
-                        <Radio.Group space={'10'} name='theme' value={value} onChange={(nextValue) => setValue(nextValue)}>
-                            <Radio value="light">
-                                <Box p={10} my={5} borderColor={'primary.100'} borderWidth={'1'} rounded="lg">
-                                    <Text fontSize={'lg'} fontWeight={'bold'} color={'primary.400'} my={'2'}>
-                                        Light
-                                    </Text>
-                                    <Image source={{
-                                        uri: ("https://ik.imagekit.io/sahildhingra/theme-default.png")
-                                    }} alt="Alternate Text" size="lg" />
+    React.useEffect(() => {
+        if (subscribeData["amount"] < 0 || subscribeData["amount"] === undefined || subscribeData === {}) {
+            return;
+        }
+        initializePaymentSheet();
+    }, [subscribeData]);
+
+    return (
+        <Flex flex={1} align={'center'} justify={'center'} position={'relative'} bg={"primary.200"}>
+            {(function () {
+                switch (name) {
+                    case 'My Details':
+                        return (
+                            <VStack space={3}>
+                                <Box display={'flex'} alignItems={'center'}>
+                                    <Avatar bg="pink.600" alignSelf="center" size="xl" source={{
+                                        uri: pic
+                                    }}>
+                                        {user.username}
+                                    </Avatar>
+                                    <IconButton variant={'ghost'} _icon={{
+                                        as: MaterialIcons, name: "edit"
+                                    }} size={'md'} />
                                 </Box>
-                            </Radio>
-                            <Radio value="dark">
-                                <Box p={10} my={5} borderColor={'primary.100'} borderWidth={'1'} rounded="lg">
-                                    <Text fontSize={'lg'} fontWeight={'bold'} color={'primary.400'} my={'2'}>
-                                        Dark
-                                    </Text>
-                                    <Image source={{
-                                        uri: ("https://ik.imagekit.io/sahildhingra/theme-dark.png")
-                                    }} alt="Alternate Text" size="lg" />
-                                </Box>
-                            </Radio>
-                        </Radio.Group>
-                    )
-                case 'Password':
-                    return (
-                        <VStack space={3}>
-                            <Box>
-                                <Text fontSize={'md'} fontWeight={'bold'} color={'primary.400'} my={'2'}>
-                                    Please enter your old password to change your password
-                                </Text>
-                            </Box>
-                            <FormControl>
-                                <FormControl.Label _text={{ color: 'muted.700', fontSize: 'sm', fontWeight: 600 }}>
-                                    Old Password
-                                </FormControl.Label>
-                                <Input
-                                    placeholder='********'
-                                    w={{
-                                        base: '84%',
-                                        md: '285px'
-                                    }}
-                                    type="password"
-                                    value={currentPassword}
-                                    onChangeText={(e) => setCurrentPassword(e)}
-                                />
-                            </FormControl>
-                            <Box my={'2'}>
-                                <Divider bg="primary.500" thickness="1" orientation="horizontal" />
-                            </Box>
-                            <FormControl>
-                                <FormControl.Label _text={{ color: 'muted.700', fontSize: 'sm', fontWeight: 600 }}>
-                                    New Password
-                                </FormControl.Label>
-                                <Input
-                                    placeholder='********'
-                                    w={{
-                                        base: '84%',
-                                        md: '285px'
-                                    }}
-                                    type="password"
-                                    value={newPassword}
-                                    onChangeText={(e) => setNewPassword(e)}
-                                />
-                            </FormControl>
-                            <FormControl>
-                                <FormControl.Label _text={{ color: 'muted.700', fontSize: 'sm', fontWeight: 600 }}>
-                                    Confirm Password
-                                </FormControl.Label>
-                                <Input
-                                    placeholder='********'
-                                    w={{
-                                        base: '84%',
-                                        md: '285px'
-                                    }}
-                                    type="password"
-                                    value={confirmPassword}
-                                    onChangeText={(e) => setConfirmPassword(e)}
-                                />
-                            </FormControl>
-                            <Button isLoading={loading}
-                                isLoadingText="Changing Password"
-                                _disabled={{
-                                    opacity: 0.5
-                                }} isDisabled={currentPassword === "" || newPassword === "" || confirmPassword === ""} _icon={{
+                                <FormControl>
+                                    <FormControl.Label _text={{ color: 'muted.700', fontSize: 'sm', fontWeight: 600 }}>
+                                        Username
+                                    </FormControl.Label>
+                                    <Input
+                                        placeholder={user.username}
+                                        w={{
+                                            base: '84%',
+                                            md: '285px'
+                                        }}
+                                        value={username}
+                                        onChangeText={(e) => setUsername(e)}
+                                    />
+                                </FormControl>
+                                <FormControl>
+                                    <FormControl.Label _text={{ color: 'muted.700', fontSize: 'sm', fontWeight: 600 }}>
+                                        Phone Number
+                                    </FormControl.Label>
+                                    <Input
+                                        placeholder={"+" + user.number}
+                                        isDisabled={true}
+                                        w={{
+                                            base: '84%',
+                                            md: '285px'
+                                        }}
+                                    />
+                                </FormControl>
+                                <Button _icon={{
                                     as: MaterialIcons, name: "edit"
-                                }} size={'md'} mt="1" bgColor={'primary.300'} onPressIn={handleChangePassword}>
-                                Update Password
-                            </Button>
-                        </VStack>
-                    )
-                case 'Notification':
-                    return (
-                        <Box>
-                            <Text fontSize={'xl'} fontWeight={'bold'} color={'amber.400'} my={'2'}>Choose your notification settings</Text>
-                            <Box>
-                                <Divider bg="primary.500" thickness="1" orientation="horizontal" />
-                                <HStack justifyContent={'space-between'} alignItems={'center'}>
-                                    <VStack textAlign={'left'} w={'1/3'}>
-                                        <Text fontSize={'md'} fontWeight={'bold'} color={'amber.400'} my={'2'}>
-                                            Messages
-                                        </Text>
-                                        <Text fontSize={'md'} color={'#42495d'} my={'2'} ml={'auto'}>
-                                            These are notifications for messages that you receive
-                                        </Text>
-                                    </VStack>
-                                    <HStack>
-                                        <Switch size={'lg'} defaultIsChecked onTrackColor={'primary.300'} />
-                                        <Text fontSize={'md'} color={'#42495d'} m={'2'}>
-                                            Push
-                                        </Text>
-                                    </HStack>
-
-                                </HStack>
-                                <Divider bg="primary.500" thickness="1" orientation="horizontal" />
-                            </Box>
-                        </Box>
-                    )
-                case 'Plans':
-                    return (
-                        <ScrollView>
-                            <VStack m={"16"} space="10">
-                                <Text fontSize={'xl'} fontWeight={'bold'} color={'amber.800'} my={'2'}>Current Active Plan</Text>
-                                <Center borderWidth={"1"} borderColor={"primary.300"} borderRadius={"4"} rounded="lg" w={"64"} h={"56"}>
-                                    <Text fontSize={'xl'} fontWeight={'bold'} color={'#42495d'}>Basic</Text>
-                                    <Text fontSize={'md'} fontWeight={'bold'} color={'primary.500'}>$0/mo</Text>
-                                    <Divider bg="primary.500" thickness="0.5" orientation="horizontal" w={"56"} my={"4"} />
-                                    <VStack alignItems={'flex-start'} space={'2'} m={'2'}>
-                                        <HStack justifyContent={'space-between'} alignItems={'flex-start'}>
-                                            <Image source={{
-                                                uri: ('https://ik.imagekit.io/sahildhingra/check-mark.png')
-                                            }} alt="Alternate Text" size="2xs" mx={"4"} />
-                                            <Text fontSize={'md'} fontWeight={'bold'} color={'primary.500'}>2 Channels</Text>
-                                        </HStack>
-                                        <HStack justifyContent={'space-between'} alignItems={'center'}>
-                                            <Image source={{
-                                                uri: ('https://ik.imagekit.io/sahildhingra/check-mark.png')
-                                            }} alt="Alternate Text" mx={"4"} size="2xs" />
-                                            <Text fontSize={'md'} fontWeight={'bold'} color={'primary.500'}>4 Users</Text>
-                                        </HStack>
-                                        <HStack justifyContent={'space-between'} alignItems={'center'}>
-                                            <Image source={{
-                                                uri: ('https://ik.imagekit.io/sahildhingra/check-mark.png')
-                                            }} alt="Alternate Text" mx={"4"} size="2xs" />
-                                            <Text fontSize={'md'} fontWeight={'bold'} color={'primary.500'}>6 On-screen Guests</Text>
-                                        </HStack>
-                                    </VStack>
-                                </Center>
-                                <Divider bg="primary.400" thickness="1" orientation="horizontal" />
-                                <Text fontSize={'xl'} fontWeight={'bold'} color={'amber.800'}>Other Available Plans</Text>
-                                {plans.map((plan, index) => (
-                                    <TouchableOpacity onPress={() => handlePlanSelection(index + 1, index === 0 ? "Basic Membership" : index === 1 ? "Premium Membership" : "Elite Membership", index === 0 ? 50 : index === 1 ? 100 : 150)} key={index}>
-                                        <Center shadow={(subscribeData.id === 1 && index === 0) ? 1 : (subscribeData.id === 2 && index === 1) ? 1 : (subscribeData.id === 3 && index === 2) ? 1 : "none"} borderWidth={"1"} borderColor={"primary.300"} borderRadius={"4"} rounded="lg" w={"64"} h={"56"}>
-                                            <Text fontSize={'xl'} fontWeight={'bold'} color={'#42495d'}>{plan.name}</Text>
-                                            <Text fontSize={'md'} fontWeight={'bold'} color={'primary.500'}>{plan.price}</Text>
-                                            <Divider bg="primary.500" thickness="0.5" orientation="horizontal" w={"56"} my={"4"} />
-                                            <VStack alignItems={'flex-start'} space={'2'} m={'2'}>
-                                                <HStack justifyContent={'space-between'} alignItems={'flex-start'}>
-                                                    <Image source={{
-                                                        uri: ('https://ik.imagekit.io/sahildhingra/check-mark.png')
-                                                    }} alt="Alternate Text" size="2xs" mx={"4"} />
-                                                    <Text fontSize={'md'} fontWeight={'bold'} color={'primary.500'}>{plan.channels}</Text>
-                                                </HStack>
-                                                <HStack justifyContent={'space-between'} alignItems={'center'}>
-                                                    <Image source={{
-                                                        uri: ('https://ik.imagekit.io/sahildhingra/check-mark.png')
-                                                    }} alt="Alternate Text" mx={"4"} size="2xs" />
-                                                    <Text fontSize={'md'} fontWeight={'bold'} color={'primary.500'}>{plan.activeUsers}</Text>
-                                                </HStack>
-                                                <HStack justifyContent={'space-between'} alignItems={'center'}>
-                                                    <Image source={{
-                                                        uri: ('https://ik.imagekit.io/sahildhingra/check-mark.png')
-                                                    }} alt="Alternate Text" mx={"4"} size="2xs" />
-                                                    <Text fontSize={'md'} fontWeight={'bold'} color={'primary.500'}>{plan.screens}</Text>
-                                                </HStack>
-                                            </VStack>
-                                        </Center>
-                                    </TouchableOpacity>
-                                ))}
-                                <Button _disabled={{
-                                    bg: 'primary.500',
-                                }} isDisabled={!loading} bg={'primary.300'} color={'white'} _text={{ fontWeight: 'bold' }} my={'4'} mx={'auto'} onPress={openPaymentSheet}>
-                                    Change Plan
+                                }} size={'md'} mt="1" bgColor={'primary.300'} onPressIn={handleUpdateProfile} isLoading={loading} isLoadingText="Updating Profile">
+                                    Edit
                                 </Button>
-
-                                <Text fontSize={'xl'} fontWeight={'bold'} color={'amber.800'}>You will be redirected to the payment page</Text>
                             </VStack>
-                        </ScrollView>
-                    )
-                case 'Billing':
-                    return (
-                        <ScrollView>
-                            <Box width={"96"} p="5" rounded="lg">
-                                <VStack my={"10"} space="3" justifyContent={"center"} alignItems={"flex-start"}>
-                                    <Text fontSize={'xl'} fontWeight={'bold'} color={'white'} my={'2'}>Payment Methods</Text>
-                                    <Button bg={'primary.300'} color={'white'} _text={{ fontWeight: 'bold' }}>
-                                        Add Payment Method
-                                    </Button>
-                                </VStack>
-                                <Divider bg="primary.500" thickness="1" orientation="horizontal" />
-                                <VStack my={"10"} space="3" justifyContent={"center"} alignItems={"flex-start"}>
-                                    <Text fontSize={'xl'} fontWeight={'bold'} color={'white'} my={'2'}>Invoices</Text>
-                                    <VStack my={"8"} space="3" justifyContent={"center"} alignItems={"center"}>
-                                        {invoices.map((invoice, index) => (
-                                            <Accordian data={invoice} index={index} openAccordian={openAccordian} accordianOpen={accordianOpen} accordianIndex={accordianIndex} invoices={true} />
-                                        ))
-                                        }
-                                    </VStack>
-                                </VStack>
-                            </Box>
-                        </ScrollView>
-                    )
-                default:
-                    return (
-                        <ScrollView>
-                            <Box width={"96"} p="5" rounded="lg">
-                                <VStack my={"10"} space="3" justifyContent={"center"} alignItems={"flex-start"}>
-                                    <Text fontSize={'xl'} fontWeight={'bold'} color={'white'} my={'2'}>Support Portal</Text>
-                                    <Button bg={'primary.300'} color={'white'} _text={{ fontWeight: 'bold' }} leftIcon={<Icon as={MaterialIcons} name="add-circle-outline" size={5} />}>
-                                        Raise a Ticket
-                                    </Button>
-                                </VStack>
-                                <VStack my={"3"} space="3" justifyContent={"center"} alignItems={"center"}>
-                                    {helpData.map((help, index) => (
-                                        <Center key={help.name} borderWidth={"1"} borderColor={"primary.300"} borderRadius={"4"} rounded="lg" w={"64"} h={"56"} justifyContent={"space-between"} py={"3"}>
-                                            <Text fontSize={'xl'} fontWeight={'bold'} color={'#42495d'}>{help.name}</Text>
-                                            <Image source={{ uri: (help.icon) }} alt="Alternate Text" size="lg" />
-                                            <Text fontSize={'md'} fontWeight={'bold'} color={'primary.500'} textAlign={"center"}>
-                                                {help.description}
+                        )
+                    case 'Themes':
+                        return (
+                            <Radio.Group space={'10'} name='theme' value={value} onChange={(nextValue) => setValue(nextValue)}>
+                                <Radio value="light">
+                                    <Box p={10} my={5} borderColor={'primary.100'} borderWidth={'1'} rounded="lg">
+                                        <Text fontSize={'lg'} fontWeight={'bold'} color={'primary.400'} my={'2'}>
+                                            Light
+                                        </Text>
+                                        <Image source={{
+                                            uri: ("https://ik.imagekit.io/sahildhingra/theme-default.png")
+                                        }} alt="Alternate Text" size="lg" />
+                                    </Box>
+                                </Radio>
+                                <Radio value="dark">
+                                    <Box p={10} my={5} borderColor={'primary.100'} borderWidth={'1'} rounded="lg">
+                                        <Text fontSize={'lg'} fontWeight={'bold'} color={'primary.400'} my={'2'}>
+                                            Dark
+                                        </Text>
+                                        <Image source={{
+                                            uri: ("https://ik.imagekit.io/sahildhingra/theme-dark.png")
+                                        }} alt="Alternate Text" size="lg" />
+                                    </Box>
+                                </Radio>
+                            </Radio.Group>
+                        )
+                    case 'Password':
+                        return (
+                            <VStack space={3}>
+                                <Box>
+                                    <Text fontSize={'md'} fontWeight={'bold'} color={'primary.400'} my={'2'}>
+                                        Please enter your old password to change your password
+                                    </Text>
+                                </Box>
+                                <FormControl>
+                                    <FormControl.Label _text={{ color: 'muted.700', fontSize: 'sm', fontWeight: 600 }}>
+                                        Old Password
+                                    </FormControl.Label>
+                                    <Input
+                                        placeholder='********'
+                                        w={{
+                                            base: '84%',
+                                            md: '285px'
+                                        }}
+                                        type="password"
+                                        value={currentPassword}
+                                        onChangeText={(e) => setCurrentPassword(e)}
+                                    />
+                                </FormControl>
+                                <Box my={'2'}>
+                                    <Divider bg="primary.500" thickness="1" orientation="horizontal" />
+                                </Box>
+                                <FormControl>
+                                    <FormControl.Label _text={{ color: 'muted.700', fontSize: 'sm', fontWeight: 600 }}>
+                                        New Password
+                                    </FormControl.Label>
+                                    <Input
+                                        placeholder='********'
+                                        w={{
+                                            base: '84%',
+                                            md: '285px'
+                                        }}
+                                        type="password"
+                                        value={newPassword}
+                                        onChangeText={(e) => setNewPassword(e)}
+                                    />
+                                </FormControl>
+                                <FormControl>
+                                    <FormControl.Label _text={{ color: 'muted.700', fontSize: 'sm', fontWeight: 600 }}>
+                                        Confirm Password
+                                    </FormControl.Label>
+                                    <Input
+                                        placeholder='********'
+                                        w={{
+                                            base: '84%',
+                                            md: '285px'
+                                        }}
+                                        type="password"
+                                        value={confirmPassword}
+                                        onChangeText={(e) => setConfirmPassword(e)}
+                                    />
+                                </FormControl>
+                                <Button isLoading={loading}
+                                    isLoadingText="Changing Password"
+                                    _disabled={{
+                                        opacity: 0.5
+                                    }} isDisabled={currentPassword === "" || newPassword === "" || confirmPassword === ""} _icon={{
+                                        as: MaterialIcons, name: "edit"
+                                    }} size={'md'} mt="1" bgColor={'primary.300'} onPressIn={handleChangePassword}>
+                                    Update Password
+                                </Button>
+                            </VStack>
+                        )
+                    case 'Notification':
+                        return (
+                            <Box>
+                                <Text fontSize={'xl'} fontWeight={'bold'} color={'amber.400'} my={'2'}>Choose your notification settings</Text>
+                                <Box>
+                                    <Divider bg="primary.500" thickness="1" orientation="horizontal" />
+                                    <HStack justifyContent={'space-between'} alignItems={'center'}>
+                                        <VStack textAlign={'left'} w={'1/3'}>
+                                            <Text fontSize={'md'} fontWeight={'bold'} color={'amber.400'} my={'2'}>
+                                                Messages
                                             </Text>
-                                        </Center>
+                                            <Text fontSize={'md'} color={'#42495d'} my={'2'} ml={'auto'}>
+                                                These are notifications for messages that you receive
+                                            </Text>
+                                        </VStack>
+                                        <HStack>
+                                            <Switch size={'lg'} defaultIsChecked onTrackColor={'primary.300'} />
+                                            <Text fontSize={'md'} color={'#42495d'} m={'2'}>
+                                                Push
+                                            </Text>
+                                        </HStack>
+
+                                    </HStack>
+                                    <Divider bg="primary.500" thickness="1" orientation="horizontal" />
+                                </Box>
+                            </Box>
+                        )
+                    case 'Plans':
+                        return (
+                            <ScrollView>
+                                <VStack m={"16"} space="10">
+                                    <Text fontSize={'xl'} fontWeight={'bold'} color={'amber.800'} my={'2'}>Current Active Plan</Text>
+                                    <Center borderWidth={"1"} borderColor={"primary.300"} borderRadius={"4"} rounded="lg" w={"64"} h={"56"}>
+                                        <Text fontSize={'xl'} fontWeight={'bold'} color={'#42495d'}>Basic</Text>
+                                        <Text fontSize={'md'} fontWeight={'bold'} color={'primary.500'}>$0/mo</Text>
+                                        <Divider bg="primary.500" thickness="0.5" orientation="horizontal" w={"56"} my={"4"} />
+                                        <VStack alignItems={'flex-start'} space={'2'} m={'2'}>
+                                            <HStack justifyContent={'space-between'} alignItems={'flex-start'}>
+                                                <Image source={{
+                                                    uri: ('https://ik.imagekit.io/sahildhingra/check-mark.png')
+                                                }} alt="Alternate Text" size="2xs" mx={"4"} />
+                                                <Text fontSize={'md'} fontWeight={'bold'} color={'primary.500'}>2 Channels</Text>
+                                            </HStack>
+                                            <HStack justifyContent={'space-between'} alignItems={'center'}>
+                                                <Image source={{
+                                                    uri: ('https://ik.imagekit.io/sahildhingra/check-mark.png')
+                                                }} alt="Alternate Text" mx={"4"} size="2xs" />
+                                                <Text fontSize={'md'} fontWeight={'bold'} color={'primary.500'}>4 Users</Text>
+                                            </HStack>
+                                            <HStack justifyContent={'space-between'} alignItems={'center'}>
+                                                <Image source={{
+                                                    uri: ('https://ik.imagekit.io/sahildhingra/check-mark.png')
+                                                }} alt="Alternate Text" mx={"4"} size="2xs" />
+                                                <Text fontSize={'md'} fontWeight={'bold'} color={'primary.500'}>6 On-screen Guests</Text>
+                                            </HStack>
+                                        </VStack>
+                                    </Center>
+                                    <Divider bg="primary.400" thickness="1" orientation="horizontal" />
+                                    <Text fontSize={'xl'} fontWeight={'bold'} color={'amber.800'}>Other Available Plans</Text>
+                                    {plans.map((plan, index) => (
+                                        <TouchableOpacity onPress={() => handlePlanSelection(index + 1, index === 0 ? "Basic Membership" : index === 1 ? "Premium Membership" : "Elite Membership", index === 0 ? 50 : index === 1 ? 100 : 150)} key={index}>
+                                            <Center shadow={(subscribeData.id === 1 && index === 0) ? 1 : (subscribeData.id === 2 && index === 1) ? 1 : (subscribeData.id === 3 && index === 2) ? 1 : "none"} borderWidth={"1"} borderColor={"primary.300"} borderRadius={"4"} rounded="lg" w={"64"} h={"56"}>
+                                                <Text fontSize={'xl'} fontWeight={'bold'} color={'#42495d'}>{plan.name}</Text>
+                                                <Text fontSize={'md'} fontWeight={'bold'} color={'primary.500'}>{plan.price}</Text>
+                                                <Divider bg="primary.500" thickness="0.5" orientation="horizontal" w={"56"} my={"4"} />
+                                                <VStack alignItems={'flex-start'} space={'2'} m={'2'}>
+                                                    <HStack justifyContent={'space-between'} alignItems={'flex-start'}>
+                                                        <Image source={{
+                                                            uri: ('https://ik.imagekit.io/sahildhingra/check-mark.png')
+                                                        }} alt="Alternate Text" size="2xs" mx={"4"} />
+                                                        <Text fontSize={'md'} fontWeight={'bold'} color={'primary.500'}>{plan.channels}</Text>
+                                                    </HStack>
+                                                    <HStack justifyContent={'space-between'} alignItems={'center'}>
+                                                        <Image source={{
+                                                            uri: ('https://ik.imagekit.io/sahildhingra/check-mark.png')
+                                                        }} alt="Alternate Text" mx={"4"} size="2xs" />
+                                                        <Text fontSize={'md'} fontWeight={'bold'} color={'primary.500'}>{plan.activeUsers}</Text>
+                                                    </HStack>
+                                                    <HStack justifyContent={'space-between'} alignItems={'center'}>
+                                                        <Image source={{
+                                                            uri: ('https://ik.imagekit.io/sahildhingra/check-mark.png')
+                                                        }} alt="Alternate Text" mx={"4"} size="2xs" />
+                                                        <Text fontSize={'md'} fontWeight={'bold'} color={'primary.500'}>{plan.screens}</Text>
+                                                    </HStack>
+                                                </VStack>
+                                            </Center>
+                                        </TouchableOpacity>
                                     ))}
+                                    <Button _disabled={{
+                                        bg: 'primary.500',
+                                    }} isDisabled={!loading} bg={'primary.300'} color={'white'} _text={{ fontWeight: 'bold' }} my={'4'} mx={'auto'} onPress={openPaymentSheet}>
+                                        Change Plan
+                                    </Button>
+
+                                    <Text fontSize={'xl'} fontWeight={'bold'} color={'amber.800'}>You will be redirected to the payment page</Text>
                                 </VStack>
-                                <Divider bg="primary.500" thickness="1" orientation="horizontal" mt={"4"} />
-                                <Box my={"8"}>
-                                    <Text fontSize={'xl'} fontWeight={'bold'} color={'white'} my={'2'}>Frequency Asked Questions</Text>
-                                    <VStack my={"8"} space="3" justifyContent={"center"} alignItems={"center"}>
-                                        {faqData.map((data, index) => (
-                                            <Accordian data={data} index={index} openAccordian={openAccordian} accordianOpen={accordianOpen} accordianIndex={accordianIndex} invoices={false} />
+                            </ScrollView>
+                        )
+                    case 'Billing':
+                        return (
+                            <ScrollView>
+                                <Box width={"96"} p="5" rounded="lg">
+                                    <VStack my={"10"} space="3" justifyContent={"center"} alignItems={"flex-start"}>
+                                        <Text fontSize={'xl'} fontWeight={'bold'} color={'white'} my={'2'}>Payment Methods</Text>
+                                        <Button bg={'primary.300'} color={'white'} _text={{ fontWeight: 'bold' }}>
+                                            Add Payment Method
+                                        </Button>
+                                    </VStack>
+                                    <Divider bg="primary.500" thickness="1" orientation="horizontal" />
+                                    <VStack my={"10"} space="3" justifyContent={"center"} alignItems={"flex-start"}>
+                                        <Text fontSize={'xl'} fontWeight={'bold'} color={'white'} my={'2'}>Invoices</Text>
+                                        <VStack my={"8"} space="3" justifyContent={"center"} alignItems={"center"}>
+                                            {invoices.map((invoice, index) => (
+                                                <Accordian data={invoice} index={index} openAccordian={openAccordian} accordianOpen={accordianOpen} accordianIndex={accordianIndex} invoices={true} />
+                                            ))
+                                            }
+                                        </VStack>
+                                    </VStack>
+                                </Box>
+                            </ScrollView>
+                        )
+                    default:
+                        return (
+                            <ScrollView>
+                                <Box width={"96"} p="5" rounded="lg">
+                                    <VStack my={"10"} space="3" justifyContent={"center"} alignItems={"flex-start"}>
+                                        <Text fontSize={'xl'} fontWeight={'bold'} color={'white'} my={'2'}>Support Portal</Text>
+                                        <Button bg={'primary.300'} color={'white'} _text={{ fontWeight: 'bold' }} leftIcon={<Icon as={MaterialIcons} name="add-circle-outline" size={5} />}>
+                                            Raise a Ticket
+                                        </Button>
+                                    </VStack>
+                                    <VStack my={"3"} space="3" justifyContent={"center"} alignItems={"center"}>
+                                        {helpData.map((help, index) => (
+                                            <Center key={help.name} borderWidth={"1"} borderColor={"primary.300"} borderRadius={"4"} rounded="lg" w={"64"} h={"56"} justifyContent={"space-between"} py={"3"}>
+                                                <Text fontSize={'xl'} fontWeight={'bold'} color={'#42495d'}>{help.name}</Text>
+                                                <Image source={{ uri: (help.icon) }} alt="Alternate Text" size="lg" />
+                                                <Text fontSize={'md'} fontWeight={'bold'} color={'primary.500'} textAlign={"center"}>
+                                                    {help.description}
+                                                </Text>
+                                            </Center>
                                         ))}
                                     </VStack>
+                                    <Divider bg="primary.500" thickness="1" orientation="horizontal" mt={"4"} />
+                                    <Box my={"8"}>
+                                        <Text fontSize={'xl'} fontWeight={'bold'} color={'white'} my={'2'}>Frequency Asked Questions</Text>
+                                        <VStack my={"8"} space="3" justifyContent={"center"} alignItems={"center"}>
+                                            {faqData.map((data, index) => (
+                                                <Accordian data={data} index={index} openAccordian={openAccordian} accordianOpen={accordianOpen} accordianIndex={accordianIndex} invoices={false} />
+                                            ))}
+                                        </VStack>
+                                    </Box>
                                 </Box>
-                            </Box>
-                        </ScrollView>
-                    )
-            }
-        })()}
+                            </ScrollView>
+                        )
+                }
+            })()}
 
-    </Flex >
-)
+        </Flex >
+    )
 }
 
 export default SettingCard

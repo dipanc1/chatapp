@@ -16,8 +16,5 @@
 #### Push Notifications
 #### Unseen Messages outside chats on chatbox
 #### Group Chat Picture
-#### Delete Group API
-#### Change color of tabs
 #### delete console statements
 #### Add alerts 
-#### Chat is not visible to admin

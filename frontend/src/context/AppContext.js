@@ -61,6 +61,7 @@ export const AppContextProvider = ({ children }) => {
         });
     };
     getUserInfo();
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname, navigate, user?.token])
 
