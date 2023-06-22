@@ -34,7 +34,11 @@ router.post("/token", (req, res) => {
     jwt.verify(refreshToken, process.env.REFRESH_JWT_SECRET, (err, user) => {
         if (err) return res.sendStatus(403);
 
-        refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
+        refreshTokens = refreshTokens.filter((token) => {
+            setTimeout(() => {
+                token !== refreshToken
+            }, 3000);
+        });
 
         console.log("refresh token after filter ", refreshTokens)
         console.log("user id ", user.id)
@@ -73,7 +77,7 @@ router.post("/register", async (req, res) => {
 
         const accessToken = generateToken(user._id);
         const refreshToken = generateRefreshToken(user._id);
-        refreshTokens.push(refreshToken);
+        // refreshTokens.push(refreshToken);
 
         // console.log(user)
         res.status(200).json({
@@ -179,7 +183,7 @@ router.get("/", protect, async (req, res) => {
             groups: groups,
             events: events
         });
-        
+
     } catch (err) {
         res.status(500).json(err)
         console.log(err)

@@ -40,6 +40,7 @@ import { api_key, backend_url, pictureUpload, stripePublicKey, upload_preset } f
 import { FiUpload } from 'react-icons/fi';
 import { AppContext } from '../context/AppContext';
 import FullScreenLoader from '../components/common/FullScreenLoader';
+import SendEmailModal from '../components/UserModals/SendEmailModal';
 
 const Settings = () => {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -86,7 +87,7 @@ const Settings = () => {
 
     const handlePlanSelection = (id, name, amount) => {
         const newSubscribeData = {
-            id: id, 
+            id: id,
             name: name,
             amount: amount
         }
@@ -100,7 +101,7 @@ const Settings = () => {
         const stripe = await window.Stripe(stripePublicKey);
         const result = await stripe.redirectToCheckout({ sessionId });
         if (result.error) {
-          console.error(result.error);
+            console.error(result.error);
         }
     }
 
@@ -283,21 +284,21 @@ const Settings = () => {
                     <li onClick={() => setActiveTab(1)} className={activeTab === 1 ? "active" : ""}>
                         My Details
                     </li>
-                    <li onClick={() => setActiveTab(2)} className={activeTab === 2 ? "active" : ""}>
+                    {/* <li onClick={() => setActiveTab(2)} className={activeTab === 2 ? "active" : ""}>
                         Themes
-                    </li>
+                    </li> */}
                     <li onClick={() => setActiveTab(3)} className={activeTab === 3 ? "active" : ""}>
                         Password
                     </li>
                     <li onClick={() => setActiveTab(4)} className={activeTab === 4 ? "active" : ""}>
                         Notification
                     </li>
-                    <li onClick={() => setActiveTab(5)} className={activeTab === 5 ? "active" : ""}>
+                    {/* <li onClick={() => setActiveTab(5)} className={activeTab === 5 ? "active" : ""}>
                         Plans
                     </li>
                     <li onClick={() => setActiveTab(6)} className={activeTab === 6 ? "active" : ""}>
                         Billing
-                    </li>
+                    </li> */}
                     <li onClick={() => setActiveTab(7)} className={activeTab === 7 ? "active" : ""}>
                         Help
                     </li>
@@ -354,7 +355,7 @@ const Settings = () => {
                             </Flex>
                         </form>
                     </div>
-                    <div className={"tab-themes tab-content-item " + (activeTab === 2 ? "current" : "")}>
+                    {/* <div className={"tab-themes tab-content-item " + (activeTab === 2 ? "current" : "")}>
                         <RadioGroup>
                             <Grid ps='10px' mt='50px' templateColumns={['repeat(1, 1fr)', 'repeat(3, 1fr)']} gap='2rem' rowGap={['1.5rem', '3rem']}>
                                 <Radio value='1' alignItems='start' checked='checked'>
@@ -388,7 +389,7 @@ const Settings = () => {
                                 </NavLink>
                             </Flex>
                         </RadioGroup>
-                    </div>
+                    </div> */}
                     <div className={"tab-content-item " + (activeTab === 3 ? "current" : "")}>
                         <form onSubmit={handleChangePassword}>
                             <Text mt='40px' fontSize='18px' color='#6C4545' fontWeight='600'>
@@ -451,7 +452,7 @@ const Settings = () => {
                         </Grid>
                         <Box h='1px' background='#EAE4FF' my='30px'></Box>
                     </div>
-                    <div className={"tab-content-item " + (activeTab === 5 ? "current" : "")}>
+                    {/* <div className={"tab-content-item " + (activeTab === 5 ? "current" : "")}>
                         <Text mt='40px' mb='30px' fontSize='18px' color='#6C4545' fontWeight='600'>
                             Current Active Plan
                         </Text>
@@ -685,20 +686,22 @@ const Settings = () => {
                                 </Tbody>
                             </Table>
                         </TableContainer>
-                    </div>
+                    </div> */}
                     <div className={"tab-content-item " + (activeTab === 7 ? "current" : "")}>
                         <Box display={['block', 'flex']} pt='40px' alignItems='center' justifyContent='space-between'>
                             <Text pb={['12px', '0']} fontSize='18px' color='#6C4545' fontWeight='600'>
                                 Support Portal
                             </Text>
                             <NavLink className='btn btn-primary' to="#">
-                                <Flex alignItems='center'>
-                                    <Image h='18px' pe='15px' src='https://ik.imagekit.io/sahildhingra/add.png?ik-sdk-version=javascript-1.4.3&updatedAt=1673025917620' />
-                                    <Text>Raise Ticket</Text>
-                                </Flex>
+                                <SendEmailModal>
+                                    <Flex alignItems='center'>
+                                        <Image h='18px' pe='15px' src='https://ik.imagekit.io/sahildhingra/add.png?ik-sdk-version=javascript-1.4.3&updatedAt=1673025917620' />
+                                        <Text>Raise Ticket</Text>
+                                    </Flex>
+                                </SendEmailModal>
                             </NavLink>
                         </Box>
-                        <Grid ps='10px' mt='40px' mb={['40px', '60px']} templateColumns={['repeat(1, 1fr)', 'repeat(3, 1fr)']} gap='2rem' rowGap={['1rem', '3rem']}>
+                        {/* <Grid ps='10px' mt='40px' mb={['40px', '60px']} templateColumns={['repeat(1, 1fr)', 'repeat(3, 1fr)']} gap='2rem' rowGap={['1rem', '3rem']}>
                             <GridItem p='20px' border='1px solid #EAE4FF' borderRadius='10px' textAlign='center'>
                                 <Text fontWeight='700'>
                                     Live Chat
@@ -818,7 +821,7 @@ const Settings = () => {
                                     </AccordionPanel>
                                 </AccordionItem>
                             </Accordion>
-                        </Box>
+                        </Box> */}
                     </div>
                 </Box>
             </Static>

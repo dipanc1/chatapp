@@ -11,7 +11,7 @@ const Conversation = ({ chat }) => {
   const { userInfo } = useContext(AppContext);
 
   useEffect(() => {
-    setFriends((chat.users.find(member => member._id !== userInfo._id)))
+    setFriends((chat.users.find(member => member._id !== userInfo?._id)))
   }, [chat, friends, userInfo?._id])
 
   const list = {

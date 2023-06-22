@@ -27,29 +27,33 @@ import { AppContext } from '../../context/AppContext';
 import UserCard from '../UserItems/UserCard';
 
 const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) => {
-	const user = JSON.parse(localStorage.getItem('user'));
-	const { dispatch, chats, loading, notification, pushNotification, userInfo } = useContext(AppContext);
-	const [toggleProfiledd, setToggleProfiledd] = useState(false)
+  const user = JSON.parse(localStorage.getItem('user'));
+  const { dispatch, chats, loading, notification, pushNotification, userInfo } = useContext(AppContext);
+  const [toggleProfiledd, setToggleProfiledd] = useState(false)
   const [toggleSearch, setToggleSearch] = useState(false)
-	const [search, setSearch] = useState('');
-	const [searching, setSearching] = useState(false)
-	const [searchResultsUsers, setSearchResultsUsers] = useState([]);
-	const [searchResultsGroups, setSearchResultsGroups] = useState([]);
-	const [searchResultsEvents, setSearchResultsEvents] = useState([]);
-	const [activeTab, setActiveTab] = useState(1)
+  const [search, setSearch] = useState('');
+  const [searching, setSearching] = useState(false)
+  const [searchResultsUsers, setSearchResultsUsers] = useState([]);
+  const [searchResultsGroups, setSearchResultsGroups] = useState([]);
+  const [searchResultsEvents, setSearchResultsEvents] = useState([]);
+  const [activeTab, setActiveTab] = useState(1)
 
   let navigate = useNavigate();
   let location = useLocation();
   const toast = useToast();
 
+  const axiosJwt = axios.create({
+    baseURL: backend_url,
+  });
+
   const CDN_IMAGES = "https://ik.imagekit.io/sahildhingra";
 
-	const handleLogout = () => {
-		localStorage.removeItem('user');
-		dispatch({ type: "SET_USER", payload: null });
-		navigate('/');
-		window.location.reload();
-	}
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    dispatch({ type: "SET_USER", payload: null });
+    navigate('/');
+    window.location.reload();
+  }
 
 
   const handleSearch = async (e) => {
@@ -139,9 +143,9 @@ const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) 
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.get(
-        `${backend_url}/conversation`,
-        config
+
+      const { data } = await axiosJwt.get(
+        `/conversation`, config
       );
 
       dispatch({ type: "SET_CONVERSATIONS", payload: data });
@@ -155,7 +159,7 @@ const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) 
         dispatch({ type: "SET_CHATS", payload: data });
       }
     } catch (error) {
-      // console.log(error)
+      // console.log(error);
       toast({
         title: "Error Occured!",
         description: "Failed to Load the Conversations",
@@ -229,7 +233,7 @@ const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) 
 
   return (
     <>
-      <Box className='header' zIndex='9' position='fixed' right={['0', '0', '30px']} left={['0','0','290px']} boxShadow={'Base'} bg={'white'} p={['7px 10px', '7px 10px', '20px']} borderRadius={['0', '0', '10px']}>
+      <Box className='header' zIndex='9' position='fixed' right={['0', '0', '30px']} left={['0', '0', '290px']} boxShadow={'Base'} bg={'white'} p={['7px 10px', '7px 10px', '20px']} borderRadius={['0', '0', '10px']}>
         <Flex alignItems='center'>
           <Box onClick={() => setToggleSidebar(!toggleSidebar)}>
             <Image display={['block', 'block', 'none']} height={['25px', '35px']} mr='15px' src={CDN_IMAGES + "/menu.png"} alt="Menu" />

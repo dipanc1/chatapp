@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { backend_url } from "../baseApi";
 import AppReducer from "../reducers/AppReducer";
 
+
 const INITIAL_STATE = {
   number: "",
   selectedChat: null,
@@ -33,6 +34,10 @@ export const AppContextProvider = ({ children }) => {
 
   const [state, dispatch] = useReducer(AppReducer, INITIAL_STATE);
 
+  const axiosJwt = axios.create({
+    baseURL: backend_url,
+  });
+
   useEffect(() => {
     const getUserInfo = async () => {
       if (location.pathname === "/register" || location.pathname === "/" || matchRegister || matchLogin || match) {
@@ -42,13 +47,15 @@ export const AppContextProvider = ({ children }) => {
         navigate("/");
         return;
       }
+
       const config = {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user.token}`,
         },
       };
-      await axios.get(`${backend_url}/users/user-info`, config)
+
+      await axiosJwt.get(`/users/user-info`, config)
         .then((res) => {
           dispatch({
             type: "SET_USER_INFO",
@@ -62,7 +69,7 @@ export const AppContextProvider = ({ children }) => {
     };
     getUserInfo();
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname, navigate, user?.token])
 
 

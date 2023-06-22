@@ -26,6 +26,10 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
     const user = JSON.parse(localStorage.getItem("user"));
     const toast = useToast();
 
+    const axiosJwt = axios.create({
+        baseURL: backend_url,
+    });
+
     // fetch all conversations
     const fetchChats = async () => {
         try {
@@ -35,9 +39,9 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                     Authorization: `Bearer ${user.token}`,
                 },
             };
-            const { data } = await axios.get(
-                `${backend_url}/conversation`,
-                config
+
+            const { data } = await axiosJwt.get(
+                `/conversation`, config
             );
 
             dispatch({ type: "SET_CONVERSATIONS", payload: data });
