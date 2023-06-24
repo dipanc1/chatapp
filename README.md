@@ -6,7 +6,6 @@
 #### use httponly cookies for refresh token
 
 #### add infinity scroll in groups, events and chats
-#### make number unique in db model
 #### cloudinary only whitelist our domain
 
 ## Phone App

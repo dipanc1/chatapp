@@ -3,6 +3,7 @@ import { createContext, useEffect, useReducer } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { backend_url } from "../baseApi";
 import AppReducer from "../reducers/AppReducer";
+import { useToast } from "@chakra-ui/react";
 
 
 const INITIAL_STATE = {
@@ -24,6 +25,7 @@ export const AppContext = createContext(INITIAL_STATE);
 
 export const AppContextProvider = ({ children }) => {
   const user = JSON.parse(localStorage.getItem("user"));
+  const toast = useToast();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -63,6 +65,13 @@ export const AppContextProvider = ({ children }) => {
           });
         })
         .catch((err) => {
+          toast({
+            title: "Error",
+            description: "Please login again",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
           navigate("/");
           localStorage.removeItem("user");
         });

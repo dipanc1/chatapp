@@ -117,8 +117,8 @@ router.post("/login", async (req, res) => {
 
         const accessToken = generateToken(user._id);
         const refreshToken = generateRefreshToken(user._id);
-        refreshTokens.push(refreshToken);
-        console.log("first refresh token ", refreshTokens)
+        // refreshTokens.push(refreshToken);
+        // console.log("first refresh token ", refreshTokens)
 
         // send res
         res.status(200).json({

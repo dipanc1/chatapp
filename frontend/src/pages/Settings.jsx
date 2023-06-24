@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 import Static from '../components/common/Static'
 import {
@@ -9,37 +9,26 @@ import {
     Text,
     Heading,
     Button,
-    Container,
     Flex,
     Image,
     Input,
     FormControl,
     FormLabel,
-    Radio,
-    RadioGroup,
     Switch,
-    TableContainer,
-    Table,
-    Thead,
-    Tbody,
-    Tr,
-    Td,
-    Th,
-    Accordion,
-    AccordionIcon,
-    AccordionItem,
-    AccordionButton,
-    AccordionPanel,
     useToast,
     Avatar,
     IconButton
 } from '@chakra-ui/react';
 import "./Settings.css"
 import axios from 'axios';
-import { api_key, backend_url, pictureUpload, stripePublicKey, upload_preset } from '../baseApi';
+import {
+    api_key, backend_url, pictureUpload,
+    // stripePublicKey,
+    upload_preset
+} from '../baseApi';
 import { FiUpload } from 'react-icons/fi';
 import { AppContext } from '../context/AppContext';
-import FullScreenLoader from '../components/common/FullScreenLoader';
+// import FullScreenLoader from '../components/common/FullScreenLoader';
 import SendEmailModal from '../components/UserModals/SendEmailModal';
 
 const Settings = () => {
@@ -58,8 +47,8 @@ const Settings = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [selectedImage, setSelectedImage] = React.useState(null);
 
-    const [subscribeData, setSubscribeData] = useState({});
-    const [paymentLoading, setPaymentLoading] = useState(false)
+    // const [subscribeData, setSubscribeData] = useState({});
+    // const [paymentLoading, setPaymentLoading] = useState(false)
 
     // TODO: Disable button and tabs while making API calls and other checks
 
@@ -85,25 +74,25 @@ const Settings = () => {
         currentUserDetails();
     }, [user.token])
 
-    const handlePlanSelection = (id, name, amount) => {
-        const newSubscribeData = {
-            id: id,
-            name: name,
-            amount: amount
-        }
-        setSubscribeData(newSubscribeData);
-    }
+    // const handlePlanSelection = (id, name, amount) => {
+    //     const newSubscribeData = {
+    //         id: id,
+    //         name: name,
+    //         amount: amount
+    //     }
+    //     setSubscribeData(newSubscribeData);
+    // }
 
-    const handleSubscribe = async () => {
-        setPaymentLoading(true)
-        const response = await axios.post(`${backend_url}/checkout/create-checkout-session`, { subscribeData });
-        const sessionId = response.data.id;
-        const stripe = await window.Stripe(stripePublicKey);
-        const result = await stripe.redirectToCheckout({ sessionId });
-        if (result.error) {
-            console.error(result.error);
-        }
-    }
+    // const handleSubscribe = async () => {
+    //     setPaymentLoading(true)
+    //     const response = await axios.post(`${backend_url}/checkout/create-checkout-session`, { subscribeData });
+    //     const sessionId = response.data.id;
+    //     const stripe = await window.Stripe(stripePublicKey);
+    //     const result = await stripe.redirectToCheckout({ sessionId });
+    //     if (result.error) {
+    //         console.error(result.error);
+    //     }
+    // }
 
     const handleChangePassword = async (e) => {
         e.preventDefault();
@@ -273,11 +262,11 @@ const Settings = () => {
 
     return (
         <>
-            {
+            {/* {
                 paymentLoading && (
                     <FullScreenLoader />
                 )
-            }
+            } */}
             <Static>
                 <Heading pb={['10px', '30px']} as='h1' size='lg' fontWeight='500'>Settings</Heading>
                 <ul className="tab-nav">

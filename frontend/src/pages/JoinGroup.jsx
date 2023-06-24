@@ -1,4 +1,4 @@
-import { Box, Button, Input, Text } from '@chakra-ui/react'
+import { Box, Button, Text } from '@chakra-ui/react'
 import axios from 'axios';
 import React from 'react'
 import { backend_url } from '../baseApi';

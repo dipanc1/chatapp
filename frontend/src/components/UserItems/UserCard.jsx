@@ -1,6 +1,5 @@
 import React from 'react'
-import { Box, Button, Flex, Image, ListItem, Text, UnorderedList } from '@chakra-ui/react'
-import { NavLink } from 'react-router-dom'
+import { Box, Flex, Image, Text } from '@chakra-ui/react'
 
 const UserCard = ({
     name,

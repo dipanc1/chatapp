@@ -8,7 +8,6 @@ import {
 	FormLabel,
 	Textarea,
 	Checkbox,
-	Button,
 	Image,
 	IconButton
 } from '@chakra-ui/react'

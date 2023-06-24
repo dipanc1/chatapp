@@ -55,15 +55,15 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                 dispatch({ type: "SET_CHATS", payload: data });
             }
         } catch (error) {
-            // console.log(error)
-            toast({
-                title: "Error Occured!",
-                description: "Failed to Load the Conversations",
-                status: "error",
-                duration: 5000,
-                isClosable: true,
-                position: "bottom-left",
-            });
+            console.log(error)
+            // toast({
+            //     title: "Error Occured!",
+            //     description: "Failed to Load the Conversations",
+            //     status: "error",
+            //     duration: 5000,
+            //     isClosable: true,
+            //     position: "bottom-left",
+            // });
         }
     };
 

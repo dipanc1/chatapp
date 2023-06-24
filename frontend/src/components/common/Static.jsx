@@ -13,7 +13,7 @@ const Static = ({ noSmPadding, noPadding, children, fetchAgain, setFetchAgain })
   const [toggleSidebar, setToggleSidebar] = useState(false);
 
   const handleExpand = () => {
-    if (cookies.get("maximized") == "true") {
+    if (cookies.get("maximized") === "true") {
       cookies.set("maximized", "false", { path: "/" });
       setMaximizedValue("false");
     } else {

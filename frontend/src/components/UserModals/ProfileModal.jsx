@@ -11,7 +11,6 @@ import {
     ModalBody,
     ModalCloseButton,
     useDisclosure,
-    Button,
     Image,
     Text,
     Avatar

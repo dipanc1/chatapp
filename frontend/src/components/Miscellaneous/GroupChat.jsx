@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion'
 import { Avatar, Box, Text } from '@chakra-ui/react'
 
 const GroupChat = ({ chat }) => {
