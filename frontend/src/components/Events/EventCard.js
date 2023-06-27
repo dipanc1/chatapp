@@ -300,7 +300,7 @@ const EventCard = ({
       <NavLink>
         <GridItem position='relative' bg='#EAE4FF' w='100%' overflow='hidden' borderRadius='10px'>
           <Box position='absolute' right='0' top='0' zIndex='1'>
-            {!eventsPage && <Button type='button' onClick={() => setToggleEventMenu(!toggleEventMenu)} bg='transparent'>
+            {(!eventsPage && admin) && <Button type='button' onClick={() => setToggleEventMenu(!toggleEventMenu)} bg='transparent'>
               <Image height='22px' src='https://ik.imagekit.io/sahildhingra/3dot-menu.png' />
             </Button>}
             {

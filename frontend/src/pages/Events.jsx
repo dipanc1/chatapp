@@ -10,6 +10,7 @@ import {
   Flex,
   useToast,
   useDisclosure,
+  Spinner,
 } from '@chakra-ui/react';
 
 import Static from "../components/common/Static"
@@ -19,15 +20,40 @@ import { AppContext } from '../context/AppContext';
 import { backend_url } from '../baseApi';
 import axios from 'axios';
 import JoinGroupModal from '../components/UserModals/JoinGroupModal';
+import Pagination from '../components/Miscellaneous/Pagination';
 
 function Events() {
   const [activeTab, setActiveTab] = useState(1);
-  const [eventsList, setEventsList] = useState([]);
-  const [upcomingEventsList, setUpcomingEventsList] = useState([]);
-  const [previousEventsList, setPreviousEventsList] = useState([]);
   const [chatId, setChatId] = useState();
   const [chatName, setChatName] = useState("");
   const [fetchAgain, setFetchAgain] = useState(false);
+  
+  const [eventsList, setEventsList] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentCount, setCurrentCount] = useState(0);
+  const [hasNextPage, setHasNextPage] = useState(false);
+  const [hasPrevPage, setHasPrevPage] = useState(false);
+  
+  const [upcomingEventsList, setUpcomingEventsList] = useState([]);
+  const [loadingUpcoming, setLoadingUpcoming] = useState(false);
+  const [totalUpcomingCount, setTotalUpcomingCount] = useState(0);
+  const [currentUpcomingPage, setCurrentUpcomingPage] = useState(1);
+  const [totalUpcomingPages, setTotalUpcomingPages] = useState(0);
+  const [currentUpcomingCount, setCurrentUpcomingCount] = useState(0);
+  const [hasNextUpcomingPage, setHasNextUpcomingPage] = useState(false);
+  const [hasPrevUpcomingPage, setHasPrevUpcomingPage] = useState(false);
+  
+  const [pastEventsList, setPastEventsList] = useState([]);
+  const [loadingPast, setLoadingPast] = useState(false);
+  const [totalPastCount, setTotalPastCount] = useState(0);
+  const [currentPastPage, setCurrentPastPage] = useState(1);
+  const [totalPastPages, setTotalPastPages] = useState(0);
+  const [currentPastCount, setCurrentPastCount] = useState(0);
+  const [hasNextPastPage, setHasNextPastPage] = useState(false);
+  const [hasPrevPastPage, setHasPrevPastPage] = useState(false);
 
   const toast = useToast();
   const navigate = useNavigate();
@@ -39,6 +65,7 @@ function Events() {
 
   useEffect(() => {
     const fetchAllEvents = async () => {
+      setLoading(true);
       try {
         const config = {
           headers: {
@@ -50,21 +77,14 @@ function Events() {
           `${backend_url}/conversation/event/all/1`,
           config
         );
-        setEventsList(data);
-        setUpcomingEventsList(data.filter((event) => {
-          const eventDate = new Date(`${event.date.slice(0, 10)}T${event.time}:00.000Z`);
-          eventDate.setHours(eventDate.getHours() - 5.5);
-          const currentDate = new Date();
-          return eventDate > currentDate;
-        }
-        ));
-        setPreviousEventsList(data.filter((event) => {
-          const eventDate = new Date(`${event.date.slice(0, 10)}T${event.time}:00.000Z`);
-          eventDate.setHours(eventDate.getHours() - 5.5);
-          const currentDate = new Date();
-          return eventDate < currentDate;
-        }
-        ));
+        setEventsList(data.events);
+        setTotalCount(data.totalCount);
+        setCurrentPage(data.currentPage);
+        setTotalPages(data.totalPages);
+        setCurrentCount(data.currentCount);
+        setHasNextPage(data.hasNextPage);
+        setHasPrevPage(data.hasPrevPage);
+        setLoading(false);
       } catch (error) {
         toast({
           title: "Error Occured!",
@@ -74,11 +94,90 @@ function Events() {
           isClosable: true,
           position: "bottom-left",
         });
+        setLoading(false);
       }
     };
 
-    fetchAllEvents();
-  }, [toast, user.token, fetchAgain]);
+    const fetchAllUpcomingEvents = async () => {
+      setLoadingUpcoming(true);
+      try {
+        const config = {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        };
+        const { data } = await axios.get(
+          `${backend_url}/conversation/event/upcoming/1`,
+          config
+        );
+        setUpcomingEventsList(data.events);
+        setTotalUpcomingCount(data.totalCount);
+        setCurrentUpcomingPage(data.currentPage);
+        setTotalUpcomingPages(data.totalPages);
+        setCurrentUpcomingCount(data.currentCount);
+        setHasNextUpcomingPage(data.hasNextPage);
+        setHasPrevUpcomingPage(data.hasPrevPage);
+        setLoadingUpcoming(false);
+      } catch (error) {
+        toast({
+          title: "Error Occured!",
+          description: "Failed to Load the Events",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom-left",
+        });
+        setLoadingUpcoming(false);
+      }
+    };
+
+    const fetchAllPastEvents = async () => {
+      setLoadingPast(true);
+      try {
+        const config = {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        };
+        const { data } = await axios.get(
+          `${backend_url}/conversation/event/past/1`,
+          config
+        );
+        setPastEventsList(data.events);
+        setTotalPastCount(data.totalCount);
+        setCurrentPastPage(data.currentPage);
+        setTotalPastPages(data.totalPages);
+        setCurrentPastCount(data.currentCount);
+        setHasNextPastPage(data.hasNextPage);
+        setHasPrevPastPage(data.hasPrevPage);
+        setLoadingPast(false);
+      } catch (error) {
+        toast({
+          title: "Error Occured!",
+          description: "Failed to Load the Events",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom-left",
+        });
+        setLoadingPast(false);
+      }
+    };
+
+    switch (activeTab) {
+      case 1:
+        fetchAllEvents();
+        break;
+      case 2:
+        fetchAllUpcomingEvents();
+        break;
+      default:
+        fetchAllPastEvents();
+        break;
+    }
+  }, [toast, user.token, fetchAgain, activeTab]);
 
   const selectEvent = async (chatId) => {
     try {
@@ -115,6 +214,108 @@ function Events() {
     }
   };
 
+  const fetchMoreEvents = async (page) => {
+    setLoading(true);
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.get(
+        `${backend_url}/conversation/event/all/${page}`,
+        config
+      );
+      setEventsList(data.events);
+      setTotalCount(data.totalCount);
+      setCurrentPage(data.currentPage);
+      setTotalPages(data.totalPages);
+      setCurrentCount(data.currentCount);
+      setHasNextPage(data.hasNextPage);
+      setHasPrevPage(data.hasPrevPage);
+      setLoading(false);
+    } catch (error) {
+      toast({
+        title: "Error Occured!",
+        description: "Failed to Load the Events",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+      setLoading(false);
+    }
+  }
+
+  const fetchAllUpcomingEvents = async (page) => {
+    setLoadingUpcoming(true);
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.get(
+        `${backend_url}/conversation/event/upcoming/${page}`,
+        config
+      );
+      setUpcomingEventsList(data.events);
+      setTotalUpcomingCount(data.totalCount);
+      setCurrentUpcomingPage(data.currentPage);
+      setTotalUpcomingPages(data.totalPages);
+      setCurrentUpcomingCount(data.currentCount);
+      setHasNextUpcomingPage(data.hasNextPage);
+      setHasPrevUpcomingPage(data.hasPrevPage);
+      setLoadingUpcoming(false);
+    } catch (error) {
+      toast({
+        title: "Error Occured!",
+        description: "Failed to Load the Events",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+      setLoadingUpcoming(false);
+    }
+  };
+
+  const fetchAllPastEvents = async (page) => {
+    setLoadingPast(true);
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.get(
+        `${backend_url}/conversation/event/past/${page}`,
+        config
+      );
+      setPastEventsList(data.events);
+      setTotalPastCount(data.totalCount);
+      setCurrentPastPage(data.currentPage);
+      setTotalPastPages(data.totalPages);
+      setCurrentPastCount(data.currentCount);
+      setHasNextPastPage(data.hasNextPage);
+      setHasPrevPastPage(data.hasPrevPage);
+      setLoadingPast(false);
+    } catch (error) {
+      toast({
+        title: "Error Occured!",
+        description: "Failed to Load the Events",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+      setLoadingPast(false);
+    }
+  };
+
 
   return (
     <>
@@ -136,7 +337,15 @@ function Events() {
           </ul>
         </Box>
         <div className="tab-content">
-          <div className={"tab-content-item " + (activeTab === 1 ? "current" : "")}>
+          {loading ? <Box display={'flex'} alignItems={'center'} justifyContent={'center'} mt={44}>
+            <Spinner
+              thickness='4px'
+              speed='0.2s'
+              emptyColor='gray.200'
+              color='buttonPrimaryColor'
+              size='xl'
+            />
+          </Box> : <div className={"tab-content-item " + (activeTab === 1 ? "current" : "")}>
             <Grid mb={['30px', '70px']} templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)', 'repeat(3, 1fr)']} gap='2rem' rowGap={['1.5rem', '3rem']}>
               {
                 eventsList?.map((eventItem, index) => {
@@ -148,9 +357,19 @@ function Events() {
                 })
               }
             </Grid>
+            <Pagination paginateFunction={fetchMoreEvents} currentPage={currentPage} totalPages={totalPages} totalCount={totalCount} currentCount={currentCount} hasNextPage={hasNextPage} hasPrevPage={hasPrevPage} />
 
-          </div>
-          <div className={"tab-themes tab-content-item " + (activeTab === 2 ? "current" : "")}>
+          </div>}
+
+          {loadingUpcoming ? <Box display={'flex'} alignItems={'center'} justifyContent={'center'} mt={44}>
+            <Spinner
+              thickness='4px'
+              speed='0.2s'
+              emptyColor='gray.200'
+              color='buttonPrimaryColor'
+              size='xl'
+            />
+          </Box> : <div className={"tab-themes tab-content-item " + (activeTab === 2 ? "current" : "")}>
             <Grid mb={['30px', '70px']} templateColumns={['repeat(1, 1fr)', 'repeat(3, 1fr)']} gap='2rem' rowGap={['1.5rem', '3rem']}>
               {upcomingEventsList?.map((eventItem, index) => {
                 return (
@@ -160,10 +379,21 @@ function Events() {
                 )
               })}
             </Grid>
-          </div>
-          <div className={"tab-content-item " + (activeTab === 3 ? "current" : "")}>
+            <Pagination paginateFunction={fetchAllUpcomingEvents} currentPage={currentUpcomingPage} totalPages={totalUpcomingPages} totalCount={totalUpcomingCount} currentCount={currentUpcomingCount} hasNextPage={hasNextUpcomingPage} hasPrevPage={hasPrevUpcomingPage} />
+
+          </div>}
+
+          {loadingPast ? <Box display={'flex'} alignItems={'center'} justifyContent={'center'} mt={44}>
+            <Spinner
+              thickness='4px'
+              speed='0.2s'
+              emptyColor='gray.200'
+              color='buttonPrimaryColor'
+              size='xl'
+            />
+          </Box> : <div className={"tab-content-item " + (activeTab === 3 ? "current" : "")}>
             <Grid mb={['30px', '70px']} templateColumns={['repeat(1, 1fr)', 'repeat(3, 1fr)']} gap='2rem' rowGap={['1.5rem', '3rem']}>
-              {previousEventsList?.map((eventItem, index) => {
+              {pastEventsList?.map((eventItem, index) => {
                 return (
                   <div key={index}>
                     <EventCard key={eventItem._id} selectEvent={selectEvent} chatId={eventItem.chatId} index={index} id={eventItem._id} date={eventItem.date} time={eventItem.time} title={eventItem.name} description={eventItem.description} imageUrl={eventItem?.thumbnail} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} eventsPage={true} />
@@ -171,7 +401,10 @@ function Events() {
                 )
               })}
             </Grid>
-          </div>
+            <Pagination paginateFunction={fetchAllPastEvents} currentPage={currentPastPage} totalPages={totalPastPages} totalCount={totalPastCount} currentCount={currentPastCount} hasNextPage={hasNextPastPage} hasPrevPage={hasPrevPastPage} />
+
+          </div>}
+
         </div>
       </Static>
       <JoinGroupModal chatName={chatName} isOpenJoinEvent={isOpenJoinEvent} onOpenJoinEvent={onOpenJoinEvent} onCloseJoinEvent={onCloseJoinEvent} chatId={chatId} />

@@ -18,12 +18,14 @@ import JoinGroup from './pages/JoinGroup';
 import { Box, Text } from '@chakra-ui/react';
 import { useContext } from 'react';
 import { RoomContext } from './context/RoomContext';
+import { AppContext } from './context/AppContext';
 
 //TODO: delete console statements
 
 function App() {
   let isChrome = navigator.userAgentData?.brands?.some(b => b.brand === 'Google Chrome');
   const { cameraPermission } = useContext(RoomContext);
+  const { selectedChat } = useContext(AppContext);
 
   return (
     <div>{
@@ -45,9 +47,9 @@ function App() {
               <Route path="/" element={<Login />} />
               <Route path="register" element={<Register />} />
               <Route path="plans" element={<Plans />} />
-              <Route path="event" element={<Events />} />
-              <Route path="event/create" element={<CreateEvent />} />
-              <Route path="event/detail" element={<EventDetails />} />
+              {selectedChat && <>
+                <Route path="event" element={<Events />} /><Route path="event/create" element={<CreateEvent />} /><Route path="event/detail" element={<EventDetails />} />
+              </>}
               <Route path="settings" element={<Settings />} />
               <Route path="video-chat" element={<VideoChat />} />
               <Route path="groups" element={<Groups />} />

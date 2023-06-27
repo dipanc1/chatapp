@@ -59,7 +59,7 @@ router.post("/", protect, asyncHandler(async (req, res) => {
 }));
 
 
-// get all chats of user
+// get all chats of user with pagination
 router.get("/", protect, async (req, res) => {
     try {
         Chat.find({
@@ -82,26 +82,136 @@ router.get("/", protect, async (req, res) => {
     }
 });
 
+// get all chats of user with pagination
+router.get("/my/:page", protect, async (req, res) => {
+    const { page } = req.params;
+    const limit = 5;
+    const skip = (page - 1) * limit;
+
+    try {
+        const totalCount = await Chat.countDocuments({
+            users: { $elemMatch: { $eq: req.user._id } }
+        });
+        const currentCount = await Chat.countDocuments({
+            users: { $elemMatch: { $eq: req.user._id } }
+        }, { skip, limit });
+        const totalPages = Math.ceil(totalCount / limit);
+        const currentPage = parseInt(page);
+        const hasNextPage = currentPage < totalPages;
+        const hasPrevPage = currentPage > 1;
+        let chats = await Chat.find({
+            users: { $elemMatch: { $eq: req.user._id } }
+        })
+            .populate("users", "-password -events")
+            .populate("groupAdmin", "-password -events")
+            .populate("latestMessage")
+            .populate("events")
+            .sort({ updatedAt: -1 })
+            .skip(skip)
+            .limit(limit);
+        chats = await User.populate(chats, {
+            path: "latestMessage.sender",
+            select: "username number pic"
+        });
+        res.status(200).json({
+            chats,
+            totalCount,
+            totalPages,
+            currentPage,
+            hasNextPage,
+            hasPrevPage,
+            currentCount
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(error)
+    }
+});
+
+// get all chats where user is admin
+router.get("/admin/:page", protect, async (req, res) => {
+    const { page } = req.params;
+    const limit = 5;
+    const skip = (page - 1) * limit;
+
+    try {
+        // check if isgoroupchat is true
+
+        const totalCount = await Chat.countDocuments({
+            groupAdmin: { $eq: req.user._id }
+        });
+        const currentCount = await Chat.countDocuments({
+            groupAdmin: { $eq: req.user._id }
+        }, { skip, limit });
+        const totalPages = Math.ceil(totalCount / limit);
+        const currentPage = parseInt(page);
+        const hasNextPage = currentPage < totalPages;
+        const hasPrevPage = currentPage > 1;
+        let chats = await Chat.find({
+            groupAdmin: { $eq: req.user._id }
+        })
+            .populate("users", "-password -events")
+            .populate("groupAdmin", "-password -events")
+            .populate("latestMessage")
+            .populate("events")
+            .sort({ updatedAt: -1 })
+            .skip(skip)
+            .limit(limit);
+        chats = await User.populate(chats, {
+            path: "latestMessage.sender",
+            select: "username number pic"
+        });
+        res.status(200).json({
+            chats,
+            totalCount,
+            totalPages,
+            currentPage,
+            hasNextPage,
+            hasPrevPage,
+            currentCount
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(error)
+    }
+});
 
 // get all group chats with pagination
 router.get("/all/:page", protect, asyncHandler(async (req, res) => {
     const { page } = req.params;
-    const limit = 10;
+    const limit = 5;
     const skip = (page - 1) * limit;
 
-    const allGroupChats = await Chat.find({ isGroupChat: true })
+    const groups = await Chat.find({ isGroupChat: true })
         .populate("users", "-password")
         .populate("groupAdmin", "-password")
         .populate("events")
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit);
+    const totalCount = await Chat.countDocuments({ isGroupChat: true });
+    const currentCount = groups.length;
+    const totalPages = Math.ceil(totalCount / limit);
+    const currentPage = parseInt(page);
+    const hasNextPage = currentPage < totalPages;
+    const hasPrevPage = currentPage > 1;
 
-    if (!allGroupChats) {
+
+    if (!groups) {
         return res.status(404).send("No group chats found")
     }
 
-    res.status(200).json(allGroupChats);
+    res.status(200).json({
+        groups,
+        totalCount,
+        totalPages,
+        currentPage,
+        hasNextPage,
+        hasPrevPage,
+        currentCount
+    });
 }));
 
 
@@ -460,17 +570,99 @@ router.get("/event/:chatId", protect, asyncHandler(async (req, res) => {
 // get all events with pagination
 router.get("/event/all/:page", protect, asyncHandler(async (req, res) => {
     const { page } = req.params;
-    const limit = 10;
+    const limit = 5;
     const skip = (page - 1) * limit;
 
     try {
-        const findEvents = await EventTable.find().skip(skip).limit(limit).sort({ createdAt: -1 });
+        const events = await EventTable.find().skip(skip).limit(limit).sort({ createdAt: -1 });
+        const totalCount = await EventTable.countDocuments();
+        const currentCount = events.length;
+        const totalPages = Math.ceil(totalCount / limit);
+        const currentPage = parseInt(page);
+        const hasNextPage = currentPage < totalPages;
+        const hasPrevPage = currentPage > 1;
 
-        if (!findEvents) {
+        if (!events) {
             return res.status(404).send("No events found")
         }
 
-        res.status(200).json(findEvents);
+        res.status(200).json({
+            events,
+            totalCount,
+            totalPages,
+            currentPage,
+            hasNextPage,
+            hasPrevPage,
+            currentCount
+        });
+    } catch (error) {
+        console.log(error);
+    }
+
+}));
+
+// get upcoming events with pagination
+router.get("/event/upcoming/:page", protect, asyncHandler(async (req, res) => {
+    const { page } = req.params;
+    const limit = 5;
+    const skip = (page - 1) * limit;
+
+    try {
+        const events = await EventTable.find({ date: { $gte: new Date() } }).skip(skip).limit(limit).sort({ createdAt: -1 });
+        const totalCount = await EventTable.countDocuments({ date: { $gte: new Date() } });
+        const currentCount = events.length;
+        const totalPages = Math.ceil(totalCount / limit);
+        const currentPage = parseInt(page);
+        const hasNextPage = currentPage < totalPages;
+        const hasPrevPage = currentPage > 1;
+
+        if (!events) {
+            return res.status(404).send("No events found")
+        }
+
+        res.status(200).json({
+            events,
+            totalCount,
+            totalPages,
+            currentPage,
+            hasNextPage,
+            hasPrevPage,
+            currentCount
+        });
+    } catch (error) {
+        console.log(error);
+    }
+
+}));
+
+// get past events with pagination
+router.get("/event/past/:page", protect, asyncHandler(async (req, res) => {
+    const { page } = req.params;
+    const limit = 5;
+    const skip = (page - 1) * limit;
+
+    try {
+        const events = await EventTable.find({ date: { $lt: new Date() } }).skip(skip).limit(limit).sort({ createdAt: -1 });
+        const totalCount = await EventTable.countDocuments({ date: { $lt: new Date() } });
+        const currentCount = events.length;
+        const totalPages = Math.ceil(totalCount / limit);
+        const currentPage = parseInt(page);
+        const hasNextPage = currentPage < totalPages;
+        const hasPrevPage = currentPage > 1;
+
+        if (!events) {
+            return res.status(404).send("No events found")
+        }
+
+        res.status(200).json({
+            events,
+            totalCount,
+            totalPages,
+            currentPage,
+            hasNextPage,
+            hasPrevPage,
+            currentCount
+        });
     } catch (error) {
         console.log(error);
     }

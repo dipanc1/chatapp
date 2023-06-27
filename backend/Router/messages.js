@@ -46,7 +46,6 @@ router.post("/", async (req, res) => {
 
 //get
 router.get("/:chatId/:page", async (req, res) => {
-    //TODO: make it 50 or 100
     const { limit = LIMIT } = req.query;
 
     try {
