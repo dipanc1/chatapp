@@ -9,7 +9,7 @@ const { protect } = require("../middleware/authMiddleware");
 const { generateChatToken } = require("../config/generateToken");
 const jwt = require("jsonwebtoken");
 
-
+const LIMIT = 5;
 
 // new chat
 router.post("/", protect, asyncHandler(async (req, res) => {
@@ -58,8 +58,7 @@ router.post("/", protect, asyncHandler(async (req, res) => {
     }
 }));
 
-
-// get all chats of user with pagination
+// get all chats 
 router.get("/", protect, async (req, res) => {
     try {
         Chat.find({
@@ -81,6 +80,84 @@ router.get("/", protect, async (req, res) => {
         res.status(500).json(error)
     }
 });
+
+// get all conversations not group ones with infinite scroll
+router.get("/:page", protect, async (req, res) => {
+    const { page } = req.params;
+
+    try {
+        const chats = await Chat.find({
+            users: { $elemMatch: { $eq: req.user._id } },
+            isGroupChat: false,
+        })
+            .populate("users", "-password -events")
+            .populate("groupAdmin", "-password -events")
+            .populate("latestMessage")
+            .populate("events")
+            .sort({ updatedAt: -1 })
+            .skip((page - 1) * LIMIT)
+            .limit(LIMIT);
+
+        const totalCount = await Chat.countDocuments({
+            users: { $elemMatch: { $eq: req.user._id } },
+            isGroupChat: false,
+        });
+
+        if (!chats) {
+            return res.status(404).send("No chats found")
+        }
+
+        res.status(200).json({
+            chats,
+            hasMore: totalCount - (page * LIMIT) > 0
+        });
+
+    } catch (error) {
+
+    }
+});
+
+// get all group chats of user with infinite scroll
+router.get("/group-chats/:page", protect, asyncHandler(async (req, res) => {
+    const { page } = req.params;
+
+    const limit = LIMIT;
+
+    try {
+        const groups = await Chat.find(
+            {
+                isGroupChat: true,
+                users: { $elemMatch: { $eq: req.user._id } }
+            }
+        )
+            .populate("users", "-password")
+            .populate("groupAdmin", "-password")
+            .populate("events")
+            .sort({ createdAt: -1 })
+            .skip((page - 1) * limit)
+            .limit(limit);
+
+        const totalCount = await Chat.countDocuments({
+            isGroupChat: true,
+            users: { $elemMatch: { $eq: req.user._id } }
+        });
+
+        if (!groups) {
+            return res.status(404).send("No group chats found")
+        }
+
+        res.status(200).json({
+            groups,
+            hasMore: totalCount - (page * limit) > 0
+        });
+
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(error)
+    }
+
+}));
 
 // get all chats of user with pagination
 router.get("/my/:page", protect, async (req, res) => {
