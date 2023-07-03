@@ -5,7 +5,6 @@
 #### using accesstoken as well as refreshtokens
 #### use httponly cookies for refresh token
 
-#### add infinity scroll in chats
 #### cloudinary only whitelist our domain
 #### need to add abhishek's id to send emails
 

@@ -223,7 +223,7 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
         :
         (
           <div
-            id="scrollableDiv"
+            id="scrollableDivChat"
             style={{
               flex: flex,
               height: height,
@@ -236,7 +236,7 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
             <InfiniteScroll
               dataLength={messages.length}
               next={fetchMoreMessages}
-              style={{ display: 'flex', flexDirection: 'column-reverse' }} //To put endMessage and loader to the top.
+              style={{ display: 'flex', flexDirection: 'column-reverse' }} // To put endMessage and loader to the top.
               inverse={true} //
               hasMore={hasMore}
               loader={
@@ -249,7 +249,7 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
                     size='xl'
                   />
                 </Box>}
-              scrollableTarget="scrollableDiv"
+              scrollableTarget="scrollableDivChat"
             >
               {messages?.map((m, i) => (
                 <Box

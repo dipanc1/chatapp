@@ -1,13 +1,13 @@
 const router = require("express").Router();
+const asyncHandler = require("express-async-handler");
+const jwt = require("jsonwebtoken");
 
 const User = require("../models/User");
 const Chat = require("../models/Conversation");
 const EventTable = require("../models/EventTable");
 
-const asyncHandler = require("express-async-handler");
 const { protect } = require("../middleware/authMiddleware");
 const { generateChatToken } = require("../config/generateToken");
-const jwt = require("jsonwebtoken");
 
 const LIMIT = 5;
 
@@ -58,7 +58,8 @@ router.post("/", protect, asyncHandler(async (req, res) => {
     }
 }));
 
-// get all chats 
+
+// get all chats of user
 router.get("/", protect, async (req, res) => {
     try {
         Chat.find({
@@ -81,7 +82,8 @@ router.get("/", protect, async (req, res) => {
     }
 });
 
-// get all conversations not group ones with infinite scroll
+
+// get all one on one conversations with infinite scroll
 router.get("/:page", protect, async (req, res) => {
     const { page } = req.params;
 
@@ -116,6 +118,7 @@ router.get("/:page", protect, async (req, res) => {
 
     }
 });
+
 
 // get all group chats of user with infinite scroll
 router.get("/group-chats/:page", protect, asyncHandler(async (req, res) => {
@@ -158,6 +161,7 @@ router.get("/group-chats/:page", protect, asyncHandler(async (req, res) => {
     }
 
 }));
+
 
 // get all chats of user with pagination
 router.get("/my/:page", protect, async (req, res) => {
@@ -205,6 +209,7 @@ router.get("/my/:page", protect, async (req, res) => {
         res.status(500).json(error)
     }
 });
+
 
 // get all chats where user is admin
 router.get("/admin/:page", protect, async (req, res) => {
@@ -254,6 +259,7 @@ router.get("/admin/:page", protect, async (req, res) => {
         res.status(500).json(error)
     }
 });
+
 
 // get all group chats with pagination
 router.get("/all/:page", protect, asyncHandler(async (req, res) => {
@@ -360,6 +366,11 @@ router.get("/encrypted/chat/:id", asyncHandler(async (req, res) => {
 router.post("/group", protect, asyncHandler(async (req, res) => {
     if (!req.body.users || !req.body.name || !req.body.description) {
         return res.status(400).send("All Feilds are required")
+    }
+
+    const checkGroupChat = await Chat.find({ chatName: req.body.name });
+    if (checkGroupChat.length > 0) {
+        return res.status(400).send("Group chat with same name already exists")
     }
 
     var users = JSON.parse(req.body.users);
@@ -543,6 +554,12 @@ router.put("/event/:chatId", protect, asyncHandler(async (req, res) => {
         return res.status(400).send("You are not admin of this group")
     };
 
+    const checkEvent = await EventTable.find({ name: name });
+
+    if (checkEvent.length > 0) {
+        return res.status(400).send("Event with same name already exists")
+    }
+
     const newEvent = new EventTable({
         name,
         description,
@@ -564,7 +581,7 @@ router.put("/event/:chatId", protect, asyncHandler(async (req, res) => {
         await user.save();
         res.status(200).json("Event added");
     } else {
-        res.status(404).send("Chat not found");
+        res.status(404).send("Chat not found or user not found or event not saved");
     }
 }));
 
@@ -678,6 +695,7 @@ router.get("/event/all/:page", protect, asyncHandler(async (req, res) => {
 
 }));
 
+
 // get upcoming events with pagination
 router.get("/event/upcoming/:page", protect, asyncHandler(async (req, res) => {
     const { page } = req.params;
@@ -711,6 +729,7 @@ router.get("/event/upcoming/:page", protect, asyncHandler(async (req, res) => {
     }
 
 }));
+
 
 // get past events with pagination
 router.get("/event/past/:page", protect, asyncHandler(async (req, res) => {

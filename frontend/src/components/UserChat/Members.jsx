@@ -611,6 +611,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
                   :
                   <Box display={'flex'} flexDirection={'column'} mx={'2'} mb={fullScreen ? '36' : '2'}>
                     <Input
+                      focusBorderColor='#9F85F7'
                       mr={'2'}
                       value={groupChatName}
                       placeholder={selectedChat?.chatName}

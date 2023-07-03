@@ -19,6 +19,7 @@ const User = require("../models/User");
 const EventTable = require("../models/EventTable");
 
 let refreshTokens = [];
+const LIMIT = 5;
 
 // send new access token
 router.post("/token", (req, res) => {
@@ -162,7 +163,7 @@ router.get("/check-online/:id", protect, async (req, res) => {
 // search query for users and groups excluding user logged in
 router.get("/", protect, async (req, res) => {
     const query = req.query.search;
-    const limit = 10;
+    const limit = LIMIT;
 
     try {
 

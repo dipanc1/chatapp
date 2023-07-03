@@ -33,7 +33,7 @@ const GroupChat = ({ chat }) => {
             variants={list}
         >
             {/* <img src="https://via.placeholder.com/150" alt="avatar" className='icon' />  */}
-            {/* will add image later */}
+            {/* TODO: will add image later */}
             <Avatar size={['sm', 'md']} me={['10px', '15px']} variants={item} />
             <Text fontSize='md' variants={item}>{chat.chatName}</Text>
         </Box>

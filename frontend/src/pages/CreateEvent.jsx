@@ -67,6 +67,7 @@ const CreateEvent = () => {
 				})
 				.catch((err) => {
 					console.log(err);
+					alert(err);
 				});
 		} else {
 			const formData = new FormData();
@@ -89,10 +90,12 @@ const CreateEvent = () => {
 						})
 						.catch((err) => {
 							console.log(err);
+							alert(err);
 						});
 				})
 				.catch((err) => {
 					console.log(err);
+					alert(err);
 				});
 		}
 

@@ -33,12 +33,12 @@ const AppReducer = (state, action) => {
         case "SET_CONVERSATIONS":
             return {
                 ...state,
-                conversations: action.payload.filter((friend) => !friend.isGroupChat)
+                conversations: action.payload
             };
         case "SET_GROUP_CONVERSATIONS":
             return {
                 ...state,
-                groupConversations: action.payload.filter((friend) => friend.isGroupChat && friend.chatName)
+                groupConversations: action.payload
             };
         case "SET_LOADING":
             return {

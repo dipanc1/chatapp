@@ -28,7 +28,7 @@ import UserCard from '../UserItems/UserCard';
 
 const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) => {
   const user = JSON.parse(localStorage.getItem('user'));
-  const { dispatch, chats, loading, notification, pushNotification, userInfo } = useContext(AppContext);
+  const { dispatch, loading, notification, pushNotification, userInfo } = useContext(AppContext);
   const [toggleProfiledd, setToggleProfiledd] = useState(false)
   const [toggleSearch, setToggleSearch] = useState(false)
   const [search, setSearch] = useState('');
@@ -41,10 +41,6 @@ const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) 
   let navigate = useNavigate();
   let location = useLocation();
   const toast = useToast();
-
-  const axiosJwt = axios.create({
-    baseURL: backend_url,
-  });
 
   const CDN_IMAGES = "https://ik.imagekit.io/sahildhingra";
 
@@ -87,6 +83,7 @@ const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) 
       setSearching(false)
     }
   };
+
 
   const accessChat = async (userId) => {
     // console.log(userId);
@@ -134,45 +131,6 @@ const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) 
     }
   };
 
-  // fetch all conversations
-  const fetchChats = async () => {
-    try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
-
-      const { data } = await axiosJwt.get(
-        `/conversation`, config
-      );
-
-      dispatch({ type: "SET_CONVERSATIONS", payload: data });
-      dispatch({ type: "SET_GROUP_CONVERSATIONS", payload: data });
-
-      if (
-        !chats.find(
-          (chat) => chat._id === data.map((datas) => datas._id)
-        )
-      ) {
-        dispatch({ type: "SET_CHATS", payload: data });
-      }
-    } catch (error) {
-      console.log(error);
-      // toast({
-      //   title: "Error Occured!",
-      //   description: "Failed to Load the Conversations",
-      //   status: "error",
-      //   duration: 5000,
-      //   isClosable: true,
-      //   position: "bottom-left",
-      // });
-    }
-    setSearchResultsUsers([]);
-    setSearchResultsGroups([]);
-    setSearchResultsEvents([]);
-  };
 
   const handleAddUser = async (user1, groupId) => {
     setToggleSearch(false)
@@ -226,10 +184,6 @@ const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) 
     setSearch("");
   };
 
-  React.useEffect(() => {
-    fetchChats();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetchAgain]);
 
   return (
     <>
@@ -246,7 +200,9 @@ const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) 
             <Box onClick={() => setToggleSearch(false)} p='10px' display={['block', 'block', 'none']} zIndex='2' position='absolute' top={['17px', '17px', '2px']} left={['17px', '17px', '12px']}>
               <Image opacity='0.8' h='15px' src={CDN_IMAGES + '/search-back.png'} />
             </Box>
-            <Input disabled={loading} onChange={(e) => handleSearch(e)} value={search} placeholder='Search Users / Groups / Events' py={'13px'} px={['30px', '30px', '21px']} bg={'#F4F1FF'} border={'0'} />
+            <Input
+              focusBorderColor='#9F85F7'
+              disabled={loading} onChange={(e) => handleSearch(e)} value={search} placeholder='Search Users / Groups / Events' py={'13px'} px={['30px', '30px', '21px']} bg={'#F4F1FF'} border={'0'} />
             {
               searching && (
                 <Box zIndex='1' position='absolute' top={['17px', '2px']} right={['30px', '12px']}>
