@@ -10,7 +10,8 @@ const otpRoute = require("./router/otp");
 const conversationRoute = require("./router/conversation");
 const messageRoute = require("./router/messages");
 const meetingRoute = require("./router/meetings");
-const checkoutRoute = require("./router/checkouts")
+const checkoutRoute = require("./router/checkouts");
+const uploadRoute = require("./router/uploadFiles");
 
 require("dotenv").config();
 
@@ -47,6 +48,7 @@ app.use("/conversation", conversationRoute);
 app.use("/message", protect, messageRoute);
 app.use("/meetings", meetingRoute);
 app.use("/checkout", checkoutRoute);
+app.use("/upload", protect, uploadRoute);
 
 const PORT = process.env.PORT || "8000";
 const server = app.listen(PORT, () => {
