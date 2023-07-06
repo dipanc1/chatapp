@@ -4,7 +4,7 @@ import React, {
 import ChatOnline from '../Miscellaneous/ChatOnline'
 import { AppContext } from '../../context/AppContext'
 import axios from 'axios'
-import { api_key, backend_url, pictureUpload, upload_preset } from '../../baseApi'
+import { api_key, backend_url, pictureUpload, folder } from '../../baseApi'
 import { HiUserRemove } from 'react-icons/hi'
 import {
   Accordion, Avatar,
@@ -23,7 +23,7 @@ import AddMembersModal from '../UserModals/AddMembersModal'
 export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, setFetchAgain, admin }) => {
   const user = JSON.parse(localStorage.getItem('user'));
 
-  const { selectedChat, dispatch, stream, fullScreen, userInfo } = React.useContext(AppContext);
+  const { selectedChat, dispatch, stream, fullScreen, userInfo, signature, timestamp, getCloudinarySignature } = React.useContext(AppContext);
 
   const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure()
   const { isOpen: isOpenCreateEvent, onOpen: onOpenCreateEvent, onClose: onCloseCreateEvent } = useDisclosure()
@@ -48,11 +48,18 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
 
   const fileInputRef = React.createRef();
 
-  const imageChange = (e) => {
+  const imageChange = async (e) => {
+    await getCloudinarySignature();
     if (e.target.files && e.target.files.length > 0 && (e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/png')) {
       setSelectedImage(e.target.files[0]);
     } else {
-      alert('Please select a valid image file');
+      toast({
+        title: "Error",
+        description: "Please select a valid image",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
     }
   }
 
@@ -162,7 +169,9 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
       const formData = new FormData();
       formData.append('api_key', api_key)
       formData.append('file', selectedImage);
-      formData.append('upload_preset', upload_preset);
+      formData.append('folder', folder)
+      formData.append('timestamp', timestamp)
+      formData.append('signature', signature)
 
       await axios.post(pictureUpload, formData)
         .then(async (res) => {

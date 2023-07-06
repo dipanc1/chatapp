@@ -48,7 +48,7 @@ app.use("/conversation", conversationRoute);
 app.use("/message", protect, messageRoute);
 app.use("/meetings", meetingRoute);
 app.use("/checkout", checkoutRoute);
-app.use("/upload", protect, uploadRoute);
+app.use("/upload", uploadRoute);
 
 const PORT = process.env.PORT || "8000";
 const server = app.listen(PORT, () => {

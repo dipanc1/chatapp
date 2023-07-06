@@ -83,8 +83,30 @@ router.get("/", protect, async (req, res) => {
 });
 
 
+// get chat by id
+router.get("/:id", protect, asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const findChat = await Chat.findById(id)
+            .populate("users", "-password")
+            .populate("groupAdmin", "-password")
+            .populate("events");
+
+        if (!findChat) {
+            return res.status(404).send("No chat found")
+        }
+
+        res.status(200).json(findChat);
+    } catch (error) {
+        res.status(500).send("Something went wrong")
+    }
+
+}));
+
+
 // get all one on one conversations with infinite scroll
-router.get("/:page", protect, async (req, res) => {
+router.get("/one-on-one/:page", protect, async (req, res) => {
     const { page } = req.params;
 
     try {
@@ -295,28 +317,6 @@ router.get("/all/:page", protect, asyncHandler(async (req, res) => {
         hasPrevPage,
         currentCount
     });
-}));
-
-
-// get chat by id
-router.get("/:id", protect, asyncHandler(async (req, res) => {
-    const { id } = req.params;
-
-    try {
-        const findChat = await Chat.findById(id)
-            .populate("users", "-password")
-            .populate("groupAdmin", "-password")
-            .populate("events");
-
-        if (!findChat) {
-            return res.status(404).send("No chat found")
-        }
-
-        res.status(200).json(findChat);
-    } catch (error) {
-        res.status(500).send("Something went wrong")
-    }
-
 }));
 
 

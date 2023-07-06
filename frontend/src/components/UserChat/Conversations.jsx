@@ -45,7 +45,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
             };
 
             const { data } = await axiosJwt.get(
-                `/conversation/1`, config
+                `/conversation/one-on-one/1`, config
             );
 
             dispatch({ type: "SET_CONVERSATIONS", payload: data.chats });
@@ -53,7 +53,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
 
             if (
                 !chats.find(
-                    (chat) => chat._id === data.map((datas) => datas._id)
+                    (chat) => chat._id === data.chats.map((datas) => datas._id)
                 )
             ) {
                 dispatch({ type: "SET_CHATS", payload: data });
@@ -82,7 +82,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
 
             if (
                 !chats.find(
-                    (chat) => chat._id === data.map((datas) => datas._id)
+                    (chat) => chat._id === data.groups.map((datas) => datas._id)
                 )
             ) {
                 dispatch({ type: "SET_CHATS", payload: data });
@@ -104,7 +104,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
             };
 
             const { data } = await axiosJwt.get(
-                `/conversation/${oneOnOneChatsPage}`, config
+                `/conversation/one-on-one/${oneOnOneChatsPage}`, config
             );
 
             dispatch({
@@ -116,7 +116,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
 
             if (
                 !chats.find(
-                    (chat) => chat._id === data.map((datas) => datas._id)
+                    (chat) => chat._id === data.chats.map((datas) => datas._id)
                 )
             ) {
                 dispatch({ type: "SET_CHATS", payload: data });
@@ -149,7 +149,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
 
             if (
                 !chats.find(
-                    (chat) => chat._id === data.map((datas) => datas._id)
+                    (chat) => chat._id === data.groups.map((datas) => datas._id)
                 )
             ) {
                 dispatch({ type: "SET_CHATS", payload: data });

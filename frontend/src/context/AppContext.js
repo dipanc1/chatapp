@@ -1,5 +1,5 @@
 import axios from "axios";
-import { createContext, useEffect, useReducer } from "react";
+import { createContext, useEffect, useReducer, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { backend_url } from "../baseApi";
 import AppReducer from "../reducers/AppReducer";
@@ -35,6 +35,8 @@ export const AppContextProvider = ({ children }) => {
   const matchRegister = location.pathname.match(/join-group\/(.*)\/register/);
 
   const [state, dispatch] = useReducer(AppReducer, INITIAL_STATE);
+  const [signature, setSignature] = useState("");
+  const [timestamp, setTimestamp] = useState("");
 
   const axiosJwt = axios.create({
     baseURL: backend_url,
@@ -81,6 +83,24 @@ export const AppContextProvider = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname, navigate, user?.token])
 
+  const getCloudinarySignature = async () => {
+    try {
+      const res = await axiosJwt.get(`/upload`);
+
+      setSignature(res.data.signature);
+      setTimestamp(res.data.timestamp);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Error getting image server",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+
+  };
+
 
   return (
     <AppContext.Provider
@@ -97,6 +117,9 @@ export const AppContextProvider = ({ children }) => {
         userInfo: state.userInfo,
         pushNotification: state.pushNotification,
         eventInfo: state.eventInfo,
+        signature: signature,
+        timestamp: timestamp,
+        getCloudinarySignature,
         dispatch
       }}>
       {children}

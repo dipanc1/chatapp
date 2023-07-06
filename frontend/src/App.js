@@ -20,7 +20,7 @@ import { useContext } from 'react';
 import { RoomContext } from './context/RoomContext';
 import { AppContext } from './context/AppContext';
 
-//TODO: delete console statements
+//TODO: delete console statements, make one function in app context to get cloudinary token and use before every upload
 
 function App() {
   let isChrome = navigator.userAgentData?.brands?.some(b => b.brand === 'Google Chrome');

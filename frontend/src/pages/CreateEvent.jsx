@@ -9,18 +9,19 @@ import {
 	Textarea,
 	Checkbox,
 	Image,
-	IconButton
+	IconButton,
+	useToast
 } from '@chakra-ui/react'
 
 import Static from '../components/common/Static'
 import axios from 'axios';
-import { api_key, backend_url, pictureUpload, upload_preset } from '../baseApi';
+import { api_key, backend_url, pictureUpload, folder } from '../baseApi';
 import { AppContext } from '../context/AppContext';
 import { useNavigate } from 'react-router-dom';
 import { FiUpload } from 'react-icons/fi';
 
 const CreateEvent = () => {
-	const { selectedChat, userInfo } = useContext(AppContext);
+	const { selectedChat, userInfo, timestamp, signature, getCloudinarySignature } = useContext(AppContext);
 	const user = JSON.parse(localStorage.getItem("user"));
 	const [name, setEventName] = useState("");
 	const [description, setDescription] = useState("");
@@ -30,13 +31,21 @@ const CreateEvent = () => {
 
 	const fileInputRef = React.createRef();
 
+	const toast = useToast();
 	let navigate = useNavigate();
-
-	const imageChange = (e) => {
+	
+	const imageChange = async (e) => {
+		await getCloudinarySignature();
 		if (e.target.files && e.target.files.length > 0 && (e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/png')) {
 			setSelectedImage(e.target.files[0]);
 		} else {
-			alert('Please select a valid image file');
+			toast({
+				title: "Error",
+				description: "Please select a valid image",
+				status: "error",
+				duration: 9000,
+				isClosable: true,
+			});
 		}
 	}
 
@@ -73,7 +82,9 @@ const CreateEvent = () => {
 			const formData = new FormData();
 			formData.append('api_key', api_key)
 			formData.append('file', selectedImage);
-			formData.append('upload_preset', upload_preset);
+			formData.append('folder', folder)
+			formData.append('timestamp', timestamp)
+			formData.append('signature', signature)
 
 			await axios.post(pictureUpload, formData)
 				.then(async (res) => {

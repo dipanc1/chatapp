@@ -5,7 +5,7 @@ import axios from 'axios';
 import { AppContext } from '../context/AppContext';
 import { Link, useMatch } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
-import { api_key, backend_url, pictureUpload, upload_preset } from '../baseApi';
+import { api_key, backend_url, pictureUpload, folder } from '../baseApi';
 import {
     Flex,
     Box,
@@ -33,7 +33,7 @@ import Otp from '../components/Miscellaneous/Otp';
 import Password from '../components/Miscellaneous/Password';
 
 const Register = () => {
-    const { dispatch } = React.useContext(AppContext);
+    const { dispatch, signature, timestamp, getCloudinarySignature } = React.useContext(AppContext);
 
     const [verify, setVerify] = React.useState(true);
     const [otp, setOtp] = React.useState(true);
@@ -163,7 +163,9 @@ const Register = () => {
                 const formData = new FormData();
                 formData.append('api_key', api_key)
                 formData.append('file', selectedImage);
-                formData.append('upload_preset', upload_preset);
+                formData.append('folder', folder)
+                formData.append('timestamp', timestamp)
+                formData.append('signature', signature)
                 if (match && match.pattern.path === "/join-group/:groupId/register") {
                     await axios.post(pictureUpload, formData)
                         .then(async res => {
@@ -245,14 +247,15 @@ const Register = () => {
             }
         }
     }
-
-    const imageChange = (e) => {
+    
+    const imageChange = async (e) => {
+        await getCloudinarySignature();
         if (e.target.files && e.target.files.length > 0 && (e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/png')) {
             setSelectedImage(e.target.files[0]);
         } else {
             toast({
                 title: "Error",
-                description: "Please upload a picture",
+                description: "Please select a valid image",
                 status: "error",
                 duration: 9000,
                 isClosable: true,

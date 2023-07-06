@@ -2,7 +2,7 @@ import { Box, Flex, Image, ListItem, Text, UnorderedList, useDisclosure, useToas
 import React, { useState } from 'react'
 import GroupSettingsModal from '../UserModals/GroupSettingsModal';
 import axios from 'axios';
-import { api_key, backend_url, pictureUpload, upload_preset } from '../../baseApi';
+import { api_key, backend_url, pictureUpload, folder } from '../../baseApi';
 import AddMembersModal from '../UserModals/AddMembersModal';
 import { AppContext } from '../../context/AppContext';
 import EventModal from '../UserModals/EventModal';
@@ -37,18 +37,25 @@ const GroupCard = ({
   const { isOpen: isOpenCreateEvent, onOpen: onOpenCreateEvent, onClose: onCloseCreateEvent } = useDisclosure()
 
 
-  const { userInfo, fullScreen } = React.useContext(AppContext);
+  const { userInfo, fullScreen, getCloudinarySignature, signature, timestamp } = React.useContext(AppContext);
 
   const toast = useToast();
 
-  
+
   const fileInputRef = React.createRef();
 
-  const imageChange = (e) => {
+  const imageChange = async (e) => {
+    await getCloudinarySignature();
     if (e.target.files && e.target.files.length > 0 && (e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/png')) {
       setSelectedImage(e.target.files[0]);
     } else {
-      alert('Please select a valid image file');
+      toast({
+        title: "Error",
+        description: "Please select a valid image",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
     }
   }
 
@@ -158,7 +165,9 @@ const GroupCard = ({
       const formData = new FormData();
       formData.append('api_key', api_key)
       formData.append('file', selectedImage);
-      formData.append('upload_preset', upload_preset);
+      formData.append('folder', folder)
+      formData.append('timestamp', timestamp)
+      formData.append('signature', signature)
 
       await axios.post(pictureUpload, formData)
         .then(async (res) => {

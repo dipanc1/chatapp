@@ -23,8 +23,7 @@ import "./Settings.css"
 import axios from 'axios';
 import {
     api_key, backend_url, pictureUpload,
-    // stripePublicKey,
-    upload_preset
+    folder
 } from '../baseApi';
 import { FiUpload } from 'react-icons/fi';
 import { AppContext } from '../context/AppContext';
@@ -36,7 +35,7 @@ const Settings = () => {
 
     const toast = useToast();
     const fileInputRef = React.createRef();
-    const { pushNotification, dispatch, userInfo } = useContext(AppContext);
+    const { pushNotification, dispatch, userInfo, getCloudinarySignature, timestamp, signature } = useContext(AppContext);
 
     const [activeTab, setActiveTab] = useState(1);
     const [username, setUsername] = useState("");
@@ -123,7 +122,6 @@ const Settings = () => {
                 config
             );
 
-            console.log(data);
             alert("Password changed successfully");
             setConfirmPassword("");
             setCurrentPassword("");
@@ -136,13 +134,14 @@ const Settings = () => {
         }
     }
 
-    const imageChange = (e) => {
+    const imageChange = async (e) => {
+        await getCloudinarySignature();
         if (e.target.files && e.target.files.length > 0 && (e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/png')) {
             setSelectedImage(e.target.files[0]);
         } else {
             toast({
                 title: "Error",
-                description: "Please upload a picture",
+                description: "Please select a valid image",
                 status: "error",
                 duration: 9000,
                 isClosable: true,
@@ -209,7 +208,10 @@ const Settings = () => {
                 const formData = new FormData();
                 formData.append('api_key', api_key)
                 formData.append('file', selectedImage);
-                formData.append('upload_preset', upload_preset);
+                formData.append('folder', folder)
+                formData.append('timestamp', timestamp)
+                formData.append('signature', signature)
+
                 await axios.post(pictureUpload, formData)
                     .then(async res =>
                         data = await axios.put(

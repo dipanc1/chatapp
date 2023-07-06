@@ -16,7 +16,7 @@ import {
   useToast
 } from '@chakra-ui/react';
 import { AppContext } from '../../context/AppContext';
-import { api_key, backend_url, pictureUpload, upload_preset } from '../../baseApi';
+import { api_key, backend_url, pictureUpload, folder } from '../../baseApi';
 import axios from 'axios';
 import EventModal from '../UserModals/EventModal';
 import StreamModalPeer from '../UserModals/StreamModalPeer';
@@ -38,7 +38,7 @@ const EventCard = ({
 }) => {
   const user = JSON.parse(localStorage.getItem('user'));
 
-  const { selectedChat, userInfo } = useContext(AppContext);
+  const { selectedChat, userInfo, getCloudinarySignature, signature, timestamp } = useContext(AppContext);
 
   const [toggleEventMenu, setToggleEventMenu] = useState(false);
   const [name, setEventName] = useState(title);
@@ -89,11 +89,18 @@ const EventCard = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedChat])
 
-  const imageChange = (e) => {
+  const imageChange = async (e) => {
+    await getCloudinarySignature();
     if (e.target.files && e.target.files.length > 0 && (e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/png')) {
       setSelectedImage(e.target.files[0]);
     } else {
-      alert('Please select a valid image file');
+      toast({
+        title: "Error",
+        description: "Please select a valid image",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
     }
   }
 
@@ -185,7 +192,9 @@ const EventCard = ({
       const formData = new FormData();
       formData.append('api_key', api_key)
       formData.append('file', selectedImage);
-      formData.append('upload_preset', upload_preset);
+      formData.append('folder', folder)
+      formData.append('timestamp', timestamp)
+      formData.append('signature', signature)
 
       await axios.put(pictureUpload, formData)
         .then(async (res) => {
