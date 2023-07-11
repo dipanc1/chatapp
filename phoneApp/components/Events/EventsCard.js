@@ -2,12 +2,13 @@ import React from 'react'
 import { AspectRatio, Box, VStack, HStack, Heading, Image, Stack, Text, FlatList } from 'native-base'
 import OptionsModal from '../UserModals/OptionsModal'
 import JoinGroupModal from '../UserModals/JoinGroupModal'
-import { SafeAreaView, TouchableOpacity } from 'react-native'
+import { TouchableOpacity } from 'react-native'
 import { PhoneAppContext } from '../../context/PhoneAppContext'
 import axios from 'axios'
 import { backend_url } from '../../production'
+import Pagination from '../Miscellaneous/Pagination'
 
-const EventsCard = ({ data, screen, selectEvent, chatName, user, showModal, setShowModal, chatId, navigation }) => {
+const EventsCard = ({ data, screen, selectEvent, chatName, user, showModal, setShowModal, chatId, navigation, currentPage, totalPages, totalCount, currentCount, hasNextPage, hasPrevPage, paginateFunction }) => {
 
   const { selectedChat, userInfo } = React.useContext(PhoneAppContext)
 
@@ -19,7 +20,7 @@ const EventsCard = ({ data, screen, selectEvent, chatName, user, showModal, setS
       //   duration: 3000,
       //   isClosable: true,
       // });
-      console.log('You are not the admin of this group')
+      alert('You are not the admin of this group')
       return;
     }
 
@@ -104,6 +105,7 @@ const EventsCard = ({ data, screen, selectEvent, chatName, user, showModal, setS
     <>
       <Box flex={1}>
         <FlatList data={data} renderItem={renderItem} />
+        {screen && <Pagination paginateFunction={paginateFunction} currentPage={currentPage} totalPages={totalPages} totalCount={totalCount} currentCount={currentCount} hasNextPage={hasNextPage} hasPrevPage={hasPrevPage} />}
         <JoinGroupModal showModal={showModal} setShowModal={setShowModal} chatName={chatName} user={user} chatId={chatId} navigation={navigation} />
       </Box>
     </>

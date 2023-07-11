@@ -218,6 +218,7 @@ const SettingCard = ({ name, user }) => {
             setUsername(data.username);
             setPic(data.pic);
             dispatch({ type: "SET_USER_INFO", payload: data });
+            setLoading(false);
         } catch (error) {
             console.log(error);
             setLoading(false);
