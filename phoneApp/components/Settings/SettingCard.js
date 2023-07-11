@@ -520,7 +520,7 @@ const SettingCard = ({ name, user }) => {
                                             Raise a Ticket
                                         </Button>
                                     </VStack>
-                                    <VStack my={"3"} space="3" justifyContent={"center"} alignItems={"center"}>
+                                    {/* <VStack my={"3"} space="3" justifyContent={"center"} alignItems={"center"}>
                                         {helpData.map((help, index) => (
                                             <Center key={help.name} borderWidth={"1"} borderColor={"primary.300"} borderRadius={"4"} rounded="lg" w={"64"} h={"56"} justifyContent={"space-between"} py={"3"}>
                                                 <Text fontSize={'xl'} fontWeight={'bold'} color={'#42495d'}>{help.name}</Text>
@@ -539,7 +539,7 @@ const SettingCard = ({ name, user }) => {
                                                 <Accordian data={data} index={index} openAccordian={openAccordian} accordianOpen={accordianOpen} accordianIndex={accordianIndex} invoices={false} />
                                             ))}
                                         </VStack>
-                                    </Box>
+                                    </Box> */}
                                 </Box>
                             </ScrollView>
                         )
