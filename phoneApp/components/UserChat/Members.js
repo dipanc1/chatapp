@@ -165,7 +165,7 @@ const Members = ({ user, fetchAgain, setFetchAgain, admin }) => {
         name="Events"
       >
         {props => <>
-          <EventsCard {...props} user={user} data={selectedChat?.events} screen={eventsTab} />
+          <EventsCard fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} {...props} user={user} data={selectedChat?.events} screen={eventsTab} />
           <Box position={'absolute'} bottom={'5'} right={'5'}>
             <Button leftIcon={<MaterialIcons name="add" size={24} color="white" />} onPress={() => {
               setEventType('Create');

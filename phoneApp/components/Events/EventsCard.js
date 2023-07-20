@@ -12,7 +12,7 @@ import Pagination from '../Miscellaneous/Pagination'
 import animationData from '../../assets/red-dot.json';
 import StreamModal from '../UserModals/StreamModalWeb'
 
-const EventsCard = ({ data, screen, selectEvent, chatName, user, showModal, setShowModal, chatId, navigation, currentPage, totalPages, totalCount, currentCount, hasNextPage, hasPrevPage, paginateFunction }) => {
+const EventsCard = ({ data, screen, selectEvent, chatName, user, showModal, setShowModal, chatId, navigation, currentPage, totalPages, totalCount, currentCount, hasNextPage, hasPrevPage, paginateFunction, fetchAgain, setFetchAgain }) => {
 
   const { selectedChat, userInfo } = React.useContext(PhoneAppContext);
 
@@ -127,11 +127,11 @@ const EventsCard = ({ data, screen, selectEvent, chatName, user, showModal, setS
           </AspectRatio>
         </TouchableOpacity>
         <Stack p="4" space={2}>
-          <HStack space={'24'} alignItems="center" justifyContent={'space-between'}>
-            <Heading size="md">
+          <HStack space={'24'} alignItems="center" justifyContent={'space-around'}>
+            <Heading size="md" maxW={'48'}>
               {item?.name}
             </Heading>
-            {!screen && admin && <OptionsModal eventDetails={item} admin={admin} group={false} deleteEvent={deleteEvent} eventId={item._id} user={user} chat={selectedChat} />}
+            {!screen && admin && <OptionsModal fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} eventDetails={item} admin={admin} group={false} deleteEvent={deleteEvent} eventId={item._id} user={user} chat={selectedChat} />}
           </HStack>
           <HStack space={'24'} alignItems="center" justifyContent={'space-between'}>
             <Text color="coolGray.600" _dark={{

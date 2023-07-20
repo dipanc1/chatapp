@@ -146,6 +146,7 @@ const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchA
       return;
     }
 
+
     if (editEventName === "" || editDescription === "" || editDate === "" || editTime === "") {
       setEditEventLoading(false)
       // toast({
@@ -164,7 +165,7 @@ const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchA
       },
     };
 
-    await axios.put(`${backend_url}/conversation/event/edit/${chat._id}`, {
+    await axios.put(`${backend_url}/conversation/event/edit/${eventId}`, {
       name: editEventName,
       description: editDescription,
       date: editDate,
@@ -181,15 +182,15 @@ const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchA
           //   isClosable: true,
           //   position: "bottom-left",
           // });
-          console.log(res.data)
           setEditEventName(eventDetails?.name);
           setEditDescription(eventDetails?.description);
           setEditDate(eventDetails?.date.split('T')[0]);
           setEditTime(eventDetails?.time);
           setEditSelectedImage(null);
           setShowModalEvent(false);
+          setFetchAgain(!fetchAgain);
         }).catch((err) => {
-          console.log(err);
+          console.log(err, "error");
           // toast({
           //   title: "Error Occured!",
           //   description: "Something went wrong",
@@ -207,7 +208,7 @@ const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchA
         })
       })
       .catch((err) => {
-        console.log(err);
+        console.log(err, "error2");
         // toast({
         //   title: "Error Occured!",
         //   description: "Something went wrong",

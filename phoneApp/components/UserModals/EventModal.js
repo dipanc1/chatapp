@@ -1,6 +1,6 @@
 import { launchImageLibrary } from 'react-native-image-picker';
 import React from 'react'
-import { Avatar, Box, Button, FormControl, IconButton, Input, Modal, Stack, VStack } from 'native-base'
+import { Avatar, Box, Button, FormControl, IconButton, Input, Modal, Stack, TextArea, VStack } from 'native-base'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import DatePicker from 'react-native-date-picker'
 
@@ -17,24 +17,42 @@ const EventModal = ({ user, fetchAgain, setFetchAgain, showModal, setShowModal, 
       // saveToPhotos: true,
     };
     await launchImageLibrary(options, (response) => {
-
-      console.log('Response = ', response.assets.map((item) => item));
-      const res = response.assets.map((item) => item);
-      if (res.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (res.error) {
-        console.log('ImagePicker Error: ', res.error);
-      } else {
-        const uri = res.uri;
-        const type = res.type;
-        const name = res.fileName;
-        const source = {
-          uri,
-          type,
-          name,
+      if (!response.didCancel) {
+        console.log('Response = ', response.assets.map((item) => item));
+        const res = response.assets.map((item) => item);
+        if (res.error) {
+          console.log('ImagePicker Error: ', res.error);
+        } else {
+          const uri = res.uri;
+          const type = res.type;
+          const name = res.fileName;
+          const source = {
+            uri,
+            type,
+            name,
+          }
         }
       }
     });
+  }
+
+
+  // TODO: change it to actual url
+  const cloudinaryUpload = (photo) => {
+    let apiUrl = pictureUpload;
+    const data = new FormData()
+    data.append('file', photo)
+    data.append('upload_preset', 'chat-app')
+    data.append("cloud_name", "835688546376544")
+    fetch(apiUrl, {
+      method: "post",
+      body: data
+    }).then(res => res.json()).
+      then(data => {
+        setPic(data.secure_url)
+      }).catch(err => {
+        alert("An Error Occured While Uploading")
+      })
   }
 
   return (
@@ -58,7 +76,7 @@ const EventModal = ({ user, fetchAgain, setFetchAgain, showModal, setShowModal, 
               </Stack>
               <Stack my={'1'}>
                 <FormControl.Label>Description</FormControl.Label>
-                <Input variant={'filled'} color={'primary.900'} placeholder="Add a description"
+                <TextArea h={20} variant={'filled'} color={'primary.900'} placeholder="Add a description"
                   value={description} onChangeText={
                     (text) => setDescription(text)
                   }
@@ -66,7 +84,7 @@ const EventModal = ({ user, fetchAgain, setFetchAgain, showModal, setShowModal, 
               </Stack>
               <Stack my={'1'} flexDirection={'row'}>
                 <Button w={'50%'} colorScheme="violet" rounded={'lg'} variant={'ghost'} onPress={() => setOpenDate(true)} >
-                  {(eventType === "Edit" && date) ? date : (eventType !== "Edit" && date) ? date.toDateString() : 'Date'}
+                  {(eventType === "Edit" && date) ? date.toString().split('GMT')[0] : (eventType !== "Edit" && date) ? date.toDateString() : 'Date'}
                 </Button>
                 <DatePicker
                   androidVariant='iosClone'
@@ -84,7 +102,7 @@ const EventModal = ({ user, fetchAgain, setFetchAgain, showModal, setShowModal, 
                 />
 
                 <Button w={'50%'} variant={'ghost'} colorScheme="violet" rounded={'lg'} onPress={() => setOpenTime(true)} >
-                  {(eventType === "Edit" && time) ? time : (eventType !== "Edit" && time) ? time.toTimeString().split(' ')[0] : 'Time'}
+                  {(eventType === "Edit" && time) ? time.toString().split('GMT')[0] : (eventType !== "Edit" && time) ? time.toTimeString().split(' ')[0] : 'Time'}
                 </Button>
                 <DatePicker
                   modal
