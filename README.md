@@ -17,7 +17,6 @@
 #### Add alerts 
 #### Raise a ticket in help
 #### use loader in all groups and events
-#### hide options in members in chat if not the admin
-#### hide options in events if not the admin, add start meeting option, add new event option, make options funcitons
-#### make options in groups functional
 #### use flatlist in all chats
+#### move user to login if token expires 
+#### use api in create and edit event modals

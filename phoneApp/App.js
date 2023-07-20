@@ -120,8 +120,8 @@ const App = () => {
   return (
     <StripeProvider publishableKey={stripePublicKey}>
       <NativeBaseProvider theme={theme}>
-        <PhoneAppContextProvider user={user}>
-          <NavigationContainer>
+        <NavigationContainer>
+          <PhoneAppContextProvider user={user}>
             {user ?
               <Tab.Navigator initialRouteName='Live Stream' screenOptions={
                 {
@@ -173,8 +173,8 @@ const App = () => {
                 </Stack.Screen>
               </Stack.Navigator>
             }
-          </NavigationContainer>
-        </PhoneAppContextProvider>
+          </PhoneAppContextProvider>
+        </NavigationContainer>
       </NativeBaseProvider>
     </StripeProvider>
   );

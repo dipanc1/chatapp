@@ -3,9 +3,11 @@ import React from 'react'
 import OptionsModal from '../UserModals/OptionsModal';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Pagination from '../Miscellaneous/Pagination';
+import { PhoneAppContext } from '../../context/PhoneAppContext';
 
 
-const GroupCard = ({ data, user, navigation, paginateFunction, listMoreGroups, currentPage, totalPages, totalCount, currentCount, hasNextPage, hasPrevPage }) => {
+const GroupCard = ({ data, user, navigation, paginateFunction, currentPage, totalPages, totalCount, currentCount, hasNextPage, hasPrevPage, fetchAgain, setFetchAgain }) => {
+  const { userInfo } = React.useContext(PhoneAppContext);
 
   return (
     <>
@@ -27,10 +29,10 @@ const GroupCard = ({ data, user, navigation, paginateFunction, listMoreGroups, c
               <Text fontSize={'3xl'} color={'primary.300'}>
                 {item.chatName}
               </Text>
-              {user?._id === item.groupAdmin._id &&
+              {userInfo?._id === item.groupAdmin._id &&
                 <>
                   <Icon as={MaterialIcons} name='verified' color={'primary.300'} size={5} />
-                  <OptionsModal chat={item} group={true} navigation={navigation} />
+                  <OptionsModal chat={item} group={true} navigation={navigation} user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
                 </>
               }
             </HStack>

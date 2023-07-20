@@ -9,7 +9,7 @@ import { TouchableOpacity } from 'react-native'
 import { PhoneAppContext } from '../../context/PhoneAppContext'
 import { backend_url } from '../../production'
 
-const Groups = ({ user, groupConversations, searchResultsGroups, search, setSearch, fetchAgain, setFetchAgain }) => {
+const Groups = ({ user, groupConversations, searchResultsGroups, search, setSearch, fetchAgain, setFetchAgain, admin }) => {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false)
   const { dispatch, selectedChat, userInfo } = React.useContext(PhoneAppContext);
@@ -48,7 +48,7 @@ const Groups = ({ user, groupConversations, searchResultsGroups, search, setSear
   return (
     <>
       {selectedChat && selectedChat?.isGroupChat ?
-        <Members user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+        <Members admin={admin} user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
         :
         <>
           <ScrollView showsVerticalScrollIndicator={false}>

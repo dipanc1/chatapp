@@ -11,9 +11,6 @@ import { backend_url } from '../../production'
 import { format } from 'timeago.js'
 import { SocketContext } from '../../context/socketContext'
 import animation from '../../assets/typing.json'
-import animationData from '../../assets/red-dot.json';
-import StreamModal from '../UserModals/StreamModalWeb'
-import { View } from 'react-native'
 
 var selectedChatCompare;
 
@@ -24,7 +21,6 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
 
     const scrollViewRef = React.useRef();
 
-    const [meetingIdExists, setMeetingIdExists] = React.useState(false);
     const [online, setOnline] = React.useState(false);
     const [page, setPage] = React.useState(2);
     const [socketConnected, setSocketConnected] = React.useState(false);
@@ -35,10 +31,8 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
     const [loading, setLoading] = React.useState(false);
     const [typing, setTyping] = React.useState(false);
     const [isTyping, setIsTyping] = React.useState(false);
-    const [open, setOpen] = React.useState(false);
     const [pushNotification, setPushNotification] = React.useState([]);
 
-    const admin = selectedChat?.isGroupChat && selectedChat?.groupAdmin._id === userInfo?._id;
 
     async function onDisplayNotification(newMessageReceived) {
         // Create a channel (required for Android)
@@ -215,10 +209,6 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
         }, typingTimer);
     }
 
-    const handleStream = () => {
-        setOpen(true);
-    }
-
     const CheckOnlineStatus = async (friendId) => {
         try {
             const config = {
@@ -234,31 +224,6 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
         }
     }
 
-    React.useEffect(() => {
-        if (selectedChat?.isGroupChat) {
-            try {
-                const checkStream = async () => {
-                    const config = {
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${user.token}`
-                        }
-                    }
-                    const { data } = await axios.get(`${backend_url}/conversation/streaming/${selectedChat._id}`, config);
-                    if (data) {
-                        setMeetingIdExists(true)
-                    } else {
-                        setMeetingIdExists(false);
-                    }
-                }
-                checkStream();
-            } catch (error) {
-                console.log(error);
-            }
-
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedChat])
 
     return (
         <>
@@ -280,21 +245,6 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
                         }
                         } icon={<MaterialIcons name="keyboard-arrow-down" size={24} color={'black'} />} />
 
-                        {selectedChat?.isGroupChat && (admin || meetingIdExists) &&
-                            <>
-                                <View>
-                                    <IconButton onPress={handleStream} icon={<MaterialIcons name="videocam" size={24} color={'black'} />} />
-                                    {!admin &&
-                                        <Lottie style={{
-                                            width: 30,
-                                            position: 'absolute',
-                                            zIndex: -1,
-                                        }}
-                                            source={animationData} autoPlay loop />}
-                                </View>
-                            </>
-                        }
-
                     </HStack>
                 }
                 {/* MIDDLE PART */}
@@ -307,10 +257,6 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
                         ListFooterComponent={loading ? <Spinner size={'lg'} color={'primary.300'} /> : null}
                         data={messages}
                         renderItem={({ item, i }) => (
-                            // <ScrollView
-                            //     ref={scrollViewRef}
-                            //     onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
-                            // >
                             <Message
                                 profile={profile}
                                 messages={item}
@@ -341,10 +287,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
                     <Input value={newMessage} outlineColor={'primary.400'} bg={'primary.200'} w={'72'} placeholder={'Type a message'} onChangeText={typingHandler} />
                     <IconButton onPress={newMessage !== "" ? sendMessage : null} bg={'primary.300'} icon={<MaterialIcons name="send" size={24} color={'#fff'} />} />
                 </HStack>
-
             </Flex>
-
-            <StreamModal admin={admin} user={user} open={open} setOpen={setOpen} />
         </>
 
     )

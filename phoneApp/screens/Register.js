@@ -103,6 +103,7 @@ const Register = ({ navigation }) => {
         });
 
     }
+
     const cloudinaryUpload = (photo) => {
         let apiUrl = pictureUpload;
         const data = new FormData()
@@ -291,7 +292,7 @@ const Register = ({ navigation }) => {
                     }
                     {!otp &&
                         <Button
-                            disabled={password === confirmPassword && username.length !== 0 && password.length >= 8} 
+                            disabled={password === confirmPassword && username.length !== 0 && password.length >= 8}
                             isLoading={loading}
                             isLoadingText="Registering"
                             onPress={handleRegister}

@@ -3,7 +3,7 @@ import React from 'react'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { PhoneAppContext } from '../../context/PhoneAppContext';
 
-const ParticipantListItem = ({ user1, user, handleRemove }) => {
+const ParticipantListItem = ({ user1, admin, handleRemove }) => {
     const { userInfo } = React.useContext(PhoneAppContext);
 
     return (
@@ -22,6 +22,7 @@ const ParticipantListItem = ({ user1, user, handleRemove }) => {
                 </HStack>
                 {!(userInfo._id === user1._id) &&
                     <IconButton
+                        disabled={!admin}
                         onPress={() => handleRemove(user1)}
                         icon={<MaterialIcons name="exit-to-app" size={24} color="#3cc4b7" />}
                         borderRadius={'lg'}

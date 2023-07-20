@@ -1,5 +1,6 @@
 import React from 'react'
-import { AspectRatio, Box, VStack, HStack, Heading, Image, Stack, Text, FlatList } from 'native-base'
+import { AspectRatio, Box, VStack, HStack, Heading, Image, Stack, Text, FlatList, IconButton } from 'native-base'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import OptionsModal from '../UserModals/OptionsModal'
 import JoinGroupModal from '../UserModals/JoinGroupModal'
 import { TouchableOpacity } from 'react-native'
@@ -8,9 +9,22 @@ import axios from 'axios'
 import { backend_url } from '../../production'
 import Pagination from '../Miscellaneous/Pagination'
 
+import animationData from '../../assets/red-dot.json';
+import StreamModal from '../UserModals/StreamModalWeb'
+
 const EventsCard = ({ data, screen, selectEvent, chatName, user, showModal, setShowModal, chatId, navigation, currentPage, totalPages, totalCount, currentCount, hasNextPage, hasPrevPage, paginateFunction }) => {
 
-  const { selectedChat, userInfo } = React.useContext(PhoneAppContext)
+  const { selectedChat, userInfo } = React.useContext(PhoneAppContext);
+
+  const [meetingIdExists, setMeetingIdExists] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+
+
+  const admin = selectedChat?.isGroupChat && selectedChat?.groupAdmin._id === userInfo?._id;
+
+  const handleStream = () => {
+    setOpen(true);
+  }
 
   const deleteEvent = async (id) => {
     if (selectedChat.groupAdmin._id !== userInfo?._id) {
@@ -44,7 +58,9 @@ const EventsCard = ({ data, screen, selectEvent, chatName, user, showModal, setS
         //   isClosable: true,
         //   position: "bottom-left",
         // });
-        console.log(res.data)
+        // console.log(res.data)
+        alert(res.data.message)
+        selectedChat.events.filter((event) => event._id !== id);
       });
     } catch (error) {
       await axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
@@ -64,7 +80,33 @@ const EventsCard = ({ data, screen, selectEvent, chatName, user, showModal, setS
 
   }
 
-  const renderItem = ({ item }) => (
+  React.useEffect(() => {
+    if (selectedChat?.isGroupChat) {
+      try {
+        const checkStream = async () => {
+          const config = {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${user.token}`
+            }
+          }
+          const { data } = await axios.get(`${backend_url}/conversation/streaming/${selectedChat._id}`, config);
+          if (data) {
+            setMeetingIdExists(true)
+          } else {
+            setMeetingIdExists(false);
+          }
+        }
+        checkStream();
+      } catch (error) {
+        console.log(error);
+      }
+
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedChat])
+
+  const renderItem = ({ item, index }) => (
     <Box alignItems="center" my={'4'}>
       <Box maxW="80" rounded="lg" overflow="hidden" borderColor="coolGray.200" borderWidth="1" _dark={{
         borderColor: "coolGray.600",
@@ -89,13 +131,27 @@ const EventsCard = ({ data, screen, selectEvent, chatName, user, showModal, setS
             <Heading size="md">
               {item?.name}
             </Heading>
-            {!screen && <OptionsModal group={false} deleteEvent={deleteEvent} eventId={item._id} />}
+            {!screen && admin && <OptionsModal eventDetails={item} admin={admin} group={false} deleteEvent={deleteEvent} eventId={item._id} user={user} chat={selectedChat} />}
           </HStack>
-          <Text color="coolGray.600" _dark={{
-            color: "warmGray.200"
-          }} fontWeight="400">
-            {item?.time} AM
-          </Text>
+          <HStack space={'24'} alignItems="center" justifyContent={'space-between'}>
+            <Text color="coolGray.600" _dark={{
+              color: "warmGray.200"
+            }} fontWeight="400">
+              {item?.time} AM
+            </Text>
+            {selectedChat?.isGroupChat && (admin || meetingIdExists) && (index === 0) && !screen &&
+              <>
+                <IconButton onPress={handleStream} icon={<MaterialIcons name="videocam" size={24} color={'black'} />} />
+                {!admin &&
+                  <Lottie style={{
+                    width: 30,
+                    position: 'absolute',
+                    zIndex: -1,
+                  }}
+                    source={animationData} autoPlay loop />}
+              </>
+            }
+          </HStack>
         </Stack>
       </Box>
     </Box>
@@ -107,6 +163,7 @@ const EventsCard = ({ data, screen, selectEvent, chatName, user, showModal, setS
         <FlatList data={data} renderItem={renderItem} />
         {screen && <Pagination paginateFunction={paginateFunction} currentPage={currentPage} totalPages={totalPages} totalCount={totalCount} currentCount={currentCount} hasNextPage={hasNextPage} hasPrevPage={hasPrevPage} />}
         <JoinGroupModal showModal={showModal} setShowModal={setShowModal} chatName={chatName} user={user} chatId={chatId} navigation={navigation} />
+        <StreamModal admin={admin} user={user} open={open} setOpen={setOpen} />
       </Box>
     </>
   )
