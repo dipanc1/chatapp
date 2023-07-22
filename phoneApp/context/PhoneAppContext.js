@@ -19,6 +19,9 @@ export const PhoneAppContext = createContext(INITIAL_STATE);
 export const PhoneAppContextProvider = ({ children, user }) => {
   const [state, dispatch] = useReducer(AppReducer, INITIAL_STATE);
 
+  const [signature, setSignature] = React.useState("");
+  const [timestamp, setTimestamp] = React.useState("");
+
   useEffect(() => {
     const getUserInfo = async () => {
       if (!user) {
@@ -44,6 +47,17 @@ export const PhoneAppContextProvider = ({ children, user }) => {
     getUserInfo();
   }, [user?.token])
 
+  const getCloudinarySignature = async () => {
+    try {
+      const res = await axios.get(`${backend_url}/upload`);
+      setSignature(res.data.signature);
+      setTimestamp(res.data.timestamp);
+    } catch (error) {
+      console.log(error)
+    }
+
+  };
+
   return (
     <PhoneAppContext.Provider
       value={{
@@ -54,6 +68,9 @@ export const PhoneAppContextProvider = ({ children, user }) => {
         stream: state.stream,
         fullScreen: state.fullScreen,
         userInfo: state.userInfo,
+        signature: signature,
+        timestamp: timestamp,
+        getCloudinarySignature,
         dispatch
       }}>
       {children}

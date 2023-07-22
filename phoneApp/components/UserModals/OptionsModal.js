@@ -63,31 +63,53 @@ const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchA
       },
     };
 
-    await axios.put(`${backend_url}/conversation/event/${chat._id}`, {
-      eventName,
-      description,
-      date,
-      time
-    }, config)
-      .then(async (res) => {
-        await axios.get(`${backend_url}/conversation/event/${chat._id}`, config).then((res) => {
-          // toast({
-          //   title: "Event Created!",
-          //   description: "Event created successfully",
-          //   status: "success",
-          //   duration: 5000,
-          //   isClosable: true,
-          //   position: "bottom-left",
-          // });
-          console.log(res.data)
-          setCreateEventLoading(false);
-          setEventName("");
-          setDescription("");
-          setDate("");
-          setTime("");
-          setSelectedImage(null);
-          setShowModalEvent(false);
-        }).catch((err) => {
+
+    if (selectedImage === null) {
+      await axios.put(`${backend_url}/conversation/event/${chat._id}`, {
+        name: eventName,
+        description,
+        date,
+        time,
+      }, config)
+        .then(async (res) => {
+          await axios.get(`${backend_url}/conversation/event/${chat._id}`, config).then((res) => {
+            // toast({
+            //   title: "Event Created!",
+            //   description: "Event created successfully",
+            //   status: "success",
+            //   duration: 5000,
+            //   isClosable: true,
+            //   position: "bottom-left",
+            // });
+            console.log(res.data)
+            setCreateEventLoading(false);
+            setEventName("");
+            setDescription("");
+            setDate("");
+            setTime("");
+            setSelectedImage(null);
+            setShowModalEvent(false);
+            setFetchAgain(!fetchAgain);
+          }).catch((err) => {
+            console.log(err);
+            // toast({
+            //   title: "Error Occured!",
+            //   description: "Something went wrong",
+            //   status: "error",
+            //   duration: 5000,
+            //   isClosable: true,
+            //   position: "bottom-left",
+            // });
+            setCreateEventLoading(false);
+            setEventName("");
+            setDescription("");
+            setDate("");
+            setTime("");
+            setSelectedImage(null);
+            setShowModalEvent(false);
+          })
+        })
+        .catch((err) => {
           console.log(err);
           // toast({
           //   title: "Error Occured!",
@@ -97,33 +119,78 @@ const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchA
           //   isClosable: true,
           //   position: "bottom-left",
           // });
+          setShowModalEvent(false);
           setCreateEventLoading(false);
           setEventName("");
           setDescription("");
           setDate("");
           setTime("");
           setSelectedImage(null);
-          setShowModalEvent(false);
+        });
+    } else {
+      await axios.put(`${backend_url}/conversation/event/${chat._id}`, {
+        name: eventName,
+        description,
+        date,
+        time,
+        thumbnail: selectedImage
+      }, config)
+        .then(async (res) => {
+          await axios.get(`${backend_url}/conversation/event/${chat._id}`, config).then((res) => {
+            // toast({
+            //   title: "Event Created!",
+            //   description: "Event created successfully",
+            //   status: "success",
+            //   duration: 5000,
+            //   isClosable: true,
+            //   position: "bottom-left",
+            // });
+            console.log(res.data);
+            setCreateEventLoading(false);
+            setEventName("");
+            setDescription("");
+            setDate("");
+            setTime("");
+            setSelectedImage(null);
+            setShowModalEvent(false);
+          }).catch((err) => {
+            console.log(err);
+            // toast({
+            //   title: "Error Occured!",
+            //   description: "Something went wrong",
+            //   status: "error",
+            //   duration: 5000,
+            //   isClosable: true,
+            //   position: "bottom-left",
+            // });
+            setCreateEventLoading(false);
+            setEventName("");
+            setDescription("");
+            setDate("");
+            setTime("");
+            setSelectedImage(null);
+            setShowModalEvent(false);
+          })
         })
-      })
-      .catch((err) => {
-        console.log(err);
-        // toast({
-        //   title: "Error Occured!",
-        //   description: "Something went wrong",
-        //   status: "error",
-        //   duration: 5000,
-        //   isClosable: true,
-        //   position: "bottom-left",
-        // });
-        setShowModalEvent(false);
-        setCreateEventLoading(false);
-        setEventName("");
-        setDescription("");
-        setDate("");
-        setTime("");
-        setSelectedImage(null);
-      });
+        .catch((err) => {
+          console.log(err);
+          // toast({
+          //   title: "Error Occured!",
+          //   description: "Something went wrong",
+          //   status: "error",
+          //   duration: 5000,
+          //   isClosable: true,
+          //   position: "bottom-left",
+          // });
+          setShowModalEvent(false);
+          setCreateEventLoading(false);
+          setEventName("");
+          setDescription("");
+          setDate("");
+          setTime("");
+          setSelectedImage(null);
+        });
+    }
   }
 
   const handleEditEvent = async () => {
@@ -142,7 +209,7 @@ const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchA
       setEditDescription(eventDetails?.description);
       setEditDate(eventDetails?.date.split('T')[0]);
       setEditTime(eventDetails?.time);
-      setEditSelectedImage(null);
+      setEditSelectedImage(editSelectedImage);
       return;
     }
 
@@ -165,32 +232,52 @@ const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchA
       },
     };
 
-    await axios.put(`${backend_url}/conversation/event/edit/${eventId}`, {
-      name: editEventName,
-      description: editDescription,
-      date: editDate,
-      time: editTime,
-      chatId: chat._id,
-    }, config)
-      .then(async (res) => {
-        await axios.get(`${backend_url}/conversation/event/${chat._id}`, config).then((res) => {
-          // toast({
-          //   title: "Event Created!",
-          //   description: "Event created successfully",
-          //   status: "success",
-          //   duration: 5000,
-          //   isClosable: true,
-          //   position: "bottom-left",
-          // });
-          setEditEventName(eventDetails?.name);
-          setEditDescription(eventDetails?.description);
-          setEditDate(eventDetails?.date.split('T')[0]);
-          setEditTime(eventDetails?.time);
-          setEditSelectedImage(null);
-          setShowModalEvent(false);
-          setFetchAgain(!fetchAgain);
-        }).catch((err) => {
-          console.log(err, "error");
+    if (editSelectedImage === null) {
+      await axios.put(`${backend_url}/conversation/event/edit/${eventId}`, {
+        name: editEventName,
+        description: editDescription,
+        date: editDate,
+        time: editTime,
+        chatId: chat._id,
+      }, config)
+        .then(async (res) => {
+          await axios.get(`${backend_url}/conversation/event/${chat._id}`, config).then((res) => {
+            chat.events = res.data;
+            // toast({
+            //   title: "Event Created!",
+            //   description: "Event created successfully",
+            //   status: "success",
+            //   duration: 5000,
+            //   isClosable: true,
+            //   position: "bottom-left",
+            // });
+            setEditEventName(eventDetails?.name);
+            setEditDescription(eventDetails?.description);
+            setEditDate(eventDetails?.date.split('T')[0]);
+            setEditTime(eventDetails?.time);
+            setEditSelectedImage(null);
+            setShowModalEvent(false);
+            setFetchAgain(!fetchAgain);
+          }).catch((err) => {
+            console.log(err, "error");
+            // toast({
+            //   title: "Error Occured!",
+            //   description: "Something went wrong",
+            //   status: "error",
+            //   duration: 5000,
+            //   isClosable: true,
+            //   position: "bottom-left",
+            // });
+            setEditEventName(eventDetails?.name);
+            setEditDescription(eventDetails?.description);
+            setEditDate(eventDetails?.date.split('T')[0]);
+            setEditTime(eventDetails?.time);
+            setEditSelectedImage(null);
+            setShowModalEvent(false);
+          })
+        })
+        .catch((err) => {
+          console.log(err, "error2");
           // toast({
           //   title: "Error Occured!",
           //   description: "Something went wrong",
@@ -199,31 +286,76 @@ const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchA
           //   isClosable: true,
           //   position: "bottom-left",
           // });
+          setShowModalEvent(false);
           setEditEventName(eventDetails?.name);
           setEditDescription(eventDetails?.description);
           setEditDate(eventDetails?.date.split('T')[0]);
           setEditTime(eventDetails?.time);
           setEditSelectedImage(null);
-          setShowModalEvent(false);
+        });
+    } else {
+      await axios.put(`${backend_url}/conversation/event/edit/${eventId}`, {
+        name: editEventName,
+        description: editDescription,
+        date: editDate,
+        time: editTime,
+        thumbnail: editSelectedImage,
+        chatId: chat._id,
+      }, config)
+        .then(async (res) => {
+          await axios.get(`${backend_url}/conversation/event/${chat._id}`, config).then((res) => {
+            // toast({
+            //   title: "Event Created!",
+            //   description: "Event created successfully",
+            //   status: "success",
+            //   duration: 5000,
+            //   isClosable: true,
+            //   position: "bottom-left",
+            // });
+            chat.events = res.data;
+            setEditEventName(eventDetails?.name);
+            setEditDescription(eventDetails?.description);
+            setEditDate(eventDetails?.date.split('T')[0]);
+            setEditTime(eventDetails?.time);
+            setEditSelectedImage(editSelectedImage);
+            setShowModalEvent(false);
+            setFetchAgain(!fetchAgain);
+          }).catch((err) => {
+            console.log(err, "error");
+            // toast({
+            //   title: "Error Occured!",
+            //   description: "Something went wrong",
+            //   status: "error",
+            //   duration: 5000,
+            //   isClosable: true,
+            //   position: "bottom-left",
+            // });
+            setEditEventName(eventDetails?.name);
+            setEditDescription(eventDetails?.description);
+            setEditDate(eventDetails?.date.split('T')[0]);
+            setEditTime(eventDetails?.time);
+            setEditSelectedImage(editSelectedImage);
+            setShowModalEvent(false);
+          })
         })
-      })
-      .catch((err) => {
-        console.log(err, "error2");
-        // toast({
-        //   title: "Error Occured!",
-        //   description: "Something went wrong",
-        //   status: "error",
-        //   duration: 5000,
-        //   isClosable: true,
-        //   position: "bottom-left",
-        // });
-        setShowModalEvent(false);
-        setEditEventName(eventDetails?.name);
-        setEditDescription(eventDetails?.description);
-        setEditDate(eventDetails?.date.split('T')[0]);
-        setEditTime(eventDetails?.time);
-        setEditSelectedImage(null);
-      });
+        .catch((err) => {
+          console.log(err, "error2");
+          // toast({
+          //   title: "Error Occured!",
+          //   description: "Something went wrong",
+          //   status: "error",
+          //   duration: 5000,
+          //   isClosable: true,
+          //   position: "bottom-left",
+          // });
+          setShowModalEvent(false);
+          setEditEventName(eventDetails?.name);
+          setEditDescription(eventDetails?.description);
+          setEditDate(eventDetails?.date.split('T')[0]);
+          setEditTime(eventDetails?.time);
+          setEditSelectedImage(editSelectedImage);
+        });
+    }
   }
 
 

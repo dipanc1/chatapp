@@ -74,9 +74,15 @@ const Members = ({ user, fetchAgain, setFetchAgain, admin }) => {
       return;
     }
 
-
     if (eventName === "" || description === "" || date === "" || time === "") {
       setCreateEventLoading(false)
+      // toast({
+      //   title: "Please fill all the fields",
+      //   status: "error",
+      //   duration: 5000,
+      //   isClosable: true,
+      //   position: "bottom",
+      // });
       return;
     }
 
@@ -86,31 +92,53 @@ const Members = ({ user, fetchAgain, setFetchAgain, admin }) => {
       },
     };
 
-    await axios.put(`${backend_url}/conversation/event/${selectedChat._id}`, {
-      name: eventName,
-      description,
-      date,
-      time
-    }, config)
-      .then(async (res) => {
-        await axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
-          // toast({
-          //   title: "Event Created!",
-          //   description: "Event created successfully",
-          //   status: "success",
-          //   duration: 5000,
-          //   isClosable: true,
-          //   position: "bottom-left",
-          // });
-          setCreateEventLoading(false);
-          setShowModalEvent(false);
-          setEventName("");
-          setDescription("");
-          setDate("");
-          setTime("");
-          setSelectedImage(null);
-          setFetchAgain(!fetchAgain);
-        }).catch((err) => {
+
+    if (selectedImage === null) {
+      await axios.put(`${backend_url}/conversation/event/${selectedChat._id}`, {
+        name: eventName,
+        description,
+        date,
+        time,
+      }, config)
+        .then(async (res) => {
+          await axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
+            // toast({
+            //   title: "Event Created!",
+            //   description: "Event created successfully",
+            //   status: "success",
+            //   duration: 5000,
+            //   isClosable: true,
+            //   position: "bottom-left",
+            // });
+            console.log(res.data)
+            setCreateEventLoading(false);
+            setEventName("");
+            setDescription("");
+            setDate("");
+            setTime("");
+            setSelectedImage(null);
+            setShowModalEvent(false);
+            setFetchAgain(!fetchAgain);
+          }).catch((err) => {
+            console.log(err);
+            // toast({
+            //   title: "Error Occured!",
+            //   description: "Something went wrong",
+            //   status: "error",
+            //   duration: 5000,
+            //   isClosable: true,
+            //   position: "bottom-left",
+            // });
+            setCreateEventLoading(false);
+            setEventName("");
+            setDescription("");
+            setDate("");
+            setTime("");
+            setSelectedImage(null);
+            setShowModalEvent(false);
+          })
+        })
+        .catch((err) => {
           console.log(err);
           // toast({
           //   title: "Error Occured!",
@@ -120,33 +148,78 @@ const Members = ({ user, fetchAgain, setFetchAgain, admin }) => {
           //   isClosable: true,
           //   position: "bottom-left",
           // });
+          setShowModalEvent(false);
           setCreateEventLoading(false);
           setEventName("");
           setDescription("");
           setDate("");
           setTime("");
           setSelectedImage(null);
-          setShowModalEvent(false);
+        });
+    } else {
+      await axios.put(`${backend_url}/conversation/event/${selectedChat._id}`, {
+        name: eventName,
+        description,
+        date,
+        time,
+        thumbnail: selectedImage
+      }, config)
+        .then(async (res) => {
+          await axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
+            // toast({
+            //   title: "Event Created!",
+            //   description: "Event created successfully",
+            //   status: "success",
+            //   duration: 5000,
+            //   isClosable: true,
+            //   position: "bottom-left",
+            // });
+            console.log(res.data);
+            setCreateEventLoading(false);
+            setEventName("");
+            setDescription("");
+            setDate("");
+            setTime("");
+            setSelectedImage(null);
+            setShowModalEvent(false);
+          }).catch((err) => {
+            console.log(err);
+            // toast({
+            //   title: "Error Occured!",
+            //   description: "Something went wrong",
+            //   status: "error",
+            //   duration: 5000,
+            //   isClosable: true,
+            //   position: "bottom-left",
+            // });
+            setCreateEventLoading(false);
+            setEventName("");
+            setDescription("");
+            setDate("");
+            setTime("");
+            setSelectedImage(null);
+            setShowModalEvent(false);
+          })
         })
-      })
-      .catch((err) => {
-        console.log(err, "err");
-        // toast({
-        //   title: "Error Occured!",
-        //   description: "Something went wrong",
-        //   status: "error",
-        //   duration: 5000,
-        //   isClosable: true,
-        //   position: "bottom-left",
-        // });
-        setShowModalEvent(false);
-        setCreateEventLoading(false);
-        setEventName("");
-        setDescription("");
-        setDate("");
-        setTime("");
-        setSelectedImage(null);
-      });
+        .catch((err) => {
+          console.log(err);
+          // toast({
+          //   title: "Error Occured!",
+          //   description: "Something went wrong",
+          //   status: "error",
+          //   duration: 5000,
+          //   isClosable: true,
+          //   position: "bottom-left",
+          // });
+          setShowModalEvent(false);
+          setCreateEventLoading(false);
+          setEventName("");
+          setDescription("");
+          setDate("");
+          setTime("");
+          setSelectedImage(null);
+        });
+    }
   }
 
   return (

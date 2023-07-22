@@ -3,54 +3,58 @@ import React from 'react'
 import { Avatar, Box, Button, FormControl, IconButton, Input, Modal, Stack, TextArea, VStack } from 'native-base'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import DatePicker from 'react-native-date-picker'
+import { PhoneAppContext } from '../../context/PhoneAppContext';
+import { api_key, folder, pictureUpload } from '../../production';
 
 
 const EventModal = ({ user, fetchAgain, setFetchAgain, showModal, setShowModal, eventType, eventName, setEventName, description, setDescription, date, setDate, time, setTime, selectedImage, setSelectedImage, createEventLoading, setCreateEventLoading, handleSubmit }) => {
   const [openDate, setOpenDate] = React.useState(false)
   const [openTime, setOpenTime] = React.useState(false)
-  const [pic, setPic] = React.useState(null)
+
+  const { getCloudinarySignature, timestamp, signature } = React.useContext(PhoneAppContext);
 
   const pickImage = async () => {
     const options = {
-      // includeBase64: true,
       mediaType: 'photo',
-      // saveToPhotos: true,
     };
+    await getCloudinarySignature();
     await launchImageLibrary(options, (response) => {
       if (!response.didCancel) {
-        console.log('Response = ', response.assets.map((item) => item));
         const res = response.assets.map((item) => item);
         if (res.error) {
           console.log('ImagePicker Error: ', res.error);
         } else {
-          const uri = res.uri;
-          const type = res.type;
-          const name = res.fileName;
+          const uri = res[0].uri;
+          const type = res[0].type;
+          const name = res[0].fileName;
           const source = {
             uri,
             type,
             name,
           }
+          cloudinaryUpload(source);
         }
       }
     });
   }
 
 
-  // TODO: change it to actual url
   const cloudinaryUpload = (photo) => {
     let apiUrl = pictureUpload;
     const data = new FormData()
-    data.append('file', photo)
-    data.append('upload_preset', 'chat-app')
-    data.append("cloud_name", "835688546376544")
+    data.append('api_key', api_key)
+    data.append('file', photo);
+    data.append('folder', folder)
+    data.append('timestamp', timestamp)
+    data.append('signature', signature)
     fetch(apiUrl, {
       method: "post",
       body: data
     }).then(res => res.json()).
       then(data => {
-        setPic(data.secure_url)
+        setSelectedImage(data.secure_url)
       }).catch(err => {
+        console.log(err)
         alert("An Error Occured While Uploading")
       })
   }
@@ -122,7 +126,7 @@ const EventModal = ({ user, fetchAgain, setFetchAgain, showModal, setShowModal, 
             </FormControl>
             <Box display={'flex'} alignItems={'flex-end'}>
               <Avatar bg="pink.600" alignSelf="center" size="xl" source={{
-                uri: (pic !== null ? pic : "https://images.unsplash.com/photo-1601233749202-95d04d5b3c00?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2876&q=80")
+                uri: (selectedImage !== null ? selectedImage : "https://images.unsplash.com/photo-1601233749202-95d04d5b3c00?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2876&q=80")
               }}>
                 GG
               </Avatar>
