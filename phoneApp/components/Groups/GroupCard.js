@@ -32,7 +32,7 @@ const GroupCard = ({ data, user, navigation, paginateFunction, currentPage, tota
               {userInfo?._id === item.groupAdmin._id &&
                 <>
                   <Icon as={MaterialIcons} name='verified' color={'primary.300'} size={5} />
-                  <OptionsModal chat={item} group={true} navigation={navigation} user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+                  <OptionsModal admin={userInfo?._id === item.groupAdmin._id} chat={item} group={true} navigation={navigation} user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
                 </>
               }
             </HStack>

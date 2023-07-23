@@ -19,4 +19,3 @@
 #### use loader in all groups and events
 #### use flatlist in all chats
 #### move user to login if token expires 
-#### use api in create and edit event modals

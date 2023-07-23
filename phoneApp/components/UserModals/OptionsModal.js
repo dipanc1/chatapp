@@ -22,7 +22,7 @@ const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchA
   const [editDescription, setEditDescription] = React.useState(eventDetails?.description);
   const [editDate, setEditDate] = React.useState(eventDetails?.date.split('T')[0]);
   const [editTime, setEditTime] = React.useState(eventDetails?.time)
-  const [editSelectedImage, setEditSelectedImage] = React.useState(null);
+  const [editSelectedImage, setEditSelectedImage] = React.useState(eventDetails?.thumbnail);
   const [editEventLoading, setEditEventLoading] = React.useState(false);
 
   const handleAddEvent = async () => {
@@ -37,6 +37,7 @@ const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchA
       //   isClosable: true,
       //   position: "bottom",
       // });
+      alert('You are not the admin of this group')
       setEventName("");
       setDescription("");
       setDate("");
@@ -54,6 +55,7 @@ const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchA
       //   isClosable: true,
       //   position: "bottom",
       // });
+      alert('Please fill all the fields')
       return;
     }
 
@@ -81,7 +83,7 @@ const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchA
             //   isClosable: true,
             //   position: "bottom-left",
             // });
-            console.log(res.data)
+            chat.events = res.data;
             setCreateEventLoading(false);
             setEventName("");
             setDescription("");

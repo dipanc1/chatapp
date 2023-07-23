@@ -3,6 +3,7 @@ import AppReducer from '../reducers/AppReducer'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { backend_url } from '../production';
 import axios from 'axios';
+import { useNavigationContainerRef } from '@react-navigation/native';
 
 const INITIAL_STATE = {
   number: "",
@@ -18,6 +19,7 @@ export const PhoneAppContext = createContext(INITIAL_STATE);
 
 export const PhoneAppContextProvider = ({ children, user }) => {
   const [state, dispatch] = useReducer(AppReducer, INITIAL_STATE);
+  const navigationRef = useNavigationContainerRef();
 
   const [signature, setSignature] = React.useState("");
   const [timestamp, setTimestamp] = React.useState("");
@@ -42,6 +44,7 @@ export const PhoneAppContextProvider = ({ children, user }) => {
         })
         .catch((err) => {
           AsyncStorage.removeItem('user')
+          navigationRef.navigate('Login')
         });
     };
     getUserInfo();

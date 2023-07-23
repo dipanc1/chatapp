@@ -8,6 +8,7 @@ import { useStripe } from '@stripe/stripe-react-native';
 import Accordian from '../Miscellaneous/Accordian';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PhoneAppContext } from '../../context/PhoneAppContext';
+import SupportModal from '../UserModals/SupportModal';
 
 const SettingCard = ({ name, user }) => {
 
@@ -517,9 +518,7 @@ const SettingCard = ({ name, user }) => {
                                 <Box width={"96"} p="5" rounded="lg">
                                     <VStack my={"10"} space="3" justifyContent={"center"} alignItems={"flex-start"}>
                                         <Text fontSize={'xl'} fontWeight={'bold'} color={'white'} my={'2'}>Support Portal</Text>
-                                        <Button bg={'primary.300'} color={'white'} _text={{ fontWeight: 'bold' }} leftIcon={<Icon as={MaterialIcons} name="add-circle-outline" size={5} />}>
-                                            Raise a Ticket
-                                        </Button>
+                                        <SupportModal />
                                     </VStack>
                                     {/* <VStack my={"3"} space="3" justifyContent={"center"} alignItems={"center"}>
                                         {helpData.map((help, index) => (

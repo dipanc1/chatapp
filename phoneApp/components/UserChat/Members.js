@@ -66,6 +66,7 @@ const Members = ({ user, fetchAgain, setFetchAgain, admin }) => {
       //   isClosable: true,
       //   position: "bottom",
       // });
+      alert('You are not the admin of this group')
       setEventName("");
       setDescription("");
       setDate("");
@@ -83,6 +84,7 @@ const Members = ({ user, fetchAgain, setFetchAgain, admin }) => {
       //   isClosable: true,
       //   position: "bottom",
       // });
+      alert('Please fill all the fields')
       return;
     }
 
@@ -110,7 +112,7 @@ const Members = ({ user, fetchAgain, setFetchAgain, admin }) => {
             //   isClosable: true,
             //   position: "bottom-left",
             // });
-            console.log(res.data)
+            chat.events = res.data;
             setCreateEventLoading(false);
             setEventName("");
             setDescription("");

@@ -40,6 +40,7 @@ const EventModal = ({ user, fetchAgain, setFetchAgain, showModal, setShowModal, 
 
 
   const cloudinaryUpload = (photo) => {
+    setCreateEventLoading(true)
     let apiUrl = pictureUpload;
     const data = new FormData()
     data.append('api_key', api_key)
@@ -53,8 +54,10 @@ const EventModal = ({ user, fetchAgain, setFetchAgain, showModal, setShowModal, 
     }).then(res => res.json()).
       then(data => {
         setSelectedImage(data.secure_url)
+        setCreateEventLoading(false)
       }).catch(err => {
         console.log(err)
+        setCreateEventLoading(false)
         alert("An Error Occured While Uploading")
       })
   }
@@ -136,7 +139,7 @@ const EventModal = ({ user, fetchAgain, setFetchAgain, showModal, setShowModal, 
             </Box>
 
 
-            <Button colorScheme="violet" rounded={'lg'} w={'100%'} onPress={handleSubmit}>
+            <Button colorScheme="violet" rounded={'lg'} w={'100%'} onPress={handleSubmit} isDisabled={createEventLoading}>
               {eventType}
             </Button>
           </VStack>
