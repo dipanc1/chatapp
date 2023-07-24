@@ -13,11 +13,19 @@ const SupportModal = () => {
 
     const sendEmail = (e) => {
         setIsSubmitting(true);
-        emailjs.sendForm(emailjsServiceId, emailjsTemplateId, {
+        const templateParams = {
             firstName,
             email,
-            message
-        }, emailjsUserId)
+            message,
+          };
+
+        emailjs
+        .send(
+            emailjsServiceId, 
+            emailjsTemplateId, 
+            templateParams,
+            emailjsUserId
+            )
             .then((result) => {
                 setFirstName('');
                 setEmail('');
