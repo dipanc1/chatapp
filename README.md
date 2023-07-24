@@ -12,10 +12,7 @@
 
 #### Push Notifications and in settings
 #### Unseen Messages outside chats on chatbox
-#### Group Chat Picture
 #### delete console statements
 #### Add alerts 
-#### Raise a ticket in help
-#### use loader in all groups and events
 #### use flatlist in all chats
 #### move user to login if token expires 

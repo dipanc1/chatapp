@@ -1,5 +1,5 @@
 import React from 'react'
-import { AspectRatio, Box, VStack, HStack, Heading, Image, Stack, Text, FlatList, IconButton } from 'native-base'
+import { AspectRatio, Box, VStack, HStack, Heading, Image, Stack, Text, FlatList, IconButton, Flex, Spinner } from 'native-base'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import OptionsModal from '../UserModals/OptionsModal'
 import JoinGroupModal from '../UserModals/JoinGroupModal'
@@ -12,7 +12,7 @@ import Pagination from '../Miscellaneous/Pagination'
 import animationData from '../../assets/red-dot.json';
 import StreamModal from '../UserModals/StreamModalWeb'
 
-const EventsCard = ({ data, screen, selectEvent, chatName, user, showModal, setShowModal, chatId, navigation, currentPage, totalPages, totalCount, currentCount, hasNextPage, hasPrevPage, paginateFunction, fetchAgain, setFetchAgain }) => {
+const EventsCard = ({ data, screen, selectEvent, chatName, user, showModal, setShowModal, chatId, navigation, currentPage, totalPages, totalCount, currentCount, hasNextPage, hasPrevPage, paginateFunction, fetchAgain, setFetchAgain, loading }) => {
 
   const { selectedChat, userInfo } = React.useContext(PhoneAppContext);
 
@@ -127,7 +127,7 @@ const EventsCard = ({ data, screen, selectEvent, chatName, user, showModal, setS
           </AspectRatio>
         </TouchableOpacity>
         <Stack p="4" space={2}>
-          <HStack space={'24'} alignItems="center" justifyContent={'space-around'}>
+          <HStack space={'24'} justifyContent={'space-between'}>
             <Heading size="md" maxW={'48'}>
               {item?.name}
             </Heading>
@@ -160,9 +160,18 @@ const EventsCard = ({ data, screen, selectEvent, chatName, user, showModal, setS
   return (
     <>
       <Box flex={1}>
-        <FlatList data={data} renderItem={renderItem} />
-        {screen && <Pagination paginateFunction={paginateFunction} currentPage={currentPage} totalPages={totalPages} totalCount={totalCount} currentCount={currentCount} hasNextPage={hasNextPage} hasPrevPage={hasPrevPage} />}
+        {loading
+          ?
+          <Flex flex={1} alignItems={"center"} justifyContent="center">
+            <Spinner size={'lg'} color={'primary.300'} />
+          </Flex>
+          :
+          <FlatList data={data} renderItem={renderItem} />}
+
+        {(screen && !loading) && <Pagination paginateFunction={paginateFunction} currentPage={currentPage} totalPages={totalPages} totalCount={totalCount} currentCount={currentCount} hasNextPage={hasNextPage} hasPrevPage={hasPrevPage} />}
+
         <JoinGroupModal showModal={showModal} setShowModal={setShowModal} chatName={chatName} user={user} chatId={chatId} navigation={navigation} />
+
         <StreamModal admin={admin} user={user} open={open} setOpen={setOpen} />
       </Box>
     </>

@@ -244,14 +244,13 @@ const AllGroups = ({ user, navigation }) => {
     return (
         <TabNavigatorStyled>
             <Tab.Screen name="All Groups">
-                {props => <GroupCard {...props} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} navigation={navigation} data={groupsList} user={user} paginateFunction={listMoreGroups} currentPage={currentPage} totalPages={totalPages} totalCount={totalCount} currentCount={currentCount} hasNextPage={hasNextPage} hasPrevPage={hasPrevPage} />}
-
+                {props => <GroupCard {...props} loading={loading} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} navigation={navigation} data={groupsList} user={user} paginateFunction={listMoreGroups} currentPage={currentPage} totalPages={totalPages} totalCount={totalCount} currentCount={currentCount} hasNextPage={hasNextPage} hasPrevPage={hasPrevPage} />}
             </Tab.Screen>
             <Tab.Screen name="Joined Groups">
-                {props => <GroupCard {...props} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} navigation={navigation} data={groupConversations} user={user} paginateFunction={fetchMoreChats} currentPage={currentPageMyChats} totalPages={totalPagesMyChats} totalCount={totalCountMyChats} currentCount={currentCountMyChats} hasNextPage={hasNextPageMyChats} hasPrevPage={hasPrevPageMyChats} />}
+                {props => <GroupCard {...props} loading={loadingMyChats} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} navigation={navigation} data={groupConversations} user={user} paginateFunction={fetchMoreChats} currentPage={currentPageMyChats} totalPages={totalPagesMyChats} totalCount={totalCountMyChats} currentCount={currentCountMyChats} hasNextPage={hasNextPageMyChats} hasPrevPage={hasPrevPageMyChats} />}
             </Tab.Screen>
             <Tab.Screen name="My Groups">
-                {props => <GroupCard {...props} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} navigation={navigation} data={groupConversationsAdmin} user={user} paginateFunction={fetchMoreChatsAdmin} currentPage={currentPageMyChatsAdmin} totalPages={totalPagesMyChatsAdmin} totalCount={totalCountMyChatsAdmin} currentCount={currentCountMyChatsAdmin} hasNextPage={hasNextPageMyChatsAdmin} hasPrevPage={hasPrevPageMyChatsAdmin} />}
+                {props => <GroupCard {...props} loading={loadingMyChatsAdmin} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} navigation={navigation} data={groupConversationsAdmin} user={user} paginateFunction={fetchMoreChatsAdmin} currentPage={currentPageMyChatsAdmin} totalPages={totalPagesMyChatsAdmin} totalCount={totalCountMyChatsAdmin} currentCount={currentCountMyChatsAdmin} hasNextPage={hasNextPageMyChatsAdmin} hasPrevPage={hasPrevPageMyChatsAdmin} />}
             </Tab.Screen>
         </TabNavigatorStyled>
     )

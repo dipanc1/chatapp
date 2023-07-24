@@ -112,7 +112,6 @@ const VideoChat = ({ user, fetchAgain, setFetchAgain, navigation }) => {
                 </>
                 :
                 <>
-
                     <Tab.Navigator {...{ screenOptions, sceneContainerStyle }}>
                         <Tab.Screen
                             name="Users"

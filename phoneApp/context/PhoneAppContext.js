@@ -19,7 +19,6 @@ export const PhoneAppContext = createContext(INITIAL_STATE);
 
 export const PhoneAppContextProvider = ({ children, user }) => {
   const [state, dispatch] = useReducer(AppReducer, INITIAL_STATE);
-  const navigationRef = useNavigationContainerRef();
 
   const [signature, setSignature] = React.useState("");
   const [timestamp, setTimestamp] = React.useState("");
@@ -44,7 +43,6 @@ export const PhoneAppContextProvider = ({ children, user }) => {
         })
         .catch((err) => {
           AsyncStorage.removeItem('user')
-          navigationRef.navigate('Login')
         });
     };
     getUserInfo();

@@ -298,13 +298,13 @@ const Events = ({ user, navigation }) => {
     return (
         <TabNavigatorStyled>
             <Tab.Screen name="Group Events">
-                {props => <EventsCard {...props} user={user} data={eventsList} screen={eventsTab} selectEvent={selectEvent} chatName={chatName} showModal={setShowModal} chatId={chatId} paginateFunction={fetchMoreEvents} currentPage={currentPage} totalPages={totalPages} totalCount={totalCount} currentCount={currentCount} hasNextPage={hasNextPage} hasPrevPage={hasPrevPage} />}
+                {props => <EventsCard {...props} loading={loading} user={user} data={eventsList} screen={eventsTab} selectEvent={selectEvent} chatName={chatName} showModal={setShowModal} chatId={chatId} paginateFunction={fetchMoreEvents} currentPage={currentPage} totalPages={totalPages} totalCount={totalCount} currentCount={currentCount} hasNextPage={hasNextPage} hasPrevPage={hasPrevPage} />}
             </Tab.Screen>
             <Tab.Screen name="Upcoming Events">
-                {props => <EventsCard {...props} user={user} data={upcomingEventsList} screen={eventsTab} selectEvent={selectEvent} chatName={chatName} showModal={setShowModal} chatId={chatId} paginateFunction={fetchAllUpcomingEvents} currentPage={currentUpcomingPage} totalPages={totalUpcomingPages} totalCount={totalUpcomingCount} currentCount={currentUpcomingCount} hasNextPage={hasNextUpcomingPage} hasPrevPage={hasPrevUpcomingPage} />}
+                {props => <EventsCard {...props} loading={loadingUpcoming} user={user} data={upcomingEventsList} screen={eventsTab} selectEvent={selectEvent} chatName={chatName} showModal={setShowModal} chatId={chatId} paginateFunction={fetchAllUpcomingEvents} currentPage={currentUpcomingPage} totalPages={totalUpcomingPages} totalCount={totalUpcomingCount} currentCount={currentUpcomingCount} hasNextPage={hasNextUpcomingPage} hasPrevPage={hasPrevUpcomingPage} />}
             </Tab.Screen>
             <Tab.Screen name="Previous Events">
-                {props => <EventsCard {...props} user={user} data={pastEventsList} screen={eventsTab} selectEvent={selectEvent} chatName={chatName} showModal={showModal} setShowModal={setShowModal} chatId={chatId} paginateFunction={fetchAllPastEvents} currentPage={currentPastPage} totalPages={totalPastPages} totalCount={totalPastCount} currentCount={currentPastCount} hasNextPage={hasNextPastPage} hasPrevPage={hasPrevPastPage} />}
+                {props => <EventsCard {...props} loading={loadingPast} user={user} data={pastEventsList} screen={eventsTab} selectEvent={selectEvent} chatName={chatName} showModal={showModal} setShowModal={setShowModal} chatId={chatId} paginateFunction={fetchAllPastEvents} currentPage={currentPastPage} totalPages={totalPastPages} totalCount={totalPastCount} currentCount={currentPastCount} hasNextPage={hasNextPastPage} hasPrevPage={hasPrevPastPage} />}
             </Tab.Screen>
         </TabNavigatorStyled>
 
