@@ -122,7 +122,7 @@ const App = () => {
       <NativeBaseProvider theme={theme}>
         <NavigationContainer>
           <PhoneAppContextProvider user={user}>
-            {user ?
+            {(user && user !== null) ?
               <Tab.Navigator initialRouteName='Live Stream' screenOptions={
                 {
                   tabBarStyle: {

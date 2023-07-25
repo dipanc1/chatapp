@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Avatar, Box, FlatList, Flex, HStack, IconButton, ScrollView, Spacer, Text, VStack } from 'native-base'
+import { Avatar, Box, FlatList, Flex, HStack, IconButton, ScrollView, Spacer, Spinner, Text, VStack } from 'native-base'
 import Members from './Members'
 import axios from 'axios'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
@@ -9,7 +9,7 @@ import { TouchableOpacity } from 'react-native'
 import { PhoneAppContext } from '../../context/PhoneAppContext'
 import { backend_url } from '../../production'
 
-const Groups = ({ user, groupConversations, searchResultsGroups, search, setSearch, fetchAgain, setFetchAgain, admin }) => {
+const Groups = ({ user, groupConversations, searchResultsGroups, search, setSearch, fetchAgain, setFetchAgain, admin, fetchMoreGroupChats, hasMoreGroupChats }) => {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false)
   const { dispatch, selectedChat, userInfo } = React.useContext(PhoneAppContext);
@@ -45,15 +45,17 @@ const Groups = ({ user, groupConversations, searchResultsGroups, search, setSear
 
   }
 
+  const scrollViewRef = React.useRef();
+
   return (
     <>
       {selectedChat && selectedChat?.isGroupChat ?
         <Members admin={admin} user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
         :
-        <>
+        search.length > 0 ?
           <ScrollView showsVerticalScrollIndicator={false}>
             {
-              (search.length > 0 ?
+              (
                 searchResultsGroups.map((group, index) => (
                   <TouchableOpacity key={group._id}
                     onPress={() => handleAddUser(userInfo._id, group._id)}>
@@ -62,28 +64,38 @@ const Groups = ({ user, groupConversations, searchResultsGroups, search, setSear
                     </Flex>
                   </TouchableOpacity>
                 ))
-                :
-                groupConversations.map((group, index) => (
-                  <TouchableOpacity key={group._id}
-                    onPress={() => {
-                      dispatch({ type: 'SET_SELECTED_CHAT', payload: group })
-                    }
-                    }>
-                    <Flex justifyContent={'flex-start'} p={'2'}>
-                      <GroupListItem group={group} />
-                    </Flex>
-                  </TouchableOpacity>
-                ))
               )
             }
           </ScrollView>
+          :
+          <>
+            <FlatList
+              ref={scrollViewRef}
+              onEndReached={fetchMoreGroupChats}
+              onEndReachedThreshold={0.5}
+              ListFooterComponent={hasMoreGroupChats ? <Spinner size={'lg'} color={'primary.300'} /> : null}
+              data={groupConversations}
+              renderItem={({ item, i }) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    dispatch({ type: 'SET_SELECTED_CHAT', payload: item })
+                  }
+                  }>
+                  <Flex justifyContent={'flex-start'} p={'2'}>
+                    <GroupListItem group={item} />
+                  </Flex>
+                </TouchableOpacity>
+              )}
+              keyExtractor={(m) => m._id}
+            />
 
 
-          <Box position={'absolute'} bottom={'5'} right={'5'}>
-            <IconButton onPress={() => setShowModal(true)} colorScheme={'cyan'} size={'md'} variant={"outline"} _icon={{ as: MaterialIcons, name: "add", size: "lg" }} />
-          </Box>
-          <GroupChatModal showModal={showModal} setShowModal={setShowModal} user={userInfo} />
-        </>}
+            <Box position={'absolute'} bottom={'5'} right={'5'}>
+              <IconButton onPress={() => setShowModal(true)} colorScheme={'cyan'} size={'md'} variant={"outline"} _icon={{ as: MaterialIcons, name: "add", size: "lg" }} />
+            </Box>
+            <GroupChatModal showModal={showModal} setShowModal={setShowModal} user={userInfo} />
+          </>
+      }
     </>
   )
 }

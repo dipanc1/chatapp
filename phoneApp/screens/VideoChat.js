@@ -20,6 +20,13 @@ const VideoChat = ({ user, fetchAgain, setFetchAgain, navigation }) => {
     const [conversations, setConversations] = React.useState([])
     const [groupConversations, setGroupConversations] = React.useState([])
     const [search, setSearch] = React.useState('')
+
+    const [hasMoreGroupChats, setHasMoreGroupChats] = React.useState(true);
+    const [groupChatsPage, setGroupChatsPage] = React.useState(2);
+
+    const [hasMoreOneOnOneChats, setHasMoreOneOnOneChats] = React.useState(true);
+    const [oneOnOneChatsPage, setOneOnOneChatsPage] = React.useState(2);
+
     const [searchResultsUsers, setSearchResultsUsers] = React.useState([])
     const [searchResultsGroups, setSearchResultsGroups] = React.useState([])
     const [loading, setLoading] = React.useState(false)
@@ -29,9 +36,14 @@ const VideoChat = ({ user, fetchAgain, setFetchAgain, navigation }) => {
     const admin = selectedChat?.isGroupChat && selectedChat?.groupAdmin._id === userInfo?._id;
 
     React.useEffect(() => {
-        fetchChats();
+
+        fetchGroupChats();
+        fetchOneOnOneChats();
+        setOneOnOneChatsPage(2);
+        setGroupChatsPage(2);
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [fetchAgain, selectedChat])
+    }, [fetchAgain]);
 
     const screenOptions = {
         unmountOnBlur: false,
@@ -75,31 +87,126 @@ const VideoChat = ({ user, fetchAgain, setFetchAgain, navigation }) => {
         }
     }
 
-    // fetch all conversations
-    const fetchChats = async () => {
+    const axiosJwt = axios.create({
+        baseURL: backend_url,
+    });
+
+    const fetchOneOnOneChats = async () => {
         try {
             const config = {
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user.token}`
-                }
-            }
-            const { data } = await axios.get(`${backend_url}/conversation`, config);
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${user.token}`,
+                },
+            };
 
-            // console.log("DATA =====", data);
-            // console.log(groupConversations);
+            const { data } = await axiosJwt.get(
+                `/conversation/one-on-one/1`, config
+            );
 
-            setConversations(data.filter(friend => !friend.isGroupChat));
-            setGroupConversations(data.filter(friend => friend.isGroupChat && friend.chatName));
+            setConversations(data.chats);
+            setHasMoreOneOnOneChats(data.hasMore);
 
-            if (!chats.find(chat => chat._id === data.map(datas => datas._id))) {
-                dispatch({ type: 'SET_CHATS', payload: data })
+            if (
+                !chats.find(
+                    (chat) => chat._id === data.chats.map((datas) => datas._id)
+                )
+            ) {
+                dispatch({ type: "SET_CHATS", payload: data });
             }
 
         } catch (error) {
             console.log(error)
         }
-    }
+    };
+
+    const fetchGroupChats = async () => {
+        try {
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${user.token}`,
+                },
+            };
+
+            const { data } = await axiosJwt.get(
+                `/conversation/group-chats/1`, config
+            );
+
+            setGroupConversations(data.groups);
+            setHasMoreGroupChats(data.hasMore);
+
+            if (
+                !chats.find(
+                    (chat) => chat._id === data.groups.map((datas) => datas._id)
+                )
+            ) {
+                dispatch({ type: "SET_CHATS", payload: data });
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+    };
+
+    const fetchMoreOneOnOneChats = async () => {
+        setOneOnOneChatsPage(oneOnOneChatsPage + 1);
+        try {
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${user.token}`,
+                },
+            };
+
+            const { data } = await axiosJwt.get(
+                `/conversation/one-on-one/${oneOnOneChatsPage}`, config
+            );
+
+            setConversations([...conversations, ...data.chats]);
+            setHasMoreOneOnOneChats(data.hasMore);
+
+
+            if (
+                !chats.find(
+                    (chat) => chat._id === data.chats.map((datas) => datas._id)
+                )
+            ) {
+                dispatch({ type: "SET_CHATS", payload: data });
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    };
+
+    const fetchMoreGroupChats = async () => {
+        setGroupChatsPage(groupChatsPage + 1);
+        try {
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${user.token}`,
+                },
+            };
+
+            const { data } = await axiosJwt.get(
+                `/conversation/group-chats/${groupChatsPage}`, config
+            );
+
+            setGroupConversations([...groupConversations, ...data.groups]);
+            setHasMoreGroupChats(data.hasMore);
+
+            if (
+                !chats.find(
+                    (chat) => chat._id === data.groups.map((datas) => datas._id)
+                )
+            ) {
+                dispatch({ type: "SET_CHATS", payload: data });
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    };
 
     return (
         <SocketContextProvider>
@@ -116,13 +223,13 @@ const VideoChat = ({ user, fetchAgain, setFetchAgain, navigation }) => {
                         <Tab.Screen
                             name="Users"
                         >
-                            {props => <Conversations  {...props} user={user} conversations={conversations} search={search} setSearch={setSearch} searchResultsUsers={searchResultsUsers} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} navigation={navigation} />}
+                            {props => <Conversations  {...props} hasMoreOneOnOneChats={hasMoreOneOnOneChats} user={user} conversations={conversations} search={search} setSearch={setSearch} searchResultsUsers={searchResultsUsers} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} navigation={navigation} fetchMoreOneOnOneChats={fetchMoreOneOnOneChats} />}
                         </Tab.Screen>
                         <Tab.Screen
                             name="Groups"
                             screenOptions={{ presentation: 'modal' }}
                         >
-                            {props => <Groups {...props} user={user} groupConversations={groupConversations} search={search} setSearch={setSearch} searchResultsGroups={searchResultsGroups} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} navigation={navigation} admin={admin} />}
+                            {props => <Groups {...props} hasMoreGroupChats={hasMoreGroupChats} user={user} groupConversations={groupConversations} search={search} setSearch={setSearch} searchResultsGroups={searchResultsGroups} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} navigation={navigation} admin={admin} fetchMoreGroupChats={fetchMoreGroupChats} />}
                         </Tab.Screen>
                     </Tab.Navigator>
                 </>

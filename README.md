@@ -14,5 +14,4 @@
 #### Unseen Messages outside chats on chatbox
 #### delete console statements
 #### Add alerts 
-#### use flatlist in all chats
 #### move user to login if token expires 

@@ -137,7 +137,7 @@ const EventsCard = ({ data, screen, selectEvent, chatName, user, showModal, setS
             <Text color="coolGray.600" _dark={{
               color: "warmGray.200"
             }} fontWeight="400">
-              {item?.time} AM
+              {item?.time?.split('T')[1]?.slice(0, 5)}
             </Text>
             {selectedChat?.isGroupChat && (admin || meetingIdExists) && (index === 0) && !screen &&
               <>

@@ -254,7 +254,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
                         onEndReached={fetchMoreMessages}
                         onEndReachedThreshold={0.5}
                         inverted
-                        ListFooterComponent={loading ? <Spinner size={'lg'} color={'primary.300'} /> : null}
+                        ListFooterComponent={hasMore ? <Spinner size={'lg'} color={'primary.300'} /> : null}
                         data={messages}
                         renderItem={({ item, i }) => (
                             <Message

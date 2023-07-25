@@ -1,5 +1,5 @@
 import React from 'react'
-import { Avatar, Box, FlatList, HStack, ScrollView, Spacer, Text, VStack } from 'native-base'
+import { Avatar, Box, FlatList, HStack, ScrollView, Spacer, Spinner, Text, VStack } from 'native-base'
 import Chatbox from './Chatbox'
 import UserListItem from '../UserItems/UserListItem'
 import { PhoneAppContext } from '../../context/PhoneAppContext'
@@ -7,7 +7,7 @@ import Conversation from '../Miscellaneous/Conversation'
 import { TouchableOpacity } from 'react-native'
 import { backend_url } from '../../production'
 
-const Conversations = ({ fetchAgain, setFetchAgain, conversations, user, searchResultsUsers, search, setSearch, navigation }) => {
+const Conversations = ({ fetchAgain, setFetchAgain, conversations, user, searchResultsUsers, search, setSearch, navigation, fetchMoreOneOnOneChats, hasMoreOneOnOneChats }) => {
   const { dispatch, selectedChat } = React.useContext(PhoneAppContext);
 
   // add user to conversation
@@ -33,32 +33,42 @@ const Conversations = ({ fetchAgain, setFetchAgain, conversations, user, searchR
     }
   }
 
+  const scrollViewRef = React.useRef();
+
   return (
     selectedChat && !selectedChat?.isGroupChat
       ?
       <Chatbox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} user={user} />
       :
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {search.length > 0 ?
-          searchResultsUsers?.map((user, index) => (
+      search.length > 0 ?
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {searchResultsUsers?.map((user, index) => (
             <TouchableOpacity key={user?._id} onPress={() => {
-                accessChat(user?._id)
-                navigation.getParent()?.setOptions({ tabBarVisible: false })
-              }
+              accessChat(user?._id)
+              navigation.getParent()?.setOptions({ tabBarVisible: false })
+            }
             }>
               <UserListItem user={user} />
             </TouchableOpacity>
-          ))
-          : conversations.map((chat, index) => (
-            <TouchableOpacity key={chat?._id} onPress={() => {
-              dispatch({ type: 'SET_SELECTED_CHAT', payload: chat })
+          ))}
+        </ScrollView>
+        :
+        <FlatList
+          ref={scrollViewRef}
+          onEndReached={fetchMoreOneOnOneChats}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={hasMoreOneOnOneChats ? <Spinner size={'lg'} color={'primary.300'} /> : null}
+          data={conversations}
+          renderItem={({ item, i }) => (
+            <TouchableOpacity onPress={() => {
+              dispatch({ type: 'SET_SELECTED_CHAT', payload: item })
               navigation.getParent()?.setOptions({ tabBarVisible: false })
             }}>
-              <Conversation user={user} chat={chat} />
+              <Conversation user={user} chat={item} />
             </TouchableOpacity>
-          ))}
-      </ScrollView>
-
+          )}
+          keyExtractor={(m) => m._id}
+        />
   )
 }
 
