@@ -59,13 +59,6 @@ const Members = ({ user, fetchAgain, setFetchAgain, admin }) => {
 
     if (!admin) {
       setCreateEventLoading(false)
-      // toast({
-      //   title: "You are not the admin of this group",
-      //   status: "error",
-      //   duration: 5000,
-      //   isClosable: true,
-      //   position: "bottom",
-      // });
       alert('You are not the admin of this group')
       setEventName("");
       setDescription("");
@@ -77,13 +70,6 @@ const Members = ({ user, fetchAgain, setFetchAgain, admin }) => {
 
     if (eventName === "" || description === "" || date === "" || time === "") {
       setCreateEventLoading(false)
-      // toast({
-      //   title: "Please fill all the fields",
-      //   status: "error",
-      //   duration: 5000,
-      //   isClosable: true,
-      //   position: "bottom",
-      // });
       alert('Please fill all the fields')
       return;
     }
@@ -104,14 +90,7 @@ const Members = ({ user, fetchAgain, setFetchAgain, admin }) => {
       }, config)
         .then(async (res) => {
           await axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
-            // toast({
-            //   title: "Event Created!",
-            //   description: "Event created successfully",
-            //   status: "success",
-            //   duration: 5000,
-            //   isClosable: true,
-            //   position: "bottom-left",
-            // });
+            alert('Event created successfully')
             chat.events = res.data;
             setCreateEventLoading(false);
             setEventName("");
@@ -123,14 +102,7 @@ const Members = ({ user, fetchAgain, setFetchAgain, admin }) => {
             setFetchAgain(!fetchAgain);
           }).catch((err) => {
             console.log(err);
-            // toast({
-            //   title: "Error Occured!",
-            //   description: "Something went wrong",
-            //   status: "error",
-            //   duration: 5000,
-            //   isClosable: true,
-            //   position: "bottom-left",
-            // });
+            alert('Something went wrong')
             setCreateEventLoading(false);
             setEventName("");
             setDescription("");
@@ -142,14 +114,7 @@ const Members = ({ user, fetchAgain, setFetchAgain, admin }) => {
         })
         .catch((err) => {
           console.log(err);
-          // toast({
-          //   title: "Error Occured!",
-          //   description: "Something went wrong",
-          //   status: "error",
-          //   duration: 5000,
-          //   isClosable: true,
-          //   position: "bottom-left",
-          // });
+          alert('Something went wrong')
           setShowModalEvent(false);
           setCreateEventLoading(false);
           setEventName("");
@@ -168,15 +133,7 @@ const Members = ({ user, fetchAgain, setFetchAgain, admin }) => {
       }, config)
         .then(async (res) => {
           await axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
-            // toast({
-            //   title: "Event Created!",
-            //   description: "Event created successfully",
-            //   status: "success",
-            //   duration: 5000,
-            //   isClosable: true,
-            //   position: "bottom-left",
-            // });
-            console.log(res.data);
+            alert('Event created successfully')
             setCreateEventLoading(false);
             setEventName("");
             setDescription("");
@@ -185,15 +142,7 @@ const Members = ({ user, fetchAgain, setFetchAgain, admin }) => {
             setSelectedImage(null);
             setShowModalEvent(false);
           }).catch((err) => {
-            console.log(err);
-            // toast({
-            //   title: "Error Occured!",
-            //   description: "Something went wrong",
-            //   status: "error",
-            //   duration: 5000,
-            //   isClosable: true,
-            //   position: "bottom-left",
-            // });
+            alert('Something went wrong')
             setCreateEventLoading(false);
             setEventName("");
             setDescription("");
@@ -205,14 +154,7 @@ const Members = ({ user, fetchAgain, setFetchAgain, admin }) => {
         })
         .catch((err) => {
           console.log(err);
-          // toast({
-          //   title: "Error Occured!",
-          //   description: "Something went wrong",
-          //   status: "error",
-          //   duration: 5000,
-          //   isClosable: true,
-          //   position: "bottom-left",
-          // });
+          alert('Something went wrong')
           setShowModalEvent(false);
           setCreateEventLoading(false);
           setEventName("");
@@ -241,12 +183,12 @@ const Members = ({ user, fetchAgain, setFetchAgain, admin }) => {
       >
         {props => <>
           <EventsCard fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} {...props} user={user} data={selectedChat?.events} screen={eventsTab} />
-          <Box position={'absolute'} bottom={'5'} right={'5'}>
+          {admin && <Box position={'absolute'} bottom={'5'} right={'5'}>
             <Button leftIcon={<MaterialIcons name="add" size={24} color="white" />} onPress={() => {
               setEventType('Create');
               setShowModalEvent(true);
             }} colorScheme={'cyan'} size={'md'} variant={"solid"}>Create Event</Button>
-          </Box>
+          </Box>}
           <EventModal user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} showModal={showModalEvent} setShowModal={setShowModalEvent} eventType={eventType} setEventType={setEventType} eventName={eventName} setEventName={setEventName} description={description} setDescription={setDescription} date={date} setDate={setDate} time={time} setTime={setTime} selectedImage={selectedImage} setSelectedImage={setSelectedImage} createEventLoading={createEventLoading} setCreateEventLoading={setCreateEventLoading} handleSubmit={handleAddEvent} />
         </>
         }

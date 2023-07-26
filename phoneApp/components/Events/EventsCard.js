@@ -28,12 +28,6 @@ const EventsCard = ({ data, screen, selectEvent, chatName, user, showModal, setS
 
   const deleteEvent = async (id) => {
     if (selectedChat.groupAdmin._id !== userInfo?._id) {
-      // toast({
-      //   title: "You are not the admin of this group",
-      //   status: "error",
-      //   duration: 3000,
-      //   isClosable: true,
-      // });
       alert('You are not the admin of this group')
       return;
     }
@@ -50,15 +44,6 @@ const EventsCard = ({ data, screen, selectEvent, chatName, user, showModal, setS
 
     try {
       await axios.delete(`${backend_url}/conversation/event/delete/${id}/${selectedChat._id}`, config).then((res) => {
-        // toast({
-        //   title: "Event Deleted!",
-        //   description: "Event deleted successfully",
-        //   status: "success",
-        //   duration: 5000,
-        //   isClosable: true,
-        //   position: "bottom-left",
-        // });
-        // console.log(res.data)
         alert(res.data.message)
         selectedChat.events.filter((event) => event._id !== id);
       });
@@ -67,15 +52,9 @@ const EventsCard = ({ data, screen, selectEvent, chatName, user, showModal, setS
         selectedChat.events = res.data;
       }).catch((err) => {
         console.log(err);
+        alert('Something went wrong')
       });
-      // toast({
-      //   title: "Error Occured!",
-      //   description: "Something went wrong",
-      //   status: "error",
-      //   duration: 5000,
-      //   isClosable: true,
-      //   position: "bottom-left",
-      // });
+      alert('Something went wrong')
     }
 
   }

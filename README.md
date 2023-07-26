@@ -12,6 +12,5 @@
 
 #### Push Notifications and in settings
 #### Unseen Messages outside chats on chatbox
-#### delete console statements
-#### Add alerts 
+#### test regsiter
 #### move user to login if token expires 

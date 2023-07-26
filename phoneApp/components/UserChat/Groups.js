@@ -73,7 +73,7 @@ const Groups = ({ user, groupConversations, searchResultsGroups, search, setSear
               ref={scrollViewRef}
               onEndReached={fetchMoreGroupChats}
               onEndReachedThreshold={0.5}
-              ListFooterComponent={hasMoreGroupChats ? <Spinner size={'lg'} color={'primary.300'} /> : null}
+              ListFooterComponent={hasMoreGroupChats ? <Box flex={'1'}> <Spinner size={'lg'} color={'primary.300'} /></Box> : null}
               data={groupConversations}
               renderItem={({ item, i }) => (
                 <TouchableOpacity

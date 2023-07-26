@@ -31,7 +31,7 @@ const GroupCard = ({ data, user, navigation, paginateFunction, currentPage, tota
               }}>
 
               <HStack w={'72'} py={'5'} px={'3'} alignItems={'center'} justifyContent={'space-between'}>
-                <Text fontSize={'3xl'} color={'primary.300'}>
+                <Text w={'48'} fontSize={'3xl'} color={'primary.300'}>
                   {item.chatName}
                 </Text>
                 {userInfo?._id === item.groupAdmin._id &&

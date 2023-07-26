@@ -36,7 +36,6 @@ const Participants = ({ user, fetchAgain, setFetchAgain }) => {
 
       user1._id === userInfo?._id ? dispatch({ type: 'SET_SELECTED_CHAT', payload: '' }) : dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
       setLoading(false);
-      alert('User removed from group chat');
     } catch (error) {
       setLoading(false);
       console.log(error);

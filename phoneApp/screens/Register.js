@@ -138,7 +138,6 @@ const Register = ({ navigation }) => {
             }
             axios.post(apiUrlRegister, details)
                 .then(res => {
-                    console.log(res.data);
                     setLoading(false);
                     navigation.navigate('Login');
                 })

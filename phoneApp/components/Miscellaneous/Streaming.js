@@ -222,8 +222,6 @@ const Streaming = ({ meetingId, fetchAgain, setFetchAgain, user, admin }) => {
 
     }, []);
 
-    console.log(admin, "admin");
-
     return (
         <Flex flex={1} py={'1'} bg={'primary.100'}>
             {joined ?

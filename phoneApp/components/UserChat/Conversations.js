@@ -57,7 +57,7 @@ const Conversations = ({ fetchAgain, setFetchAgain, conversations, user, searchR
           ref={scrollViewRef}
           onEndReached={fetchMoreOneOnOneChats}
           onEndReachedThreshold={0.5}
-          ListFooterComponent={hasMoreOneOnOneChats ? <Spinner size={'lg'} color={'primary.300'} /> : null}
+          ListFooterComponent={hasMoreOneOnOneChats ? <Box flex={'1'}> <Spinner size={'lg'} color={'primary.300'} /></Box> : null}
           data={conversations}
           renderItem={({ item, i }) => (
             <TouchableOpacity onPress={() => {

@@ -11,7 +11,6 @@ const Login = ({ navigation, setUser }) => {
     const [username, setUsername] = React.useState('')
     const [password, setPassword] = React.useState('')
     const [loading, setLoading] = React.useState(false)
-    const toast = useToast();
 
     const handleName = e => {
         setUsername(e)
@@ -35,7 +34,6 @@ const Login = ({ navigation, setUser }) => {
             await AsyncStorage.setItem('user', jsonValue)
             setLoading(false)
         } catch (err) {
-            // add toast or alert
             alert("Invalid username or password")
             console.log("ERROR:", err)
             setLoading(false)

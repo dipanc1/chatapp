@@ -30,13 +30,6 @@ const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchA
 
     if (!admin) {
       setCreateEventLoading(false)
-      // toast({
-      //   title: "You are not the admin of this group",
-      //   status: "error",
-      //   duration: 5000,
-      //   isClosable: true,
-      //   position: "bottom",
-      // });
       alert('You are not the admin of this group')
       setEventName("");
       setDescription("");
@@ -48,13 +41,6 @@ const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchA
 
     if (eventName === "" || description === "" || date === "" || time === "") {
       setCreateEventLoading(false)
-      // toast({
-      //   title: "Please fill all the fields",
-      //   status: "error",
-      //   duration: 5000,
-      //   isClosable: true,
-      //   position: "bottom",
-      // });
       alert('Please fill all the fields')
       return;
     }
@@ -75,14 +61,7 @@ const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchA
       }, config)
         .then(async (res) => {
           await axios.get(`${backend_url}/conversation/event/${chat._id}`, config).then((res) => {
-            // toast({
-            //   title: "Event Created!",
-            //   description: "Event created successfully",
-            //   status: "success",
-            //   duration: 5000,
-            //   isClosable: true,
-            //   position: "bottom-left",
-            // });
+            alert('Event created successfully')
             chat.events = res.data;
             setCreateEventLoading(false);
             setEventName("");
@@ -93,15 +72,7 @@ const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchA
             setShowModalEvent(false);
             setFetchAgain(!fetchAgain);
           }).catch((err) => {
-            console.log(err);
-            // toast({
-            //   title: "Error Occured!",
-            //   description: "Something went wrong",
-            //   status: "error",
-            //   duration: 5000,
-            //   isClosable: true,
-            //   position: "bottom-left",
-            // });
+            alert('Something went wrong')
             setCreateEventLoading(false);
             setEventName("");
             setDescription("");
@@ -112,15 +83,7 @@ const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchA
           })
         })
         .catch((err) => {
-          console.log(err);
-          // toast({
-          //   title: "Error Occured!",
-          //   description: "Something went wrong",
-          //   status: "error",
-          //   duration: 5000,
-          //   isClosable: true,
-          //   position: "bottom-left",
-          // });
+          alert('Something went wrong')
           setShowModalEvent(false);
           setCreateEventLoading(false);
           setEventName("");
@@ -139,15 +102,7 @@ const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchA
       }, config)
         .then(async (res) => {
           await axios.get(`${backend_url}/conversation/event/${chat._id}`, config).then((res) => {
-            // toast({
-            //   title: "Event Created!",
-            //   description: "Event created successfully",
-            //   status: "success",
-            //   duration: 5000,
-            //   isClosable: true,
-            //   position: "bottom-left",
-            // });
-            console.log(res.data);
+            alert('Event created successfully')
             setCreateEventLoading(false);
             setEventName("");
             setDescription("");
@@ -156,15 +111,7 @@ const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchA
             setSelectedImage(null);
             setShowModalEvent(false);
           }).catch((err) => {
-            console.log(err);
-            // toast({
-            //   title: "Error Occured!",
-            //   description: "Something went wrong",
-            //   status: "error",
-            //   duration: 5000,
-            //   isClosable: true,
-            //   position: "bottom-left",
-            // });
+            alert('Something went wrong')
             setCreateEventLoading(false);
             setEventName("");
             setDescription("");
@@ -175,15 +122,7 @@ const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchA
           })
         })
         .catch((err) => {
-          console.log(err);
-          // toast({
-          //   title: "Error Occured!",
-          //   description: "Something went wrong",
-          //   status: "error",
-          //   duration: 5000,
-          //   isClosable: true,
-          //   position: "bottom-left",
-          // });
+          alert('Something went wrong')
           setShowModalEvent(false);
           setCreateEventLoading(false);
           setEventName("");
@@ -200,13 +139,7 @@ const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchA
 
     if (!admin) {
       setEditEventLoading(false)
-      // toast({
-      //   title: "You are not the admin of this group",
-      //   status: "error",
-      //   duration: 5000,
-      //   isClosable: true,
-      //   position: "bottom",
-      // });
+      alert('You are not the admin of this group')
       setEditEventName(eventDetails?.name);
       setEditDescription(eventDetails?.description);
       setEditDate(eventDetails?.date.split('T')[0]);
@@ -218,13 +151,7 @@ const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchA
 
     if (editEventName === "" || editDescription === "" || editDate === "" || editTime === "") {
       setEditEventLoading(false)
-      // toast({
-      //   title: "Please fill all the fields",
-      //   status: "error",
-      //   duration: 5000,
-      //   isClosable: true,
-      //   position: "bottom",
-      // });
+      alert('Please fill all the fields')
       return;
     }
 
@@ -245,14 +172,7 @@ const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchA
         .then(async (res) => {
           await axios.get(`${backend_url}/conversation/event/${chat._id}`, config).then((res) => {
             chat.events = res.data;
-            // toast({
-            //   title: "Event Created!",
-            //   description: "Event created successfully",
-            //   status: "success",
-            //   duration: 5000,
-            //   isClosable: true,
-            //   position: "bottom-left",
-            // });
+            alert('Event created successfully')
             setEditEventName(eventDetails?.name);
             setEditDescription(eventDetails?.description);
             setEditDate(eventDetails?.date.split('T')[0]);
@@ -262,14 +182,7 @@ const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchA
             setFetchAgain(!fetchAgain);
           }).catch((err) => {
             console.log(err, "error");
-            // toast({
-            //   title: "Error Occured!",
-            //   description: "Something went wrong",
-            //   status: "error",
-            //   duration: 5000,
-            //   isClosable: true,
-            //   position: "bottom-left",
-            // });
+            alert('Something went wrong')
             setEditEventName(eventDetails?.name);
             setEditDescription(eventDetails?.description);
             setEditDate(eventDetails?.date.split('T')[0]);
@@ -280,14 +193,7 @@ const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchA
         })
         .catch((err) => {
           console.log(err, "error2");
-          // toast({
-          //   title: "Error Occured!",
-          //   description: "Something went wrong",
-          //   status: "error",
-          //   duration: 5000,
-          //   isClosable: true,
-          //   position: "bottom-left",
-          // });
+          alert('Something went wrong')
           setShowModalEvent(false);
           setEditEventName(eventDetails?.name);
           setEditDescription(eventDetails?.description);
@@ -306,15 +212,8 @@ const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchA
       }, config)
         .then(async (res) => {
           await axios.get(`${backend_url}/conversation/event/${chat._id}`, config).then((res) => {
-            // toast({
-            //   title: "Event Created!",
-            //   description: "Event created successfully",
-            //   status: "success",
-            //   duration: 5000,
-            //   isClosable: true,
-            //   position: "bottom-left",
-            // });
             chat.events = res.data;
+            alert('Event created successfully')
             setEditEventName(eventDetails?.name);
             setEditDescription(eventDetails?.description);
             setEditDate(eventDetails?.date.split('T')[0]);
@@ -324,14 +223,7 @@ const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchA
             setFetchAgain(!fetchAgain);
           }).catch((err) => {
             console.log(err, "error");
-            // toast({
-            //   title: "Error Occured!",
-            //   description: "Something went wrong",
-            //   status: "error",
-            //   duration: 5000,
-            //   isClosable: true,
-            //   position: "bottom-left",
-            // });
+            alert('Something went wrong')
             setEditEventName(eventDetails?.name);
             setEditDescription(eventDetails?.description);
             setEditDate(eventDetails?.date.split('T')[0]);
@@ -342,14 +234,7 @@ const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchA
         })
         .catch((err) => {
           console.log(err, "error2");
-          // toast({
-          //   title: "Error Occured!",
-          //   description: "Something went wrong",
-          //   status: "error",
-          //   duration: 5000,
-          //   isClosable: true,
-          //   position: "bottom-left",
-          // });
+          alert('Something went wrong')
           setShowModalEvent(false);
           setEditEventName(eventDetails?.name);
           setEditDescription(eventDetails?.description);

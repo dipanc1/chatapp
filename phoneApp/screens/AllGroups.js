@@ -67,14 +67,7 @@ const AllGroups = ({ user, navigation }) => {
             } catch (error) {
                 console.log(error)
                 setLoadingMyChats(false);
-                // toast({
-                //     title: "Error Occured!",
-                //     description: "Failed to Load the Conversations",
-                //     status: "error",
-                //     duration: 5000,
-                //     isClosable: true,
-                //     position: "bottom-left",
-                // });
+                alert('Failed to Load the Conversations')
             }
         };
 
@@ -103,14 +96,7 @@ const AllGroups = ({ user, navigation }) => {
             } catch (error) {
                 console.log(error)
                 setLoadingMyChats(false);
-                // toast({
-                //     title: "Error Occured!",
-                //     description: "Failed to Load the Conversations",
-                //     status: "error",
-                //     duration: 5000,
-                //     isClosable: true,
-                //     position: "bottom-left",
-                // });
+                alert('Failed to Load the Conversations')
             }
         };
 
@@ -195,14 +181,7 @@ const AllGroups = ({ user, navigation }) => {
         } catch (error) {
             // console.log(error)
             setLoadingMyChats(false);
-            toast({
-                title: "Error Occured!",
-                description: "Failed to Load the Conversations",
-                status: "error",
-                duration: 5000,
-                isClosable: true,
-                position: "bottom-left",
-            });
+            alert('Failed to Load the Conversations')
         }
     };
 
@@ -228,16 +207,9 @@ const AllGroups = ({ user, navigation }) => {
             setHasPrevPageMyChatsAdmin(data.hasPrevPage);
             setLoadingMyChatsAdmin(false);
         } catch (error) {
-            // console.log(error)
+            console.log(error)
             setLoadingMyChats(false);
-            toast({
-                title: "Error Occured!",
-                description: "Failed to Load the Conversations",
-                status: "error",
-                duration: 5000,
-                isClosable: true,
-                position: "bottom-left",
-            });
+            alert('Failed to Load the Conversations')
         }
     };
 

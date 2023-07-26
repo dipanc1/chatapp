@@ -79,7 +79,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
         socket.on("message received", (newMessageReceived) => {
             if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
                 if (pushNotification.includes(newMessageReceived)) {
-                    console.log("new message received", newMessageReceived)
+                    // console.log("new message received", newMessageReceived)
                     setPushNotification([...pushNotification, newMessageReceived]);
                     onDisplayNotification(newMessageReceived);
                 }
@@ -100,15 +100,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
         try {
             setProfile(selectedChat?.users.find(member => member._id !== userInfo?._id));
         } catch (error) {
-            // console.log(error);
-            toast({
-                title: "Error Occured!",
-                description: "Failed to Load the Profile",
-                status: "error",
-                duration: 5000,
-                isClosable: true,
-                position: "top",
-            });
+            alert('Failed to Load the Profile')
         }
         if (selectedChat && !selectedChat.isGroupChat) {
             CheckOnlineStatus(selectedChat?.users.find(member => member._id !== userInfo?._id)._id);
@@ -137,7 +129,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
             socket.emit('join chat', selectedChat._id);
             setLoading(false);
         } catch (error) {
-            //TODO: ADD ALERTS
+            alert('Failed to Load Messages');
             setLoading(false);
             console.log(error);
         }
@@ -157,9 +149,9 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
             setMessages([...messages, ...data.messages]);
             setHasMore(data.hasMore);
             setLoading(false);
-            // console.log("Fetch more", page, data);
         } catch (error) {
             console.log(error);
+            alert('Failed to Load Messages');
             setLoading(false);
         }
     }
@@ -181,8 +173,8 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
 
             socket.emit("new message", data.message);
             setMessages([data.message, ...messages]);
-            // console.log(data);
         } catch (error) {
+            alert('Failed to Send Message');
             console.log(error);
         }
     }
@@ -217,7 +209,6 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
                 },
             };
             const { data } = await axios.get(`${backend_url}/users/check-online/${friendId}`, config)
-            // console.log("DATAAAAAAAAAAAA", data);
             setOnline(data.isOnline);
         } catch (error) {
             console.log(error);

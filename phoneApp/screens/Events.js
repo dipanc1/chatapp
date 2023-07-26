@@ -66,14 +66,7 @@ const Events = ({ user, navigation }) => {
                 setHasPrevPage(data.hasPrevPage);
                 setLoading(false);
             } catch (error) {
-                toast({
-                    title: "Error Occured!",
-                    description: "Failed to Load the Events",
-                    status: "error",
-                    duration: 5000,
-                    isClosable: true,
-                    position: "bottom-left",
-                });
+                alert('Failed to Load the Events')
                 setLoading(false);
             }
         };
@@ -100,14 +93,7 @@ const Events = ({ user, navigation }) => {
                 setHasPrevUpcomingPage(data.hasPrevPage);
                 setLoadingUpcoming(false);
             } catch (error) {
-                toast({
-                    title: "Error Occured!",
-                    description: "Failed to Load the Events",
-                    status: "error",
-                    duration: 5000,
-                    isClosable: true,
-                    position: "bottom-left",
-                });
+                alert('Failed to Load the Events')
                 setLoadingUpcoming(false);
             }
         };
@@ -134,14 +120,7 @@ const Events = ({ user, navigation }) => {
                 setHasPrevPastPage(data.hasPrevPage);
                 setLoadingPast(false);
             } catch (error) {
-                toast({
-                    title: "Error Occured!",
-                    description: "Failed to Load the Events",
-                    status: "error",
-                    duration: 5000,
-                    isClosable: true,
-                    position: "bottom-left",
-                });
+                alert('Failed to Load the Events')
                 setLoadingPast(false);
             }
         };
@@ -182,14 +161,7 @@ const Events = ({ user, navigation }) => {
 
         } catch (error) {
             console.log(error)
-            // toast({
-            //     title: "Error Occured!",
-            //     description: "Failed to Load the Events",
-            //     status: "error",
-            //     duration: 5000,
-            //     isClosable: true,
-            //     position: "bottom-left",
-            // });
+            alert('Failed to Load the Events')
         }
     };
 
@@ -215,14 +187,7 @@ const Events = ({ user, navigation }) => {
             setHasPrevPage(data.hasPrevPage);
             setLoading(false);
         } catch (error) {
-            // toast({
-            //     title: "Error Occured!",
-            //     description: "Failed to Load the Events",
-            //     status: "error",
-            //     duration: 5000,
-            //     isClosable: true,
-            //     position: "bottom-left",
-            // });
+            alert('Failed to Load the Events')
             setLoading(false);
         }
     }
@@ -249,14 +214,7 @@ const Events = ({ user, navigation }) => {
             setHasPrevUpcomingPage(data.hasPrevPage);
             setLoadingUpcoming(false);
         } catch (error) {
-            // toast({
-            //     title: "Error Occured!",
-            //     description: "Failed to Load the Events",
-            //     status: "error",
-            //     duration: 5000,
-            //     isClosable: true,
-            //     position: "bottom-left",
-            // });
+            alert('Failed to Load the Events')
             setLoadingUpcoming(false);
         }
     };
@@ -283,14 +241,7 @@ const Events = ({ user, navigation }) => {
             setHasPrevPastPage(data.hasPrevPage);
             setLoadingPast(false);
         } catch (error) {
-            // toast({
-            //     title: "Error Occured!",
-            //     description: "Failed to Load the Events",
-            //     status: "error",
-            //     duration: 5000,
-            //     isClosable: true,
-            //     position: "bottom-left",
-            // });
+            alert('Failed to Load the Events')
             setLoadingPast(false);
         }
     };

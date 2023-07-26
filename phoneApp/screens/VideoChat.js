@@ -78,7 +78,6 @@ const VideoChat = ({ user, fetchAgain, setFetchAgain, navigation }) => {
                 }
             }
             const { data } = await axios.get(`${backend_url}/users?search=${search}`, config)
-            // console.log(data);
             setLoading(false);
             setSearchResultsUsers(data.users);
             setSearchResultsGroups(data.groups);
