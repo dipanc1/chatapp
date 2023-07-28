@@ -17,7 +17,7 @@ var selectedChatCompare;
 const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
     const socket = React.useContext(SocketContext);
 
-    const { dispatch, selectedChat, stream, userInfo } = React.useContext(PhoneAppContext);
+    const { dispatch, selectedChat, stream, userInfo, notification } = React.useContext(PhoneAppContext);
 
     const scrollViewRef = React.useRef();
 
@@ -31,7 +31,6 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
     const [loading, setLoading] = React.useState(false);
     const [typing, setTyping] = React.useState(false);
     const [isTyping, setIsTyping] = React.useState(false);
-    const [pushNotification, setPushNotification] = React.useState([]);
 
 
     async function onDisplayNotification(newMessageReceived) {
@@ -78,19 +77,12 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
     React.useEffect(() => {
         socket.on("message received", (newMessageReceived) => {
             if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
-                if (pushNotification.includes(newMessageReceived)) {
-                    // console.log("new message received", newMessageReceived)
-                    setPushNotification([...pushNotification, newMessageReceived]);
+                if (!notification.includes(newMessageReceived)) {
+                    dispatch({ type: 'SET_NOTIFICATION', payload: [...notification, newMessageReceived] })
                     onDisplayNotification(newMessageReceived);
                 }
-                // if (!notification.includes(newMessageReceived)) {
-                //     console.log("new message received", newMessageReceived)
-                //     onDisplayNotification(newMessageReceived);
-                //     dispatch({ type: 'SET_NOTIFICATION', payload: [newMessageReceived] });
-                //     setFetchAgain(!fetchAgain);
-                // }
             } else {
-                setMessages([newMessageReceived, ...messages]);
+                setMessages([...messages, newMessageReceived]);
             }
         })
     }, []);

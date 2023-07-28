@@ -6,11 +6,10 @@
 #### use httponly cookies for refresh token
 
 #### cloudinary only whitelist our domain
+#### Unread messages implementation
 #### need to add abhishek's id to send emails
 
 ## Phone App
 
-#### Push Notifications and in settings
-#### Unseen Messages outside chats on chatbox
-#### test regsiter
-#### move user to login if token expires 
+#### Unread messages implementation
+#### test register page

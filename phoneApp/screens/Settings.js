@@ -21,9 +21,9 @@ const Settings = ({ user }) => {
             <Tab.Screen name="Password">
                 {props => <SettingCard {...props} name={"Password"} />}
             </Tab.Screen>
-            <Tab.Screen name="Notification">
+            {/* <Tab.Screen name="Notification">
                 {props => <SettingCard {...props} name={"Notification"} />}
-            </Tab.Screen>
+            </Tab.Screen> */}
             {/* <Tab.Screen name="Plans">
                 {props => <SettingCard {...props} name={'Plans'} />}
             </Tab.Screen>

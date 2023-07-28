@@ -1,6 +1,5 @@
 import React from 'react'
-import { Avatar, Box, HStack, Text } from 'native-base'
-import { TouchableOpacity } from 'react-native'
+import { Avatar, Box, HStack, Text, Flex } from 'native-base'
 import { PhoneAppContext } from '../../context/PhoneAppContext';
 
 const Conversation = ({ chat, user }) => {
@@ -13,7 +12,7 @@ const Conversation = ({ chat, user }) => {
 
     return (
         <Box borderBottomWidth="1" borderBottomColor={'primary.100'} p={'3'} mx={'4'}>
-            <HStack space={[2, 3]} justifyContent="space-between" >
+            <HStack space={[2, 3]} justifyContent="space-between" alignItems={'center'}>
                 <HStack alignItems={'center'}>
                     {chat && <Avatar width={"48px"} height={"48px"} source={{
                         uri: friends?.pic
@@ -27,6 +26,9 @@ const Conversation = ({ chat, user }) => {
                         {chat && friends?.username}
                     </Text>
                 </HStack>
+                {/* <Flex alignItems={'center'} justifyContent={'center'} bg={'red.500'} borderRadius={'full'} width={'24px'} height={'24px'}>
+                    <Text color={'muted.50'} fontSize={'xs'}>2</Text>
+                </Flex> */}
             </HStack>
         </Box>
 

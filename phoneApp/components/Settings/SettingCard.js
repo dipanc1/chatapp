@@ -407,7 +407,7 @@ const SettingCard = ({ name, user }) => {
                                             </Text>
                                         </VStack>
                                         <HStack>
-                                            <Switch size={'lg'} defaultIsChecked onTrackColor={'primary.300'} />
+                                            <Switch onto size={'lg'} onTrackColor={'primary.300'} />
                                             <Text fontSize={'md'} color={'#42495d'} m={'2'}>
                                                 Push
                                             </Text>

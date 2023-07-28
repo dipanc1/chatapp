@@ -44,7 +44,7 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
     return () => {
       socket.off("connected");
       socket.off("typing");
-      socket.off("stop typing");.
+      socket.off("stop typing");
       socket.off("user-online");
     };
 

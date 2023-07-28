@@ -62,6 +62,7 @@ const VideoChat = ({ user, fetchAgain, setFetchAgain, navigation }) => {
             backgroundColor: '#9F85F7',
         },
     };
+    
     const sceneContainerStyle = {
         backgroundColor: '#F5F7FB',
     };
