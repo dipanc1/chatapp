@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Box, Button, FlatList, Flex, HStack, Icon, IconButton, Input, ScrollView, Spinner, Text, VStack } from 'native-base'
+import { Box, Button, FlatList, Flex, HStack, Icon, IconButton, Input, ScrollView, Spinner, Text, VStack, View } from 'native-base'
 import React from 'react'
 import notifee from '@notifee/react-native';
 import { AndroidColor } from '@notifee/react-native';
@@ -90,7 +90,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
                 //     setFetchAgain(!fetchAgain);
                 // }
             } else {
-                setMessages([...messages, newMessageReceived]);
+                setMessages([newMessageReceived, ...messages]);
             }
         })
     }, []);

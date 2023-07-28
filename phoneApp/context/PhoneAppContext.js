@@ -17,7 +17,7 @@ const INITIAL_STATE = {
 
 export const PhoneAppContext = createContext(INITIAL_STATE);
 
-export const PhoneAppContextProvider = ({ children, user }) => {
+export const PhoneAppContextProvider = ({ children, user, fetchAgain, setFetchAgain }) => {
   const [state, dispatch] = useReducer(AppReducer, INITIAL_STATE);
 
   const [signature, setSignature] = React.useState("");
@@ -43,6 +43,7 @@ export const PhoneAppContextProvider = ({ children, user }) => {
         })
         .catch((err) => {
           AsyncStorage.removeItem('user')
+          setFetchAgain(!fetchAgain)
         });
     };
     getUserInfo();

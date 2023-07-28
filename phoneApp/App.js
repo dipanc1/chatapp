@@ -121,7 +121,7 @@ const App = () => {
     <StripeProvider publishableKey={stripePublicKey}>
       <NativeBaseProvider theme={theme}>
         <NavigationContainer>
-          <PhoneAppContextProvider user={user}>
+          <PhoneAppContextProvider user={user} setFetchAgain={setFetchAgain} fetchAgain={fetchAgain}>
             {(user && user !== null) ?
               <Tab.Navigator initialRouteName='Live Stream' screenOptions={
                 {

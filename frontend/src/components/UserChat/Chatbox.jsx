@@ -35,18 +35,19 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
   const scrollRef = React.useRef();
 
   React.useEffect(() => {
-    socket.emit("setup", user);
+    socket.emit("setup", userInfo);
     socket.on("connected", () => setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
     socket.on("stop typing", () => setIsTyping(false));
-    socket.emit("user-online", user);
+    socket.emit("user-online", userInfo);
 
     return () => {
       socket.off("connected");
       socket.off("typing");
-      socket.off("stop typing");
+      socket.off("stop typing");.
       socket.off("user-online");
-    }
+    };
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -139,7 +140,6 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
         }, config);
         socket.emit("new message", data.message);
         setMessages([data.message, ...messages]);
-        // console.log(data, messages);
       } catch (error) {
         // console.log(error);
         toast({
@@ -163,7 +163,6 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
           }
 
           dispatch({ type: 'SET_NOTIFICATION', payload: [newMessageReceived, ...notification] });
-          // console.log(newMessageReceived);
           setFetchAgain(!fetchAgain);
         }
       } else {
@@ -171,9 +170,7 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
       }
     })
 
-    return () => {
-      socket.off("message received");
-    }
+    return () => socket.off("message received");
   });
 
   const typingHandler = (e) => {
@@ -364,7 +361,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
         config
       );
 
-      dispatch({ type: 'SET_SELECTED_CHAT', payload: null }) 
+      dispatch({ type: 'SET_SELECTED_CHAT', payload: null })
       setFetchAgain(!fetchAgain);
       setLoading(false);
       toast({
