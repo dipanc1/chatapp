@@ -1,6 +1,9 @@
-import { Avatar, Box, Text } from '@chakra-ui/react'
+import { Avatar, Box, Heading, Text, VStack } from '@chakra-ui/react'
+import { AppContext } from '../../context/AppContext';
+import { useContext } from 'react';
 
-const GroupChat = ({ chat }) => {
+const GroupChat = ({ chat, read }) => {
+    const { userInfo } = useContext(AppContext);
     const list = {
         visible: {
             opacity: 1,
@@ -32,10 +35,20 @@ const GroupChat = ({ chat }) => {
             animate="visible"
             variants={list}
         >
-            {/* <img src="https://via.placeholder.com/150" alt="avatar" className='icon' />  */}
             {/* TODO: will add image later */}
             <Avatar size={['sm', 'md']} me={['10px', '15px']} variants={item} />
-            <Text fontSize='md' variants={item}>{chat.chatName}</Text>
+            {chat && <VStack alignItems={'flex-start'}>
+                <Heading variants={item} fontSize='md'>{chat.chatName}</Heading>
+                <Text variants={item} fontSize='sm' ml='auto'>{chat && chat.latestMessage && chat.latestMessage.sender && chat.latestMessage.sender._id === userInfo?._id ? 'You' : chat && chat.latestMessage && chat.latestMessage.sender && chat.latestMessage.sender.username}{chat && chat.latestMessage ? ':' : null} {chat && chat.latestMessage && chat.latestMessage.content}</Text>
+            </VStack>}
+            {chat && chat.latestMessage && chat?.latestMessage.sender._id !== userInfo?._id && !chat?.latestMessage.readBy.includes(userInfo?._id) && read && <Box
+                ml='auto'
+                w='10px'
+                h='10px'
+                borderRadius='50%'
+                bg='red.500'
+            >
+            </Box>}
         </Box>
     )
 }

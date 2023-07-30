@@ -120,7 +120,15 @@ router.get("/one-on-one/:page", protect, async (req, res) => {
             .populate("events")
             .sort({ updatedAt: -1 })
             .skip((page - 1) * LIMIT)
-            .limit(LIMIT);
+            .limit(LIMIT)
+            .then(async (results) => {
+                results = await User.populate(results, {
+                    path: "latestMessage.sender",
+                    select: "username number pic"
+                });
+
+                return results;
+            });
 
         const totalCount = await Chat.countDocuments({
             users: { $elemMatch: { $eq: req.user._id } },
@@ -133,7 +141,7 @@ router.get("/one-on-one/:page", protect, async (req, res) => {
 
         res.status(200).json({
             chats,
-            hasMore: totalCount - (page * LIMIT) > 0
+            hasMore: totalCount - (page * LIMIT) > 0,
         });
 
     } catch (error) {
@@ -158,9 +166,17 @@ router.get("/group-chats/:page", protect, asyncHandler(async (req, res) => {
             .populate("users", "-password")
             .populate("groupAdmin", "-password")
             .populate("events")
+            .populate("latestMessage")
             .sort({ createdAt: -1 })
             .skip((page - 1) * limit)
-            .limit(limit);
+            .limit(limit)
+            .then(async (results) => {
+                results = await User.populate(results, {
+                    path: "latestMessage.sender",
+                    select: "username number pic"
+                });
+                return results;
+            });
 
         const totalCount = await Chat.countDocuments({
             isGroupChat: true,

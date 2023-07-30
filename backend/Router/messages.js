@@ -72,6 +72,7 @@ router.get("/:chatId/:page", async (req, res) => {
 
 // message is read
 router.post("/read", async (req, res) => {
+    const userId = req.user._id;
     try {
         const { messageId } = req.body;
         if (!messageId) {
@@ -80,12 +81,35 @@ router.post("/read", async (req, res) => {
             })
         }
 
-        await Message.findByIdAndUpdate(messageId, {
-            readBy: [req.user._id]
+        // if message is written by user don't update
+        const message = await Message.findOne({
+            _id: messageId,
+            sender: userId
         });
-        res.status(200).json({
-            message: "Message is read"
-        });
+
+        if (message) {
+            return res.status(200).json({
+                message: "Message is written by user"
+            });
+        }
+
+        // if message is already read by user don't update
+        if (await Message.findOne({
+            _id: messageId, readBy:
+                { $in: [userId] }
+        })) {
+            return res.status(200).json({
+                message: "Message is already read"
+            });
+        } else {
+            // if message is not read by user, update
+            await Message.findByIdAndUpdate(messageId, {
+                readBy: [userId]
+            });
+            res.status(200).json({
+                message: "Message is read"
+            });
+        }
     } catch (error) {
         res.status(500).json(error)
     }

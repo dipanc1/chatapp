@@ -6,7 +6,6 @@
 #### use httponly cookies for refresh token
 
 #### cloudinary only whitelist our domain
-#### Unread messages implementation
 #### need to add abhishek's id to send emails
 
 ## Phone App

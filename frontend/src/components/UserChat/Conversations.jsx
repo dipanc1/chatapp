@@ -29,6 +29,9 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
     const [hasMoreOneOnOneChats, setHasMoreOneOnOneChats] = React.useState(true);
     const [oneOnOneChatsPage, setOneOnOneChatsPage] = React.useState(2);
 
+    const [read, setRead] = React.useState(true)
+
+
     const user = JSON.parse(localStorage.getItem("user"));
 
     const axiosJwt = axios.create({
@@ -253,12 +256,16 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                             borderBottom="1px solid #EAE4Ff"
                                             mb="1px"
                                             key={c._id}
-                                            onClick={() => selectedChat?._id === c._id ? null : dispatch({
-                                                type: "SET_SELECTED_CHAT",
-                                                payload: c,
-                                            })}
+                                            _disabled={selectedChat?._id === c._id}
+                                            onClick={() => {
+                                                dispatch({
+                                                    type: "SET_SELECTED_CHAT",
+                                                    payload: c,
+                                                })
+                                                setRead(false)
+                                            }}
                                         >
-                                            <Conversation chat={c} />
+                                            <Conversation chat={c} read={read} />
                                         </Box>
                                     ))}
                                 </InfiniteScroll>
@@ -379,12 +386,16 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                             borderBottom="1px solid #EAE4Ff"
                                             mb="1px"
                                             key={c._id}
-                                            onClick={() => selectedChat?._id === c._id ? null : dispatch({
-                                                type: "SET_SELECTED_CHAT",
-                                                payload: c,
-                                            })}
+                                            _disabled={selectedChat?._id === c._id}
+                                            onClick={() => {
+                                                dispatch({
+                                                    type: "SET_SELECTED_CHAT",
+                                                    payload: c,
+                                                })
+                                                setRead(false)
+                                            }}
                                         >
-                                            <GroupChat chat={c} />
+                                            <GroupChat chat={c} read={read} />
                                         </Box>
                                     ))}
                                 </InfiniteScroll>
