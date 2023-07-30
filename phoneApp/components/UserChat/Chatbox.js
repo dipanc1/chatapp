@@ -215,7 +215,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
                 {!stream &&
                     <HStack justifyContent={'space-between'} alignItems={'center'} h={'16'}>
 
-                        <Text style={{ color: '#42495d' }} fontWeight={'bold'} fontSize={'lg'} mx={'10'}>
+                        <Text style={{ color: '#42495d' }} fontWeight={'bold'} fontSize={'lg'} mx={'5'}>
                             {selectedChat?.isGroupChat ? selectedChat?.chatName : profile?.username}
                         </Text>
 
@@ -251,6 +251,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
                                         messages[messages.length - 1].sender._id !== userInfo?._id &&
                                         messages[messages.length - 1].sender._id)}
                                 sameTime={(i < messages.length - 1) && format(messages[i].createdAt) === format(messages[i + 1].createdAt)}
+                                user={user}
                             />
                         )}
                         keyExtractor={(m) => m._id}

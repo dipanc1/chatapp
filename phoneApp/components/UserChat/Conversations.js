@@ -60,12 +60,7 @@ const Conversations = ({ fetchAgain, setFetchAgain, conversations, user, searchR
           ListFooterComponent={hasMoreOneOnOneChats ? <Box flex={'1'}> <Spinner size={'lg'} color={'primary.300'} /></Box> : null}
           data={conversations}
           renderItem={({ item, i }) => (
-            <TouchableOpacity onPress={() => {
-              dispatch({ type: 'SET_SELECTED_CHAT', payload: item })
-              navigation.getParent()?.setOptions({ tabBarVisible: false })
-            }}>
-              <Conversation user={user} chat={item} />
-            </TouchableOpacity>
+            <Conversation chat={item} navigation={navigation} />
           )}
           keyExtractor={(m) => m._id}
         />

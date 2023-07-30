@@ -8,8 +8,10 @@ import {
 } from '@chakra-ui/react'
 import { AppContext } from '../../context/AppContext';
 
-const Conversation = ({ chat, read }) => {
+const Conversation = ({ chat }) => {
   const [friends, setFriends] = useState([]);
+  const [read, setRead] = useState(true);
+
   const { userInfo } = useContext(AppContext);
 
   useEffect(() => {
@@ -47,13 +49,23 @@ const Conversation = ({ chat, read }) => {
       flexDirection={'row'}
       px={['5px', '10px']}
       alignItems={'center'}
+      onClick={() => setRead(false)}
     >
       <Avatar size={['sm', 'md']} me={['10px', '15px']} variants={item} name={chat && friends?.username} src={chat && friends?.pic} />
       <VStack alignItems={'flex-start'}>
         <Heading variants={item} fontSize='md'>{chat && friends?.username}</Heading>
-        <Text variants={item} fontSize='sm' ml='auto'>{chat?.latestMessage.sender._id === userInfo?._id ? 'You' : friends?.username}: {chat && chat?.latestMessage.content}</Text>
+        {chat
+          && chat.latestMessage && <Text variants={item} fontSize='sm' ml='auto'>{chat
+            && chat.latestMessage
+            && chat.latestMessage.sender
+            && chat.latestMessage.sender._id === userInfo?._id
+            ? 'You' :
+            friends?.username}:
+            {chat
+              && chat.latestMessage
+              && chat.latestMessage.content}</Text>}
       </VStack>
-      {chat?.latestMessage.sender._id !== userInfo?._id && !chat?.latestMessage.readBy.includes(userInfo?._id) && read && <Box
+      {chat && chat.latestMessage && chat.latestMessage.sender && chat.latestMessage.sender._id !== userInfo?._id && !chat?.latestMessage.readBy.includes(userInfo?._id) && read && <Box
         ml='auto'
         w='10px'
         h='10px'

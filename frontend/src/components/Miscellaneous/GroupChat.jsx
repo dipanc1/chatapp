@@ -1,9 +1,11 @@
 import { Avatar, Box, Heading, Text, VStack } from '@chakra-ui/react'
 import { AppContext } from '../../context/AppContext';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 
-const GroupChat = ({ chat, read }) => {
+const GroupChat = ({ chat}) => {
     const { userInfo } = useContext(AppContext);
+    const [read, setRead] = useState(true);
+
     const list = {
         visible: {
             opacity: 1,
@@ -34,6 +36,7 @@ const GroupChat = ({ chat, read }) => {
             initial="hidden"
             animate="visible"
             variants={list}
+            onClick={() => setRead(false)}
         >
             {/* TODO: will add image later */}
             <Avatar size={['sm', 'md']} me={['10px', '15px']} variants={item} />

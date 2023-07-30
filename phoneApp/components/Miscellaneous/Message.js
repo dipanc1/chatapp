@@ -2,9 +2,34 @@ import { Avatar, Box, Flex, HStack, Text } from 'native-base'
 import React from 'react'
 import { PhoneAppContext } from '../../context/PhoneAppContext';
 import { format } from 'timeago.js';
+import axios from 'axios';
+import { backend_url } from '../../production';
 
-const Message = ({ messages, own, sameSender, sameTime }) => {
+const Message = ({ messages, own, sameSender, sameTime, user }) => {
     const { selectedChat } = React.useContext(PhoneAppContext);
+
+    React.useEffect(() => {
+        const readLastMessage = async () => {
+            try {
+                const config = {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${user.token}`
+                    }
+                }
+                await axios.post(`${backend_url}/message/read`, {
+                    messageId: messages._id
+                }, config)
+
+
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+        readLastMessage()
+    }, [messages, user.token])
+
     return (
         selectedChat?._id === messages?.chat._id ? <Flex>
             <HStack justifyContent={'space-between'} alignItems={'center'} >

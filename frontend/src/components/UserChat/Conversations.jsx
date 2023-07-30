@@ -29,8 +29,6 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
     const [hasMoreOneOnOneChats, setHasMoreOneOnOneChats] = React.useState(true);
     const [oneOnOneChatsPage, setOneOnOneChatsPage] = React.useState(2);
 
-    const [read, setRead] = React.useState(true)
-
 
     const user = JSON.parse(localStorage.getItem("user"));
 
@@ -262,10 +260,9 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                                     type: "SET_SELECTED_CHAT",
                                                     payload: c,
                                                 })
-                                                setRead(false)
                                             }}
                                         >
-                                            <Conversation chat={c} read={read} />
+                                            <Conversation chat={c} />
                                         </Box>
                                     ))}
                                 </InfiniteScroll>
@@ -392,10 +389,9 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                                     type: "SET_SELECTED_CHAT",
                                                     payload: c,
                                                 })
-                                                setRead(false)
                                             }}
                                         >
-                                            <GroupChat chat={c} read={read} />
+                                            <GroupChat chat={c} />
                                         </Box>
                                     ))}
                                 </InfiniteScroll>

@@ -9,9 +9,10 @@ import { TouchableOpacity } from 'react-native'
 import { PhoneAppContext } from '../../context/PhoneAppContext'
 import { backend_url } from '../../production'
 
-const Groups = ({ user, groupConversations, searchResultsGroups, search, setSearch, fetchAgain, setFetchAgain, admin, fetchMoreGroupChats, hasMoreGroupChats }) => {
+const Groups = ({ user, groupConversations, searchResultsGroups, search, setSearch, fetchAgain, setFetchAgain, admin, fetchMoreGroupChats, hasMoreGroupChats, navigation }) => {
   const [showModal, setShowModal] = useState(false);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+
   const { dispatch, selectedChat, userInfo } = React.useContext(PhoneAppContext);
 
   const handleAddUser = async (user1, groupId) => {
@@ -76,15 +77,9 @@ const Groups = ({ user, groupConversations, searchResultsGroups, search, setSear
               ListFooterComponent={hasMoreGroupChats ? <Box flex={'1'}> <Spinner size={'lg'} color={'primary.300'} /></Box> : null}
               data={groupConversations}
               renderItem={({ item, i }) => (
-                <TouchableOpacity
-                  onPress={() => {
-                    dispatch({ type: 'SET_SELECTED_CHAT', payload: item })
-                  }
-                  }>
-                  <Flex justifyContent={'flex-start'} p={'2'}>
-                    <GroupListItem group={item} />
-                  </Flex>
-                </TouchableOpacity>
+                <Flex justifyContent={'flex-start'} p={'2'}>
+                  <GroupListItem group={item} navigation={navigation} />
+                </Flex>
               )}
               keyExtractor={(m) => m._id}
             />

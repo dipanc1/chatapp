@@ -43,7 +43,7 @@ const VideoChat = ({ user, fetchAgain, setFetchAgain, navigation }) => {
         setGroupChatsPage(2);
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [fetchAgain]);
+    }, [fetchAgain, selectedChat]);
 
     const screenOptions = {
         unmountOnBlur: false,
