@@ -8,17 +8,17 @@ const Accordian = ({ accordianIndex, index, accordianOpen, data, openAccordian, 
             {invoices ?
                 <HStack alignItems={"center"} justifyContent={"space-around"} w={"72"}>
                     <VStack space="5">
-                        <Text fontSize={'lg'} fontWeight={'extrabold'} color={'#42495d'}>{data.expiringOn}</Text>
-                        <Text fontSize={'md'} fontWeight={'extraBlack'} color={'#42495d'}>{data.purchasedOn}</Text>
+                        <Text fontSize={'lg'} fontWeight={'extrabold'} color={'primary.600'}>{data.expiringOn}</Text>
+                        <Text fontSize={'md'} fontWeight={'extraBlack'} color={'primary.600'}>{data.purchasedOn}</Text>
                     </VStack>
                     <HStack alignItems="center" space={'3'}>
                         <Text fontSize={'sm'} fontWeight={'bold'} color={data.planType === 'Basic' ? 'plans.100' : data.planType === 'Elite' ? 'plans.200' : 'plans.300'}>{data.planType}</Text>
-                        <Text fontSize={'xl'} fontWeight={'bold'} color={'#42495d'}>{data.amount}</Text>
+                        <Text fontSize={'xl'} fontWeight={'bold'} color={'primary.600'}>{data.amount}</Text>
                         <IconButton textAlign={"right"} onPress={() => openAccordian(index)} icon={<Icon as={MaterialIcons} name={(accordianOpen && index === accordianIndex) ? "keyboard-arrow-up" : "keyboard-arrow-down"} size={5} />} />
                     </HStack>
                 </HStack> :
                 <HStack alignItems={"center"} justifyContent={"flex-end"} w={"80"}>
-                    <Text w={"64"} textAlign={"left"} fontSize={'xl'} fontWeight={'bold'} color={'#42495d'}>{data.title}</Text>
+                    <Text w={"64"} textAlign={"left"} fontSize={'xl'} fontWeight={'bold'} color={'primary.600'}>{data.title}</Text>
                     <IconButton textAlign={"right"} onPress={() => openAccordian(index)} icon={<Icon as={MaterialIcons} name={(accordianOpen && index === accordianIndex) ? "keyboard-arrow-up" : "keyboard-arrow-down"} size={5} />} />
                 </HStack>
             }

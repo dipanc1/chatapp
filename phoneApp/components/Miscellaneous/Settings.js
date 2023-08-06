@@ -93,7 +93,7 @@ const Settings = ({ user, fetchAgain, setFetchAgain }) => {
           color={'#fff'}
           borderRadius={'lg'}
           size={'lg'}
-          bg={'#42495d'}>
+          bg={'primary.600'}>
           Leave Group
         </Button>
       </HStack>

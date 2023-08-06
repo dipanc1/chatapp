@@ -43,7 +43,7 @@ const Login = ({ navigation, setUser }) => {
     return (
         <Flex flex={1} align={'center'} justify={'center'} position={'relative'} bg={"primary.100"}>
             <Box py={'12'} rounded={'lg'} w={'80'} height={'xl'} display={'flex'} flexDirection={'column'} justifyContent={'space-between'} alignItems={'center'} bg={'#fff'}>
-                <Heading color={'#42495d'} fontSize={'4xl'}>Login</Heading>
+                <Heading color={'primary.600'} fontSize={'4xl'}>Login</Heading>
                 <Box display={'flex'} justifyContent={'center'} alignItems={'center'} w={'48'}>
                     <Text color={'primary.900'}>Login to you account and get</Text>
                     <Text color={'primary.900'}>all access to chats</Text>
@@ -111,13 +111,13 @@ const Login = ({ navigation, setUser }) => {
                         Sign in
                     </Button>
                     <HStack mt="6" justifyContent="center">
-                        <Text fontSize="sm" color="#42495d" _dark={{
+                        <Text fontSize="sm" color="primary.600" _dark={{
                             color: "warmGray.200"
                         }}>
                             Are you a new user?{" "}
                         </Text>
                         <Link _text={{
-                            color: "#42495d",
+                            color: "primary.600",
                             fontWeight: "medium",
                             fontSize: "sm"
                         }} onPress={

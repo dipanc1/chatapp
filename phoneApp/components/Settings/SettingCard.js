@@ -402,13 +402,13 @@ const SettingCard = ({ name, user }) => {
                                             <Text fontSize={'md'} fontWeight={'bold'} color={'amber.400'} my={'2'}>
                                                 Messages
                                             </Text>
-                                            <Text fontSize={'md'} color={'#42495d'} my={'2'} ml={'auto'}>
+                                            <Text fontSize={'md'} color={'primary.600'} my={'2'} ml={'auto'}>
                                                 These are notifications for messages that you receive
                                             </Text>
                                         </VStack>
                                         <HStack>
                                             <Switch onto size={'lg'} onTrackColor={'primary.300'} />
-                                            <Text fontSize={'md'} color={'#42495d'} m={'2'}>
+                                            <Text fontSize={'md'} color={'primary.600'} m={'2'}>
                                                 Push
                                             </Text>
                                         </HStack>
@@ -424,7 +424,7 @@ const SettingCard = ({ name, user }) => {
                                 <VStack m={"16"} space="10">
                                     <Text fontSize={'xl'} fontWeight={'bold'} color={'amber.800'} my={'2'}>Current Active Plan</Text>
                                     <Center borderWidth={"1"} borderColor={"primary.300"} borderRadius={"4"} rounded="lg" w={"64"} h={"56"}>
-                                        <Text fontSize={'xl'} fontWeight={'bold'} color={'#42495d'}>Basic</Text>
+                                        <Text fontSize={'xl'} fontWeight={'bold'} color={'primary.600'}>Basic</Text>
                                         <Text fontSize={'md'} fontWeight={'bold'} color={'primary.500'}>$0/mo</Text>
                                         <Divider bg="primary.500" thickness="0.5" orientation="horizontal" w={"56"} my={"4"} />
                                         <VStack alignItems={'flex-start'} space={'2'} m={'2'}>
@@ -453,7 +453,7 @@ const SettingCard = ({ name, user }) => {
                                     {plans.map((plan, index) => (
                                         <TouchableOpacity onPress={() => handlePlanSelection(index + 1, index === 0 ? "Basic Membership" : index === 1 ? "Premium Membership" : "Elite Membership", index === 0 ? 50 : index === 1 ? 100 : 150)} key={index}>
                                             <Center shadow={(subscribeData.id === 1 && index === 0) ? 1 : (subscribeData.id === 2 && index === 1) ? 1 : (subscribeData.id === 3 && index === 2) ? 1 : "none"} borderWidth={"1"} borderColor={"primary.300"} borderRadius={"4"} rounded="lg" w={"64"} h={"56"}>
-                                                <Text fontSize={'xl'} fontWeight={'bold'} color={'#42495d'}>{plan.name}</Text>
+                                                <Text fontSize={'xl'} fontWeight={'bold'} color={'primary.600'}>{plan.name}</Text>
                                                 <Text fontSize={'md'} fontWeight={'bold'} color={'primary.500'}>{plan.price}</Text>
                                                 <Divider bg="primary.500" thickness="0.5" orientation="horizontal" w={"56"} my={"4"} />
                                                 <VStack alignItems={'flex-start'} space={'2'} m={'2'}>
@@ -523,7 +523,7 @@ const SettingCard = ({ name, user }) => {
                                     {/* <VStack my={"3"} space="3" justifyContent={"center"} alignItems={"center"}>
                                         {helpData.map((help, index) => (
                                             <Center key={help.name} borderWidth={"1"} borderColor={"primary.300"} borderRadius={"4"} rounded="lg" w={"64"} h={"56"} justifyContent={"space-between"} py={"3"}>
-                                                <Text fontSize={'xl'} fontWeight={'bold'} color={'#42495d'}>{help.name}</Text>
+                                                <Text fontSize={'xl'} fontWeight={'bold'} color={'primary.600'}>{help.name}</Text>
                                                 <Image source={{ uri: (help.icon) }} alt="Alternate Text" size="lg" />
                                                 <Text fontSize={'md'} fontWeight={'bold'} color={'primary.500'} textAlign={"center"}>
                                                     {help.description}
