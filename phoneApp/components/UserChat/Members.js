@@ -184,7 +184,7 @@ const Members = ({ user, fetchAgain, setFetchAgain, admin }) => {
         {props => <>
           <EventsCard fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} {...props} user={user} data={selectedChat?.events} screen={eventsTab} />
           {admin && <Box position={'absolute'} bottom={'5'} right={'5'}>
-            <Button leftIcon={<MaterialIcons name="add" size={24} color="white" />} onPress={() => {
+            <Button leftIcon={<MaterialIcons name="add" size={24} color="primary.600" />} onPress={() => {
               setEventType('Create');
               setShowModalEvent(true);
             }} colorScheme={'cyan'} size={'md'} variant={"solid"}>Create Event</Button>

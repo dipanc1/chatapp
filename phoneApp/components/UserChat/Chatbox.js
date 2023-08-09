@@ -215,11 +215,11 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
                 {!stream &&
                     <HStack justifyContent={'space-between'} alignItems={'center'} h={'16'}>
 
-                        <Text style={{ color: 'primary.600' }} fontWeight={'bold'} fontSize={'lg'} mx={'5'}>
+                        <Text color={'primary.600'} fontWeight={'bold'} fontSize={'lg'} mx={'5'}>
                             {selectedChat?.isGroupChat ? selectedChat?.chatName : profile?.username}
                         </Text>
 
-                        {!selectedChat?.isGroupChat && <Text style={{ color: 'primary.600' }} fontWeight={'bold'} fontSize={'lg'} mx={'10'}>
+                        {!selectedChat?.isGroupChat && <Text color={'primary.600'} fontWeight={'bold'} fontSize={'lg'} mx={'10'}>
                             {online ? 'Online' : 'Offline'}
                         </Text>}
 

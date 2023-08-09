@@ -44,7 +44,7 @@ const SupportModal = () => {
 
     return (
         <>
-            <Button bg={'primary.300'} color={'white'} _text={{ fontWeight: 'bold' }} leftIcon={<Icon as={MaterialIcons} name="add-circle-outline" size={5} />} onPress={() => setModalVisible(true)}>
+            <Button bg={'primary.300'} color={'primary.600'} _text={{ fontWeight: 'bold' }} leftIcon={<Icon as={MaterialIcons} name="add-circle-outline" size={5} />} onPress={() => setModalVisible(true)}>
                 Raise a Ticket
             </Button>
             <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)}>

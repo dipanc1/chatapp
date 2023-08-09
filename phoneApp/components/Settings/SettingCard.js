@@ -481,7 +481,7 @@ const SettingCard = ({ name, user }) => {
                                     ))}
                                     <Button _disabled={{
                                         bg: 'primary.500',
-                                    }} isDisabled={!loading} bg={'primary.300'} color={'white'} _text={{ fontWeight: 'bold' }} my={'4'} mx={'auto'} onPress={openPaymentSheet}>
+                                    }} isDisabled={!loading} bg={'primary.300'} color={'primary.600'} _text={{ fontWeight: 'bold' }} my={'4'} mx={'auto'} onPress={openPaymentSheet}>
                                         Change Plan
                                     </Button>
 
@@ -494,14 +494,14 @@ const SettingCard = ({ name, user }) => {
                             <ScrollView>
                                 <Box width={"96"} p="5" rounded="lg">
                                     <VStack my={"10"} space="3" justifyContent={"center"} alignItems={"flex-start"}>
-                                        <Text fontSize={'xl'} fontWeight={'bold'} color={'white'} my={'2'}>Payment Methods</Text>
-                                        <Button bg={'primary.300'} color={'white'} _text={{ fontWeight: 'bold' }}>
+                                        <Text fontSize={'xl'} fontWeight={'bold'} color={'primary.600'} my={'2'}>Payment Methods</Text>
+                                        <Button bg={'primary.300'} color={'primary.600'} _text={{ fontWeight: 'bold' }}>
                                             Add Payment Method
                                         </Button>
                                     </VStack>
                                     <Divider bg="primary.500" thickness="1" orientation="horizontal" />
                                     <VStack my={"10"} space="3" justifyContent={"center"} alignItems={"flex-start"}>
-                                        <Text fontSize={'xl'} fontWeight={'bold'} color={'white'} my={'2'}>Invoices</Text>
+                                        <Text fontSize={'xl'} fontWeight={'bold'} color={'primary.600'} my={'2'}>Invoices</Text>
                                         <VStack my={"8"} space="3" justifyContent={"center"} alignItems={"center"}>
                                             {invoices.map((invoice, index) => (
                                                 <Accordian data={invoice} index={index} openAccordian={openAccordian} accordianOpen={accordianOpen} accordianIndex={accordianIndex} invoices={true} />
@@ -517,7 +517,7 @@ const SettingCard = ({ name, user }) => {
                             <ScrollView>
                                 <Box width={"96"} p="5" rounded="lg">
                                     <VStack my={"10"} space="3" justifyContent={"center"} alignItems={"flex-start"}>
-                                        <Text fontSize={'xl'} fontWeight={'bold'} color={'white'} my={'2'}>Support Portal</Text>
+                                        <Text fontSize={'xl'} fontWeight={'bold'} color={'primary.600'} my={'2'}>Support Portal</Text>
                                         <SupportModal />
                                     </VStack>
                                     {/* <VStack my={"3"} space="3" justifyContent={"center"} alignItems={"center"}>
@@ -533,7 +533,7 @@ const SettingCard = ({ name, user }) => {
                                     </VStack>
                                     <Divider bg="primary.500" thickness="1" orientation="horizontal" mt={"4"} />
                                     <Box my={"8"}>
-                                        <Text fontSize={'xl'} fontWeight={'bold'} color={'white'} my={'2'}>Frequency Asked Questions</Text>
+                                        <Text fontSize={'xl'} fontWeight={'bold'} color={'primary.600'} my={'2'}>Frequency Asked Questions</Text>
                                         <VStack my={"8"} space="3" justifyContent={"center"} alignItems={"center"}>
                                             {faqData.map((data, index) => (
                                                 <Accordian data={data} index={index} openAccordian={openAccordian} accordianOpen={accordianOpen} accordianIndex={accordianIndex} invoices={false} />
