@@ -1,11 +1,12 @@
 import React from 'react'
-import { Avatar, Box, FlatList, HStack, ScrollView, Spacer, Spinner, Text, VStack } from 'native-base'
+import { Box, FlatList, ScrollView, Spinner } from 'native-base'
 import Chatbox from './Chatbox'
 import UserListItem from '../UserItems/UserListItem'
 import { PhoneAppContext } from '../../context/PhoneAppContext'
 import Conversation from '../Miscellaneous/Conversation'
 import { TouchableOpacity } from 'react-native'
 import { backend_url } from '../../production'
+import axios from 'axios'
 
 const Conversations = ({ fetchAgain, setFetchAgain, conversations, user, searchResultsUsers, search, setSearch, navigation, fetchMoreOneOnOneChats, hasMoreOneOnOneChats }) => {
   const { dispatch, selectedChat } = React.useContext(PhoneAppContext);

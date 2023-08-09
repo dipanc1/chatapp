@@ -4,7 +4,6 @@ import { Avatar, Box, HStack, Text } from 'native-base'
 const UserListItem = ({ user }) => {
 
     return (
-
         <Box borderBottomWidth="1" borderBottomColor={'primary.100'} p={'3'} mx={'4'}>
             <HStack space={[2, 3]} justifyContent="space-between" >
                 <HStack alignItems={'center'}>

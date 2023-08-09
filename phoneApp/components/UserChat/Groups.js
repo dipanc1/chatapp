@@ -8,6 +8,7 @@ import GroupListItem from '../UserItems/GroupListItem'
 import { TouchableOpacity } from 'react-native'
 import { PhoneAppContext } from '../../context/PhoneAppContext'
 import { backend_url } from '../../production'
+import SearchGroupListItem from '../UserItems/SearchGroupListItem'
 
 const Groups = ({ user, groupConversations, searchResultsGroups, search, setSearch, fetchAgain, setFetchAgain, admin, fetchMoreGroupChats, hasMoreGroupChats, navigation }) => {
   const [showModal, setShowModal] = useState(false);
@@ -61,7 +62,7 @@ const Groups = ({ user, groupConversations, searchResultsGroups, search, setSear
                   <TouchableOpacity key={group._id}
                     onPress={() => handleAddUser(userInfo._id, group._id)}>
                     <Flex justifyContent={'flex-start'} p={'2'}>
-                      <GroupListItem group={group} />
+                      <SearchGroupListItem group={group} />
                     </Flex>
                   </TouchableOpacity>
                 ))

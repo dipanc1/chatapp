@@ -23,7 +23,7 @@ const Conversation = ({ chat, navigation }) => {
                 <HStack space={[2, 3]} justifyContent="space-between" alignItems={'center'}>
                     <HStack alignItems={'center'}>
                         {chat && <Avatar width={"48px"} height={"48px"} source={{
-                            uri: friends?.pic
+                            uri: friends.pic
                         }}>
                             {friends?.isOnline ? <Avatar.Badge bg="green.500" /> : <Avatar.Badge bg="red.500" />}
                         </Avatar>
