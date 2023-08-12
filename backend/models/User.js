@@ -37,6 +37,14 @@ const UserSchema = new mongoose.Schema({
         type: String,
         default: null,
     },
+    isSuperAdmin: {
+        type: Boolean,
+        default: false,
+    },
+    isSuspeneded: {
+        type: Boolean,
+        default: false,
+    },
     events: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Event",

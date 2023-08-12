@@ -21,6 +21,82 @@ const EventTable = require("../models/EventTable");
 let refreshTokens = [];
 const LIMIT = 5;
 
+// suspend a user
+router.put("/suspend/:id", protect, async (req, res) => {
+    // check if the user is super admin
+    req.user.isSuperAdmin === true ? (
+        // find the user
+        await User.findById(req.params.id)
+            .then(async (user) => {
+                // if the user is not suspended
+                if (user.isSuspeneded === false) {
+                    // suspend the user
+                    User.findByIdAndUpdate(req.params.id, { isSuspeneded: true })
+                        .then((user) => {
+                            res.status(200).json("User Suspended Successfully!")
+                        })
+                        .catch((err) => {
+                            res.status(500).json(err)
+                        })
+                } else {
+                    // if the user is suspended
+                    // unsuspend the user
+                    User.findByIdAndUpdate(req.params.id, { isSuspeneded: false })
+                        .then((user) => {
+                            res.status(200).json("User Unsuspended Successfully!")
+                        })
+                        .catch((err) => {
+                            res.status(500).json(err)
+                        })
+                }
+            })
+            .catch((err) => {
+                res.status(500).json(err)
+            })
+    ) : (
+        res.status(403).json("You are not allowed to do that!")
+    )
+})
+
+// get a list of users with pagination
+router.get("/list", protect, async (req, res) => {
+    // check if the user is super admin
+    req.user.isSuperAdmin === true ? (
+        // get the page number
+        page = req.query.page
+            ? parseInt(req.query.page)
+            : 1,
+
+        // get the skip
+        skip = (page - 1) * LIMIT,
+
+        // get the total number of users
+        total = await User.countDocuments(),
+
+        // get the total number of pages
+        pages = Math.ceil(total / LIMIT),
+
+        // get the users
+        await User.find()
+            .skip(skip)
+            .limit(LIMIT)
+            .then((users) => {
+                res.status(200).json({
+                    users,
+                    page,
+                    pages,
+                    total
+                })
+            })
+            .catch((err) => {
+                res.status(500).json(err)
+            })
+    ) : (
+        res.status(403).json("You are not allowed to do that!")
+    )
+
+})
+
 // send new access token
 router.post("/token", (req, res) => {
     //take the refresh token from the user
@@ -105,8 +181,15 @@ router.post("/login", async (req, res) => {
         const user = await User.findOne({ username: req.body.username })
         // console.log(user)
 
+        
         if (!user) {
             return res.status(400).json("Wrong Username or Password")
+        }
+
+        // check if user is suspended
+
+        if (user.isSuspeneded === true) {
+            return res.status(400).json("Your account is suspended!")
         }
 
         // validate password
