@@ -131,6 +131,9 @@ const Events = ({ user, navigation }) => {
     }, [user.token]);
 
     const selectEvent = async (chatId) => {
+        setLoading(true);
+        setLoadingUpcoming(true);
+        setLoadingPast(true);
         try {
             const config = {
                 headers: {
@@ -147,6 +150,9 @@ const Events = ({ user, navigation }) => {
 
             if (!data.users.map((u) => u._id === userInfo._id).includes(true)) {
                 setShowModal(true)
+                setLoading(false);
+                setLoadingUpcoming(false);
+                setLoadingPast(false);
             } else {
                 dispatch({ type: "SET_SELECTED_CHAT", payload: data });
                 navigation.navigate(`Live Stream`, {
@@ -157,11 +163,17 @@ const Events = ({ user, navigation }) => {
                         }
                     }
                 });
+                setLoading(false);
+                setLoadingUpcoming(false);
+                setLoadingPast(false);
             }
 
         } catch (error) {
             console.log(error)
             alert('Failed to Load the Events')
+            setLoading(false);
+            setLoadingUpcoming(false);
+            setLoadingPast(false);
         }
     };
 
