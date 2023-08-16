@@ -7,10 +7,10 @@ import { AppContext } from "../../context/AppContext";
 const SideBar = ({
   toggleSidebar
 }) => {
-  const { dispatch, stream, selectedChat } = useContext(AppContext);
+  const { dispatch, stream, selectedChat, userInfo } = useContext(AppContext);
   const navigate = useNavigate();
   const CDN_IMAGES = "https://ik.imagekit.io/sahildhingra";
-  const NavMenu = [
+  const userMenu = [
     // {
     // 	'title': 'Dashboard',
     // 	'icon': 'dashboard'
@@ -47,6 +47,19 @@ const SideBar = ({
       disable: stream,
     },
   ];
+
+  const adminMenu = [
+    {
+      title: "Users",
+      url: "user-listing",
+      icon: "groups",
+    },
+    {
+      title: "Groups",
+      url: "groups-listing",
+      icon: "groups",
+    }
+  ]
 
 
   const handleLogout = () => {
@@ -86,9 +99,9 @@ const SideBar = ({
             />
           </Box>
           <List flex={["unset"]} display={["block"]}>
-            {NavMenu.map((navitem) => {
-              return (
-                !navitem?.disable && (
+            {
+              userInfo?.isSuperAdmin ? (
+                adminMenu.map((navitem) => (
                   <ListItem key={navitem.title} flex={["unset"]} py={"4px"} fontWeight={"600"}>
                     <NavLink to={"/" + navitem.url}>
                       <Image
@@ -103,9 +116,31 @@ const SideBar = ({
                       <Text>{navitem.title}</Text>
                     </NavLink>
                   </ListItem>
-                )
-              );
-            })}
+                ))
+              ) : (
+                userMenu.map((navitem) => {
+                  return (
+                    !navitem?.disable && (
+                      <ListItem key={navitem.title} flex={["unset"]} py={"4px"} fontWeight={"600"}>
+                        <NavLink to={"/" + navitem.url}>
+                          <Image
+                            src={
+                              CDN_IMAGES +
+                              "/" +
+                              navitem.icon +
+                              ".png"
+                            }
+                            alt={navitem.title}
+                          />
+                          <Text>{navitem.title}</Text>
+                        </NavLink>
+                      </ListItem>
+                    )
+                  );
+                })
+              )
+            
+            }
           </List>
           <Box mt={["auto"]} py={["auto"]}>
             <List>

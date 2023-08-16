@@ -162,6 +162,13 @@
     font-size: 16px;
 }
 
+.table-sm th,
+.table-sm td {
+    padding: 15px 10px;
+    font-weight: 600;
+    font-size: 16px;
+}
+
 .table th {
     color: #9F85F7;
 }
@@ -176,17 +183,24 @@
 
 .table .badge {
     display: block;
-    font-size: 13px;
-    padding: 7px 23px;
+    font-size: 11px;
+    padding: 0px 9px;
     text-align: center;
-    border-radius: 30px;
+    border-radius: 5px;
     color: #fff;
     font-weight: bold;
     background: lightgray;
+    width: fit-content;
 }
 
 .table .badge.active {
     background: #24FF00;
+}
+
+.table .badge.user-active {
+    border: 1px solid #24FF00;
+    color: #24FF00;
+    background: rgba(36, 255, 0, 0.1);
 }
 
 .table .badge.expired {
