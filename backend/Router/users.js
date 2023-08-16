@@ -181,7 +181,7 @@ router.post("/login", async (req, res) => {
         const user = await User.findOne({ username: req.body.username })
         // console.log(user)
 
-        
+
         if (!user) {
             return res.status(400).json("Wrong Username or Password")
         }
@@ -381,12 +381,13 @@ router.get("/user-info", protect, async (req, res) => {
                 username: user.username,
                 number: user.number,
                 pic: user.pic,
+                isSuperAdmin: user.isSuperAdmin,
             })
         })
         .catch((err) => {
             res.status(500).json(err)
             console.log(err)
-        })
+        })  
 });
 
 // change password

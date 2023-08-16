@@ -60,7 +60,7 @@ const Participants = ({ user, fetchAgain, setFetchAgain }) => {
             <ScrollView>
               {selectedChat.isGroupChat && selectedChat?.users.map(u =>
                 <TouchableOpacity key={u?._id}>
-                  <ParticipantListItem user1={u} admin={admin} handleRemove={handleRemove} />
+                  <ParticipantListItem user1={u} admin={admin} selectedChat={selectedChat} handleRemove={handleRemove} />
                 </TouchableOpacity>
               )}
             </ScrollView>
