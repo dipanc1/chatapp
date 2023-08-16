@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
-import { Avatar, Box, Center, HStack, Icon, IconButton, StatusBar, Text } from 'native-base'
+import { Box, Center, HStack, Icon, IconButton, StatusBar, Text } from 'native-base'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import ProfileModal from '../UserModals/ProfileModal';
 import NavbarModal from '../UserModals/NavbarModal';
 import Searchbar from '../Miscellaneous/Searchbar';
 import { PhoneAppContext } from '../../context/PhoneAppContext';
+import { Image } from 'react-native';
 
 
 const Navbar = ({ user, fetchAgain, setFetchAgain, handleSearch, search, setSearch, navigation }) => {
@@ -28,9 +29,18 @@ const Navbar = ({ user, fetchAgain, setFetchAgain, handleSearch, search, setSear
                         {!searchbar && <>
                             <IconButton icon={<Icon size="xl" as={MaterialIcons} name="search" color="black" />} onPress={() => setSearchbar(true)} />
                             <IconButton icon={
-                                <Avatar bg="green.500" alignSelf="center" width={"32px"} height={"32px"} source={{
-                                    uri: userInfo?.pic
-                                }} />
+                                <Image
+                                    source={{
+                                        uri: userInfo?.pic
+                                    }}
+                                    alt={userInfo?.username}
+                                    style={{
+                                        width: 32,
+                                        height: 32,
+                                        borderRadius: 100,
+                                        alignSelf: "center"
+                                    }}
+                                />
                             } onPress={() => setShowModal(true)} />
                         </>
                         }

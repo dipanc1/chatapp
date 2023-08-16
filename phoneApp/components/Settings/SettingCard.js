@@ -1,5 +1,5 @@
 import React from 'react'
-import { Accordion, Avatar, Box, Button, Center, Divider, Flex, FormControl, HStack, Icon, IconButton, Image, Input, InputGroup, InputLeftAddon, Radio, ScrollView, Spacer, Switch, Text, VStack } from 'native-base'
+import { Box, Button, Center, Divider, Flex, FormControl, HStack, IconButton, Input, Radio, ScrollView, Switch, Text, VStack } from 'native-base'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import { backend_url } from '../../production';
@@ -9,6 +9,7 @@ import Accordian from '../Miscellaneous/Accordian';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PhoneAppContext } from '../../context/PhoneAppContext';
 import SupportModal from '../UserModals/SupportModal';
+import { Image } from 'react-native';
 
 const SettingCard = ({ name, user }) => {
 
@@ -256,11 +257,18 @@ const SettingCard = ({ name, user }) => {
                         return (
                             <VStack space={3}>
                                 <Box display={'flex'} alignItems={'center'}>
-                                    <Avatar bg="pink.600" alignSelf="center" size="xl" source={{
-                                        uri: pic
-                                    }}>
-                                        {user.username}
-                                    </Avatar>
+                                    <Image
+                                        source={{
+                                            uri: user.pic
+                                        }}
+                                        alt={user.username}
+                                        style={{
+                                            width: 150,
+                                            height: 150,
+                                            borderRadius: 100,
+                                            alignSelf: "center"
+                                        }}
+                                    />
                                     <IconButton variant={'ghost'} _icon={{
                                         as: MaterialIcons, name: "edit"
                                     }} size={'md'} />

@@ -67,7 +67,7 @@ const Settings = ({ user, fetchAgain, setFetchAgain }) => {
     <Flex flex={1} justifyContent={'space-around'}>
       <VStack justifyContent={'space-between'} px={4}>
         <FormControl>
-          <FormControl.Label _text={{ color: 'primary.900', fontSize: 'sm', fontWeight: 'bold' }}>
+          <FormControl.Label color={'primary.900'} fontSize={'sm'} fontWeight={'bold'}>
             Group Name
           </FormControl.Label>
           <Input placeholder={selectedChat?.isGroupChat ? selectedChat?.chatName : "Select a Group Chat"} value={groupChatName} onChangeText={

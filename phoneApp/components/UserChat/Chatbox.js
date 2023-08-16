@@ -1,8 +1,7 @@
 import axios from 'axios'
-import { Box, Button, FlatList, Flex, HStack, Icon, IconButton, Input, ScrollView, Spinner, Text, VStack, View } from 'native-base'
+import { Box, FlatList, Flex, HStack, Icon, IconButton, Input, Spinner, Text, View } from 'native-base'
 import React from 'react'
 import notifee from '@notifee/react-native';
-import { AndroidColor } from '@notifee/react-native';
 import Lottie from 'lottie-react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { PhoneAppContext } from '../../context/PhoneAppContext'
@@ -14,12 +13,10 @@ import animation from '../../assets/typing.json'
 
 var selectedChatCompare;
 
-const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
+const Chatbox = ({ user }) => {
     const socket = React.useContext(SocketContext);
 
     const { dispatch, selectedChat, stream, userInfo, notification } = React.useContext(PhoneAppContext);
-
-    const scrollViewRef = React.useRef();
 
     const [online, setOnline] = React.useState(false);
     const [page, setPage] = React.useState(2);
@@ -233,10 +230,10 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
                 {/* MIDDLE PART */}
                 <Box flex={'1'}>
                     <FlatList
-                        ref={scrollViewRef}
                         onEndReached={fetchMoreMessages}
                         onEndReachedThreshold={0.5}
                         inverted
+                        keyExtractor={(m) => m._id}
                         ListFooterComponent={hasMore ? <Spinner size={'lg'} color={'primary.300'} /> : null}
                         data={messages}
                         renderItem={({ item, i }) => (
@@ -254,7 +251,6 @@ const Chatbox = ({ fetchAgain, setFetchAgain, user }) => {
                                 user={user}
                             />
                         )}
-                        keyExtractor={(m) => m._id}
                     />
                     {isTyping ? (
                         <View>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Avatar, Box, FlatList, Flex, HStack, IconButton, ScrollView, Spacer, Spinner, Text, VStack } from 'native-base'
+import { Box, FlatList, Flex, HStack, IconButton, ScrollView, Spacer, Spinner, Text, VStack } from 'native-base'
 import Members from './Members'
 import axios from 'axios'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'

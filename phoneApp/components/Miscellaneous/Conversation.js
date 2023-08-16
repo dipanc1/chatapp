@@ -1,7 +1,7 @@
 import React from 'react'
-import { Avatar, Box, HStack, Text, Heading, VStack } from 'native-base'
+import { Box, HStack, Text, Heading, VStack } from 'native-base'
 import { PhoneAppContext } from '../../context/PhoneAppContext';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, Image } from 'react-native';
 
 const Conversation = ({ chat, navigation }) => {
     const { userInfo, dispatch } = React.useContext(PhoneAppContext);
@@ -22,11 +22,37 @@ const Conversation = ({ chat, navigation }) => {
             <Box borderBottomWidth="1" borderBottomColor={'primary.100'} p={'3'} mx={'4'}>
                 <HStack space={[2, 3]} justifyContent="space-between" alignItems={'center'}>
                     <HStack alignItems={'center'}>
-                        {chat && <Avatar width={"48px"} height={"48px"} source={{
-                            uri: friends.pic
-                        }}>
-                            {friends?.isOnline ? <Avatar.Badge bg="green.500" /> : <Avatar.Badge bg="red.500" />}
-                        </Avatar>
+                        {chat &&
+                            <>
+                                <Image
+                                    source={{
+                                        uri: friends.pic
+                                    }}
+                                    alt={friends?.username}
+                                    style={{
+                                        width: 48,
+                                        height: 48,
+                                        position: "relative",
+                                        borderRadius: 100,
+                                        alignSelf: "center"
+                                    }}
+                                />
+                                <Image
+                                    source={{
+                                        uri: friends?.isOnline ? 'https://cdn.wallpapersafari.com/83/39/xwth3L.jpg' : 'https://www.solidbackgrounds.com/images/1920x1080/1920x1080-red-solid-color-background.jpg'
+                                    }}
+                                    alt={friends?.isOnline ? "Online" : "Offline"}
+                                    style={{
+                                        position: "absolute",
+                                        width: 12,
+                                        height: 12,
+                                        borderRadius: 100,
+                                        alignSelf: "center",
+                                        left: 0,
+                                        bottom: 0
+                                    }}
+                                />
+                            </>
                         }
                         <VStack>
                             <Heading size={'sm'} ml={'3'} _dark={{

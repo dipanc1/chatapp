@@ -1,12 +1,10 @@
 import axios from 'axios';
-import { Avatar, Badge, Button, FormControl, Input, Modal, ScrollView, Text, View, VStack } from 'native-base';
+import { Button, FormControl, Input, Modal, ScrollView, Text, VStack } from 'native-base';
 import React from 'react'
 import { TouchableOpacity } from 'react-native';
 import { PhoneAppContext } from '../../context/PhoneAppContext';
 import { backend_url } from '../../production';
-import Searchbar from '../Miscellaneous/Searchbar';
 import UserListItem from '../UserItems/UserListItem';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const AddModal = ({ user, showModal, setShowModal, fetchAgain, setFetchAgain, chat }) => {
   const { dispatch, selectedChat, userInfo } = React.useContext(PhoneAppContext);

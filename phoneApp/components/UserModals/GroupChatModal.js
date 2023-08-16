@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Avatar, Badge, Button, FormControl, HStack, Input, Modal, ScrollView, Text, View, VStack } from 'native-base';
+import { Badge, Button, FormControl, HStack, Input, Modal, ScrollView, Text, View, VStack } from 'native-base';
 import React from 'react'
 import { TouchableOpacity } from 'react-native';
 import { PhoneAppContext } from '../../context/PhoneAppContext';

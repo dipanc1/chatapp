@@ -1,10 +1,11 @@
 import { launchImageLibrary } from 'react-native-image-picker';
 import React from 'react'
-import { Avatar, Box, Button, FormControl, IconButton, Input, Modal, Stack, TextArea, VStack } from 'native-base'
+import { Box, Button, FormControl, IconButton, Input, Modal, Stack, TextArea, VStack } from 'native-base'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import DatePicker from 'react-native-date-picker'
 import { PhoneAppContext } from '../../context/PhoneAppContext';
 import { api_key, folder, pictureUpload } from '../../production';
+import { Image } from 'react-native';
 
 
 const EventModal = ({ user, fetchAgain, setFetchAgain, showModal, setShowModal, eventType, eventName, setEventName, description, setDescription, date, setDate, time, setTime, selectedImage, setSelectedImage, createEventLoading, setCreateEventLoading, handleSubmit }) => {
@@ -128,11 +129,18 @@ const EventModal = ({ user, fetchAgain, setFetchAgain, showModal, setShowModal, 
               </Stack>
             </FormControl>
             <Box display={'flex'} alignItems={'flex-end'}>
-              <Avatar bg="pink.600" alignSelf="center" size="xl" source={{
-                uri: (selectedImage !== null ? selectedImage : "https://images.unsplash.com/photo-1601233749202-95d04d5b3c00?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2876&q=80")
-              }}>
-                GG
-              </Avatar>
+              <Image
+                source={{
+                  uri: selectedImage !== null ? selectedImage : "https://images.unsplash.com/photo-1601233749202-95d04d5b3c00?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2876&q=80"
+                }}
+                alt="Cover Image"
+                style={{
+                  width: 150,
+                  height: 150,
+                  borderRadius: 100,
+                  alignSelf: "center"
+                }}
+              />
               <IconButton onPress={() => pickImage()} variant={'ghost'} _icon={{
                 as: MaterialIcons, name: "edit"
               }} size={'md'} />
