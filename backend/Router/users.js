@@ -59,7 +59,8 @@ router.put("/suspend/:id", protect, async (req, res) => {
 })
 
 // get a list of users with pagination
-router.get("/list", protect, async (req, res) => {
+router.get("/list/:limit", protect, async (req, res) => {
+    const limit = parseInt(req.params.limit)
     // check if the user is super admin
     req.user.isSuperAdmin === true ? (
         // get the page number
@@ -68,18 +69,19 @@ router.get("/list", protect, async (req, res) => {
             : 1,
 
         // get the skip
-        skip = (page - 1) * LIMIT,
+        skip = (page - 1) * limit,
 
         // get the total number of users
         total = await User.countDocuments(),
 
         // get the total number of pages
-        pages = Math.ceil(total / LIMIT),
+        pages = Math.ceil(total / limit),
 
         // get the users
         await User.find()
             .skip(skip)
-            .limit(LIMIT)
+            .limit(limit)
+            .sort({ createdAt: -1 })
             .then((users) => {
                 res.status(200).json({
                     users,
@@ -387,7 +389,7 @@ router.get("/user-info", protect, async (req, res) => {
         .catch((err) => {
             res.status(500).json(err)
             console.log(err)
-        })  
+        })
 });
 
 // change password
