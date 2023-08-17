@@ -160,7 +160,8 @@ router.get("/group-chats/:page", protect, asyncHandler(async (req, res) => {
         const groups = await Chat.find(
             {
                 isGroupChat: true,
-                users: { $elemMatch: { $eq: req.user._id } }
+                users: { $elemMatch: { $eq: req.user._id } },
+                isSuspended: false,
             }
         )
             .populate("users", "-password")
@@ -219,7 +220,8 @@ router.get("/my/:page", protect, async (req, res) => {
         const hasNextPage = currentPage < totalPages;
         const hasPrevPage = currentPage > 1;
         let chats = await Chat.find({
-            users: { $elemMatch: { $eq: req.user._id } }
+            users: { $elemMatch: { $eq: req.user._id } },
+            isSuspended: false
         })
             .populate("users", "-password -events")
             .populate("groupAdmin", "-password -events")
@@ -256,8 +258,6 @@ router.get("/admin/:page", protect, async (req, res) => {
     const skip = (page - 1) * limit;
 
     try {
-        // check if isgoroupchat is true
-
         const totalCount = await Chat.countDocuments({
             groupAdmin: { $eq: req.user._id }
         });
@@ -269,7 +269,8 @@ router.get("/admin/:page", protect, async (req, res) => {
         const hasNextPage = currentPage < totalPages;
         const hasPrevPage = currentPage > 1;
         let chats = await Chat.find({
-            groupAdmin: { $eq: req.user._id }
+            groupAdmin: { $eq: req.user._id },
+            isSuspended: false
         })
             .populate("users", "-password -events")
             .populate("groupAdmin", "-password -events")
@@ -305,7 +306,7 @@ router.get("/all/:page", protect, asyncHandler(async (req, res) => {
     const limit = 5;
     const skip = (page - 1) * limit;
 
-    const groups = await Chat.find({ isGroupChat: true })
+    const groups = await Chat.find({ isGroupChat: true, isSuspended: false })
         .populate("users", "-password")
         .populate("groupAdmin", "-password")
         .populate("events")
@@ -366,6 +367,11 @@ router.get("/encrypted/chat/:id", asyncHandler(async (req, res) => {
                 .populate("groupAdmin", "-password")
                 .populate("events");
 
+            // check if chat is suspended
+            if (findChat.isSuspended) {
+                return res.status(400).send("Chat is suspended")
+            }
+
             if (!findChat) {
                 return res.status(404).send("No chat found")
             }
@@ -419,6 +425,16 @@ router.post("/group", protect, asyncHandler(async (req, res) => {
 router.put("/rename", protect, asyncHandler(async (req, res) => {
     const { chatId, chatName, description } = req.body;
 
+    if (!chatId || !chatName || !description) {
+        return res.status(400).send("All Feilds are required")
+    }
+    
+    // check if chat is suspended
+    const chat = await Chat.findById(chatId);
+    if (chat.isSuspended) {
+        return res.status(400).send("Chat is suspended")
+    }
+
     const updatedChat = await Chat.findByIdAndUpdate(chatId, { chatName, description }, { new: true })
         .populate("users", "-password")
         .populate("groupAdmin", "-password")
@@ -434,6 +450,11 @@ router.put("/rename", protect, asyncHandler(async (req, res) => {
 // adding in group
 router.put("/groupadd", protect, asyncHandler(async (req, res) => {
     const { chatId, userId } = req.body;
+
+    const isSuspended = await Chat.findById(chatId);
+    if (isSuspended.isSuspended) {
+        return res.status(400).send("Chat is suspended")
+    }
 
     const isUser = await Chat.findOne({ _id: chatId, users: { $elemMatch: { $eq: userId } } });
 
@@ -466,6 +487,12 @@ router.put("/groupadd", protect, asyncHandler(async (req, res) => {
 router.put("/groupremove", protect, asyncHandler(async (req, res) => {
     const { chatId, userId } = req.body;
 
+    // check if chat is suspended
+    const chat = await Chat.findById(chatId);
+    if (chat.isSuspended) {
+        return res.status(400).send("Chat is suspended")
+    }
+
     // check if group admin leave make some other admin
     const isGroupAdmin = await Chat.findOne({ _id: chatId, groupAdmin: { $eq: userId } });
     if (isGroupAdmin) {
@@ -492,6 +519,77 @@ router.put("/groupremove", protect, asyncHandler(async (req, res) => {
     } else {
         res.status(200).json(removed);
     }
+}));
+
+
+// make someone admin of group by superadmin
+router.put("/groupmakeadmin", protect, asyncHandler(async (req, res) => {
+    const { chatId, userId } = req.body;
+
+    // check if user is superadmin
+    const checkSuperAdmin = await User.findById(req.user._id);
+
+    if (!checkSuperAdmin.isSuperAdmin) {
+        return res.status(400).send("You are not super admin")
+    }
+
+
+    const isGroupAdmin = await Chat.findOne({ _id: chatId, groupAdmin: { $eq: userId } });
+    if (isGroupAdmin) {
+        return res.status(400).send("User is already admin")
+    }
+
+
+    // check if user is in group
+    const isUser = await Chat.findOne({ _id: chatId, users: { $elemMatch: { $eq: userId } } });
+
+    if (!isUser) {
+        return res.status(400).send("User is not in group")
+    }
+
+    // make user admin
+    const makeAdmin = await Chat.findByIdAndUpdate(chatId, { groupAdmin: userId }, { new: true })
+
+    if (!makeAdmin) {
+        return res.status(404).send("Chat not found")
+    } else {
+        res.status(200).json({
+            message: "User is now admin"
+        });
+    }
+
+}));
+
+
+// suspend group by superadmin
+router.put("/groupsuspend", protect, asyncHandler(async (req, res) => {
+    const { chatId } = req.body;
+
+    try {
+
+        // check if user is superadmin
+        const checkSuperAdmin = await User.findById(req.user._id);
+
+        if (!checkSuperAdmin.isSuperAdmin) {
+            return res.status(400).send("You are not super admin")
+        }
+
+        // check if group is already suspended
+        const findGroup = await Chat.findById(chatId);
+
+        if (findGroup.isSuspended) {
+            // unsuspend group
+            await Chat.findByIdAndUpdate(chatId, { isSuspended: false });
+            return res.status(200).send("Group unsuspended");
+        }
+
+        // suspend group
+        await Chat.findByIdAndUpdate(chatId, { isSuspended: true });
+        return res.status(200).send("Group suspended");
+    } catch (error) {
+        return res.status(500).send("Something went wrong")
+    }
+
 }));
 
 
@@ -566,6 +664,11 @@ router.put("/event/:chatId", protect, asyncHandler(async (req, res) => {
     const userId = req.user._id;
     const updateGroupChat = await Chat.findById(chatId);
 
+    // check if chat is suspended
+    if (updateGroupChat.isSuspended) {
+        return res.status(400).send("Chat is suspended")
+    }
+    
     if (updateGroupChat.groupAdmin.toString() != userId.toString()) {
         return res.status(400).send("You are not admin of this group")
     };
@@ -610,9 +713,20 @@ router.put("/event/edit/:eventId", protect, asyncHandler(async (req, res) => {
 
     const updateGroupChat = await Chat.findById(chatId);
 
+    // check if chat is suspended
+    if (updateGroupChat.isSuspended) {
+        return res.status(400).send("Chat is suspended")
+    }
+
     if (updateGroupChat.groupAdmin.toString() != userId.toString()) {
         return res.status(400).send("You are not admin of this group")
     };
+
+    // check if the event is disabled
+    const checkEvent = await EventTable.findById(eventId);
+    if (checkEvent.isDisabled) {
+        return res.status(400).send("Event is disabled")
+    }
 
     const findEventandUpdate = await EventTable.findByIdAndUpdate(eventId, {
         name,
@@ -637,6 +751,12 @@ router.delete("/event/delete/:eventId/:chatId", protect, asyncHandler(async (req
     const userId = req.user._id;
 
     const updateGroupChat = await Chat.findById(chatId);
+
+    // check if chat is suspended
+    if (updateGroupChat.isSuspended) {
+        return res.status(400).send("Chat is suspended")
+    }
+
 
     if (updateGroupChat.groupAdmin.toString() != userId.toString()) {
         return res.status(400).send("You are not admin of this group")
@@ -669,9 +789,19 @@ router.get("/event/:chatId", protect, asyncHandler(async (req, res) => {
 
     const findGroupById = await Chat.findById(chatId).populate("events");
 
+    // check if chat is suspended
+    if (findGroupById.isSuspended) {
+        return res.status(400).send("Chat is suspended")
+    }
+
     if (!findGroupById) {
         return res.status(404).send("Group not found")
     }
+
+    // check if event is disabled
+    findGroupById.events = findGroupById.events.filter((event) => {
+        return event.isDisabled === false;
+    });
 
     res.status(200).json(findGroupById.events);
 }));
@@ -680,11 +810,11 @@ router.get("/event/:chatId", protect, asyncHandler(async (req, res) => {
 // get all events with pagination
 router.get("/event/all/:page", protect, asyncHandler(async (req, res) => {
     const { page } = req.params;
-    const limit = 5;
+    const limit = LIMIT;
     const skip = (page - 1) * limit;
 
     try {
-        const events = await EventTable.find().skip(skip).limit(limit).sort({ createdAt: -1 });
+        let events = await EventTable.find().skip(skip).limit(limit).sort({ createdAt: -1 });
         const totalCount = await EventTable.countDocuments();
         const currentCount = events.length;
         const totalPages = Math.ceil(totalCount / limit);
@@ -695,6 +825,11 @@ router.get("/event/all/:page", protect, asyncHandler(async (req, res) => {
         if (!events) {
             return res.status(404).send("No events found")
         }
+
+        // check if event is disabled
+        events = events.filter((event) => {
+            return event.isDisabled === false;
+        });
 
         res.status(200).json({
             events,
@@ -715,11 +850,11 @@ router.get("/event/all/:page", protect, asyncHandler(async (req, res) => {
 // get upcoming events with pagination
 router.get("/event/upcoming/:page", protect, asyncHandler(async (req, res) => {
     const { page } = req.params;
-    const limit = 5;
+    const limit = LIMIT;
     const skip = (page - 1) * limit;
 
     try {
-        const events = await EventTable.find({ date: { $gte: new Date() } }).skip(skip).limit(limit).sort({ createdAt: -1 });
+        let events = await EventTable.find({ date: { $gte: new Date() } }).skip(skip).limit(limit).sort({ createdAt: -1 });
         const totalCount = await EventTable.countDocuments({ date: { $gte: new Date() } });
         const currentCount = events.length;
         const totalPages = Math.ceil(totalCount / limit);
@@ -730,6 +865,11 @@ router.get("/event/upcoming/:page", protect, asyncHandler(async (req, res) => {
         if (!events) {
             return res.status(404).send("No events found")
         }
+
+        // check if event is disabled
+        events = events.filter((event) => {
+            return event.isDisabled === false;
+        });
 
         res.status(200).json({
             events,
@@ -750,11 +890,11 @@ router.get("/event/upcoming/:page", protect, asyncHandler(async (req, res) => {
 // get past events with pagination
 router.get("/event/past/:page", protect, asyncHandler(async (req, res) => {
     const { page } = req.params;
-    const limit = 5;
+    const limit = LIMIT;
     const skip = (page - 1) * limit;
 
     try {
-        const events = await EventTable.find({ date: { $lt: new Date() } }).skip(skip).limit(limit).sort({ createdAt: -1 });
+        let events = await EventTable.find({ date: { $lt: new Date() } }).skip(skip).limit(limit).sort({ createdAt: -1 });
         const totalCount = await EventTable.countDocuments({ date: { $lt: new Date() } });
         const currentCount = events.length;
         const totalPages = Math.ceil(totalCount / limit);
@@ -765,6 +905,11 @@ router.get("/event/past/:page", protect, asyncHandler(async (req, res) => {
         if (!events) {
             return res.status(404).send("No events found")
         }
+
+        // check if event is disabled
+        events = events.filter((event) => {
+            return event.isDisabled === false;
+        });
 
         res.status(200).json({
             events,
@@ -781,5 +926,42 @@ router.get("/event/past/:page", protect, asyncHandler(async (req, res) => {
 
 }));
 
+
+// disable an event
+router.put("/event/disable/:eventId", protect, asyncHandler(async (req, res) => {
+    const { eventId } = req.params;
+
+    try {
+        if (!eventId) {
+            return res.status(400).send("eventId is required")
+        }
+
+        // find event
+        const findEvent = await EventTable.findById(eventId);
+
+        if (!findEvent) {
+            return res.status(404).send("Event not found")
+        }
+
+        // if event is already disabled
+        if (findEvent.isDisabled) {
+            // enable event
+            await EventTable.findByIdAndUpdate(eventId, { isDisabled: false });
+            return res.status(200).send("Event enabled");
+        }
+
+        // disable event
+        await EventTable.findByIdAndUpdate(eventId, { isDisabled: true });
+        return res.status(200).send("Event disabled");
+
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: "Something went wrong"
+        })
+    }
+
+}));
 
 module.exports = router;

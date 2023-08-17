@@ -7,6 +7,7 @@ const EventSchema = mongoose.Schema({
     time: { type: String },
     thumbnail: { type: String },
     chatId: { type: String },
+    isDisabled: { type: Boolean, default: false },
 }, { timestamps: true });
 
 const EventTable = mongoose.model("Event", EventSchema);

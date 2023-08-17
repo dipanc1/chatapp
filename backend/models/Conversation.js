@@ -19,6 +19,7 @@ const ConversationSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Event",
     },],
+    isSuspended: { type: Boolean, default: false },
 }, { timestamps: true });
 
 const Chat = mongoose.model("Chat", ConversationSchema);
