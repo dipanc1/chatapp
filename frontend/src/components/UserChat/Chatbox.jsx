@@ -56,7 +56,8 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
 
     var element = document.getElementById("scrollableDiv");
-    element.scrollTop = element.scrollHeight;
+    if (!element) return;
+    element.scrollTop = element?.scrollHeight;
   }, [messages]);
 
 

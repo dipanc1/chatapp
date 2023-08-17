@@ -161,7 +161,6 @@ router.get("/group-chats/:page", protect, asyncHandler(async (req, res) => {
             {
                 isGroupChat: true,
                 users: { $elemMatch: { $eq: req.user._id } },
-                isSuspended: false,
             }
         )
             .populate("users", "-password")
@@ -172,6 +171,9 @@ router.get("/group-chats/:page", protect, asyncHandler(async (req, res) => {
             .skip((page - 1) * limit)
             .limit(limit)
             .then(async (results) => {
+                results.filter((group) => {
+                    return group.isSuspended === false;
+                });
                 results = await User.populate(results, {
                     path: "latestMessage.sender",
                     select: "username number pic"
@@ -221,7 +223,6 @@ router.get("/my/:page", protect, async (req, res) => {
         const hasPrevPage = currentPage > 1;
         let chats = await Chat.find({
             users: { $elemMatch: { $eq: req.user._id } },
-            isSuspended: false
         })
             .populate("users", "-password -events")
             .populate("groupAdmin", "-password -events")
@@ -230,6 +231,9 @@ router.get("/my/:page", protect, async (req, res) => {
             .sort({ updatedAt: -1 })
             .skip(skip)
             .limit(limit);
+        chats.filter((chat) => {
+            return chat.isSuspended === false;
+        });
         chats = await User.populate(chats, {
             path: "latestMessage.sender",
             select: "username number pic"
@@ -270,7 +274,6 @@ router.get("/admin/:page", protect, async (req, res) => {
         const hasPrevPage = currentPage > 1;
         let chats = await Chat.find({
             groupAdmin: { $eq: req.user._id },
-            isSuspended: false
         })
             .populate("users", "-password -events")
             .populate("groupAdmin", "-password -events")
@@ -279,6 +282,9 @@ router.get("/admin/:page", protect, async (req, res) => {
             .sort({ updatedAt: -1 })
             .skip(skip)
             .limit(limit);
+        chats.filter((chat) => {
+            return chat.isSuspended === false;
+        });
         chats = await User.populate(chats, {
             path: "latestMessage.sender",
             select: "username number pic"
@@ -306,7 +312,7 @@ router.get("/all/:page", protect, asyncHandler(async (req, res) => {
     const limit = 5;
     const skip = (page - 1) * limit;
 
-    const groups = await Chat.find({ isGroupChat: true, isSuspended: false })
+    let groups = await Chat.find({ isGroupChat: true })
         .populate("users", "-password")
         .populate("groupAdmin", "-password")
         .populate("events")
@@ -320,6 +326,9 @@ router.get("/all/:page", protect, asyncHandler(async (req, res) => {
     const hasNextPage = currentPage < totalPages;
     const hasPrevPage = currentPage > 1;
 
+    groups = groups.filter((group) => {
+        return group.isSuspended === false;
+    });
 
     if (!groups) {
         return res.status(404).send("No group chats found")
@@ -428,7 +437,7 @@ router.put("/rename", protect, asyncHandler(async (req, res) => {
     if (!chatId || !chatName || !description) {
         return res.status(400).send("All Feilds are required")
     }
-    
+
     // check if chat is suspended
     const chat = await Chat.findById(chatId);
     if (chat.isSuspended) {
@@ -668,7 +677,7 @@ router.put("/event/:chatId", protect, asyncHandler(async (req, res) => {
     if (updateGroupChat.isSuspended) {
         return res.status(400).send("Chat is suspended")
     }
-    
+
     if (updateGroupChat.groupAdmin.toString() != userId.toString()) {
         return res.status(400).send("You are not admin of this group")
     };
