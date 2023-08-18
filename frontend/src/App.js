@@ -21,6 +21,7 @@ import { RoomContext } from './context/RoomContext';
 import { AppContext } from './context/AppContext';
 import UsersList from './pages/UsersList';
 import GroupsList from './pages/GroupsList';
+import Dashboard from './pages/Dashboard';
 
 //TODO: delete console statements
 
@@ -53,6 +54,7 @@ function App() {
                 <Route path="event" element={<Events />} /><Route path="event/create" element={<CreateEvent />} /><Route path="event/detail" element={<EventDetails />} />
               </>}
               <Route path="settings" element={<Settings />} />
+              <Route path="dashboard" element={<Dashboard />} />
               <Route path="user-listing" element={<UsersList />} />
               <Route path="groups-listing" element={<GroupsList />} />
               <Route path="video-chat" element={<VideoChat />} />
