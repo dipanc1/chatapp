@@ -184,8 +184,21 @@ const Login = () => {
             try {
                 const res = await axios.post(`${backend_url}/users/login`, user);
                 localStorage.setItem("user", JSON.stringify(res.data));
+                const config = {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${res.data.token}`,
+                    },
+                };
+                const userType = await axios.get(`${backend_url}/users/user-info`, config)
+                
                 // console.log("working!!", res)
-                navigate('/video-chat')
+                console.log(userType.data, "<-- auth res")
+                if (userType.data.isSuperAdmin === true) {
+                    navigate('/dashboard')
+                } else {
+                    navigate('/video-chat')
+                }
             } catch (err) {
                 toast({
                     title: "Invalid username or password",
@@ -202,7 +215,11 @@ const Login = () => {
 
     React.useEffect(() => {
         if (user) {
-            navigate('/video-chat')
+            if (user.isSuperAdmin) {
+                navigate('/dashboard')
+            } else {
+                navigate('/video-chat')
+            }
         }
         if (match && match.pattern.path === "/join-group/:groupId/login") {
             setMatchPath(true);

@@ -122,8 +122,6 @@ const GroupsList = () => {
                               }
                             </Td>
                           </Tr>
-                          {console.log(user?.isExpanded, "<-- see")}
-                          
                           {
                             activeIndex == index && (
                               <Tr>

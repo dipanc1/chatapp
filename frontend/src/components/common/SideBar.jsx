@@ -50,6 +50,11 @@ const SideBar = ({
 
   const adminMenu = [
     {
+    	title: 'Dashboard',
+      url: "dashboard",
+    	icon: 'dashboard'
+    },
+    {
       title: "Users",
       url: "user-listing",
       icon: "groups",

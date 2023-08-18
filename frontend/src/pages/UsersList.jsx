@@ -24,7 +24,7 @@ const UsersList = () => {
           'Authorization': `Bearer ${user.token}`
         }
       };
-      const { data } = await axios.get(`${backend_url}/users/list?page=${pageState.page}`, config);
+      const { data } = await axios.get(`${backend_url}/users/list/5?page=${pageState.page}`, config);
       pageState["page"] = data?.page;
       pageState["pages"] = data?.pages;
       pageState["total"] = data?.total;
@@ -68,7 +68,7 @@ const UsersList = () => {
             <Spinner size={'lg'} color={'primary.300'} />
           </Flex>
         ) : (
-          userData?.users.length && (
+          userData?.users?.length && (
             <>
               <TableContainer className='table table-striped table-sm'>
                 <Table>
