@@ -107,7 +107,7 @@ const EventsCard = ({ data, screen, selectEvent, chatName, user, showModal, setS
         </TouchableOpacity>
         <Stack p="4" space={2}>
           <HStack space={'24'} justifyContent={'space-between'}>
-            <Heading size="md" maxW={'48'}>
+            <Heading size="md" maxW={'40'}>
               {item?.name}
             </Heading>
             {!screen && admin && <OptionsModal fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} eventDetails={item} admin={admin} group={false} deleteEvent={deleteEvent} eventId={item._id} user={user} chat={selectedChat} />}

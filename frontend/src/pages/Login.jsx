@@ -152,7 +152,7 @@ const Login = () => {
                 const res = await axios.post(`${backend_url}/users/login`, user);
 
                 const groupDetails = await axios.get(`${backend_url}/conversation/encrypted/chat/${match.params.groupId}`);
-                
+
                 const config = {
                     headers: {
                         "Content-Type": "application/json",
@@ -191,10 +191,9 @@ const Login = () => {
                     },
                 };
                 const userType = await axios.get(`${backend_url}/users/user-info`, config)
-                
+
                 // console.log("working!!", res)
-                console.log(userType.data, "<-- auth res")
-                if (userType.data.isSuperAdmin === true) {
+                if (userType.data.isSuperAdmin) {
                     navigate('/dashboard')
                 } else {
                     navigate('/video-chat')

@@ -7,8 +7,11 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "upgrade": "react-native upgrade",
+    "link": "react-native link",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "eject": "react-native eject",
+    "clean": "react-native-clean-project"
   },
   "dependencies": {
     "@emailjs/browser": "^3.11.0",
@@ -23,11 +26,13 @@
     "axios": "^0.27.2",
     "lottie-react-native": "^5.1.4",
     "native-base": "^3.4.11",
-    "react": "18.1.0",
+    "react": "18.2.0",
     "react-hook-form": "^7.45.2",
-    "react-native": "0.70.4",
+    "react-native": "0.72.4",
     "react-native-date-picker": "^4.2.13",
+    "react-native-eject": "^0.2.0",
     "react-native-gesture-handler": "^2.5.0",
+    "react-native-gradle-plugin": "^0.71.19",
     "react-native-image-picker": "^4.8.5",
     "react-native-otp-textinput": "^0.0.9",
     "react-native-pager-view": "^5.4.25",
