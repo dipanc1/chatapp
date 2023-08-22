@@ -29,9 +29,9 @@ router.put("/suspend/:id", protect, async (req, res) => {
         await User.findById(req.params.id)
             .then(async (user) => {
                 // if the user is not suspended
-                if (user.isSuspeneded === false) {
+                if (user.isSuspended === false) {
                     // suspend the user
-                    User.findByIdAndUpdate(req.params.id, { isSuspeneded: true })
+                    User.findByIdAndUpdate(req.params.id, { isSuspended: true })
                         .then((user) => {
                             res.status(200).json("User Suspended Successfully!")
                         })
@@ -41,7 +41,7 @@ router.put("/suspend/:id", protect, async (req, res) => {
                 } else {
                     // if the user is suspended
                     // unsuspend the user
-                    User.findByIdAndUpdate(req.params.id, { isSuspeneded: false })
+                    User.findByIdAndUpdate(req.params.id, { isSuspended: false })
                         .then((user) => {
                             res.status(200).json("User Unsuspended Successfully!")
                         })

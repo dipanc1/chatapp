@@ -63,6 +63,11 @@ const SideBar = ({
       title: "Groups",
       url: "groups-listing",
       icon: "groups",
+    },
+    {
+      title: "Events",
+      url: "events-listing",
+      icon: "events",
     }
   ]
 

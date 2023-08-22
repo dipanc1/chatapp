@@ -36,10 +36,10 @@ mongoose.connect(
     useNewUrlParser: true,
     useUnifiedTopology: true
 },
-    () => {
+    async () => {
         console.log("Connected to MongoDB");
     }, 600000
-);
+)
 
 app.use(bodyParser.json());
 app.use("/", otpRoute)

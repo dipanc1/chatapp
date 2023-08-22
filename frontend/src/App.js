@@ -22,6 +22,7 @@ import { AppContext } from './context/AppContext';
 import UsersList from './pages/UsersList';
 import GroupsList from './pages/GroupsList';
 import Dashboard from './pages/Dashboard';
+import EventsList from './pages/EventsList';
 
 //TODO: delete console statements
 
@@ -57,6 +58,7 @@ function App() {
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="user-listing" element={<UsersList />} />
               <Route path="groups-listing" element={<GroupsList />} />
+              <Route path="events-listing" element={<EventsList />} />
               <Route path="video-chat" element={<VideoChat />} />
               <Route path="groups" element={<Groups />} />
               <Route path="search" element={<Search />} />
