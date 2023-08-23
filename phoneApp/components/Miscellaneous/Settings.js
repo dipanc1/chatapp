@@ -79,6 +79,7 @@ const Settings = ({ user, fetchAgain, setFetchAgain }) => {
             borderRadius={'lg'}
             my={'16'}
             onPress={handleRename}
+            isDisabled={!groupChatName}
           >
             Change Name
           </Button>

@@ -9,7 +9,6 @@ import UserListItem from '../UserItems/UserListItem';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const GroupChatModal = ({ user, showModal, setShowModal }) => {
-  const { dispatch, chats } = React.useContext(PhoneAppContext);
   const [selectedUsers, setSelectedUsers] = React.useState([]);
   const [search, setSearch] = React.useState('');
   const [searchResults, setSearchResults] = React.useState([]);
