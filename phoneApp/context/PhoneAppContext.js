@@ -8,7 +8,6 @@ import { useNavigationContainerRef } from '@react-navigation/native';
 const INITIAL_STATE = {
   number: "",
   selectedChat: null,
-  chats: [],
   notification: [],
   stream: false,
   fullScreen: true,
@@ -65,7 +64,6 @@ export const PhoneAppContextProvider = ({ children, user, fetchAgain, setFetchAg
       value={{
         number: state.number,
         selectedChat: state.selectedChat,
-        chats: state.chats,
         notification: state.notification,
         stream: state.stream,
         fullScreen: state.fullScreen,

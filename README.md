@@ -11,6 +11,3 @@
 ## Phone App
 
 #### chat new message issue chat gets inverted
-#### Avatar Issue
-
-

@@ -15,7 +15,7 @@ const Tab = createMaterialTopTabNavigator();
 
 const VideoChat = ({ user, fetchAgain, setFetchAgain, navigation }) => {
 
-    const { chats, dispatch, stream, selectedChat, userInfo } = React.useContext(PhoneAppContext);
+    const { dispatch, stream, selectedChat, userInfo } = React.useContext(PhoneAppContext);
 
     const [conversations, setConversations] = React.useState([])
     const [groupConversations, setGroupConversations] = React.useState([])
@@ -107,14 +107,6 @@ const VideoChat = ({ user, fetchAgain, setFetchAgain, navigation }) => {
             setConversations(data.chats);
             setHasMoreOneOnOneChats(data.hasMore);
 
-            if (
-                !chats.find(
-                    (chat) => chat._id === data.chats.map((datas) => datas._id)
-                )
-            ) {
-                dispatch({ type: "SET_CHATS", payload: data });
-            }
-
         } catch (error) {
             console.log(error)
         }
@@ -135,14 +127,6 @@ const VideoChat = ({ user, fetchAgain, setFetchAgain, navigation }) => {
 
             setGroupConversations(data.groups);
             setHasMoreGroupChats(data.hasMore);
-
-            if (
-                !chats.find(
-                    (chat) => chat._id === data.groups.map((datas) => datas._id)
-                )
-            ) {
-                dispatch({ type: "SET_CHATS", payload: data });
-            }
 
         } catch (error) {
             console.log(error)
@@ -166,14 +150,6 @@ const VideoChat = ({ user, fetchAgain, setFetchAgain, navigation }) => {
             setConversations([...conversations, ...data.chats]);
             setHasMoreOneOnOneChats(data.hasMore);
 
-
-            if (
-                !chats.find(
-                    (chat) => chat._id === data.chats.map((datas) => datas._id)
-                )
-            ) {
-                dispatch({ type: "SET_CHATS", payload: data });
-            }
         } catch (error) {
             console.log(error)
         }
@@ -196,13 +172,6 @@ const VideoChat = ({ user, fetchAgain, setFetchAgain, navigation }) => {
             setGroupConversations([...groupConversations, ...data.groups]);
             setHasMoreGroupChats(data.hasMore);
 
-            if (
-                !chats.find(
-                    (chat) => chat._id === data.groups.map((datas) => datas._id)
-                )
-            ) {
-                dispatch({ type: "SET_CHATS", payload: data });
-            }
         } catch (error) {
             console.log(error)
         }
