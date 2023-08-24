@@ -6,7 +6,7 @@
 #### use httponly cookies for refresh token
 #### cloudinary only whitelist our domain
 #### need to add abhishek's id to send emails
-#### user stats api and chart 
+#### user stats api and chart --- using google analytics or some other platform
 
 ## Phone App
 
