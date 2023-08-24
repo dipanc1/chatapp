@@ -19,18 +19,19 @@ export const RoomContext = createContext(null);
 const ws = socketIOClient(ENDPOINT);
 
 export const RoomProvider = ({ children }) => {
+    const { stream, userInfo } = useContext(AppContext);
+
     const [playJoin] = useSound(joinSound);
     const [playLeave] = useSound(leaveSound);
     const [me, setMe] = useState();
-    const [userId, setUserId] = useState(JSON.parse(localStorage.getItem("user"))._id);
+    const [userId, setUserId] = useState(userInfo?._id);
     const [streamState, setStreamState] = useState(null);
     const [peers, dispatch] = useReducer(peerReducer, {});
     const [screenSharingId, setScreenSharingId] = useState("");
     const [screenStream, setScreenStream] = useState();
     const [roomId, setRoomId] = useState("");
     const [participantsArray, setParticipantsArray] = useState([]);
-
-    const { stream } = useContext(AppContext);
+    const [cameraPermission, setCameraPermission] = useState(true);
 
     const enterRoom = (roomId) => {
         // console.warn("Room ID ::: >>>", roomId);
@@ -38,15 +39,15 @@ export const RoomProvider = ({ children }) => {
     };
 
     const getUsers = ({ participants }) => {
-        console.warn("Get Users ::: >>>", participants);
+        // console.warn("Get Users ::: >>>", participants);
         // const participantsArray = Object.entries(participants).map(([peerId]) => ({ peerId }));
         // setParticipantsArray(participantsArray.map(x => x.peerId));
     }
 
     const removePeer = (peerId) => {
-        console.warn("Remove Peer ::: >>>", peerId, "typeof peerId ::: >>>", typeof peerId);
+        // console.warn("Remove Peer ::: >>>", peerId, "typeof peerId ::: >>>", typeof peerId);
         setParticipantsArray(participantsArray.filter((peerid) => peerid !== peerId));
-        console.log("Participants Array ::: >>>", participantsArray);
+        // console.log("Participants Array ::: >>>", participantsArray);
         dispatch({
             type: REMOVE_PEER_STREAM,
             payload: {
@@ -64,7 +65,10 @@ export const RoomProvider = ({ children }) => {
 
         navigator.getUserMedia({ audio: true, video: true }, function (stream) {
             stream.getTracks().forEach(x => x.stop());
-        }, err => console.log(err));
+        }, (err) => {
+            console.error(err);
+            setCameraPermission(false);
+        });
 
         const meId = uuidV4();
         const peer = new Peer(meId);
@@ -96,12 +100,18 @@ export const RoomProvider = ({ children }) => {
 
     const shareScreen = () => {
         if (screenSharingId) {
-            navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(switchScreen);
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(switchScreen).catch((err) => {
+                console.error(err);
+                setCameraPermission(false);
+            });
         } else {
             navigator.mediaDevices.getDisplayMedia({}).then((stream) => {
                 switchScreen(stream);
                 setScreenStream(stream)
-            })
+            }).catch((err) => {
+                console.error(err);
+                setCameraPermission(false);
+            });
         }
     }
 
@@ -111,7 +121,10 @@ export const RoomProvider = ({ children }) => {
 
         Object.values(me?.connections).forEach((connection) => {
             const videoTrack = stream?.getTracks().find((track) => track.kind === "video");
-            connection[0].peerConnection.getSenders().find((sender) => sender.track.kind === "video").replaceTrack(videoTrack).catch(err => console.error(err));
+            connection[0].peerConnection.getSenders().find((sender) => sender.track.kind === "video").replaceTrack(videoTrack).catch((err) => {
+                console.error(err);
+                setCameraPermission(false);
+            });
         });
     }
 
@@ -128,9 +141,15 @@ export const RoomProvider = ({ children }) => {
         try {
             navigator.mediaDevices.getUserMedia({ video: stream, audio: stream }).then((stream) => {
                 setStreamState(stream);
+            }).catch((err) => {
+                console.error(err);
+                if (err.name === "NotAllowedError") {
+                    setCameraPermission(false);
+                }
             });
         } catch (error) {
             console.error(error);
+            setCameraPermission(false);
         }
 
     }, [stream])
@@ -140,9 +159,9 @@ export const RoomProvider = ({ children }) => {
         if (!streamState) return;
 
         ws.on("user-joined", ({ peerId, userId: userid }) => {
-            console.warn("User Joined ::: >>>", peerId, "typeof peerId ::: >>>", typeof peerId);
+            // console.warn("User Joined ::: >>>", peerId, "typeof peerId ::: >>>", typeof peerId);
             setParticipantsArray([...participantsArray, peerId]);
-            console.log("Participants Array ::: >>>", participantsArray);
+            // console.log("Participants Array ::: >>>", participantsArray);
             dispatch(addUserIdAction(peerId, userid));
             playJoin();
             const call = me.call(peerId, streamState, {
@@ -180,12 +199,13 @@ export const RoomProvider = ({ children }) => {
             ws.off("user-joined");
         };
 
-        // TODO: THIS MIGHT BE THE PROBLEM
     }, [me, playJoin, streamState, userId])
 
     useEffect(() => {
-        setUserId(JSON.parse(localStorage.getItem("user"))._id);
-    }, [userId])
+        if (userInfo?._id) {
+            setUserId(userInfo._id);
+        }
+    }, [userId, userInfo?._id])
 
     return (
         <RoomContext.Provider
@@ -201,6 +221,7 @@ export const RoomProvider = ({ children }) => {
                 setUserId,
                 screenStream,
                 participantsArray,
+                cameraPermission
             }}>
             {children}
         </RoomContext.Provider>

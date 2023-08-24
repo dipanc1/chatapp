@@ -1,0 +1,823 @@
+import React, { useContext, useEffect, useState } from 'react'
+import { NavLink } from "react-router-dom";
+
+import Static from '../components/common/Static'
+import {
+    Box,
+    Grid,
+    GridItem,
+    Text,
+    Heading,
+    Button,
+    Flex,
+    Image,
+    Input,
+    FormControl,
+    FormLabel,
+    Switch,
+    useToast,
+    Avatar,
+    IconButton
+} from '@chakra-ui/react';
+import "./Settings.css"
+import axios from 'axios';
+import {
+    api_key, backend_url, pictureUpload,
+    folder
+} from '../baseApi';
+import { FiUpload } from 'react-icons/fi';
+import { AppContext } from '../context/AppContext';
+// import FullScreenLoader from '../components/common/FullScreenLoader';
+import SendEmailModal from '../components/UserModals/SendEmailModal';
+
+const Settings = () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    const toast = useToast();
+    const fileInputRef = React.createRef();
+    const { pushNotification, dispatch, userInfo, getCloudinarySignature, timestamp, signature } = useContext(AppContext);
+
+    const [activeTab, setActiveTab] = useState(1);
+    const [username, setUsername] = useState("");
+    const [number, setNumber] = useState("");
+    const [pic, setPic] = useState("");
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [selectedImage, setSelectedImage] = React.useState(null);
+
+    // const [subscribeData, setSubscribeData] = useState({});
+    // const [paymentLoading, setPaymentLoading] = useState(false)
+
+    // TODO: Disable button and tabs while making API calls and other checks
+
+    useEffect(() => {
+        const currentUserDetails = async () => {
+            try {
+                const config = {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${user.token}`,
+                    },
+                };
+                const { data } = await axios.get(`${backend_url}/users/user-info`, config);
+                // console.log(data);
+                setUsername(data.username);
+                setNumber(data.number);
+                setPic(data.pic);
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+        currentUserDetails();
+    }, [user.token])
+
+    // const handlePlanSelection = (id, name, amount) => {
+    //     const newSubscribeData = {
+    //         id: id,
+    //         name: name,
+    //         amount: amount
+    //     }
+    //     setSubscribeData(newSubscribeData);
+    // }
+
+    // const handleSubscribe = async () => {
+    //     setPaymentLoading(true)
+    //     const response = await axios.post(`${backend_url}/checkout/create-checkout-session`, { subscribeData });
+    //     const sessionId = response.data.id;
+    //     const stripe = await window.Stripe(stripePublicKey);
+    //     const result = await stripe.redirectToCheckout({ sessionId });
+    //     if (result.error) {
+    //         console.error(result.error);
+    //     }
+    // }
+
+    const handleChangePassword = async (e) => {
+        e.preventDefault();
+
+        if (currentPassword === newPassword) {
+            alert("New password cannot be same as old password");
+            return;
+        }
+
+        if (newPassword !== confirmPassword) {
+            alert("Passwords do not match");
+            return;
+        }
+
+        try {
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${user.token}`,
+                },
+            };
+            const { data } = await axios.put(
+                `${backend_url}/users/change-password`, {
+                oldPassword: currentPassword,
+                newPassword,
+                confirmPassword
+            },
+                config
+            );
+
+            alert("Password changed successfully");
+            setConfirmPassword("");
+            setCurrentPassword("");
+            setNewPassword("");
+        } catch (error) {
+            console.log(error);
+            setConfirmPassword("");
+            setCurrentPassword("");
+            setNewPassword("");
+        }
+    }
+
+    const imageChange = async (e) => {
+        await getCloudinarySignature();
+        if (e.target.files && e.target.files.length > 0 && (e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/png')) {
+            setSelectedImage(e.target.files[0]);
+        } else {
+            toast({
+                title: "Error",
+                description: "Please select a valid image",
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+            });
+        }
+    }
+
+    const handleUpdateProfile = async (e) => {
+        e.preventDefault();
+        let data;
+        if (!username) {
+            toast({
+                title: "Error",
+                description: "Please enter a username",
+                status: "error",
+                duration: 4000,
+                isClosable: true,
+            });
+            return;
+        }
+
+        if (username.length < 3) {
+            toast({
+                title: "Error",
+                description: "Username should be at least 3 characters long",
+                status: "error",
+                duration: 4000,
+                isClosable: true,
+            });
+            return;
+        }
+
+        if (username.length > 20) {
+            toast({
+                title: "Error",
+                description: "Username should be less than 20 characters long",
+                status: "error",
+                duration: 4000,
+                isClosable: true,
+            });
+            return;
+        }
+
+        if (!selectedImage && (username === userInfo.username)) {
+            toast({
+                title: "Error",
+                description: "Picture is same as old picture and username is same as old username",
+                status: "error",
+                duration: 4000,
+                isClosable: true,
+            });
+            return;
+        }
+
+        try {
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${user.token}`,
+                },
+            };
+
+            if (selectedImage) {
+                const formData = new FormData();
+                formData.append('api_key', api_key)
+                formData.append('file', selectedImage);
+                formData.append('folder', folder)
+                formData.append('timestamp', timestamp)
+                formData.append('signature', signature)
+
+                await axios.post(pictureUpload, formData)
+                    .then(async res =>
+                        data = await axios.put(
+                            `${backend_url}/users/update-user-info`, {
+                            username,
+                            pic: res.data.url,
+                        },
+                            config
+                        ))
+                    .catch(err => {
+                        toast({
+                            title: "Error",
+                            description: "Error uploading picture",
+                            status: "error",
+                            duration: 4000,
+                            isClosable: true,
+                        });
+                    })
+            } else {
+                data = await axios.put(
+                    `${backend_url}/users/update-user-info`, {
+                    username,
+                    pic,
+                },
+                    config
+                );
+            }
+
+            toast({
+                title: "Success",
+                description: data.data.message,
+                status: "success",
+                duration: 4000,
+                isClosable: true,
+            });
+            setUsername(data.data.username);
+            setPic(data.data.pic);
+            dispatch({ type: "SET_USER_INFO", payload: data.data });
+        } catch (error) {
+            console.log(error);
+            toast({
+                title: "Error",
+                description: "Error updating profile",
+                status: "error",
+                duration: 4000,
+                isClosable: true,
+            });
+        }
+    }
+
+    return (
+        <>
+            {/* {
+                paymentLoading && (
+                    <FullScreenLoader />
+                )
+            } */}
+            <Static>
+                <Heading pb={['10px', '30px']} as='h1' size='lg' fontWeight='500'>Settings</Heading>
+                <ul className="tab-nav">
+                    <li onClick={() => setActiveTab(1)} className={activeTab === 1 ? "active" : ""}>
+                        My Details
+                    </li>
+                    {/* <li onClick={() => setActiveTab(2)} className={activeTab === 2 ? "active" : ""}>
+                        Themes
+                    </li> */}
+                    <li onClick={() => setActiveTab(3)} className={activeTab === 3 ? "active" : ""}>
+                        Password
+                    </li>
+                    <li onClick={() => setActiveTab(4)} className={activeTab === 4 ? "active" : ""}>
+                        Notification
+                    </li>
+                    {/* <li onClick={() => setActiveTab(5)} className={activeTab === 5 ? "active" : ""}>
+                        Plans
+                    </li>
+                    <li onClick={() => setActiveTab(6)} className={activeTab === 6 ? "active" : ""}>
+                        Billing
+                    </li> */}
+                    <li onClick={() => setActiveTab(7)} className={activeTab === 7 ? "active" : ""}>
+                        Help
+                    </li>
+                </ul>
+                <Box pb={['20px', '0']} className="tab-content">
+                    <div className={"tab-content-item " + (activeTab === 1 ? "current" : "")}>
+                        <form onSubmit={handleUpdateProfile}>
+                            <Grid mt='70px' templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)']} gap='5rem' rowGap={['1rem', '3rem']} className='form-wrapper form-details'>
+                                <GridItem w='100%'>
+                                    <FormControl className="filled">
+                                        <Input pt='25px' pb='20px' type='text' onChange={e => setUsername(e.target.value)} value={username} />
+                                        <FormLabel>USERNAME</FormLabel>
+                                    </FormControl>
+                                </GridItem>
+                                <GridItem w='100%'>
+                                    <FormControl className="filled">
+                                        <Input pt='25px' pb='20px' type='text' disabled value={number} />
+                                        <FormLabel>NUMBER</FormLabel>
+                                    </FormControl>
+                                </GridItem>
+                            </Grid>
+                            <Grid mt='30px' templateColumns='repeat(2, 1fr)' gap='5rem' rowGap='3rem' className='form-wrapper form-details'>
+                                <GridItem w='100%'>
+                                    <FormControl className="filled">
+                                        <Avatar
+                                            size={'2xl'}
+                                            src={selectedImage ? URL.createObjectURL(selectedImage) : pic}
+                                            alt={'Avatar Alt'}
+                                        />
+                                        <IconButton
+                                            aria-label="upload picture"
+                                            icon={<FiUpload />}
+                                            onClick={() => fileInputRef.current.click()}
+                                            size="xs"
+                                            colorScheme="teal"
+                                            variant="outline"
+                                            mt={'3'}
+                                        />
+                                        <input
+                                            type="file"
+                                            ref={fileInputRef}
+                                            onChange={imageChange}
+                                            style={{ display: 'none' }}
+                                        />
+                                        <FormLabel>PROFILE IMAGE</FormLabel>
+                                    </FormControl>
+                                </GridItem>
+                            </Grid>
+                            <Flex pt={['20px', '50px']} alignItems='center' justifyContent='end'>
+                                <Button type='submit' bg="buttonPrimaryColor" color={"white"}>
+                                    <Image h='18px' pe='15px' src='https://ik.imagekit.io/sahildhingra/edit.png' />
+                                    <Text>Edit Profile</Text>
+                                </Button>
+                            </Flex>
+                        </form>
+                    </div>
+                    {/* <div className={"tab-themes tab-content-item " + (activeTab === 2 ? "current" : "")}>
+                        <RadioGroup>
+                            <Grid ps='10px' mt='50px' templateColumns={['repeat(1, 1fr)', 'repeat(3, 1fr)']} gap='2rem' rowGap={['1.5rem', '3rem']}>
+                                <Radio value='1' alignItems='start' checked='checked'>
+                                    <Box display='block'>
+                                        <Text pb='15px' fontWeight='700'>
+                                            Default
+                                        </Text>
+                                        <img src="https://ik.imagekit.io/sahildhingra/theme-default.png" alt="" />
+                                    </Box>
+                                </Radio>
+                                <Radio value='2' alignItems='start'>
+                                    <Box display='block'>
+                                        <Text pb='15px' fontWeight='700'>
+                                            Dark
+                                        </Text>
+                                        <img src="https://ik.imagekit.io/sahildhingra/theme-dark.png" alt="" />
+                                    </Box>
+                                </Radio>
+                                <Radio value='3' alignItems='start'>
+                                    <Box display='block'>
+                                        <Text pb='15px' fontWeight='700'>
+                                            Light
+                                        </Text>
+                                        <img src="https://ik.imagekit.io/sahildhingra/theme-light.png" alt="" />
+                                    </Box>
+                                </Radio>
+                            </Grid>
+                            <Flex pt={['50px', '70px']} alignItems='center' justifyContent='end'>
+                                <NavLink className='btn btn-primary' to="#">
+                                    <Text>Save Theme</Text>
+                                </NavLink>
+                            </Flex>
+                        </RadioGroup>
+                    </div> */}
+                    <div className={"tab-content-item " + (activeTab === 3 ? "current" : "")}>
+                        <form onSubmit={handleChangePassword}>
+                            <Text mt='40px' fontSize='18px' color='#6C4545' fontWeight='600'>
+                                Please enter your current password to change your password
+                            </Text>
+                            <Grid mt='20px' templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)']} gap='5rem' rowGap={['1rem', '3rem']} className='form-wrapper'>
+                                <GridItem w='100%'>
+                                    <FormControl className={"filled"}>
+                                        <Input autoComplete='current-password' type='password' value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
+                                        <FormLabel>Current Password</FormLabel>
+                                    </FormControl>
+                                </GridItem>
+                            </Grid>
+                            <Box h='1px' background='#EAE4FF' mt='20px' mb='50px'></Box>
+                            <Grid mt='30px' templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)']} gap='4.5rem' rowGap={['1rem', '3rem']} className='form-wrapper'>
+                                <GridItem w='100%'>
+                                    <FormControl className={"filled"}>
+                                        <Input autoComplete='new-password' type='password' value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+                                        <FormLabel>New Password</FormLabel>
+                                    </FormControl>
+                                </GridItem>
+                                <GridItem w='100%'>
+                                    <FormControl className={"filled"}>
+                                        <Input autoComplete='confirm-password' type='password' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+                                        <FormLabel>Confirm Password</FormLabel>
+                                    </FormControl>
+                                </GridItem>
+                            </Grid>
+                            <Flex pt={['15px', '40px']} alignItems='center' justifyContent='end'>
+                                <Button disabled={currentPassword === "" || newPassword === "" || confirmPassword === ""} type='submit'>
+                                    <Text>Update Password</Text>
+                                </Button>
+                            </Flex>
+                        </form>
+                    </div>
+                    <div className={"tab-content-item " + (activeTab === 4 ? "current" : "")}>
+                        <Text mt='40px' fontSize='18px' color='#6C4545' fontWeight='600'>
+                            Choose what kind of notifications you want to see in your app.
+                        </Text>
+                        <Box h='1px' background='#EAE4FF' my='30px'></Box>
+                        <Grid alignItems='center' templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)']} gap={['1.5rem', '4.5rem']}>
+                            <GridItem>
+                                <Text color='#6C4545' fontWeight='700'>
+                                    Messages
+                                </Text>
+                                <Text mt='10px' color='#7B7A7A' fontWeight='500'>
+                                    These are notifications for the incoming messages to your inbox.
+                                </Text>
+                            </GridItem>
+                            <GridItem>
+                                <Flex pb='12px' alignItems='center'>
+                                    <Switch isChecked={pushNotification} onChange={() => {
+                                        dispatch({ type: 'SET_PUSH_NOTIFICATION' })
+                                    }} pe='15px' colorScheme={'twitter'} size='lg' />
+                                    <Text color='#6C4545' fontWeight='700'>
+                                        Push
+                                    </Text>
+                                </Flex>
+                            </GridItem>
+                        </Grid>
+                        <Box h='1px' background='#EAE4FF' my='30px'></Box>
+                    </div>
+                    {/* <div className={"tab-content-item " + (activeTab === 5 ? "current" : "")}>
+                        <Text mt='40px' mb='30px' fontSize='18px' color='#6C4545' fontWeight='600'>
+                            Current Active Plan
+                        </Text>
+                        <Grid ps='10px' mt='40px' mb={['40px', '60px']} templateColumns={['repeat(1, 1fr)' ,'repeat(3, 1fr)']} gap='2rem' rowGap={['1.5rem', '3rem']}>
+                            <GridItem p='20px' pb='30px' border='1px solid #EAE4FF' borderRadius='10px' textAlign='center'>
+                                <Text fontSize='24px' fontWeight='700'>
+                                    Basic
+                                </Text>
+                                <Text mt='4px' fontWeight='700' mx='auto' color='#7B7A7A'>
+                                    $0/mo
+                                </Text>
+                                <Box mt='25px' pt='25px' borderTop='1px solid #EAE4FF' textAlign='left'>
+                                    <Flex justifyContent='start'>
+                                        <Image me='15px' h='20px' src='https://ik.imagekit.io/sahildhingra/check-mark.png' />
+                                        <Text fontWeight='600' color='#7B7A7A'>
+                                            2 Channels
+                                        </Text>
+                                    </Flex>
+                                    <Flex py='15px' justifyContent='start'>
+                                        <Image me='15px' h='20px' src='https://ik.imagekit.io/sahildhingra/check-mark.png' />
+                                        <Text fontWeight='600' color='#7B7A7A'>
+                                            4 Users
+                                        </Text>
+                                    </Flex>
+                                    <Flex justifyContent='start'>
+                                        <Image me='15px' h='20px' src='https://ik.imagekit.io/sahildhingra/check-mark.png' />
+                                        <Text fontWeight='600' color='#7B7A7A'>
+                                            6 On-screen Guests
+                                        </Text>
+                                    </Flex>
+                                </Box>
+                            </GridItem>
+                        </Grid>
+                        <Box h='1px' background='#EAE4FF' mb='30px'></Box>
+                        <Text mt='40px' mb='30px' fontSize='18px' color='#6C4545' fontWeight='600'>
+                            Other Available Plans
+                        </Text>
+
+                        <Grid ps='10px' mt='40px' mb={['40px' ,'60px']} templateColumns={['repeat(1, 1fr)' ,'repeat(3, 1fr)']} gap='2rem' rowGap={['1.5rem', '3rem']}>
+                            <GridItem cursor='pointer' boxShadow={subscribeData.id === 1 && '0 0px 10px rgba(159,133,247,0.5)'} onClick={() => handlePlanSelection(1, "Basic Membership", 50)} p='20px' pb='30px' border='1px solid #EAE4FF' borderRadius='10px' textAlign='center'>
+                                <Text fontSize='24px' fontWeight='700'>
+                                    Basic
+                                </Text>
+                                <Text mt='4px' fontWeight='700' mx='auto' color='#7B7A7A'>
+                                    $99/mo
+                                </Text>
+                                <Box mt='25px' pt='25px' borderTop='1px solid #EAE4FF' textAlign='left'>
+                                    <Flex justifyContent='start'>
+                                        <Image me='15px' h='20px' src='https://ik.imagekit.io/sahildhingra/check-mark.png' />
+                                        <Text fontWeight='600' color='#7B7A7A'>
+                                            2 Channels
+                                        </Text>
+                                    </Flex>
+                                    <Flex py='15px' justifyContent='start'>
+                                        <Image me='15px' h='20px' src='https://ik.imagekit.io/sahildhingra/check-mark.png' />
+                                        <Text fontWeight='600' color='#7B7A7A'>
+                                            4 Users
+                                        </Text>
+                                    </Flex>
+                                    <Flex justifyContent='start'>
+                                        <Image me='15px' h='20px' src='https://ik.imagekit.io/sahildhingra/check-mark.png' />
+                                        <Text fontWeight='600' color='#7B7A7A'>
+                                            6 On-screen Guests
+                                        </Text>
+                                    </Flex>
+                                </Box>
+                            </GridItem>
+                            <GridItem cursor='pointer' boxShadow={subscribeData.id === 2 && '0 0px 10px rgba(159,133,247,0.5)'} onClick={() => handlePlanSelection(2, "Preimum Membership", 100)} p='20px' pb='30px' border='1px solid #EAE4FF' borderRadius='10px' textAlign='center'>
+                                <Text fontSize='24px' fontWeight='700'>
+                                    Premium
+                                </Text>
+                                <Text mt='4px' fontWeight='700' mx='auto' color='#7B7A7A'>
+                                    $114/mo
+                                </Text>
+                                <Box mt='25px' pt='25px' borderTop='1px solid #EAE4FF' textAlign='left'>
+                                    <Flex justifyContent='start'>
+                                        <Image me='15px' h='20px' src='https://ik.imagekit.io/sahildhingra/check-mark.png' />
+                                        <Text fontWeight='600' color='#7B7A7A'>
+                                            5 Channels
+                                        </Text>
+                                    </Flex>
+                                    <Flex py='15px' justifyContent='start'>
+                                        <Image me='15px' h='20px' src='https://ik.imagekit.io/sahildhingra/check-mark.png' />
+                                        <Text fontWeight='600' color='#7B7A7A'>
+                                            4 Users
+                                        </Text>
+                                    </Flex>
+                                    <Flex justifyContent='start'>
+                                        <Image me='15px' h='20px' src='https://ik.imagekit.io/sahildhingra/check-mark.png' />
+                                        <Text fontWeight='600' color='#7B7A7A'>
+                                            10 On-screen Guests
+                                        </Text>
+                                    </Flex>
+                                </Box>
+                            </GridItem>
+                            <GridItem cursor='pointer' boxShadow={subscribeData.id === 3 && '0 0px 10px rgba(159,133,247,0.5)'} onClick={() => handlePlanSelection(3, "Elite Membership", 150)} p='20px' pb='30px' border='1px solid #EAE4FF' borderRadius='10px' textAlign='center'>
+                                <Text fontSize='24px' fontWeight='700'>
+                                    Elite
+                                </Text>
+                                <Text mt='4px' fontWeight='700' mx='auto' color='#7B7A7A'>
+                                    $127/mo
+                                </Text>
+                                <Box mt='25px' pt='25px' borderTop='1px solid #EAE4FF' textAlign='left'>
+                                    <Flex justifyContent='start'>
+                                        <Image me='15px' h='20px' src='https://ik.imagekit.io/sahildhingra/check-mark.png' />
+                                        <Text fontWeight='600' color='#7B7A7A'>
+                                            8 Channels
+                                        </Text>
+                                    </Flex>
+                                    <Flex py='15px' justifyContent='start'>
+                                        <Image me='15px' h='20px' src='https://ik.imagekit.io/sahildhingra/check-mark.png' />
+                                        <Text fontWeight='600' color='#7B7A7A'>
+                                            6 Users
+                                        </Text>
+                                    </Flex>
+                                    <Flex justifyContent='start'>
+                                        <Image me='15px' h='20px' src='https://ik.imagekit.io/sahildhingra/check-mark.png' />
+                                        <Text fontWeight='600' color='#7B7A7A'>
+                                            12 On-screen Guests
+                                        </Text>
+                                    </Flex>
+                                </Box>
+                            </GridItem>
+                        </Grid>
+                        <Flex alignItems='center' justifyContent='end'>
+                            <NavLink className='btn btn-primary' onClick={handleSubscribe}>
+                                <Text>Change Plan</Text>
+                            </NavLink>
+                        </Flex>
+                        <Flex pt='20px' alignItems='center' justifyContent='end'>
+                            <Text fontWeight='500'>
+                                You will be redirected to the payment screen
+                            </Text>
+                        </Flex>
+                    </div>
+                    <div className={"tab-content-item " + (activeTab === 6 ? "current" : "")}>
+                        <Box display={['block', 'flex']} pt='40px' alignItems='center' justifyContent='space-between'>
+                            <Text pb={['12px', '0']} fontSize='18px' color='#6C4545' fontWeight='600'>
+                                Payment Methods
+                            </Text>
+                            <NavLink className='btn btn-primary' to="#">
+                                <Flex alignItems='center'>
+                                    <Image h='18px' pe='15px' src='https://ik.imagekit.io/sahildhingra/add.png?ik-sdk-version=javascript-1.4.3&updatedAt=1673025917620' />
+                                    <Text>Add New</Text>
+                                </Flex>
+                            </NavLink>
+                        </Box>
+                        <Box h='1px' background='#EAE4FF' my='30px'></Box>
+                        <Text mt='40px' mb='30px' fontSize='18px' color='#6C4545' fontWeight='600'>
+                            Invoices
+                        </Text>
+                        <TableContainer className='table table-striped'>
+                            <Table>
+                                <Thead>
+                                    <Tr>
+                                        <Th>#</Th>
+                                        <Th>Plan Type</Th>
+                                        <Th>Amount</Th>
+                                        <Th>Purchased On</Th>
+                                        <Th>Expired On</Th>
+                                        <Th>Status</Th>
+                                        <Th>Action</Th>
+                                    </Tr>
+                                </Thead>
+                                <Tbody>
+                                    <Tr>
+                                        <Th>1</Th>
+                                        <Td>Elite</Td>
+                                        <Td>$127</Td>
+                                        <Td>Nov 27, 2022</Td>
+                                        <Td>Dec 26, 2022</Td>
+                                        <Td>
+                                            <span className='badge active'>Active</span>
+                                        </Td>
+                                        <Td>
+                                            <Image height="22px" src="https://ik.imagekit.io/sahildhingra/download-icon.png" />
+                                        </Td>
+                                    </Tr>
+                                    <Tr>
+                                        <Th>2</Th>
+                                        <Td>Elite</Td>
+                                        <Td>$127</Td>
+                                        <Td>Nov 27, 2022</Td>
+                                        <Td>Dec 26, 2022</Td>
+                                        <Td>
+                                            <span className='badge expired'>Expired</span>
+                                        </Td>
+                                        <Td>
+                                            <Image height="22px" src="https://ik.imagekit.io/sahildhingra/download-icon.png" />
+                                        </Td>
+                                    </Tr>
+                                    <Tr>
+                                        <Th>3</Th>
+                                        <Td>Elite</Td>
+                                        <Td>$127</Td>
+                                        <Td>Nov 27, 2022</Td>
+                                        <Td>Dec 26, 2022</Td>
+                                        <Td>
+                                            <span className='badge expired'>Expired</span>
+                                        </Td>
+                                        <Td>
+                                            <Image height="22px" src="https://ik.imagekit.io/sahildhingra/download-icon.png" />
+                                        </Td>
+                                    </Tr>
+                                    <Tr>
+                                        <Th>4</Th>
+                                        <Td>Elite</Td>
+                                        <Td>$127</Td>
+                                        <Td>Nov 27, 2022</Td>
+                                        <Td>Dec 26, 2022</Td>
+                                        <Td>
+                                            <span className='badge expired'>Expired</span>
+                                        </Td>
+                                        <Td>
+                                            <Image height="22px" src="https://ik.imagekit.io/sahildhingra/download-icon.png" />
+                                        </Td>
+                                    </Tr>
+                                    <Tr>
+                                        <Th>5</Th>
+                                        <Td>Elite</Td>
+                                        <Td>$127</Td>
+                                        <Td>Nov 27, 2022</Td>
+                                        <Td>Dec 26, 2022</Td>
+                                        <Td>
+                                            <span className='badge expired'>Expired</span>
+                                        </Td>
+                                        <Td>
+                                            <Image height="22px" src="https://ik.imagekit.io/sahildhingra/download-icon.png" />
+                                        </Td>
+                                    </Tr>
+                                </Tbody>
+                            </Table>
+                        </TableContainer>
+                    </div> */}
+                    <div className={"tab-content-item " + (activeTab === 7 ? "current" : "")}>
+                        <Box display={['block', 'flex']} pt='40px' alignItems='center' justifyContent='space-between'>
+                            <Text pb={['12px', '0']} fontSize='18px' color='#6C4545' fontWeight='600'>
+                                Support Portal
+                            </Text>
+                            <NavLink className='btn btn-primary' to="#">
+                                <SendEmailModal>
+                                    <Flex alignItems='center'>
+                                        <Image h='18px' pe='15px' src='https://ik.imagekit.io/sahildhingra/add.png?ik-sdk-version=javascript-1.4.3&updatedAt=1673025917620' />
+                                        <Text>Raise Ticket</Text>
+                                    </Flex>
+                                </SendEmailModal>
+                            </NavLink>
+                        </Box>
+                        {/* <Grid ps='10px' mt='40px' mb={['40px', '60px']} templateColumns={['repeat(1, 1fr)', 'repeat(3, 1fr)']} gap='2rem' rowGap={['1rem', '3rem']}>
+                            <GridItem p='20px' border='1px solid #EAE4FF' borderRadius='10px' textAlign='center'>
+                                <Text fontWeight='700'>
+                                    Live Chat
+                                </Text>
+                                <Image mx='auto' my='25px' height='80px' src='https://ik.imagekit.io/sahildhingra/chat.png' />
+                                <Text maxW='182px' mx='auto' color='#7B7A7A'>
+                                    Chat with our top customer executive
+                                </Text>
+                            </GridItem>
+                            <GridItem p='20px' border='1px solid #EAE4FF' borderRadius='10px' textAlign='center'>
+                                <Text fontWeight='700'>
+                                    Email Us
+                                </Text>
+                                <Image mx='auto' my='25px' height='80px' src='https://ik.imagekit.io/sahildhingra/mail.png' />
+                                <Text maxW='182px' mx='auto' color='#7B7A7A'>
+                                    Write us an email. We usually revert within 24hrs
+                                </Text>
+                            </GridItem>
+                            <GridItem p='20px' border='1px solid #EAE4FF' borderRadius='10px' textAlign='center'>
+                                <Text fontWeight='700'>
+                                    Phone
+                                </Text>
+                                <Image mx='auto' my='25px' height='80px' src='https://ik.imagekit.io/sahildhingra/telephone.png' />
+                                <Text maxW='182px' mx='auto' color='#7B7A7A'>
+                                    Get on call with our experts
+                                </Text>
+                            </GridItem>
+                        </Grid>
+                        <Box h='1px' background='#EAE4FF' mb='30px'></Box>
+                        <Text mt='40px' mb='30px' fontSize='18px' color='#6C4545' fontWeight='600'>
+                            Frequently Asked Questions
+                        </Text>
+                        <Box className='faq-accordion'>
+                            <Accordion allowToggle>
+                                <AccordionItem>
+                                    <h2>
+                                        <AccordionButton>
+                                            <Box as="span" flex='1' textAlign='left'>
+                                                How to add new payment method
+                                            </Box>
+                                            <AccordionIcon />
+                                        </AccordionButton>
+                                    </h2>
+                                    <AccordionPanel pb={4}>
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+                                        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+                                        commodo consequat.
+                                    </AccordionPanel>
+                                </AccordionItem>
+
+                                <AccordionItem>
+                                    <h2>
+                                        <AccordionButton>
+                                            <Box as="span" flex='1' textAlign='left'>
+                                                How can I download invoice for my payment
+                                            </Box>
+                                            <AccordionIcon />
+                                        </AccordionButton>
+                                    </h2>
+                                    <AccordionPanel pb={4}>
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+                                        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+                                        commodo consequat.
+                                    </AccordionPanel>
+                                </AccordionItem>
+
+                                <AccordionItem>
+                                    <h2>
+                                        <AccordionButton>
+                                            <Box as="span" flex='1' textAlign='left'>
+                                                Need help with resetting the password
+                                            </Box>
+                                            <AccordionIcon />
+                                        </AccordionButton>
+                                    </h2>
+                                    <AccordionPanel pb={4}>
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+                                        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+                                        commodo consequat.
+                                    </AccordionPanel>
+                                </AccordionItem>
+
+                                <AccordionItem>
+                                    <h2>
+                                        <AccordionButton>
+                                            <Box as="span" flex='1' textAlign='left'>
+                                                How can I upgrade my existing plan
+                                            </Box>
+                                            <AccordionIcon />
+                                        </AccordionButton>
+                                    </h2>
+                                    <AccordionPanel pb={4}>
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+                                        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+                                        commodo consequat.
+                                    </AccordionPanel>
+                                </AccordionItem>
+
+                                <AccordionItem>
+                                    <h2>
+                                        <AccordionButton>
+                                            <Box as="span" flex='1' textAlign='left'>
+                                                Payment deducted but not reflecting onto my account
+                                            </Box>
+                                            <AccordionIcon />
+                                        </AccordionButton>
+                                    </h2>
+                                    <AccordionPanel pb={4}>
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+                                        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+                                        commodo consequat.
+                                    </AccordionPanel>
+                                </AccordionItem>
+                            </Accordion>
+                        </Box> */}
+                    </div>
+                </Box>
+            </Static>
+        </>
+    )
+}
+
+export default Settings

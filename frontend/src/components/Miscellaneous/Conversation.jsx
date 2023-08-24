@@ -1,25 +1,22 @@
-import axios from 'axios';
-import { motion } from 'framer-motion';
 import { useContext, useEffect, useState } from 'react'
-import { AppContext } from '../../context/AppContext';
 import {
   Box,
   Text,
-  Avatar
+  Avatar,
+  Heading,
+  VStack
 } from '@chakra-ui/react'
+import { AppContext } from '../../context/AppContext';
 
 const Conversation = ({ chat }) => {
-  const user = JSON.parse(localStorage.getItem('user'));
-  // const [loggedUser, setLoggedUser] = useState();
-  // const selectedChat = useContext(AppContext);
-  // const { dispatch } = useContext(AppContext);
   const [friends, setFriends] = useState([]);
+  const [read, setRead] = useState(true);
+
+  const { userInfo } = useContext(AppContext);
 
   useEffect(() => {
-    // console.log(chat.users.find(member => member._id !== user._id));
-    setFriends((chat.users.find(member => member._id !== user._id)))
-    // console.log(friends);
-  }, [chat, friends, user._id])
+    setFriends((chat.users.find(member => member._id !== userInfo?._id)))
+  }, [chat, friends, userInfo?._id])
 
   const list = {
     visible: {
@@ -50,11 +47,34 @@ const Conversation = ({ chat }) => {
       variants={list}
       display={'flex'}
       flexDirection={'row'}
-      justifyContent={'space-around'}
+      px={['5px', '10px']}
       alignItems={'center'}
+      onClick={() => setRead(false)}
     >
-      <Avatar variants={item} name={chat && friends?.username} src={chat && friends?.pic} />
-      <Text variants={item} fontSize='md'>{chat && friends?.username}</Text>
+      <Avatar size={['sm', 'md']} me={['10px', '15px']} variants={item} name={chat && friends?.username} src={chat && friends?.pic} />
+      <VStack alignItems={'flex-start'}>
+        <Heading variants={item} fontSize='md'>{chat && friends?.username}</Heading>
+        {chat
+          && chat.latestMessage && <Text variants={item} fontSize='sm' ml='auto'>{chat
+            && chat.latestMessage
+            && chat.latestMessage.sender
+            && chat.latestMessage.sender._id === userInfo?._id
+            ? 'You' :
+            friends?.username}:
+            {chat
+              && chat.latestMessage
+              && chat.latestMessage.content}</Text>}
+      </VStack>
+      {chat && chat.latestMessage && chat.latestMessage.sender && chat.latestMessage.sender._id !== userInfo?._id && !chat?.latestMessage.readBy.includes(userInfo?._id) && read && <Box
+        ml='auto'
+        w='10px'
+        h='10px'
+        borderRadius='50%'
+        bg='red.500'
+      >
+      </Box>}
+
+
     </Box>
   )
 }

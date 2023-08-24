@@ -30,6 +30,36 @@ const AppReducer = (state, action) => {
                 ...state,
                 fullScreen: !state.fullScreen
             };
+        case "SET_CONVERSATIONS":
+            return {
+                ...state,
+                conversations: action.payload
+            };
+        case "SET_GROUP_CONVERSATIONS":
+            return {
+                ...state,
+                groupConversations: action.payload
+            };
+        case "SET_LOADING":
+            return {
+                ...state,
+                loading: action.payload
+            };
+        case "SET_USER_INFO":
+            return {
+                ...state,
+                userInfo: action.payload
+            };
+        case "SET_PUSH_NOTIFICATION":
+            return {
+                ...state,
+                pushNotification: !state.pushNotification
+            };
+        case "SET_EVENT_INFO":
+            return {
+                ...state,
+                eventInfo: action.payload
+            };
         default:
             return state;
     }

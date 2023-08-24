@@ -7,19 +7,20 @@ import Lottie from "lottie-react";
 import animationData from '../../animations/typing.json'
 import DetailsModal from '../UserModals/DetailsModal'
 import { format } from 'timeago.js'
-import StreamModal from '../UserModals/StreamModal'
+import EndLeaveModal from '../UserModals/EndLeaveModal'
 import { backend_url } from '../../baseApi'
-import { Avatar, AvatarBadge, Box, Button, Divider, Flex, Image, Input, Spinner, Text, useToast } from '@chakra-ui/react'
+import { Avatar, AvatarBadge, Box, Button, Divider, Flex, Image, Img, Input, Spinner, Text, useDisclosure, useToast } from '@chakra-ui/react'
 import { FiSend } from 'react-icons/fi'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import StreamModalPeer from '../UserModals/StreamModalPeer'
+import { useLocation } from 'react-router-dom'
+import GroupSettingsModal from '../UserModals/GroupSettingsModal'
 
 var selectedChatCompare;
 
-export const ChatBoxComponent = ({ height, selectedChat, fetchAgain, setFetchAgain, user, toast }) => {
+export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selectedChat, fetchAgain, setFetchAgain, user, toast }) => {
   const socket = React.useContext(SocketContext);
-  // console.log("Socket ::: >>>",socket)
-  const { notification, dispatch, fullScreen } = React.useContext(AppContext);
+  const { notification, dispatch, userInfo } = React.useContext(AppContext);
+
   const [messages, setMessages] = React.useState([]);
   const [page, setPage] = React.useState(2);
   const [hasMore, setHasMore] = React.useState(true);
@@ -28,19 +29,35 @@ export const ChatBoxComponent = ({ height, selectedChat, fetchAgain, setFetchAga
   const [socketConnected, setSocketConnected] = React.useState(false);
   const [typing, setTyping] = React.useState(false);
   const [isTyping, setIsTyping] = React.useState(false);
+
+  const location = useLocation();
+
   const scrollRef = React.useRef();
 
   React.useEffect(() => {
-    socket.emit("setup", user);
+    socket.emit("setup", userInfo);
     socket.on("connected", () => setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
     socket.on("stop typing", () => setIsTyping(false));
-    socket.emit("user-online", user);
+    socket.emit("user-online", userInfo);
+
+    return () => {
+      socket.off("connected");
+      socket.off("typing");
+      socket.off("stop typing");
+      socket.off("user-online");
+    };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
 
   React.useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+
+    var element = document.getElementById("scrollableDiv");
+    if (!element) return;
+    element.scrollTop = element?.scrollHeight;
   }, [messages]);
 
 
@@ -127,7 +144,6 @@ export const ChatBoxComponent = ({ height, selectedChat, fetchAgain, setFetchAga
         }, config);
         socket.emit("new message", data.message);
         setMessages([data.message, ...messages]);
-        // console.log(data, messages);
       } catch (error) {
         // console.log(error);
         toast({
@@ -144,16 +160,21 @@ export const ChatBoxComponent = ({ height, selectedChat, fetchAgain, setFetchAga
 
   React.useEffect(() => {
     socket.on("message received", (newMessageReceived) => {
-      if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
+      if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id || location.pathname !== '/video-chat') {
         if (!notification.includes(newMessageReceived)) {
-          dispatch({ type: 'SET_NOTIFICATION', payload: [newMessageReceived] });
-          // console.log(newMessageReceived);
+          if (notification.length >= 5) {
+            notification.pop();
+          }
+
+          dispatch({ type: 'SET_NOTIFICATION', payload: [newMessageReceived, ...notification] });
           setFetchAgain(!fetchAgain);
         }
       } else {
         setMessages([newMessageReceived, ...messages]);
       }
     })
+
+    return () => socket.off("message received");
   });
 
   const typingHandler = (e) => {
@@ -179,10 +200,18 @@ export const ChatBoxComponent = ({ height, selectedChat, fetchAgain, setFetchAga
 
   return (
     <>
+      {stream && (
+        <>
+          <Box onClick={() => setToggleChat(false)} p='10px' background='#f0ecfb' display={['flex', 'flex', 'none']} justifyContent='space-between' alignItems='center'>
+            <Text>Messages</Text>
+            <Image src="https://ik.imagekit.io/sahildhingra/down-arrow.png" h='20px' />
+          </Box>
+        </>
+      )}
       {/* MIDDLE PART  */}
       {loading ?
         (
-          <Box display={'flex'} alignItems={'center'} justifyContent={'center'} height={height}>
+          <Box display={'flex'} alignItems={'center'} justifyContent={'center'} flex={flex} height={height}>
             <Spinner
               thickness='4px'
               speed='0.2s'
@@ -195,8 +224,9 @@ export const ChatBoxComponent = ({ height, selectedChat, fetchAgain, setFetchAga
         :
         (
           <div
-            id="scrollableDiv"
+            id="scrollableDivChat"
             style={{
+              flex: flex,
               height: height,
               overflow: 'auto',
               display: 'flex',
@@ -207,7 +237,7 @@ export const ChatBoxComponent = ({ height, selectedChat, fetchAgain, setFetchAga
             <InfiniteScroll
               dataLength={messages.length}
               next={fetchMoreMessages}
-              style={{ display: 'flex', flexDirection: 'column-reverse' }} //To put endMessage and loader to the top.
+              style={{ display: 'flex', flexDirection: 'column-reverse' }} // To put endMessage and loader to the top.
               inverse={true} //
               hasMore={hasMore}
               loader={
@@ -220,7 +250,7 @@ export const ChatBoxComponent = ({ height, selectedChat, fetchAgain, setFetchAga
                     size='xl'
                   />
                 </Box>}
-              scrollableTarget="scrollableDiv"
+              scrollableTarget="scrollableDivChat"
             >
               {messages?.map((m, i) => (
                 <Box
@@ -232,12 +262,12 @@ export const ChatBoxComponent = ({ height, selectedChat, fetchAgain, setFetchAga
                   <Message
                     key={m._id}
                     messages={m}
-                    own={m.sender._id === user._id}
+                    own={m.sender._id === userInfo._id}
                     sameSender={(i < messages.length - 1 &&
                       (messages[i + 1].sender._id !== m.sender._id ||
                         messages[i + 1].sender._id === undefined) &&
-                      messages[i].sender._id !== user._id) || (i === messages.length - 1 &&
-                        messages[messages.length - 1].sender._id !== user._id &&
+                      messages[i].sender._id !== userInfo._id) || (i === messages.length - 1 &&
+                        messages[messages.length - 1].sender._id !== userInfo._id &&
                         messages[messages.length - 1].sender._id)}
                     sameTime={(i < messages.length - 1) && format(messages[i].createdAt) === format(messages[i + 1].createdAt)}
                   />
@@ -265,11 +295,12 @@ export const ChatBoxComponent = ({ height, selectedChat, fetchAgain, setFetchAga
         display={'flex'}
         alignItems={'center'}
         justifyContent={'space-between'}
+        background="#F6F3FF"
+        padding="15px 30px"
       >
         <Input
           mr={'10px'}
-          height={fullScreen ? '66px' : '35px'}
-          bgColor={'#f3f7fc'}
+          bgColor={'#fff'}
           border={'none'}
           placeholder='Type Your Message...'
           focusBorderColor='#9F85F7'
@@ -279,11 +310,10 @@ export const ChatBoxComponent = ({ height, selectedChat, fetchAgain, setFetchAga
         />
         <Button
           bg='buttonPrimaryColor'
-          size={fullScreen ? 'lg' : 'sm'}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={newMessage !== "" ? sendMessage : null}>
-          <FiSend />
+          <FiSend color="#fff" />
         </Button>
       </Box>
     </>
@@ -291,17 +321,125 @@ export const ChatBoxComponent = ({ height, selectedChat, fetchAgain, setFetchAga
 }
 
 const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) => {
+  const { dispatch, userInfo } = React.useContext(AppContext);
+  const [groupChatName, setGroupChatName] = React.useState('');
+  const [groupChatDescription, setGroupChatDescription] = React.useState('');
+  const [renameLoading, setRenameLoading] = React.useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const user = JSON.parse(localStorage.getItem('user'));
-
-  const [meetingIdExists, setMeetingIdExists] = React.useState(false);
+  const cancelRef = React.useRef()
+  const { isOpen: isConfirmOpen, onOpen: onConfirmOpen, onClose: onConfirmClose } = useDisclosure()
   const [online, setOnline] = React.useState(false);
   const [profile, setProfile] = React.useState(null);
 
   const { selectedChat } = React.useContext(AppContext);
 
   const toast = useToast();
+  const [loading, setLoading] = React.useState(false)
+  const admin = selectedChat?.isGroupChat && selectedChat?.groupAdmin._id === userInfo._id;
 
-  const admin = selectedChat?.isGroupChat && selectedChat?.groupAdmin._id === user._id;
+  const handleRemove = async (user1) => {
+    if (user1._id !== userInfo._id) {
+      return toast({
+        title: "Error Occured!",
+        description: "You are not the admin of this group",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+    }
+    try {
+      setLoading(true);
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      await axios.put(
+        `${backend_url}/conversation/groupremove`,
+        {
+          chatId: selectedChat._id,
+          userId: user1._id,
+        },
+        config
+      );
+
+      dispatch({ type: 'SET_SELECTED_CHAT', payload: null })
+      setFetchAgain(!fetchAgain);
+      setLoading(false);
+      toast({
+        title: "Success!",
+        description: "You left the group",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+    } catch (error) {
+      toast({
+        title: "Error Occured!",
+        description: "Failed to leave the group",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+    }
+  }
+
+  const handleRename = async () => {
+    if (groupChatName === '' || groupChatDescription === '') {
+      return toast({
+        title: "Error Occured!",
+        description: "Please fill all the fields",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+    }
+
+    try {
+      setRenameLoading(true);
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.token}`
+        }
+      }
+      const body = {
+        chatName: groupChatName,
+        description: groupChatDescription,
+        chatId: selectedChat._id
+      }
+      await axios.put(`${backend_url}/conversation/rename`, body, config)
+      toast({
+        title: "Group chat renamed",
+        description: "Group chat renamed to " + groupChatName,
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+      setRenameLoading(false);
+      setGroupChatName('');
+      setGroupChatDescription('');
+      setFetchAgain(!fetchAgain);
+      dispatch({ type: 'SET_SELECTED_CHAT', payload: null })
+      onClose();
+    } catch (err) {
+      toast({
+        title: "Error Occured!",
+        description: "Failed to Rename Group Chat",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+      setRenameLoading(false);
+    }
+  }
 
   const CheckOnlineStatus = async (friendId) => {
     try {
@@ -325,44 +463,13 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
     }
   }
 
-  React.useEffect(() => {
-    if (selectedChat?.isGroupChat) {
-      try {
-        const checkStream = async () => {
-          const config = {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${user.token}`
-            }
-          }
-          const { data } = await axios.get(`${backend_url}/conversation/streaming/${selectedChat._id}`, config);
-          if (data) {
-            localStorage.setItem('roomId', data);
-            setMeetingIdExists(true)
-          } else {
-            setMeetingIdExists(false);
-          }
-        }
-        checkStream();
-      } catch (error) {
-        toast({
-          title: "Error Occured!",
-          description: "Failed to Check Streaming Status",
-          status: "error",
-          isClosable: true,
-          position: "top",
-          duration: 5000,
-        });
-      }
 
+  React.useEffect(() => {
+    if (!selectedChat) {
+      return;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedChat])
-
-
-  React.useEffect(() => {
     try {
-      setProfile(selectedChat?.users.find(member => member._id !== user._id));
+      setProfile(selectedChat?.users.find(member => member._id !== userInfo._id));
     } catch (error) {
       // console.log(error);
       toast({
@@ -375,7 +482,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
       });
     }
     if (selectedChat && !selectedChat.isGroupChat) {
-      CheckOnlineStatus(selectedChat?.users.find(member => member._id !== user._id)._id);
+      CheckOnlineStatus(selectedChat?.users.find(member => member._id !== userInfo._id)._id);
     }
     selectedChatCompare = selectedChat;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -389,13 +496,13 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
 
   return (
     <Box
-      height={'85vh'}
+      height={'100%'}
       bg={'whiteColor'}
-      p={'1.5'}
       my={'5'}
-      mx={['5', '10', '10', '10']}
-      borderRadius={'xl'}
-      boxShadow={'dark-lg'}
+      m='0'
+      borderLeft='1px solid #EAE4FF'
+      display='flex'
+      flexDirection='column'
     >
       {
         selectedChat ?
@@ -406,13 +513,13 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
               flexDirection={'row'}
               justifyContent={'space-between'}
               alignItems={'center'}
-              my={2}
-              mx={6}
+              px={4}
+              py="17px"
               initial="hidden"
               animate="visible"
               variants={variants}
+              background="#F6F3FF"
             >
-
               <Box
                 display="flex"
                 flexDirection="row"
@@ -422,15 +529,26 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
                 animate="visible"
                 variants={variants}
                 style={{ margin: selectedChat?.isGroupChat ? '8px' : null }}>
+                <Box
+                  display={['block', 'block', 'none']}
+                  pe='10px'
+                  onClick={() => {
+                    dispatch({ type: "SET_SELECTED_CHAT", payload: null });
+                  }}
+                >
+                  <Image h='18px' src="https://ik.imagekit.io/sahildhingra/back.png" />
+                </Box>
                 {selectedChat?.isGroupChat ?
                   null :
                   <Avatar
                     initial="hidden"
                     animate="visible"
                     variants={variants}
-                    size='md'
+                    height='46px'
+                    width='46px'
                     name={profile?.username}
                     src={profile?.pic}
+                    mr={4}
                   >
                     {online ?
                       <AvatarBadge boxSize='1em' bg='green.500' />
@@ -442,31 +560,74 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
                   initial="hidden"
                   animate="visible"
                   variants={variants}
-                  ml={'4'}
-                  fontSize={'xl'}
+                  fontSize='16px'
                   fontWeight={'bold'}
                 >
                   {selectedChat?.isGroupChat ? selectedChat?.chatName.toUpperCase() : profile?.username}
                 </Text>
               </Box>
+              <Flex>
+                <Box display='flex' alignItems='center'>
+                  {
+                    selectedChat && (
+                      selectedChat?.isGroupChat && (
+                        <Button
+                          background="transparent"
+                          borderRadius="100%"
+                          ms="15px"
+                          me='10px'
+                          h='40px'
+                          w='40px'
+                          p='0'
+                          onClick={onOpen}
+                        >
+                          <Img
+                            h='22px'
+                            src="https://ik.imagekit.io/sahildhingra/settings.png" alt="" />
+                        </Button>
+                      )
+                    )
+                  }
 
-              {selectedChat?.isGroupChat && (admin || meetingIdExists) &&
-                <Box>
-                  <StreamModalPeer admin={admin} />
                 </Box>
-
-              }
-              <Flex
-                display={['block', 'none', 'none', 'none']}
-              >
-                <DetailsModal />
+                <Flex
+                  display={['block', 'block', 'none', 'none']}
+                >
+                  <DetailsModal admin={admin} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+                </Flex>
               </Flex>
 
             </Box>
 
             <Divider orientation='horizontal' />
-            <ChatBoxComponent height={'78%'} setOnline={setOnline} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} user={user} toast={toast} selectedChat={selectedChat} meetingId={meetingId} />
+            <ChatBoxComponent flex='1' height={'78%'} setOnline={setOnline} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} user={user} toast={toast} selectedChat={selectedChat} meetingId={meetingId} />
 
+            {/* Group Settings Modal */}
+            <GroupSettingsModal
+              isOpen={isOpen}
+              onClose={onClose}
+              chatName={selectedChat?.chatName}
+              groupChatName={groupChatName}
+              setGroupChatName={setGroupChatName}
+              handleRename={handleRename}
+              renameLoading={renameLoading}
+              onConfirmOpen={onConfirmOpen}
+              description={selectedChat?.description}
+              groupChatDescription={groupChatDescription} setGroupChatDescription={setGroupChatDescription}
+            />
+
+            <EndLeaveModal
+              leastDestructiveRef={cancelRef}
+              onClose={onConfirmClose}
+              header={'Leave Group'}
+              body={'Are you sure you want to leave this group?'}
+              confirmButton={'Leave'}
+              confirmFunction={() => {
+                handleRemove(userInfo);
+                onConfirmClose();
+              }}
+              isOpen={isConfirmOpen}
+            />
 
           </>)
           :
@@ -480,11 +641,11 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
             animate="visible"
             variants={variants}
           >
-            <Image src='./images/chatmain.png' />
-            <Text fontSize={['xl', 'xl', 'xl', '5xl']} color={'buttonPrimaryColor'}>
+            <Image src='./images/chatmain.png' h='150px' mb='10px' />
+            <Text fontSize={['xl', 'xl', 'xl', '2xl']} color={'buttonPrimaryColor'}>
               Open a Conversation to Start a Chat
             </Text>
-            <Text fontSize={['xs', 'md', 'md', 'md']} color={'greyTextColor'}>
+            <Text fontSize={['xs', 'md', 'md', 'md']} px='50px' textAlign='center' pt='20px' color={'greyTextColor'}>
               Select or create a group to have conversation, share video and start connecting with other users.
             </Text>
           </Box>)

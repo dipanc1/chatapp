@@ -256,12 +256,6 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
                             )
                         }
 
-                        {/* {Object.values(peersToShow).filter(peer => !!peer.stream).map((peer) => (
-                            <div key={peer.peerId}>
-                                <Videoplayer width={'400px'} peerstream={peer.stream} />
-                            </div>
-                        ))} */}
-
                         {
                             adminVideo.length > 0 ?
                             adminVideo.map((peer) => (

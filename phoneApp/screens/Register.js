@@ -1,18 +1,17 @@
 import React, { useRef } from 'react';
 import { Avatar, Box, Button, Flex, FormControl, Heading, HStack, Icon, IconButton, Input, InputGroup, InputLeftAddon, InputRightAddon, Link, Stack, Text, useColorModeValue, useTheme, VStack } from 'native-base';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import PhoneInput from 'react-native-phone-number-input';
 import { StyleSheet } from 'react-native';
 import OTPTextView from 'react-native-otp-textinput';
 import { PhoneAppContext } from '../context/PhoneAppContext';
-import { backend_url } from '../production';
+import { api_key, backend_url, folder, pictureUpload } from '../production';
 import axios from 'axios';
 import { launchImageLibrary } from 'react-native-image-picker';
 
 const Register = ({ navigation }) => {
-    const { dispatch } = React.useContext(PhoneAppContext);
+    const { getCloudinarySignature, timestamp, signature, dispatch } = React.useContext(PhoneAppContext);
+
     const [verify, setVerify] = React.useState(true);
     const [otp, setOtp] = React.useState(true);
     const [username, setUsername] = React.useState('');
@@ -20,20 +19,16 @@ const Register = ({ navigation }) => {
     const [formattedNumber, setFormattedNumber] = React.useState();
     const [password, setPassword] = React.useState('');
     const [confirmPassword, setConfirmPassword] = React.useState('');
-    const [error, setError] = React.useState(false)
-    const [errorMessage, setErrorMessage] = React.useState('')
     const [show, setShow] = React.useState(false)
-    const [pic, setPic] = React.useState(null)
+    const [selectedImage, setSelectedImage] = React.useState(null);
     const [loading, setLoading] = React.useState(false)
     const phoneInput = useRef(null);
     const otpInput = useRef(null);
     const number1 = React.useContext(PhoneAppContext)
 
-    const cloudName = 'dipanc1';
     const apiUrlMobile = `${backend_url}/mobile`;
     const apiUrlOtp = `${backend_url}/otp`;
     const apiUrlRegister = `${backend_url}/users/register`;
-    const pictureUpload = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
 
 
     const handleVerify = () => {
@@ -50,8 +45,7 @@ const Register = ({ navigation }) => {
                 })
         }
         else {
-            setError(true)
-            setErrorMessage("Please enter a valid phone number")
+            alert("Please enter a valid phone number")
         }
     }
 
@@ -79,45 +73,48 @@ const Register = ({ navigation }) => {
 
     const pickImage = async () => {
         const options = {
-            // includeBase64: true,
             mediaType: 'photo',
-            // saveToPhotos: true,
         };
+        await getCloudinarySignature();
         await launchImageLibrary(options, (response) => {
-
-            console.log('Response = ', response.assets.map((item) => item));
-            const res = response.assets.map((item) => item);
-            if (res.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (res.error) {
-                console.log('ImagePicker Error: ', res.error);
-            } else {
-                const uri = res.uri;
-                const type = res.type;
-                const name = res.fileName;
-                const source = {
-                    uri,
-                    type,
-                    name,
+            if (!response.didCancel) {
+                const res = response.assets.map((item) => item);
+                if (res.error) {
+                    console.log('ImagePicker Error: ', res.error);
+                } else {
+                    const uri = res[0].uri;
+                    const type = res[0].type;
+                    const name = res[0].fileName;
+                    const source = {
+                        uri,
+                        type,
+                        name,
+                    }
+                    cloudinaryUpload(source);
                 }
-                cloudinaryUpload(uri)
             }
         });
-
     }
+
     const cloudinaryUpload = (photo) => {
+        setLoading(true)
         let apiUrl = pictureUpload;
         const data = new FormData()
-        data.append('file', photo)
-        data.append('upload_preset', 'chat-app')
-        data.append("cloud_name", "835688546376544")
+        data.append('api_key', api_key)
+        data.append('file', photo);
+        data.append('folder', folder)
+        data.append('timestamp', timestamp)
+        data.append('signature', signature)
         fetch(apiUrl, {
             method: "post",
             body: data
         }).then(res => res.json()).
             then(data => {
-                setPic(data.secure_url)
+                setSelectedImage(data.secure_url)
+                setLoading(false)
             }).catch(err => {
+                console.log(err)
+                setLoading(false)
                 alert("An Error Occured While Uploading")
             })
     }
@@ -125,29 +122,26 @@ const Register = ({ navigation }) => {
     const handleRegister = () => {
         setLoading(true)
         if (password !== confirmPassword) {
-            setError(true);
-            setErrorMessage('Passwords do not match');
+            alert('Passwords do not match');
             setLoading(false)
             return
 
         } else {
             const details = {
                 username: username,
-                number1: number1,
+                number1: { number: "9876072838" },
                 password: password,
-                pic: pic
+                pic: selectedImage
             }
             axios.post(apiUrlRegister, details)
                 .then(res => {
-                    console.log(res.data);
                     setLoading(false);
                     navigation.navigate('Login');
                 })
                 .catch(err => {
                     console.log(err);
-                    setError(true);
                     setLoading(false);
-                    setErrorMessage('Please enter valid details');
+                    alert('Please enter valid details');
                 })
         }
     }
@@ -207,10 +201,9 @@ const Register = ({ navigation }) => {
                     {!otp &&
                         <>
                             <Box display={'flex'} alignItems={'flex-end'}>
-                                <Avatar bg="pink.600" alignSelf="center" size="xl" source={{
-                                    uri: (pic !== null ? pic : "https://images.unsplash.com/photo-1601233749202-95d04d5b3c00?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2876&q=80")
+                                <Avatar bg="gray.600" alignSelf="center" size="xl" source={{
+                                    uri: selectedImage !== null ? selectedImage : "https://images.unsplash.com/photo-1601233749202-95d04d5b3c00?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2876&q=80"
                                 }}>
-                                    GG
                                 </Avatar>
                                 <IconButton onPress={() => pickImage()} variant={'ghost'} _icon={{
                                     as: MaterialIcons, name: "edit"
@@ -223,7 +216,7 @@ const Register = ({ navigation }) => {
                                     md: '285px'
                                 }}>
                                     <InputLeftAddon
-                                        children={<Icon as={AntDesign} name="user" />}
+                                        children={<Icon as={MaterialIcons} name="person" key={"person"} />}
                                     />
                                     <Input
                                         placeholder='Username'
@@ -231,6 +224,9 @@ const Register = ({ navigation }) => {
                                             base: '84%',
                                             md: '285px'
                                         }}
+                                        onChangeText={
+                                            (text) => setUsername(text)
+                                        }
                                     />
                                 </InputGroup>
                             </FormControl>
@@ -241,7 +237,7 @@ const Register = ({ navigation }) => {
                                 }}
                                 >
                                     <InputLeftAddon
-                                        children={<Icon as={AntDesign} name="lock1" key={"lock1"} />}
+                                        children={<Icon as={MaterialIcons} name="lock" key={"lock"} />}
                                     />
                                     <Input type="password"
                                         placeholder='Password'
@@ -249,10 +245,13 @@ const Register = ({ navigation }) => {
                                             base: '70%',
                                             md: '285px'
                                         }}
+                                        onChangeText={
+                                            (text) => setPassword(text)
+                                        }
                                         color={'primary.900'}
                                     />
                                     <InputRightAddon
-                                        children={<Icon as={Feather} name="eye-off" key={"eye-off"} />}
+                                        children={<Icon as={MaterialIcons} name="visibility-off" key={"visibility-off"} />}
                                     />
                                 </InputGroup>
                             </FormControl>
@@ -264,7 +263,7 @@ const Register = ({ navigation }) => {
                                 }}
                                 >
                                     <InputLeftAddon
-                                        children={<Icon as={AntDesign} name="lock1" key={"lock1"} />}
+                                        children={<Icon as={MaterialIcons} name="lock" key={"lock"} />}
                                     />
                                     <Input type="password"
                                         placeholder='Confirm Password'
@@ -272,10 +271,13 @@ const Register = ({ navigation }) => {
                                             base: '70%',
                                             md: '285px'
                                         }}
+                                        onChangeText={
+                                            (text) => setConfirmPassword(text)
+                                        }
                                         color={'primary.900'}
                                     />
                                     <InputRightAddon
-                                        children={<Icon as={Feather} name="eye-off" key={"eye-off"} />}
+                                        children={<Icon as={MaterialIcons} name="visibility-off" key={"visibility-off"} />}
                                     />
                                 </InputGroup>
                             </FormControl>
@@ -293,7 +295,7 @@ const Register = ({ navigation }) => {
                     }
                     {!otp &&
                         <Button
-                            disabled={password === confirmPassword && username.length !== 0 && password.length >= 8} 
+                            isDisabled={password !== confirmPassword || username.length === 0 || password.length < 8}
                             isLoading={loading}
                             isLoadingText="Registering"
                             onPress={handleRegister}

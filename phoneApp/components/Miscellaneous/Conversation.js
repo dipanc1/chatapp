@@ -1,32 +1,91 @@
 import React from 'react'
-import { Avatar, Box, HStack, Text } from 'native-base'
-import { TouchableOpacity } from 'react-native'
+import { Box, HStack, Text, Heading, VStack, Avatar } from 'native-base'
+import { PhoneAppContext } from '../../context/PhoneAppContext';
+import { TouchableOpacity, Image } from 'react-native';
 
-const Conversation = ({ chat, user }) => {
+const Conversation = ({ chat, navigation }) => {
+    const { userInfo, dispatch } = React.useContext(PhoneAppContext);
+    const [read, setRead] = React.useState(true);
     const [friends, setFriends] = React.useState([]);
 
     React.useEffect(() => {
-        setFriends((chat?.users.find(member => member._id !== user._id)))
+        setFriends((chat?.users.find(member => member._id !== userInfo?._id)))
     }, [chat, friends])
 
     return (
-        <Box borderBottomWidth="1" borderBottomColor={'primary.100'} p={'3'} mx={'4'}>
-            <HStack space={[2, 3]} justifyContent="space-between" >
-                <HStack alignItems={'center'}>
-                    {chat && <Avatar size="48px" source={{
-                        uri: friends?.pic
-                    }}>
-                        {friends?.isOnline ? <Avatar.Badge bg="green.500" /> : <Avatar.Badge bg="red.500" />}
-                    </Avatar>
-                    }
-                    <Text mx={'3'} _dark={{
-                        color: "warmGray.50"
-                    }} color="coolGray.800" bold>
-                        {chat && friends?.username}
-                    </Text>
+        <TouchableOpacity onPress={() => {
+            dispatch({ type: 'SET_SELECTED_CHAT', payload: chat })
+            navigation.getParent()?.setOptions({ tabBarVisible: false })
+            setRead(false)
+        }}>
+
+            <Box borderBottomWidth="1" borderBottomColor={'primary.100'} p={'3'} mx={'4'}>
+                <HStack space={[2, 3]} justifyContent="space-between" alignItems={'center'}>
+                    <HStack alignItems={'center'}>
+                        {chat && friends.pic && <>
+                            <Image
+                                source={{
+                                    uri: friends.pic || "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"
+                                }}
+                                alt={friends?.username}
+                                style={{
+                                    width: 48,
+                                    height: 48,
+                                    position: "relative",
+                                    borderRadius: 100,
+                                    alignSelf: "center"
+                                }}
+                            />
+                            <Image
+                                source={{
+                                    uri: friends?.isOnline ? 'https://cdn.wallpapersafari.com/83/39/xwth3L.jpg' : 'https://www.solidbackgrounds.com/images/1920x1080/1920x1080-red-solid-color-background.jpg'
+                                }}
+                                alt={friends?.isOnline ? "Online" : "Offline"}
+                                style={{
+                                    position: "absolute",
+                                    width: 12,
+                                    height: 12,
+                                    borderRadius: 100,
+                                    alignSelf: "center",
+                                    left: 0,
+                                    bottom: 0
+                                }}
+                            />
+                        </>
+                        }
+                        <VStack>
+                            <Heading size={'sm'} ml={'3'} _dark={{
+                                color: "warmGray.50"
+                            }} color="coolGray.800" bold>
+                                {chat && friends?.username}
+                            </Heading>
+                            {chat && chat.latestMessage
+                                && <Text mx={'3'} _dark={{
+                                    color: "warmGray.50"
+                                }} color="coolGray.800">
+                                    {chat
+                                        && chat.latestMessage
+                                        && chat.latestMessage.sender
+                                        && chat.latestMessage.sender._id === userInfo?._id
+                                        ? 'You' :
+                                        friends?.username}:
+                                    {chat
+                                        && chat.latestMessage
+                                        && chat.latestMessage.content}
+                                </Text>}
+                        </VStack>
+                    </HStack>
+                    {chat && chat.latestMessage && chat.latestMessage.sender && chat.latestMessage.sender._id !== userInfo?._id && !chat?.latestMessage.readBy.includes(userInfo?._id) && read && <Box
+                        ml='auto'
+                        w='10px'
+                        h='10px'
+                        borderRadius={'full'}
+                        bg='red.500'
+                    >
+                    </Box>}
                 </HStack>
-            </HStack>
-        </Box>
+            </Box>
+        </TouchableOpacity>
 
     )
 }

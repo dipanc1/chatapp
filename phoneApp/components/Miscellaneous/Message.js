@@ -2,9 +2,34 @@ import { Avatar, Box, Flex, HStack, Text } from 'native-base'
 import React from 'react'
 import { PhoneAppContext } from '../../context/PhoneAppContext';
 import { format } from 'timeago.js';
+import axios from 'axios';
+import { backend_url } from '../../production';
 
-const Message = ({ messages, own, sameSender, sameTime }) => {
+const Message = ({ messages, own, sameSender, sameTime, user }) => {
     const { selectedChat } = React.useContext(PhoneAppContext);
+
+    React.useEffect(() => {
+        const readLastMessage = async () => {
+            try {
+                const config = {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${user.token}`
+                    }
+                }
+                await axios.post(`${backend_url}/message/read`, {
+                    messageId: messages._id
+                }, config)
+
+
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+        readLastMessage()
+    }, [messages, user.token])
+
     return (
         selectedChat?._id === messages?.chat._id ? <Flex>
             <HStack justifyContent={'space-between'} alignItems={'center'} >
@@ -16,7 +41,7 @@ const Message = ({ messages, own, sameSender, sameTime }) => {
                 <Flex m={'5'} width={'100%'}>
                     {!sameTime && <Text marginRight={own ? '0' : '10'} marginLeft={own ? '10' : '0'} fontSize={'xs'}>{format(messages.createdAt)}</Text>}
                     <Box rounded={'lg'} p={'2'} marginRight={own ? '0' : '10'} marginLeft={own ? '10' : '0'} bg={own ? 'primary.400' : 'primary.200'}>
-                        <Text style={{ color: own ? '#fff' : 'primary.600' }} color={'#fff'} fontSize={'lg'}>{messages.content}</Text>
+                        <Text color={own ? '#fff' : 'primary.600'} fontSize={'lg'}>{messages.content}</Text>
                     </Box>
                 </Flex>
             </HStack>

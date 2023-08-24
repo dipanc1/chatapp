@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Avatar, Badge, Button, FormControl, HStack, Input, Modal, ScrollView, Text, View, VStack } from 'native-base';
+import { Badge, Button, FormControl, HStack, Input, Modal, ScrollView, Text, View, VStack } from 'native-base';
 import React from 'react'
 import { TouchableOpacity } from 'react-native';
 import { PhoneAppContext } from '../../context/PhoneAppContext';
@@ -9,7 +9,6 @@ import UserListItem from '../UserItems/UserListItem';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const GroupChatModal = ({ user, showModal, setShowModal }) => {
-  const { dispatch, chats } = React.useContext(PhoneAppContext);
   const [selectedUsers, setSelectedUsers] = React.useState([]);
   const [search, setSearch] = React.useState('');
   const [searchResults, setSearchResults] = React.useState([]);

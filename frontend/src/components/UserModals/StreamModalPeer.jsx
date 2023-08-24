@@ -19,7 +19,15 @@ import animationData from '../../animations/red-dot.json';
 import { RoomContext } from '../../context/RoomContext';
 
 
-const StreamModalPeer = ({ children, admin }) => {
+const StreamModalPeer = ({
+    children,
+    admin,
+    title,
+    date,
+    time,
+    imageUrl,
+    description
+}) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     const { dispatch } = useContext(AppContext);
@@ -31,11 +39,31 @@ const StreamModalPeer = ({ children, admin }) => {
         dispatch({
             type: "SET_STREAM"
         })
+        dispatch({
+            type: "SET_EVENT_INFO",
+            payload: {
+                title,
+                date,
+                time,
+                imageUrl,
+                description
+            }
+        })
     };
 
     const joinRoom = () => {
         dispatch({
             type: "SET_STREAM"
+        })
+        dispatch({
+            type: "SET_EVENT_INFO",
+            payload: {
+                title,
+                date,
+                time,
+                imageUrl,
+                description
+            }
         })
     };
 
@@ -44,9 +72,15 @@ const StreamModalPeer = ({ children, admin }) => {
         children ?
             <span>{children}</span> :
             <>
-                <Button onClick={() => {
-                    onOpen();
-                }}>{
+                <Button
+                    background="#f1edff"
+                    borderRadius="100%"
+                    h='40px'
+                    w='40px'
+                    p='0'
+                    onClick={() => {
+                        onOpen();
+                    }}>{
                         !admin &&
                         <Lottie
                             loop={true}

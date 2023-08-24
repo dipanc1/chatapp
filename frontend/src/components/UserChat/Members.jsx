@@ -1,26 +1,32 @@
-import React from 'react'
+import React, {
+  useState,
+} from 'react'
 import ChatOnline from '../Miscellaneous/ChatOnline'
 import { AppContext } from '../../context/AppContext'
 import axios from 'axios'
-import UserListItem from '../UserItems/UserListItem'
-import { backend_url } from '../../baseApi'
+import { api_key, backend_url, pictureUpload, folder } from '../../baseApi'
 import { HiUserRemove } from 'react-icons/hi'
 import {
   Accordion, Avatar,
-  Box, Button, Divider, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Tab, TabList, TabPanel, TabPanels, Tabs, Text, useDisclosure, useToast,
+  Box, Button, Divider, Flex, Image, Input, Spinner, Tab, TabList, TabPanel, TabPanels, Tabs, Text, useDisclosure, useToast,
 } from '@chakra-ui/react'
 import { GrUserAdd } from 'react-icons/gr'
 import { BsTelephone, BsPerson } from 'react-icons/bs'
 import { ChatBoxComponent } from './Chatbox'
 import EndLeaveModal from '../UserModals/EndLeaveModal'
-import { RoomContext } from '../../context/RoomContext'
+import EventCard from '../Events/EventCard'
+import { NavLink } from 'react-router-dom'
 
-export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, admin }) => {
+import EventModal from '../UserModals/EventModal'
+import AddMembersModal from '../UserModals/AddMembersModal'
+
+export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, setFetchAgain, admin }) => {
   const user = JSON.parse(localStorage.getItem('user'));
 
-  const { selectedChat, dispatch, stream, fullScreen } = React.useContext(AppContext);
+  const { selectedChat, dispatch, stream, fullScreen, userInfo, signature, timestamp, getCloudinarySignature } = React.useContext(AppContext);
 
   const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure()
+  const { isOpen: isOpenCreateEvent, onOpen: onOpenCreateEvent, onClose: onCloseCreateEvent } = useDisclosure()
   const { isOpen: isConfirmOpen, onOpen: onConfirmOpen, onClose: onConfirmClose } = useDisclosure()
 
   const cancelRef = React.useRef()
@@ -32,9 +38,230 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
   const [searchResults, setSearchResults] = React.useState([]);
   const [renameLoading, setRenameLoading] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const [name, setEventName] = useState("");
+  const [description, setDescription] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [selectedImage, setSelectedImage] = React.useState(null);
+  const [createEventLoading, setCreateEventLoading] = useState(false);
+  const [chatIdValue, setChatIdValue] = React.useState('');
+
+  const fileInputRef = React.createRef();
+
+  const imageChange = async (e) => {
+    await getCloudinarySignature();
+    if (e.target.files && e.target.files.length > 0 && (e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/png')) {
+      setSelectedImage(e.target.files[0]);
+    } else {
+      toast({
+        title: "Error",
+        description: "Please select a valid image",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+  }
+
+  const handleCreateEvent = async (e) => {
+    setCreateEventLoading(true)
+    e.preventDefault();
+
+    if (selectedChat.groupAdmin._id !== userInfo._id) {
+      setCreateEventLoading(false)
+      toast({
+        title: "You are not the admin of this group",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setEventName("");
+      setDescription("");
+      setDate("");
+      setTime("");
+      setSelectedImage(null);
+      return;
+    }
+
+    if (name === "" || description === "" || date === "" || time === "") {
+      setCreateEventLoading(false)
+      toast({
+        title: "Please fill all the fields",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      return;
+    }
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    };
+
+
+    if (selectedImage === null) {
+      await axios.put(`${backend_url}/conversation/event/${selectedChat._id}`, {
+        name,
+        description,
+        date,
+        time
+      }, config)
+        .then(async (res) => {
+          await axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
+            selectedChat.events = res.data;
+            toast({
+              title: "Event Created!",
+              description: "Event created successfully",
+              status: "success",
+              duration: 5000,
+              isClosable: true,
+              position: "bottom-left",
+            });
+            setCreateEventLoading(false);
+            setEventName("");
+            setDescription("");
+            setDate("");
+            setTime("");
+            setSelectedImage(null);
+            onCloseCreateEvent();
+          }).catch((err) => {
+            console.log(err);
+            toast({
+              title: "Error Occured!",
+              description: "Something went wrong",
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+              position: "bottom-left",
+            });
+            setCreateEventLoading(false);
+            setEventName("");
+            setDescription("");
+            setDate("");
+            setTime("");
+            setSelectedImage(null);
+            onCloseCreateEvent();
+          })
+        })
+        .catch((err) => {
+          console.log(err);
+          toast({
+            title: "Error Occured!",
+            description: "Something went wrong",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom-left",
+          });
+          setCreateEventLoading(false);
+          setEventName("");
+          setDescription("");
+          setDate("");
+          setTime("");
+          setSelectedImage(null);
+          onCloseCreateEvent();
+        });
+    } else {
+      const formData = new FormData();
+      formData.append('api_key', api_key)
+      formData.append('file', selectedImage);
+      formData.append('folder', folder)
+      formData.append('timestamp', timestamp)
+      formData.append('signature', signature)
+
+      await axios.post(pictureUpload, formData)
+        .then(async (res) => {
+          await axios.put(`${backend_url}/conversation/event/${selectedChat._id}`, {
+            name,
+            description,
+            date,
+            time,
+            thumbnail: res.data.url
+          }, config)
+            .then(async (res) => {
+              await axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
+                selectedChat.events = res.data;
+                toast({
+                  title: "Event Created!",
+                  description: "Event created successfully",
+                  status: "success",
+                  duration: 5000,
+                  isClosable: true,
+                  position: "bottom-left",
+                });
+                setCreateEventLoading(false);
+                setEventName("");
+                setDescription("");
+                setDate("");
+                setTime("");
+                setSelectedImage(null);
+                onCloseCreateEvent();
+              }).catch((err) => {
+                console.log(err);
+                toast({
+                  title: "Error Occured!",
+                  description: "Something went wrong",
+                  status: "error",
+                  duration: 5000,
+                  isClosable: true,
+                  position: "bottom-left",
+                });
+                setCreateEventLoading(false);
+                setEventName("");
+                setDescription("");
+                setDate("");
+                setTime("");
+                setSelectedImage(null);
+                onCloseCreateEvent();
+              })
+            })
+            .catch((err) => {
+              console.log(err);
+              toast({
+                title: "Error Occured!",
+                description: "Something went wrong",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "bottom-left",
+              });
+              setCreateEventLoading(false);
+              setEventName("");
+              setDescription("");
+              setDate("");
+              setTime("");
+              setSelectedImage(null);
+              onCloseCreateEvent();
+            });
+        })
+        .catch((err) => {
+          console.log(err);
+          toast({
+            title: "Error Occured!",
+            description: "Something went wrong",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom-left",
+          });
+          setCreateEventLoading(false);
+          setEventName("");
+          setDescription("");
+          setDate("");
+          setTime("");
+          setSelectedImage(null);
+          onCloseCreateEvent();
+        });
+    }
+
+  }
 
   const handleRemove = async (user1) => {
-    if (selectedChat.groupAdmin._id !== user._id && user1._id !== user._id) {
+    if (selectedChat.groupAdmin._id !== userInfo._id && user1._id !== userInfo._id) {
       return toast({
         title: "Error Occured!",
         description: "You are not the admin of this group",
@@ -60,7 +287,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
         config
       );
 
-      user1._id === user._id ? dispatch({ type: 'SET_SELECTED_CHAT', payload: '' }) : dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
+      user1._id === userInfo._id ? dispatch({ type: 'SET_SELECTED_CHAT', payload: '' }) : dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
       setFetchAgain(!fetchAgain);
       setLoading(false);
       toast({
@@ -95,7 +322,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
         position: "bottom-left",
       });
     }
-    if (selectedChat.groupAdmin._id !== user._id) {
+    if (selectedChat.groupAdmin._id !== userInfo._id) {
       return toast({
         title: "Error Occured!",
         description: "You are not the admin of this group chat",
@@ -215,60 +442,155 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
     }
   }
 
+  const openMembersModal = async () => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.get(
+        `${backend_url}/conversation/encrypted/${selectedChat._id}`,
+        config
+      );
+      onAddOpen();
+      setChatIdValue(data.encryptedChatId);
+    } catch (error) {
+      toast({
+        title: "Error Occured!",
+        description: "Failed to Load the Members",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      })
+    }
+
+  }
+
   return (
     selectedChat ? (
       selectedChat?.isGroupChat ? (
-        <Tabs variant='unstyled' isFitted>
-          <TabList mt={['2', '0', '0', '0']}>
-            {/* {(token && meetingId && stream) &&
+
+        <Tabs display='flex' flexDirection='column' h='100%'>
+          {
+            !stream && (
+              <TabList mt={['2', '0', '0', '0']}>
+                {/* {(token && meetingId && stream) &&
               <Tab boxSize={fullScreen ? '10' : '1'} _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>Chat</Tab>
             } */}
-            {stream &&
-              <Tab boxSize={fullScreen ? '10' : '1'} _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>Chat</Tab>
-            }
+                {/* {stream &&
+              <Tab flex='1'>Chat</Tab>
+            } */}
 
-            <Tab _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>{stream ? 'Participants' : 'Members'}</Tab>
 
-            <Tab boxSize={fullScreen ? '10' : '1'} _selected={{ color: 'white', bg: 'buttonPrimaryColor', borderRadius: '1rem' }}>Settings</Tab>
-          </TabList>
+                <>
+                  <Tab flex='1'>Events</Tab>
 
-          <TabPanels>
+                  <Tab flex='1'>{stream ? 'Participants' : `Members (${selectedChat?.users.length})`}</Tab>
+
+                  <Tab display='none' flex='1'>Settings</Tab>
+                </>
+
+              </TabList>
+
+            )
+          }
+          <TabPanels flex='1' h='80%'>
 
             {/* Chat Tab */}
             {stream &&
-              <TabPanel>
-                <ChatBoxComponent height={fullScreen ? '65vh' : '20vh'} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} selectedChat={selectedChat} user={user} toast={toast} />
+              <TabPanel p='0' h='100%' display='flex' flexDirection='column'>
+                <ChatBoxComponent setToggleChat={setToggleChat} stream={stream} flex='1' height={fullScreen ? '65vh' : '20vh'} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} selectedChat={selectedChat} user={user} toast={toast} />
               </TabPanel>
             }
 
-            {/* Participants/Members Tab */}
-            <TabPanel>
-              <Box>
-                <Text>
-                  {selectedChat?.users.length} members
-                </Text>
-              </Box>
+            {/* Events Tab */}
+            <TabPanel h='100%' p='0'>
+
               <Box
                 display={'flex'}
                 flexDirection={'column'}
                 alignItems={'center'}
-                justifyContent={'center'}
-                minHeight={['72vh', '0', '0', '10']}
-                maxHeight={'72vh'}
-                overflowY={'scroll'}
-                overflowX={'hidden'}
+                height='100%'
               >
-                <Accordion allowToggle>
-                  {selectedChat?.users.map(u =>
-                    <ChatOnline
-                      stream={stream}
-                      key={u._id}
-                      user1={u}
-                      handleFunction={() => handleRemove(u)} />
-                  )}
-
-                </Accordion>
+                <Box
+                  w='100%'
+                  h='50%'
+                  overflow='auto'
+                  flex='1'
+                  p='4'
+                >
+                  {selectedChat?.events.map((eventItem, index) => {
+                    return (
+                      <>
+                        <Box key={eventItem._id} className='group-event' mb='20px'>
+                          <EventCard index={index} id={eventItem?._id} date={eventItem?.date} time={eventItem?.time} title={eventItem?.name} description={eventItem?.description} imageUrl={eventItem?.thumbnail} admin={admin} />
+                        </Box>
+                      </>
+                    )
+                  })}
+                </Box>
+                {admin && (
+                  <Box py='25px'>
+                    <NavLink className='btn btn-primary' onClick={onOpenCreateEvent}>
+                      <Flex alignItems='center'>
+                        <Image h='18px' pe='15px' src='https://ik.imagekit.io/sahildhingra/add.png?ik-sdk-version=javascript-1.4.3&updatedAt=1673025917620' />
+                        <Text>Create Event</Text>
+                      </Flex>
+                    </NavLink>
+                  </Box>
+                )}
               </Box>
+            </TabPanel>
+
+            {/* Participants/Members Tab */}
+            <TabPanel h='100%' p='0'>
+              <Box
+                display={'flex'}
+                flexDirection={'column'}
+                height='100%'
+              >
+                <Box
+                  h='50%'
+                  overflow='auto'
+                  flex='1'
+                  p='4'
+                  pt='0'
+                  px='0'
+                >
+                  <Accordion allowToggle>
+                    {selectedChat?.users.map(u =>
+                      <Box key={u._id}>
+                        <ChatOnline
+                          admin={admin}
+                          stream={stream}
+                          key={u._id}
+                          user1={u}
+                          handleFunction={() => handleRemove(u)} />
+                      </Box>
+                    )}
+
+                  </Accordion>
+                </Box>
+
+                {admin && (<Box py='25px' textAlign='center'>
+                  <NavLink onClick={openMembersModal} className='btn btn-primary'>
+                    <Flex alignItems='center'>
+                      <Image h='18px' pe='15px' src='https://ik.imagekit.io/sahildhingra/add.png?ik-sdk-version=javascript-1.4.3&updatedAt=1673025917620' />
+                      <Text>Add Member</Text>
+                    </Flex>
+                  </NavLink>
+                </Box>)}
+              </Box>
+
+              {/* Create Event Modal */}
+              <EventModal type={"Create"} createEventLoading={createEventLoading} isOpenCreateEvent={isOpenCreateEvent} onCloseCreateEvent={onCloseCreateEvent} name={name} setEventName={setEventName} description={description} setDescription={setDescription} date={date} setDate={setDate} time={time} setTime={setTime} selectedImage={selectedImage} imageChange={imageChange} handleSubmit={handleCreateEvent} fileInputRef={fileInputRef} />
+
+              {/* Add Member Modal */}
+              <AddMembersModal chatIdValue={`${backend_url}/join-group/${chatIdValue}`} isAddOpen={isAddOpen} onAddClose={onAddClose} handleSearch={handleSearch} search={search} searchResults={searchResults} loading={loading} handleAddUser={handleAddUser} fullScreen={fullScreen} />
+
             </TabPanel>
 
 
@@ -279,8 +601,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
                 flexDirection={'column'}
                 alignItems={'center'}
                 justifyContent={'flex-end'}
-                maxHeight={'sm'}
-                minHeight={fullScreen ? '75vh' : '20vh'}
+                minHeight={fullScreen ? '100%' : '20vh'}
               >
 
                 {renameLoading ?
@@ -299,6 +620,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
                   :
                   <Box display={'flex'} flexDirection={'column'} mx={'2'} mb={fullScreen ? '36' : '2'}>
                     <Input
+                      focusBorderColor='#9F85F7'
                       mr={'2'}
                       value={groupChatName}
                       placeholder={selectedChat?.chatName}
@@ -317,73 +639,6 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
                     Add Member
                   </Button>
 
-                  {/* Add Member Modal */}
-                  <Modal size={['xs', 'xs', 'xl', 'lg']} isOpen={isAddOpen} onClose={onAddClose}>
-                    <ModalOverlay />
-                    <ModalContent>
-                      <ModalHeader>Add Member</ModalHeader>
-                      <ModalCloseButton />
-                      <ModalBody maxHeight={'lg'} overflow={'scroll'} overflowX={'hidden'}>
-                        <Input
-                          value={search}
-                          placeholder="Search Member" onChange={handleSearch}
-                          focusBorderColor='#9F85F7'
-                        />
-                        {loading
-                          ?
-                          <Box
-                            display={'flex'}
-                            alignItems={'center'}
-                            justifyContent={'center'}
-                            my={2}
-                            maxHeight={fullScreen ? '48' : '8'}
-                            overflowY={'scroll'}
-                          >
-                            <Spinner
-                              thickness='4px'
-                              speed='0.6s'
-                              emptyColor='gray.200'
-                              color='buttonPrimaryColor'
-                              size='xl'
-                            />
-                          </Box>
-                          :
-                          <Box maxHeight={fullScreen ? '48' : '8'}
-                            overflowY={'scroll'}>
-                            {search.length > 0 &&
-                              searchResults?.map(user => (
-                                <Box
-                                  my={'2'}
-                                  _hover={{
-                                    background: '#b5cbfe',
-                                    color: 'white',
-                                  }}
-                                  bg={'#E8E8E8'}
-                                  p={2}
-                                  cursor={'pointer'}
-                                  mx={'2rem'}
-                                  borderRadius="lg"
-                                  key={user._id}
-                                  onClick={
-                                    () => handleAddUser(user._id)
-                                  }
-                                >
-                                  <UserListItem user={user} />
-                                </Box>
-                              ))}
-                          </Box>
-                        }
-                      </ModalBody>
-
-                      <ModalFooter>
-                        <Button backgroundColor={'buttonPrimaryColor'} color={'white'} mr={3} onClick={onAddClose}>
-                          Close
-                        </Button>
-                      </ModalFooter>
-                    </ModalContent>
-                  </Modal>
-
-                  {/* Confirm Add Member */}
                   <EndLeaveModal
                     leastDestructiveRef={cancelRef}
                     onClose={onConfirmClose}
@@ -391,7 +646,7 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
                     body={'Are you sure you want to leave this group?'}
                     confirmButton={'Leave'}
                     confirmFunction={() => {
-                      handleRemove(user);
+                      handleRemove(userInfo);
                       onConfirmClose();
                     }}
                     isOpen={isConfirmOpen}
@@ -416,7 +671,6 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
           <Box
             p={2}
             mx={'2'}
-            my={'1'}
             flexWrap={'wrap'}
             display={'flex'}
             justifyContent={'space-around'}
@@ -434,16 +688,16 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
             minHeight={'sm'}
             overflowX={'hidden'}
           >
-            <Avatar my={'10'} size={'2xl'} name={selectedChat?.users.find(member => member._id !== user._id)?.username} src={selectedChat?.users.find(member => member._id !== user._id)?.pic} />
+            <Avatar my={'10'} size={'2xl'} name={selectedChat?.users.find(member => member._id !== userInfo?._id)?.username} src={selectedChat?.users.find(member => member._id !== userInfo?._id)?.pic} />
 
             <BsPerson />
             <Text as='samp' mb={'5'}>
-              {selectedChat?.users.find(member => member._id !== user._id)?.username}
+              {selectedChat?.users.find(member => member._id !== userInfo?._id)?.username}
             </Text>
 
             <BsTelephone />
             <Text as='samp'>
-              {selectedChat?.users.find(member => member._id !== user._id)?.number}
+              {selectedChat?.users.find(member => member._id !== userInfo?._id)?.number}
             </Text>
 
           </Box>
@@ -456,37 +710,42 @@ export const MembersComponent = ({ token, meetingId, fetchAgain, setFetchAgain, 
         justifyContent={'center'}
         alignItems={'center'}
         flexDirection={'column'}
-
         height={'100%'}
       >
         <Text cursor={'default'} color={'buttonPrimaryColor'} fontSize={'2xl'}>
           Select a chat
         </Text>
-        <Text color={'greyTextColor'} p={'4'}>
+        <Text fontSize={['xs', 'md', 'md', 'md']} px='50px' textAlign='center' pt='20px' color={'greyTextColor'}>
           Select or create a group to see the participants of that group along with settings and other information.
         </Text>
       </Box>)
   )
 }
 
-const Members = ({ fetchAgain, setFetchAgain, token, meetingId, admin }) => {
+const Members = ({ setToggleChat, fetchAgain, setFetchAgain, token, meetingId, admin }) => {
 
   return (
+    // <Box
+    //   height={'85vh'}
+    //   width={'98%'}
+    //   bg={'whiteColor'}
+    //   p={'1.5'}
+    //   my={'5'}
+    //   mr={'10'}
+    //   borderRadius={'xl'}
+    //   display={['none', 'none', 'none', 'block']}
+    //   boxShadow={'dark-lg'}>
     <Box
-      height={'85vh'}
-      width={'98%'}
       bg={'whiteColor'}
-      p={'1.5'}
-      my={'5'}
-      mr={'10'}
-      borderRadius={'xl'}
-      display={['none', 'none', 'none', 'block']}
-      boxShadow={'dark-lg'}>
-
-      <MembersComponent admin={admin} token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+      display={['block', 'block', 'block', 'block']}
+      borderLeft='1px solid #EAE4FF'
+      h='100%'
+    >
+      <MembersComponent setToggleChat={setToggleChat} admin={admin} token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
 
     </Box>
   )
 }
 
 export default Members
+

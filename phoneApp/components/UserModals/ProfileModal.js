@@ -1,7 +1,11 @@
-import { Avatar, Button, Modal, Text, VStack } from 'native-base';
+import { Button, Modal, Text, VStack } from 'native-base';
 import React from 'react'
+import { PhoneAppContext } from '../../context/PhoneAppContext';
+import { Image } from 'react-native';
 
-const ProfileModal = ({ user, modalVisible, setModalVisible }) => {
+const ProfileModal = ({ modalVisible, setModalVisible, navigation }) => {
+  const { userInfo } = React.useContext(PhoneAppContext);
+
   return (
     <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)} _backdrop={{
       _dark: {
@@ -14,23 +18,30 @@ const ProfileModal = ({ user, modalVisible, setModalVisible }) => {
         <Modal.Header>Profile Details</Modal.Header>
         <Modal.Body>
           <VStack justifyContent={'space-between'} alignItems={'center'}>
-            <Avatar bg="purple.600" alignSelf="center" size="2xl" source={{
-              uri: user.pic
-            }}>
-              {user.username}
-            </Avatar>
-            <Text fontSize={'md'} color={'primary.600'} mt="2">{user.username}</Text>
-            <Text fontSize={'md'} color={'primary.600'} mt="2"> Phone Number: +{user.number}</Text>
+            <Image
+              source={{
+                uri: userInfo?.pic
+              }}
+              alt={userInfo?.username}
+              size={"2xl"}
+              resizeMode={"stretch"}
+              style={{
+                width: 150,
+                height: 150,
+                borderRadius: 100,
+                alignSelf: "center"
+              }}
+            />
+            <Text fontSize={'md'} color={'primary.600'} mt="2">{userInfo?.username}</Text>
+            <Text fontSize={'md'} color={'primary.600'} mt="2"> Phone Number: +{userInfo?.number}</Text>
           </VStack>
         </Modal.Body>
-        <Modal.Footer>
-          <Button.Group space={2}>
-            <Button bg={'primary.300'} onPress={() => {
-              setModalVisible(false);
-            }}>
-              Close
-            </Button>
-          </Button.Group>
+        <Modal.Footer justifyContent={'center'}>
+          <Button bg={'primary.300'} onPress={() => {
+            navigation.navigate(`Settings`, { screen: `My Details` })
+          }}>
+            Edit Profile
+          </Button>
         </Modal.Footer>
       </Modal.Content>
     </Modal>

@@ -5,7 +5,6 @@ const asyncHandler = require("express-async-handler");
 
 require("dotenv").config();
 
-
 const protect = asyncHandler(async (req, res, next) => {
     let token;
     const SECRET_KEY = process.env.JWT_SECRET;
@@ -25,13 +24,13 @@ const protect = asyncHandler(async (req, res, next) => {
             next();
         } catch (error) {
             res.status(401).json({ message: "Not authorized, token failed" });
-            // console.log("Not authorized, token failed");
+            console.log("Not authorized, token failed");
         }
     }
 
     if (!token) {
         res.status(401).json({ message: "Not authorized, no token" });
-        // console.log("Not authorized, no token");
+        console.log("Not authorized, no token");
     }
 });
 

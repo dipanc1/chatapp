@@ -1,20 +1,22 @@
-import { Button, FlatList, Flex, HStack, ScrollView, Text, VStack } from 'native-base'
+import { Button, Spinner, Flex, HStack, ScrollView, Text, VStack } from 'native-base'
 import React from 'react'
 import { TouchableOpacity } from 'react-native'
 import { PhoneAppContext } from '../../context/PhoneAppContext'
 import { backend_url } from '../../production'
 import ParticipantListItem from '../UserItems/ParticipantListItem'
 import AddModal from '../UserModals/AddModal'
+import axios from 'axios'
 
 const Participants = ({ user, fetchAgain, setFetchAgain }) => {
 
-  const { dispatch, selectedChat } = React.useContext(PhoneAppContext);
+  const { dispatch, selectedChat, userInfo } = React.useContext(PhoneAppContext);
   const [loading, setLoading] = React.useState(false);
   const [showModal, setShowModal] = React.useState(false);
+  const admin = selectedChat?.groupAdmin?._id === userInfo?._id;
 
   const handleRemove = async (user1) => {
-    if (selectedChat.groupAdmin._id !== user._id && user1._id !== user._id) {
-      return Alert.alert('You are not the admin of this group chat')
+    if (selectedChat.groupAdmin._id !== userInfo?._id && user1._id !== userInfo?._id) {
+      return alert('You are not the admin of this group chat')
     }
     try {
       setLoading(true);
@@ -32,10 +34,10 @@ const Participants = ({ user, fetchAgain, setFetchAgain }) => {
         config
       );
 
-      user1._id === user._id ? dispatch({ type: 'SET_SELECTED_CHAT', payload: '' }) : dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
+      user1._id === userInfo?._id ? dispatch({ type: 'SET_SELECTED_CHAT', payload: '' }) : dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
       setLoading(false);
-      alert('User removed from group chat');
     } catch (error) {
+      setLoading(false);
       console.log(error);
     }
   }
@@ -44,25 +46,26 @@ const Participants = ({ user, fetchAgain, setFetchAgain }) => {
     <>
       <Flex bg={'#fff'} flex={1}>
 
-        <HStack my={'2'} alignItems={'center'} justifyContent={'space-around'}>
-          <Text color={'#2E354B'}>{selectedChat?.users.length} Members</Text>
-          <Button onPress={
-            () => setShowModal(true)
-          } variant={'ghost'} colorScheme={'cyan'}>Add</Button>
-        </HStack>
+        {loading ? <Spinner size={'lg'} color={'primary.300'} /> : <>
+          <HStack my={'2'} alignItems={'center'} justifyContent={'space-around'}>
+            <Text color={'#2E354B'}>{selectedChat?.users.length} Members</Text>
 
-        <VStack p={'5'}>
+            <Button onPress={
+              () => setShowModal(true)
+            } variant={'ghost'} colorScheme={'cyan'} disabled={!admin}>Add</Button>
+          </HStack>
 
-          <ScrollView>
-            {selectedChat.isGroupChat && selectedChat?.users.map(u =>
-              <TouchableOpacity key={u?._id} onPress={
-                () => handleRemove(u)
-              }>
-                <ParticipantListItem user1={u} user={user} />
-              </TouchableOpacity>
-            )}
-          </ScrollView>
-        </VStack>
+          <VStack p={'5'}>
+
+            <ScrollView>
+              {selectedChat.isGroupChat && selectedChat?.users.map(u =>
+                <TouchableOpacity key={u?._id}>
+                  <ParticipantListItem user1={u} admin={admin} selectedChat={selectedChat} handleRemove={handleRemove} />
+                </TouchableOpacity>
+              )}
+            </ScrollView>
+          </VStack>
+        </>}
 
       </Flex>
 

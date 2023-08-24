@@ -11,14 +11,17 @@ import {
     ModalBody,
     ModalCloseButton,
     useDisclosure,
-    Button,
     Image,
     Text,
     Avatar
 } from '@chakra-ui/react'
+import { useContext } from 'react';
+import { NavLink } from 'react-router-dom'
+import { AppContext } from '../../context/AppContext';
 
-const ProfileModal = ({ user, children }) => {
-    const { isOpen, onOpen, onClose } = useDisclosure()
+const ProfileModal = ({ children }) => {
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const { userInfo } = useContext(AppContext)
 
     return (
         <>
@@ -49,7 +52,7 @@ const ProfileModal = ({ user, children }) => {
                         d="flex"
                         justifyContent="center"
                     >
-                        {user.username}
+                        {userInfo?.username}
                     </ModalHeader>
                     <ModalCloseButton />
                     <ModalBody
@@ -58,31 +61,32 @@ const ProfileModal = ({ user, children }) => {
                         justifyContent={'center'}
                         flexDirection={'column'}
                     >
-                        {user.pic ? (
+                        {userInfo?.pic ? (
                             <Image
                                 borderRadius="full"
                                 boxSize="250px"
-                                src={user.pic}
-                                alt={user.name}
+                                objectFit='cover'
+                                src={userInfo?.pic}
+                                alt={userInfo?.name}
                             />
                         ) : (
                             <Avatar
                                 size='full'
-                                name={user.name}
+                                name={userInfo?.name}
                                 src={''}
                             />
                         )}
                         <Text
                             fontSize={{ md: "20px" }}
-                            my={4}
+                            mt={4}
                         >
-                            Phone Number: +{user.number}
+                            Phone Number: +{userInfo?.number}
                         </Text>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color={'white'} backgroundColor={'buttonPrimaryColor'} mr={3} onClick={onClose}>
-                            Close
-                        </Button>
+                        <NavLink className='btn btn-primary btn-sm' to='/settings' color={'white'} backgroundColor={'buttonPrimaryColor'} mr={3}>
+                            Edit Profile
+                        </NavLink>
                     </ModalFooter>
                 </ModalContent>
             </Modal>

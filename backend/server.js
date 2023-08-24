@@ -5,11 +5,13 @@ const path = require("path");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 
-const userRoute = require("./Router/users");
-const otpRoute = require("./Router/otp");
-const conversationRoute = require("./Router/conversation");
-const messageRoute = require("./Router/messages");
-const meetingRoute = require("./Router/meetings");
+const userRoute = require("./router/users");
+const otpRoute = require("./router/otp");
+const conversationRoute = require("./router/conversation");
+const messageRoute = require("./router/messages");
+const meetingRoute = require("./router/meetings");
+const checkoutRoute = require("./router/checkouts");
+const uploadRoute = require("./router/uploadFiles");
 
 require("dotenv").config();
 
@@ -21,7 +23,9 @@ const app = express();
 
 app.use(
     cors({
-        origin: "*",
+        origin: [
+            process.env.CLIENT_URL, 'https://chatapp.wildcrypto.com'
+        ]
     })
 );
 
@@ -32,17 +36,19 @@ mongoose.connect(
     useNewUrlParser: true,
     useUnifiedTopology: true
 },
-    () => {
+    async () => {
         console.log("Connected to MongoDB");
     }, 600000
-);
+)
 
 app.use(bodyParser.json());
 app.use("/", otpRoute)
 app.use("/users", userRoute);
-app.use("/conversation", protect, conversationRoute);
+app.use("/conversation", conversationRoute);
 app.use("/message", protect, messageRoute);
 app.use("/meetings", meetingRoute);
+app.use("/checkout", checkoutRoute);
+app.use("/upload", uploadRoute);
 
 const PORT = process.env.PORT || "8000";
 const server = app.listen(PORT, () => {
@@ -80,7 +86,7 @@ io.on("connection", (socket) => {
                 })
                 .catch(err => console.log("Online ", err))
         } else {
-            console.log("User not found")
+            console.log("Socket 83: User not found")
         }
     });
 
@@ -103,7 +109,7 @@ io.on("connection", (socket) => {
                             console.log(err);
                         });
                 } else {
-                    console.log("User not found");
+                    console.log("Socket 106: User not found");
                 }
             })
             .catch(err => console.log(err))

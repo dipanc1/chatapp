@@ -5,13 +5,12 @@ import Feather from 'react-native-vector-icons/Feather';
 import axios from 'axios';
 import { backend_url } from '../production';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { PhoneAppContext } from '../context/PhoneAppContext';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const Login = ({ navigation, setUser }) => {
     const [username, setUsername] = React.useState('')
     const [password, setPassword] = React.useState('')
     const [loading, setLoading] = React.useState(false)
-    const toast = useToast();
 
     const handleName = e => {
         setUsername(e)
@@ -35,7 +34,6 @@ const Login = ({ navigation, setUser }) => {
             await AsyncStorage.setItem('user', jsonValue)
             setLoading(false)
         } catch (err) {
-            // add toast or alert
             alert("Invalid username or password")
             console.log("ERROR:", err)
             setLoading(false)
@@ -57,7 +55,7 @@ const Login = ({ navigation, setUser }) => {
                             md: '285px'
                         }}>
                             <InputLeftAddon
-                                children={<Icon as={AntDesign} name="user" />}
+                                children={<Icon as={MaterialIcons} name="person" key={"person"} />}
                             />
                             <Input
                                 placeholder='Username'
@@ -77,7 +75,7 @@ const Login = ({ navigation, setUser }) => {
                         }}
                         >
                             <InputLeftAddon
-                                children={<Icon as={AntDesign} name="lock1" key={"lock1"} />}
+                                children={<Icon as={MaterialIcons} name="lock" key={"lock"} />}
                             />
                             <Input type="password"
                                 placeholder='Password'
@@ -90,7 +88,7 @@ const Login = ({ navigation, setUser }) => {
                                 onChangeText={handlePassword}
                             />
                             <InputRightAddon
-                                children={<Icon as={Feather} name="eye-off" key={"eye-off"} />}
+                                children={<Icon as={MaterialIcons} name="visibility-off" key={"visibility-off"} />}
                             />
                         </InputGroup>
                     </FormControl>

@@ -7,14 +7,21 @@
  */
 
 import React from 'react';
-import { Box, extendTheme, NativeBaseProvider } from 'native-base';
+import { Box, extendTheme, Icon, NativeBaseProvider } from 'native-base';
 import { NavigationContainer } from '@react-navigation/native';
 import { PhoneAppContextProvider } from './context/PhoneAppContext';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './screens/Login';
 import Register from './screens/Register';
-import Chat from './screens/Chat';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import AllGroups from './screens/AllGroups';
+import Settings from './screens/Settings';
+import Events from './screens/Events';
+import { Image } from 'react-native';
+import VideoChat from './screens/VideoChat';
+import { StripeProvider } from '@stripe/stripe-react-native';
+import { stripePublicKeyLive, stripePublicKey } from './production';
 
 const newColorTheme = {
   text: {
@@ -60,61 +67,116 @@ const newColorTheme = {
     300: '#9F85F7',
     400: '#4f436d',
     500: '#737373',
-    600: '#2E354B',
+    600: '#363a47',
     700: '#ff4343',
     800: '#3CC4B7',
-    900: 'grey.900',
+    900: '#212121',
   },
   secondary: {
     100: '#9F85F7',
-  }
+  },
+  plans: {
+    100: '#9F85F7',
+    200: '#3CC4B7',
+    300: '#FFD700',
+  },
 };
 
 const theme = extendTheme({ colors: newColorTheme });
 const Stack = createNativeStackNavigator();
-
+const Tab = createBottomTabNavigator();
 
 const App = () => {
   const [user, setUser] = React.useState(null);
-  const [fetchAgain, setFetchAgain] = React.useState(false)
+  const [fetchAgain, setFetchAgain] = React.useState(false);
+  const CDN_IMAGES = "https://ik.imagekit.io/sahildhingra";
+
+  const TabBarIcon = ({ size, color, icon }) => {
+    return (
+      <Icon color={color} size={size}
+        as={<Image
+          style={{ width: 20, height: 20, tintColor: color }}
+          source={{
+            uri: `${CDN_IMAGES}/${icon}.png`,
+          }}
+        />} />
+    );
+  };
 
   React.useEffect(() => {
     const getUserDetails = async () => {
       try {
         const jsonValue = await AsyncStorage.getItem('user')
-        return jsonValue != null ? JSON.parse(jsonValue) : null
+        setUser(jsonValue != null ? JSON.parse(jsonValue) : null)
       } catch (e) {
         // read error
         console.log(e)
       }
-
-      console.log('Done.')
     }
-    getUserDetails().then(res => {
-      setUser(res)
-    });
 
+    getUserDetails()
   }, [fetchAgain]);
 
   return (
-    <NativeBaseProvider theme={theme}>
-      <PhoneAppContextProvider>
-        {user ?
-          <Chat user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
-          :
-          <NavigationContainer>
-            <Stack.Navigator intialRouteName="Login">
-              <Stack.Screen name="Login">
-                {props => <Login {...props} setUser={setUser} />}
-              </Stack.Screen>
-              <Stack.Screen name="Register">
-                {props => <Register {...props} />}
-              </Stack.Screen>
-            </Stack.Navigator>
-          </NavigationContainer>
-        }
-      </PhoneAppContextProvider>
-    </NativeBaseProvider>
+    <StripeProvider publishableKey={stripePublicKey}>
+      <NativeBaseProvider theme={theme}>
+        <NavigationContainer>
+          <PhoneAppContextProvider user={user} setFetchAgain={setFetchAgain} fetchAgain={fetchAgain}>
+            {(user && user !== null) ?
+              <Tab.Navigator initialRouteName='Live Stream' screenOptions={
+                {
+                  tabBarStyle: {
+                    borderTopWidth: 0,
+                    shadowOffset: { width: 0, height: 0 },
+                    shadowColor: 'transparent',
+                    elevation: 0,
+                  },
+                  tabBarActiveTintColor: '#9F85F7',
+                  tabBarInactiveTintColor: '#737373',
+                  headerShown: false,
+                  tabBarHideOnKeyboard: true,
+                }
+              }>
+                <Tab.Screen name="Live Stream" options={{
+                  headerShown: false,
+                  tabBarIcon: ({ size, color }) => TabBarIcon({ icon: 'explore', size, color })
+                }}>
+                  {props => <VideoChat {...props} user={user} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+                </Tab.Screen>
+                <Tab.Screen name="Events" options={{
+                  tabBarIcon: ({ size, focused, color }) => TabBarIcon({ icon: 'events', size, color })
+                }}>
+                  {props => <Events {...props} user={user} />}
+                </Tab.Screen>
+                <Tab.Screen name="Groups" navigationKey="AllGroups" options={{
+                  tabBarIcon: ({ size, focused, color }) => TabBarIcon({ icon: 'groups', size, color })
+                }}>
+                  {props => <AllGroups {...props} user={user} />}
+                </Tab.Screen>
+                <Tab.Screen name="Settings" options={{
+                  tabBarIcon: ({ size, focused, color }) => TabBarIcon({ icon: 'settings', size, color })
+                }}>
+                  {props => <Settings {...props} user={user} />}
+                </Tab.Screen>
+              </Tab.Navigator>
+              :
+              <Stack.Navigator intialRouteName="Login">
+                <Stack.Screen name="Login" options={{
+                  headerShown: false,
+                }}>
+                  {props => <Login {...props} setUser={setUser} />}
+                </Stack.Screen>
+                <Stack.Screen name="Register" options={{
+                  headerShown: false,
+                }}>
+                  {props => <Register {...props} />}
+                </Stack.Screen>
+              </Stack.Navigator>
+            }
+          </PhoneAppContextProvider>
+        </NavigationContainer>
+      </NativeBaseProvider>
+    </StripeProvider>
   );
 };
 

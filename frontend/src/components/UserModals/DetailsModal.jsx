@@ -3,7 +3,7 @@ import { IconButton, Modal, ModalContent, ModalOverlay, useDisclosure } from '@c
 import React from 'react';
 import { MembersComponent } from '../UserChat/Members';
 
-const DetailsModal = ({ children, fetchAgain, setFetchAgain }) => {
+const DetailsModal = ({ children, fetchAgain, setFetchAgain, admin }) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
 
     return (
@@ -35,7 +35,7 @@ const DetailsModal = ({ children, fetchAgain, setFetchAgain }) => {
                         boxShadow={'lg'}
                     >
 
-                        <MembersComponent fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+                        <MembersComponent fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} admin={admin} />
                     </ModalContent>
 
                 </Modal>

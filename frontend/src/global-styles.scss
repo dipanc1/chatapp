@@ -5,6 +5,7 @@
 
     ::-webkit-scrollbar {
         width: 4px;
+        height: 4px;
     }
 
     ::-webkit-scrollbar-track {
@@ -16,4 +17,8 @@
         border-radius: 10px;
         background-color: darkgrey;
     }
+}
+
+video {
+    height: 100%!important;
 }

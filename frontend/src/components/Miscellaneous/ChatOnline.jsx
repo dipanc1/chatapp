@@ -1,22 +1,23 @@
 import { DeleteIcon } from '@chakra-ui/icons';
 import { AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Avatar, Box, Divider, Flex, Text, useDisclosure } from '@chakra-ui/react';
-import { useRef } from 'react';
+import { useContext, useRef } from 'react';
 import { BsPerson, BsTelephone } from 'react-icons/bs';
 import EndLeaveModal from '../UserModals/EndLeaveModal';
+import { AppContext } from '../../context/AppContext';
 
-const ChatOnline = ({ stream, id, user1, handleFunction }) => {
-    const user = JSON.parse(localStorage.getItem('user'));
+const ChatOnline = ({ stream, id, user1, handleFunction, admin }) => {
+    const { userInfo } = useContext(AppContext);
 
-    const removeRef = useRef()
-    
-    const { isOpen: isRemoveOpen, onOpen: onRemoveOpen, onClose: onRemoveClose } = useDisclosure()
+    const removeRef = useRef();
+
+    const { isOpen: isRemoveOpen, onOpen: onRemoveOpen, onClose: onRemoveClose } = useDisclosure();
 
     return (
         <>
             <AccordionItem key={id} minWidth={stream ? '19vw' : '12vw'}>
                 <h2>
                     <AccordionButton
-                        backgroundColor={'selectSecondaryColor'}
+                        backgroundColor={''}
                         borderTopRadius={'md'}
                         _expanded={{ bg: 'selectPrimaryColor' }}
                         _hover={
@@ -62,8 +63,7 @@ const ChatOnline = ({ stream, id, user1, handleFunction }) => {
                             my={'2'}
                         />
                         {
-                            (user._id === user1._id ?
-                                null :
+                            ((admin && user1.username !== userInfo.username) &&
                                 <>
                                     <Text cursor={'pointer'} color={'errorColor'} as='samp' onClick={onRemoveOpen}>
                                         <DeleteIcon />  Remove from group

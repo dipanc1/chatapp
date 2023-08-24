@@ -11,7 +11,7 @@ const UserSchema = new mongoose.Schema({
     number: {
         type: Number,
         required: true,
-        // unique: true
+        unique: true
     },
     password: {
         type: String,
@@ -36,6 +36,14 @@ const UserSchema = new mongoose.Schema({
     socketId: {
         type: String,
         default: null,
+    },
+    isSuperAdmin: {
+        type: Boolean,
+        default: false,
+    },
+    isSuspended: {
+        type: Boolean,
+        default: false,
     },
     events: [{
         type: mongoose.Schema.Types.ObjectId,
