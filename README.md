@@ -6,8 +6,8 @@
 #### use httponly cookies for refresh token
 #### cloudinary only whitelist our domain
 #### need to add abhishek's id to send emails
-#### user stats api and chart --- using google analytics or some other platform
-
+#### adding member in group through dashboard
+#### using google analytics
 ## Phone App
 
 #### chat new message issue chat gets inverted

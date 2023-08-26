@@ -212,7 +212,7 @@ const Chatbox = ({ user }) => {
                 {!stream &&
                     <HStack justifyContent={'space-between'} alignItems={'center'} h={'16'}>
 
-                        <Text color={'primary.600'} fontWeight={'bold'} fontSize={'lg'} mx={'5'}>
+                        <Text fontWeight={'bold'} fontSize={'lg'} mx={'5'}>
                             {selectedChat?.isGroupChat ? selectedChat?.chatName : profile?.username}
                         </Text>
 

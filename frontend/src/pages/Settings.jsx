@@ -410,7 +410,7 @@ const Settings = () => {
                                 </GridItem>
                             </Grid>
                             <Flex pt={['15px', '40px']} alignItems='center' justifyContent='end'>
-                                <Button disabled={currentPassword === "" || newPassword === "" || confirmPassword === ""} type='submit'>
+                                <Button isDisabled={currentPassword === "" || newPassword === "" || confirmPassword === ""} type='submit'>
                                     <Text>Update Password</Text>
                                 </Button>
                             </Flex>

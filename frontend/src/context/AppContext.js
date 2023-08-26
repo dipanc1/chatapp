@@ -65,7 +65,7 @@ export const AppContextProvider = ({ children }) => {
             type: "SET_USER_INFO",
             payload: res.data,
           });
-          if ((location.pathname === "/" || location.pathname === "/video-chat" || location.pathname === "/groups") && res.data?.isSuperAdmin) {
+          if ((location.pathname === "/" || location.pathname === "/video-chat" || location.pathname === "/groups" || location.pathname === "/settings") && res.data?.isSuperAdmin) {
             navigate("/dashboard");
           }
         })

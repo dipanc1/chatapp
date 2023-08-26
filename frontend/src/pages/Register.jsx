@@ -511,7 +511,7 @@ const Register = () => {
                                             <Button
                                                 type="submit"
                                                 onClick={handleRegister}
-                                                disabled={!(password === confirmPassword && username.length !== 0 && password.length >= 8) || loading}
+                                                isDisabled={!(password === confirmPassword && username.length !== 0 && password.length >= 8) || loading}
                                                 isLoading={loading}
                                                 loadingText={"Registering"}
                                                 size="lg"

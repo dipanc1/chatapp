@@ -22,7 +22,7 @@ const Conversation = ({ chat, navigation }) => {
             <Box borderBottomWidth="1" borderBottomColor={'primary.100'} p={'3'} mx={'4'}>
                 <HStack space={[2, 3]} justifyContent="space-between" alignItems={'center'}>
                     <HStack alignItems={'center'}>
-                        {chat && friends.pic && <>
+                        {chat &&  <>
                             <Image
                                 source={{
                                     uri: friends.pic || "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"

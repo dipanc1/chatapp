@@ -83,7 +83,7 @@ const SendEmailModal = ({ children }) => {
               <Button
                 isLoading={isSubmitting}
                 isLoadingText='Sending...'
-                disabled={isSubmitting}
+                isDisabled={isSubmitting}
                 type='submit' bg={'buttonPrimaryColor'}
                 color={'white'}
                 _hover={{

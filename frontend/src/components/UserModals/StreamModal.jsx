@@ -86,10 +86,10 @@ const StreamModal = ({ children, getMeetingAndToken, admin }) => {
                                 {admin ? 'You can share you screen with the members present in this group.' : 'You can join the video call with the members present in this group.'}
                             </Text>
                             <Flex>
-                                <Button disabled={disabled} color='buttonPrimaryColor' variant='outline' mr={3} onClick={onClose}>
+                                <Button isDisabled={disabled} color='buttonPrimaryColor' variant='outline' mr={3} onClick={onClose}>
                                     Cancel
                                 </Button>
-                                <Button disabled={disabled} color={'whiteColor'} variant='solid' bg='buttonPrimaryColor'
+                                <Button isDisabled={disabled} color={'whiteColor'} variant='solid' bg='buttonPrimaryColor'
                                     onClick={startMeeting}
                                 >{admin ? 'Share' : 'Join'}</Button>
                             </Flex>

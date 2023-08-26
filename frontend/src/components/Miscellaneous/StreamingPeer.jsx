@@ -26,7 +26,7 @@ const IconButtonGeneric = ({ icon, onClick, color, size, display, disable }) => 
             icon={icon}
             size={size}
             display={display}
-            disabled={disable}
+            isDisabled={disable}
         />
     )
 }
@@ -295,7 +295,7 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
                                     size={'md'}
                                     display={'flex'}
                                     ref={stopButton}
-                                    disabled={!recording}
+                                    isDisabled={!recording}
                                 />
 
                                 <Text>
