@@ -615,6 +615,7 @@ router.get("/list/:limit", protect, asyncHandler(async (req, res) => {
         })
             .populate("users", "-password -events")
             .populate("groupAdmin", "-password -events")
+            .populate("events")
             .skip(skip)
             .limit(limit)
             .then(async (results) => {
