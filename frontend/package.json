@@ -14,7 +14,6 @@
         "@videosdk.live/react-sdk": "^0.1.37",
         "axios": "^0.26.1",
         "framer-motion": "^6.3.13",
-        "highcharts": "^11.1.0",
         "highcharts-react-official": "^3.2.0",
         "jwt-decode": "^3.1.2",
         "lottie-react": "^2.2.1",

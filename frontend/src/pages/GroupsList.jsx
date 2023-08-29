@@ -2,12 +2,13 @@ import React, { useState } from 'react'
 import Static from '../components/common/Static'
 import axios from 'axios';
 import { backend_url } from '../baseApi';
-import { Button, Flex, Heading, Image, Table, TableContainer, Tbody, Td, Th, Thead, Tr, Text, Spinner, Box } from '@chakra-ui/react';
+import { Button, Flex, Heading, Image, Table, TableContainer, Tbody, Td, Th, Thead, Tr, Text, Spinner, Box, Input } from '@chakra-ui/react';
 
 const GroupsList = () => {
   const [userData, setUserData] = useState()
-  const [pageState, setPageState] = useState({ "page": 1, isLoading: true })
-  const [activeIndex, setActiveIndex] = useState(-1);
+  const [pageState, setPageState] = useState({"page": 1, isLoading: true})
+  const [activeIndex, setActiveIndex] = useState(-1)
+  const [eventsActiveIndex, setEventsActiveIndex] = useState(-1)
 
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -47,11 +48,21 @@ const GroupsList = () => {
     fetchUsers()
   }
 
-  const expandGroupInfo = (groupIndex) => {
-    if (activeIndex === groupIndex) {
+  const expandUsersInfo = (groupIndex) => {
+    setEventsActiveIndex(-1)
+    if (activeIndex == groupIndex) {
       setActiveIndex(-1)
     } else {
       setActiveIndex(groupIndex)
+    }
+  }
+
+  const expandEventsInfo = (groupIndex) => {
+    setActiveIndex(-1)
+    if (eventsActiveIndex == groupIndex) {
+      setEventsActiveIndex(-1)
+    } else {
+      setEventsActiveIndex(groupIndex)
     }
   }
 
@@ -110,7 +121,7 @@ const GroupsList = () => {
                 <Table>
                   <Thead>
                     <Tr>
-                      <Th></Th>
+                      {/* <Th></Th> */}
                       <Th>Group Name</Th>
                       <Th>Admin</Th>
                       <Th>Status</Th>
@@ -121,13 +132,14 @@ const GroupsList = () => {
                     </Tr>
                   </Thead>
                   <Tbody>
+                    {console.log(userData)}
                     {
                       userData.groups.map((user, index) => (
                         <>
                           <Tr>
-                            <Td>
-                              <Button onClick={() => expandGroupInfo(index)}>+</Button>
-                            </Td>
+                            {/* <Td>
+                              <Button onClick={() => expandUsersInfo(index)}>+</Button>
+                            </Td> */}
                             <Td>
                               <Flex gap="10px" alignItems="center">
                                 <Image height="30px" width="30px" borderRadius="100%" src={user.pic} />
@@ -144,9 +156,17 @@ const GroupsList = () => {
                                 <span className="badge user-active">Active</span>
                               )}
                             </Td>
-                            <Td>{user.users.length}</Td>
-                            <Td>{user.events.length}</Td>
-                            <Td>{user.isOnline ? 'Yes' : 'No'}</Td>
+                            <Td cursor='pointer' onClick={() => expandUsersInfo(index)}>
+                              <Flex alignItems='center' gap='10px'>
+                                {user.users.length} <Image h='18px' src='https://ik.imagekit.io/sahildhingra/down-arrow.png' />
+                              </Flex>
+                            </Td>
+                            <Td cursor='pointer' onClick={() => expandEventsInfo(index)}>
+                              <Flex alignItems='center' gap='10px'>
+                                {user.events.length} <Image h='18px' src='https://ik.imagekit.io/sahildhingra/down-arrow.png' />
+                              </Flex>
+                            </Td>
+                            <Td>{user.isOnline ? 'Yes': 'No'}</Td>
                             <Td>
                               {
                                 user.isSuspended ? (
@@ -162,13 +182,24 @@ const GroupsList = () => {
                             </Td>
                           </Tr>
                           {
-                            activeIndex === index && (
+                            activeIndex == index && (
+                              <>
+                              <Tr>
+                                <Td colspan='12'>
+                                  <Box textAlign='right'>
+                                    <Input maxW='320px' placeholder='Add Users' py={'13px'} px={['30px', '30px', '21px']} bg={'#F4F1FF'} border={'0'} />
+                                  </Box>
+                                </Td>
+                              </Tr>
                               <Tr>
                                 <Td colSpan='12'>
                                   <Table>
                                     <Thead>
                                       <Tr>
                                         <Th>User Name</Th>
+                                        <Th>Number</Th>
+                                        <Th>Status</Th>
+                                        <Th>Online</Th>
                                         <Th>Action</Th>
                                       </Tr>
                                     </Thead>
@@ -176,13 +207,36 @@ const GroupsList = () => {
                                       {
                                         user?.users.map((userInfo) => (
                                           <Tr>
-                                            <Td>{userInfo.username === user.groupAdmin.username ? userInfo.username + " (Admin)" : userInfo.username}</Td>
-                                            <Td>{
-                                              !(userInfo.username === user.groupAdmin.username) &&
-                                              <Button onClick={() => handleChangingAdmin(userInfo._id, user._id)} h='fit-content' p='5px 15px!important' fontSize='14px!important' className="badge active">
-                                                Make Admin
-                                              </Button>
-                                            }</Td>
+                                            <Td>
+                                              <Flex gap="10px" alignItems="center">
+                                                <Image height="30px" width="30px" borderRadius="100%" src={userInfo.pic} />
+                                                <Box>
+                                                  <Text textTransform="capitalize">{userInfo.username}</Text>
+                                                </Box>
+                                              </Flex>
+                                            </Td>
+                                            <Td>{userInfo.number}</Td>
+                                            <Td>
+                                              {userInfo.isSuspeneded ? (
+                                                <span className="badge expired">Blocked</span>
+                                              ) : (
+                                                <span className="badge user-active">Active</span>
+                                              )}
+                                            </Td>
+                                            <Td>{userInfo.isOnline ? 'Yes': 'No'}</Td>
+                                            <Td>
+                                              {
+                                                user.isSuspeneded ? (
+                                                  <Button h='fit-content' p='5px 15px!important' fontSize='14px!important' className='badge active'>
+                                                    Unblock
+                                                  </Button>
+                                                ) : (
+                                                  <Button h='fit-content' p='5px 15px!important' fontSize='14px!important' className="badge expired">
+                                                    Remove
+                                                  </Button>
+                                                )
+                                              }
+                                            </Td>
                                           </Tr>
                                         ))
                                       }
@@ -190,6 +244,52 @@ const GroupsList = () => {
                                   </Table>
                                 </Td>
                               </Tr>
+                              </>
+                            )
+                          }
+                          {
+                            eventsActiveIndex == index && (
+                              user?.events.length ? (
+                              
+                              <Tr>
+                                <Td colSpan='12'>
+                                  <Table>
+                                    <Thead>
+                                      <Tr>
+                                        <Th>Event Name</Th>
+                                        <Th>Description</Th>
+                                        <Th>Status</Th>
+                                      </Tr>
+                                    </Thead>
+                                    <Tbody>
+                                      {
+                                        user?.events.map((event) => (
+                                          <Tr>
+                                            <Td>{event.name}</Td>
+                                            <Td>{event.description}</Td>
+                                            <Td>
+                                              {event.isDisabled ? (
+                                                <span className="badge expired">Inactive</span>
+                                              ) : (
+                                                <span className="badge user-active">Active</span>
+                                              )}
+                                            </Td>
+                                          </Tr>
+                                        ))
+                                      }
+                                    </Tbody>
+                                  </Table>
+                                </Td>
+                              </Tr>
+                              ) : ( 
+                                <Tr>
+                                  <Td colSpan='12'>
+                                    <Box py='30px' textAlign='center'>
+                                      No Events Hosted
+                                    </Box>
+                                  </Td>
+                                </Tr>
+                              )
                             )
                           }
                         </>
