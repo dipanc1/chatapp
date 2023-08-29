@@ -6,14 +6,15 @@ import { Button, Flex, Heading, Image, Table, TableContainer, Tbody, Td, Th, The
 
 const UsersList = () => {
   const [userData, setUserData] = React.useState()
-  const [pageState, setPageState] = React.useState({"page": 1, isLoading: true})
+  const [pageState, setPageState] = React.useState({ "page": 1, isLoading: true })
 
   const user = JSON.parse(localStorage.getItem("user"));
 
   React.useEffect(() => {
     fetchUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-  
+
 
   const fetchUsers = async () => {
     try {
@@ -49,7 +50,7 @@ const UsersList = () => {
           'Authorization': `Bearer ${user.token}`
         }
       };
-      const data = await axios.put(`${backend_url}/users/suspend/${userId}`, {}, config);
+      await axios.put(`${backend_url}/users/suspend/${userId}`, {}, config);
       setUserData()
       fetchUsers()
     } catch (error) {
@@ -94,22 +95,22 @@ const UsersList = () => {
                             </Flex>
                           </Td>
                           <Td>
-                            {user.isSuspeneded ? (
+                            {user.isSuspended ? (
                               <span className="badge expired">Blocked</span>
                             ) : (
                               <span className="badge user-active">Active</span>
                             )}
                           </Td>
                           <Td>{user.number}</Td>
-                          <Td>{user.isOnline ? 'Yes': 'No'}</Td>
+                          <Td>{user.isOnline ? 'Yes' : 'No'}</Td>
                           <Td>
                             {
-                              user.isSuspeneded ? (
-                                <Button onClick={() => handleUserStatus(user._id)} h='fit-content' p='5px 15px!important' fontSize='14px!important' className='badge active'>
+                              user.isSuspended ? (
+                                <Button onClick={() => handleUserStatus(user._id)} h='fit-content' p='5px 15px!important' fontSize='14px !important' className='badge active'>
                                   Unblock
                                 </Button>
                               ) : (
-                                <Button onClick={() => handleUserStatus(user._id)} h='fit-content' p='5px 15px!important' fontSize='14px!important' className="badge expired">
+                                <Button onClick={() => handleUserStatus(user._id)} h='fit-content' p='5px 15px!important' fontSize='14px !important' className="badge expired">
                                   Block
                                 </Button>
                               )

@@ -22,6 +22,12 @@ import { AppContext } from './context/AppContext';
 import UsersList from './pages/UsersList';
 import GroupsList from './pages/GroupsList';
 import Dashboard from './pages/Dashboard';
+import EventsList from './pages/EventsList';
+import ReactGA from 'react-ga';
+
+const trackingId = "G-MKMMCFR2K1"; // Replace with your Google Analytics tracking ID
+
+ReactGA.initialize(trackingId, { debug: true });
 
 //TODO: delete console statements
 
@@ -57,6 +63,7 @@ function App() {
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="user-listing" element={<UsersList />} />
               <Route path="groups-listing" element={<GroupsList />} />
+              <Route path="events-listing" element={<EventsList />} />
               <Route path="video-chat" element={<VideoChat />} />
               <Route path="groups" element={<Groups />} />
               <Route path="search" element={<Search />} />

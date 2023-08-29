@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import Static from '../components/common/Static'
 import axios from 'axios';
 import { backend_url } from '../baseApi';
@@ -14,8 +14,9 @@ const GroupsList = () => {
 
   React.useEffect(() => {
     fetchUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-  
+
 
   const fetchUsers = async () => {
     try {
@@ -26,10 +27,10 @@ const GroupsList = () => {
           'Authorization': `Bearer ${user.token}`
         }
       };
-      const { data } = await axios.get(`${backend_url}/conversation/all/${pageState.page}`, config);
-      pageState["page"] = data?.currentPage;
-      pageState["pages"] = data?.totalPages;
-      pageState["total"] = data?.totalCount;
+      const { data } = await axios.get(`${backend_url}/conversation/list/5?page=${pageState.page}`, config);
+      pageState["page"] = data?.page;
+      pageState["pages"] = data?.pages;
+      pageState["total"] = data?.total;
       pageState["isLoading"] = false;
       data.groups.forEach(obj => {
         obj.isExpanded = false;
@@ -62,6 +63,44 @@ const GroupsList = () => {
       setEventsActiveIndex(-1)
     } else {
       setEventsActiveIndex(groupIndex)
+    }
+  }
+
+  const handleGroupStatus = async (chatId) => {
+    try {
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${user.token}`
+        }
+      };
+      await axios.put(`${backend_url}/conversation/groupsuspend`, {
+        chatId
+      }, config);
+
+      setUserData()
+      setPageState(pageState)
+      fetchUsers()
+    } catch (error) {
+      console.log(error, ":err23124")
+    }
+  }
+
+  const handleChangingAdmin = async (userId, chatId) => {
+    try {
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${user.token}`
+        }
+      };
+      await axios.put(`${backend_url}/conversation/groupmakeadmin`, {
+        userId, chatId
+      }, config);
+
+      setUserData()
+      setPageState(pageState)
+      fetchUsers()
+    } catch (error) {
+      console.log(error, ":err23124")
     }
   }
 
@@ -111,7 +150,7 @@ const GroupsList = () => {
                             </Td>
                             <Td textTransform='capitalize'>{user.groupAdmin.username}</Td>
                             <Td>
-                              {user.isSuspeneded ? (
+                              {user.isSuspended ? (
                                 <span className="badge expired">Blocked</span>
                               ) : (
                                 <span className="badge user-active">Active</span>
@@ -130,12 +169,12 @@ const GroupsList = () => {
                             <Td>{user.isOnline ? 'Yes': 'No'}</Td>
                             <Td>
                               {
-                                user.isSuspeneded ? (
-                                  <Button h='fit-content' p='5px 15px!important' fontSize='14px!important' className='badge active'>
+                                user.isSuspended ? (
+                                  <Button onClick={() => handleGroupStatus(user._id)} h='fit-content' p='5px 15px!important' fontSize='14px!important' className='badge active'>
                                     Unblock
                                   </Button>
                                 ) : (
-                                  <Button h='fit-content' p='5px 15px!important' fontSize='14px!important' className="badge expired">
+                                  <Button onClick={() => handleGroupStatus(user._id)} h='fit-content' p='5px 15px!important' fontSize='14px!important' className="badge expired">
                                     Block
                                   </Button>
                                 )
@@ -277,7 +316,7 @@ const GroupsList = () => {
         )
       }
 
-    </Static>
+    </Static >
   )
 }
 

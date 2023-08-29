@@ -212,7 +212,7 @@ const Chatbox = ({ user }) => {
                 {!stream &&
                     <HStack justifyContent={'space-between'} alignItems={'center'} h={'16'}>
 
-                        <Text color={'primary.600'} fontWeight={'bold'} fontSize={'lg'} mx={'5'}>
+                        <Text fontWeight={'bold'} fontSize={'lg'} mx={'5'}>
                             {selectedChat?.isGroupChat ? selectedChat?.chatName : profile?.username}
                         </Text>
 
@@ -264,7 +264,7 @@ const Chatbox = ({ user }) => {
 
                 {/* BOTTOM PART */}
                 <HStack alignItems={'center'} justifyContent={'space-between'} h={'16'}>
-                    <Input value={newMessage} outlineColor={'primary.400'} bg={'primary.200'} w={'72'} placeholder={'Type a message'} onChangeText={typingHandler} />
+                    <Input value={newMessage} bg={'primary.200'} w={'72'} placeholder={'Type a message'} onChangeText={typingHandler} />
                     <IconButton onPress={newMessage !== "" ? sendMessage : null} bg={'primary.300'} icon={<MaterialIcons name="send" size={24} color={'#fff'} />} />
                 </HStack>
             </Flex>

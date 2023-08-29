@@ -41,7 +41,7 @@ const UserSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    isSuspeneded: {
+    isSuspended: {
         type: Boolean,
         default: false,
     },

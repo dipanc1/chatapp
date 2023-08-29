@@ -10,11 +10,6 @@ const AppReducer = (state, action) => {
                 ...state,
                 selectedChat: action.payload
             };
-        case "SET_CHATS":
-            return {
-                ...state,
-                chats: action.payload
-            };
         case "SET_NOTIFICATION":
             return {
                 ...state,

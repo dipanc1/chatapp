@@ -27,6 +27,7 @@ import PhoneNumber from '../components/Miscellaneous/PhoneNumber';
 import Otp from '../components/Miscellaneous/Otp';
 import Password from '../components/Miscellaneous/Password';
 import { AppContext } from '../context/AppContext';
+import ReactGA from 'react-ga';
 
 
 const Login = () => {
@@ -152,24 +153,37 @@ const Login = () => {
                 const res = await axios.post(`${backend_url}/users/login`, user);
 
                 const groupDetails = await axios.get(`${backend_url}/conversation/encrypted/chat/${match.params.groupId}`);
-                
+
                 const config = {
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${res.data.token}`,
                     },
                 };
+                const userDetails = await axios.get(`${backend_url}/users/user-info`, config);
+
                 const { data } = await axios.put(
                     `${backend_url}/conversation/groupadd`,
-                    { userId: res.data._id, chatId: groupDetails.data._id },
+                    { userId: userDetails.data._id, chatId: groupDetails.data._id },
                     config
                 );
 
                 localStorage.setItem("user", JSON.stringify(res.data));
+                dispatch({
+                    type: "SET_USER_INFO",
+                    payload: userDetails.data,
+                })
+                ReactGA.event({
+                    category: 'User',
+                    action: 'User Logged In',
+                    label: 'User Logged In'
+                });
 
                 navigate('/video-chat')
 
                 dispatch({ type: 'SET_SELECTED_CHAT', payload: data })
+                setDisable(false)
+
             } catch (error) {
                 // console.log(error);
                 toast({
@@ -179,26 +193,24 @@ const Login = () => {
                     duration: 9000,
                     isClosable: true,
                 });
+                setDisable(false)
+
             }
         } else {
             try {
                 const res = await axios.post(`${backend_url}/users/login`, user);
+
+                ReactGA.event({
+                    category: 'User',
+                    action: 'User Logged In',
+                    label: 'User Logged In'
+                });
+
                 localStorage.setItem("user", JSON.stringify(res.data));
-                const config = {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${res.data.token}`,
-                    },
-                };
-                const userType = await axios.get(`${backend_url}/users/user-info`, config)
-                
-                // console.log("working!!", res)
-                console.log(userType.data, "<-- auth res")
-                if (userType.data.isSuperAdmin === true) {
-                    navigate('/dashboard')
-                } else {
-                    navigate('/video-chat')
-                }
+
+                navigate('/video-chat')
+                setDisable(false)
+
             } catch (err) {
                 toast({
                     title: "Invalid username or password",
@@ -208,9 +220,9 @@ const Login = () => {
                     isClosable: true,
                 });
                 // console.log("ERORO<<><<<<<<<<<<<", err)
+                setDisable(false)
             }
         }
-        setDisable(false)
     }
 
     React.useEffect(() => {
@@ -236,6 +248,10 @@ const Login = () => {
             }
         }
     }, [match, match?.pattern.path, navigate, user])
+
+    React.useEffect(() => {
+        ReactGA.pageview(window.location.pathname + window.location.search);
+    }, [])
 
 
     return (
@@ -393,7 +409,7 @@ const Login = () => {
                                     <Button
                                         onClick={forgetPassword ? (otpSent ? handleResetPassword : handleVerify) : null}
                                         type={forgetPassword ? 'button' : 'submit'}
-                                        disabled={forgetPassword ? (forgetPasswordValue !== forgetConfirmPasswordValue) : (username.length === 0 || password.length === 0 || disable)}
+                                        isDisabled={forgetPassword ? (forgetPasswordValue !== forgetConfirmPasswordValue) : (username.length === 0 || password.length === 0 || disable)}
                                         bg={'buttonPrimaryColor'}
                                         color={'white'}
                                         _hover={{

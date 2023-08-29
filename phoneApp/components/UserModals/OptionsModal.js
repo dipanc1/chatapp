@@ -249,7 +249,7 @@ const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchA
   return (
     <Box alignItems="center">
       <Popover trigger={triggerProps => {
-        return <IconButton {...triggerProps} icon={<MaterialIcons name="more-vert" size={40} color={'primary.600'} />} />
+        return <IconButton {...triggerProps} icon={<Icon as={<MaterialIcons name="more-vert" />} />} size={'lg'} colorScheme={'coolGray'} variant={'ghost'} />
       }}>
         <Popover.Content>
           <Popover.Body>

@@ -87,7 +87,9 @@ const Groups = ({ user, groupConversations, searchResultsGroups, search, setSear
 
 
             <Box position={'absolute'} bottom={'5'} right={'5'}>
-              <IconButton onPress={() => setShowModal(true)} colorScheme={'cyan'} size={'md'} variant={"outline"} _icon={{ as: MaterialIcons, name: "add", size: "lg" }} />
+              <IconButton onPress={() => setShowModal(true)} colorScheme={'cyan'} size={'md'} variant={"outline"} icon={
+                <MaterialIcons name="add" size={30} color={'#3CC4B7'} />
+              } />
             </Box>
             <GroupChatModal showModal={showModal} setShowModal={setShowModal} user={userInfo} />
           </>

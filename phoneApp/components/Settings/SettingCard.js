@@ -2,7 +2,7 @@ import React from 'react'
 import { Box, Button, Center, Divider, Flex, FormControl, HStack, IconButton, Input, Radio, ScrollView, Switch, Text, VStack } from 'native-base'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
-import { backend_url } from '../../production';
+import { api_key, backend_url, folder, pictureUpload } from '../../production';
 import { TouchableOpacity } from 'react-native';
 import { useStripe } from '@stripe/stripe-react-native';
 import Accordian from '../Miscellaneous/Accordian';
@@ -10,6 +10,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PhoneAppContext } from '../../context/PhoneAppContext';
 import SupportModal from '../UserModals/SupportModal';
 import { Image } from 'react-native';
+import { launchImageLibrary } from 'react-native-image-picker';
+
 
 const SettingCard = ({ name, user }) => {
 
@@ -21,11 +23,13 @@ const SettingCard = ({ name, user }) => {
     const [accordianIndex, setAccordianIndex] = React.useState(0);
     const [username, setUsername] = React.useState("");
     const [pic, setPic] = React.useState(user?.pic);
+    const [selectedImage, setSelectedImage] = React.useState(null);
+
     const [currentPassword, setCurrentPassword] = React.useState("");
     const [newPassword, setNewPassword] = React.useState("");
     const [confirmPassword, setConfirmPassword] = React.useState("");
 
-    const { dispatch } = React.useContext(PhoneAppContext);
+    const { dispatch, signature, timestamp, getCloudinarySignature } = React.useContext(PhoneAppContext);
     const { initPaymentSheet, presentPaymentSheet } = useStripe();
 
     const plans = [
@@ -178,9 +182,59 @@ const SettingCard = ({ name, user }) => {
         }
     }
 
+    const pickImage = async () => {
+        const options = {
+            mediaType: 'photo',
+        };
+        await getCloudinarySignature();
+        await launchImageLibrary(options, (response) => {
+            if (!response.didCancel) {
+                const res = response.assets.map((item) => item);
+                if (res.error) {
+                    console.log('ImagePicker Error: ', res.error);
+                } else {
+                    const uri = res[0].uri;
+                    const type = res[0].type;
+                    const name = res[0].fileName;
+                    const source = {
+                        uri,
+                        type,
+                        name,
+                    }
+                    cloudinaryUpload(source);
+                }
+            }
+        });
+    }
+
+
+    const cloudinaryUpload = (photo) => {
+        setLoading(true)
+        let apiUrl = pictureUpload;
+        const data = new FormData()
+        data.append('api_key', api_key)
+        data.append('file', photo);
+        data.append('folder', folder)
+        data.append('timestamp', timestamp)
+        data.append('signature', signature)
+        fetch(apiUrl, {
+            method: "post",
+            body: data
+        }).then(res => res.json()).
+            then(data => {
+                setSelectedImage(data.secure_url)
+                setLoading(false)
+            }).catch(err => {
+                console.log(err)
+                setLoading(false)
+                alert("An Error Occured While Uploading")
+            })
+    }
+
     const handleUpdateProfile = async (e) => {
         e.preventDefault();
         setLoading(true);
+        let data = null;
         if (!username) {
             alert("Username cannot be empty");
             setLoading(false);
@@ -199,6 +253,12 @@ const SettingCard = ({ name, user }) => {
             return;
         }
 
+        if (!selectedImage && (username === userInfo.username)) {
+            alert("No changes made");
+            setLoading(false);
+            return;
+        }
+
 
         try {
             const config = {
@@ -207,19 +267,27 @@ const SettingCard = ({ name, user }) => {
                     "Authorization": `Bearer ${userInfo.token}`,
                 },
             };
-
-
-            const { data } = await axios.put(
-                `${backend_url}/users/update-user-info`, {
-                username,
-                pic,
-            },
-                config
-            );
-            alert(data.message);
-            setUsername(data.username);
-            setPic(data.pic);
-            dispatch({ type: "SET_USER_INFO", payload: data });
+            if (selectedImage === null) {
+                data = await axios.put(
+                    `${backend_url}/users/update-user-info`, {
+                    username,
+                    pic,
+                },
+                    config
+                );
+            } else {
+                data = await axios.put(
+                    `${backend_url}/users/update-user-info`, {
+                    username,
+                    pic: selectedImage,
+                },
+                    config
+                );
+            }
+            alert(data.data.message);
+            setUsername("");
+            setPic(data.data.pic);
+            dispatch({ type: "SET_USER_INFO", payload: data.data });
             setLoading(false);
         } catch (error) {
             console.log(error);
@@ -259,7 +327,7 @@ const SettingCard = ({ name, user }) => {
                                 <Box display={'flex'} alignItems={'center'}>
                                     <Image
                                         source={{
-                                            uri: user.pic
+                                            uri: selectedImage !== null ? selectedImage : user?.pic
                                         }}
                                         alt={user.username}
                                         style={{
@@ -271,7 +339,7 @@ const SettingCard = ({ name, user }) => {
                                     />
                                     <IconButton variant={'ghost'} _icon={{
                                         as: MaterialIcons, name: "edit"
-                                    }} size={'md'} />
+                                    }} onPress={() => pickImage()} size={'md'} />
                                 </Box>
                                 <FormControl>
                                     <FormControl.Label _text={{ color: 'muted.700', fontSize: 'sm', fontWeight: 600 }}>

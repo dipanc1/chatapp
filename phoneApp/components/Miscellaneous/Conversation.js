@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, HStack, Text, Heading, VStack } from 'native-base'
+import { Box, HStack, Text, Heading, VStack, Avatar } from 'native-base'
 import { PhoneAppContext } from '../../context/PhoneAppContext';
 import { TouchableOpacity, Image } from 'react-native';
 
@@ -22,37 +22,36 @@ const Conversation = ({ chat, navigation }) => {
             <Box borderBottomWidth="1" borderBottomColor={'primary.100'} p={'3'} mx={'4'}>
                 <HStack space={[2, 3]} justifyContent="space-between" alignItems={'center'}>
                     <HStack alignItems={'center'}>
-                        {chat &&
-                            <>
-                                <Image
-                                    source={{
-                                        uri: friends.pic
-                                    }}
-                                    alt={friends?.username}
-                                    style={{
-                                        width: 48,
-                                        height: 48,
-                                        position: "relative",
-                                        borderRadius: 100,
-                                        alignSelf: "center"
-                                    }}
-                                />
-                                <Image
-                                    source={{
-                                        uri: friends?.isOnline ? 'https://cdn.wallpapersafari.com/83/39/xwth3L.jpg' : 'https://www.solidbackgrounds.com/images/1920x1080/1920x1080-red-solid-color-background.jpg'
-                                    }}
-                                    alt={friends?.isOnline ? "Online" : "Offline"}
-                                    style={{
-                                        position: "absolute",
-                                        width: 12,
-                                        height: 12,
-                                        borderRadius: 100,
-                                        alignSelf: "center",
-                                        left: 0,
-                                        bottom: 0
-                                    }}
-                                />
-                            </>
+                        {chat &&  <>
+                            <Image
+                                source={{
+                                    uri: friends.pic || "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"
+                                }}
+                                alt={friends?.username}
+                                style={{
+                                    width: 48,
+                                    height: 48,
+                                    position: "relative",
+                                    borderRadius: 100,
+                                    alignSelf: "center"
+                                }}
+                            />
+                            <Image
+                                source={{
+                                    uri: friends?.isOnline ? 'https://cdn.wallpapersafari.com/83/39/xwth3L.jpg' : 'https://www.solidbackgrounds.com/images/1920x1080/1920x1080-red-solid-color-background.jpg'
+                                }}
+                                alt={friends?.isOnline ? "Online" : "Offline"}
+                                style={{
+                                    position: "absolute",
+                                    width: 12,
+                                    height: 12,
+                                    borderRadius: 100,
+                                    alignSelf: "center",
+                                    left: 0,
+                                    bottom: 0
+                                }}
+                            />
+                        </>
                         }
                         <VStack>
                             <Heading size={'sm'} ml={'3'} _dark={{

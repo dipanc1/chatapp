@@ -161,6 +161,7 @@ router.get("/group-chats/:page", protect, asyncHandler(async (req, res) => {
             {
                 isGroupChat: true,
                 users: { $elemMatch: { $eq: req.user._id } },
+                isSuspended: false
             }
         )
             .populate("users", "-password")
@@ -171,9 +172,6 @@ router.get("/group-chats/:page", protect, asyncHandler(async (req, res) => {
             .skip((page - 1) * limit)
             .limit(limit)
             .then(async (results) => {
-                results.filter((group) => {
-                    return group.isSuspended === false;
-                });
                 results = await User.populate(results, {
                     path: "latestMessage.sender",
                     select: "username number pic"
@@ -183,7 +181,8 @@ router.get("/group-chats/:page", protect, asyncHandler(async (req, res) => {
 
         const totalCount = await Chat.countDocuments({
             isGroupChat: true,
-            users: { $elemMatch: { $eq: req.user._id } }
+            users: { $elemMatch: { $eq: req.user._id } },
+            isSuspended: false
         });
 
         if (!groups) {
@@ -312,23 +311,19 @@ router.get("/all/:page", protect, asyncHandler(async (req, res) => {
     const limit = 5;
     const skip = (page - 1) * limit;
 
-    let groups = await Chat.find({ isGroupChat: true })
+    let groups = await Chat.find({ isGroupChat: true, isSuspended: false })
         .populate("users", "-password")
         .populate("groupAdmin", "-password")
         .populate("events")
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit);
-    const totalCount = await Chat.countDocuments({ isGroupChat: true });
+    const totalCount = await Chat.countDocuments({ isGroupChat: true, isSuspended: false });
     const currentCount = groups.length;
     const totalPages = Math.ceil(totalCount / limit);
     const currentPage = parseInt(page);
     const hasNextPage = currentPage < totalPages;
     const hasPrevPage = currentPage > 1;
-
-    groups = groups.filter((group) => {
-        return group.isSuspended === false;
-    });
 
     if (!groups) {
         return res.status(404).send("No group chats found")
@@ -602,6 +597,61 @@ router.put("/groupsuspend", protect, asyncHandler(async (req, res) => {
 }));
 
 
+// get a list groups with pagination
+router.get("/list/:limit", protect, asyncHandler(async (req, res) => {
+    if (!req.user.isSuperAdmin) {
+        return res.status(400).send("You are not super admin")
+    }
+
+    const limit = parseInt(req.params.limit)
+    const page = req.query.page
+        ? parseInt(req.query.page)
+        : 1;
+    const skip = (page - 1) * limit;
+
+    try {
+        const groups = await Chat.find({
+            isGroupChat: true,
+        })
+            .populate("users", "-password -events")
+            .populate("groupAdmin", "-password -events")
+            .skip(skip)
+            .limit(limit)
+            .then(async (results) => {
+                results = await User.populate(results, {
+                    path: "latestMessage.sender",
+                    select: "username number pic"
+                });
+
+                return results;
+            });
+
+        const total = await Chat.countDocuments({
+            isGroupChat: true,
+        });
+
+
+        const pages = Math.ceil(total / limit);
+
+        if (!groups) {
+            return res.status(404).send("No chats found")
+        }
+
+        res.status(200).json({
+            groups,
+            pages,
+            total,
+            page,
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: "Something went wrong",
+        })
+    }
+}));
+
+
 // start streaming
 router.put("/stream", protect, asyncHandler(async (req, res) => {
     // console.log(req.body)
@@ -823,8 +873,10 @@ router.get("/event/all/:page", protect, asyncHandler(async (req, res) => {
     const skip = (page - 1) * limit;
 
     try {
-        let events = await EventTable.find().skip(skip).limit(limit).sort({ createdAt: -1 });
-        const totalCount = await EventTable.countDocuments();
+        const events = await EventTable.find({
+            isDisabled: false
+        }).skip(skip).limit(limit).sort({ createdAt: -1 });
+        const totalCount = await EventTable.countDocuments({ isDisabled: false });
         const currentCount = events.length;
         const totalPages = Math.ceil(totalCount / limit);
         const currentPage = parseInt(page);
@@ -835,10 +887,6 @@ router.get("/event/all/:page", protect, asyncHandler(async (req, res) => {
             return res.status(404).send("No events found")
         }
 
-        // check if event is disabled
-        events = events.filter((event) => {
-            return event.isDisabled === false;
-        });
 
         res.status(200).json({
             events,
@@ -863,8 +911,11 @@ router.get("/event/upcoming/:page", protect, asyncHandler(async (req, res) => {
     const skip = (page - 1) * limit;
 
     try {
-        let events = await EventTable.find({ date: { $gte: new Date() } }).skip(skip).limit(limit).sort({ createdAt: -1 });
-        const totalCount = await EventTable.countDocuments({ date: { $gte: new Date() } });
+        let events = await EventTable.find({
+            date: { $gte: new Date() },
+            isDisabled: false
+        }).skip(skip).limit(limit).sort({ createdAt: -1 });
+        const totalCount = await EventTable.countDocuments({ date: { $gte: new Date() }, isDisabled: false });
         const currentCount = events.length;
         const totalPages = Math.ceil(totalCount / limit);
         const currentPage = parseInt(page);
@@ -874,11 +925,6 @@ router.get("/event/upcoming/:page", protect, asyncHandler(async (req, res) => {
         if (!events) {
             return res.status(404).send("No events found")
         }
-
-        // check if event is disabled
-        events = events.filter((event) => {
-            return event.isDisabled === false;
-        });
 
         res.status(200).json({
             events,
@@ -903,8 +949,14 @@ router.get("/event/past/:page", protect, asyncHandler(async (req, res) => {
     const skip = (page - 1) * limit;
 
     try {
-        let events = await EventTable.find({ date: { $lt: new Date() } }).skip(skip).limit(limit).sort({ createdAt: -1 });
-        const totalCount = await EventTable.countDocuments({ date: { $lt: new Date() } });
+        let events = await EventTable.find({
+            date: { $lt: new Date() },
+            isDisabled: false
+        }).skip(skip).limit(limit).sort({ createdAt: -1 });
+        const totalCount = await EventTable.countDocuments({
+            date: { $lt: new Date() },
+            isDisabled: false
+        });
         const currentCount = events.length;
         const totalPages = Math.ceil(totalCount / limit);
         const currentPage = parseInt(page);
@@ -914,11 +966,6 @@ router.get("/event/past/:page", protect, asyncHandler(async (req, res) => {
         if (!events) {
             return res.status(404).send("No events found")
         }
-
-        // check if event is disabled
-        events = events.filter((event) => {
-            return event.isDisabled === false;
-        });
 
         res.status(200).json({
             events,
@@ -971,6 +1018,47 @@ router.put("/event/disable/:eventId", protect, asyncHandler(async (req, res) => 
         })
     }
 
+}));
+
+// get all list of all events
+router.get("/event/list/:limit", protect, asyncHandler(async (req, res) => {
+    if (!req.user.isSuperAdmin) {
+        return res.status(400).send("You are not super admin")
+    }
+
+    const limit = parseInt(req.params.limit)
+    const page = req.query.page
+        ? parseInt(req.query.page)
+        : 1;
+    const skip = (page - 1) * limit;
+
+    try {
+        const events = await EventTable.find({
+        })
+            .skip(skip)
+            .limit(limit);
+
+        const total = await EventTable.countDocuments({
+        });
+
+        const pages = Math.ceil(total / limit);
+
+        if (!events) {
+            return res.status(404).send("No events found")
+        }
+
+        res.status(200).json({
+            events,
+            pages,
+            total,
+            page,
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: "Something went wrong",
+        })
+    }
 }));
 
 module.exports = router;
