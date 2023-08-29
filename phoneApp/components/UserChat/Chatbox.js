@@ -79,7 +79,7 @@ const Chatbox = ({ user }) => {
                     onDisplayNotification(newMessageReceived);
                 }
             } else {
-                setMessages([...messages, newMessageReceived]);
+                setMessages([newMessageReceived, ...messages]);
             }
         })
     }, []);
@@ -146,6 +146,7 @@ const Chatbox = ({ user }) => {
     }
 
     const sendMessage = async (event) => {
+        if (messages.length === 0) return;
         socket.emit("stop typing", selectedChat._id);
         try {
             const config = {
