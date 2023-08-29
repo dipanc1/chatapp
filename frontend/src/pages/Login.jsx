@@ -250,7 +250,7 @@ const Login = () => {
     }, [match, match?.pattern.path, navigate, user])
 
     React.useEffect(() => {
-        ReactGA.pageview(window.location.pathname);
+        ReactGA.pageview(window.location.pathname + window.location.search);
     }, [])
 
 
