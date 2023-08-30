@@ -10,5 +10,3 @@
 #### using google analytics
 
 ## Phone App
-
-#### chat new message issue chat gets inverted
