@@ -73,6 +73,7 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
         setRoomId,
         userId,
         screenStream,
+        participantsArray
     } = useContext(RoomContext);
 
     const CDN_IMAGES = "https://ik.imagekit.io/sahildhingra";
@@ -442,13 +443,13 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
                             Host: {selectedChat.groupAdmin.username.toUpperCase()}
                         </Text>
                         <Flex justifyContent='end'>
-                            <NavLink className='btn btn-primary'>
+                            {/* <NavLink className='btn btn-primary'>
                                 <Flex alignItems='center'>
                                     <Image h='18px' pe='15px' src={CDN_IMAGES + "/like-white.png"} />
                                     <Text>Like</Text>
                                 </Flex>
-                            </NavLink>
-                            {/* <NavLink style={{ "margin": "0 20px" }} className='btn btn-primary'>
+                            </NavLink> 
+                            <NavLink style={{ "margin": "0 20px" }} className='btn btn-primary'>
                                 <Flex alignItems='center'>
                                     <Image h='18px' pe='15px' src={CDN_IMAGES + "/share-white.png"} />
                                     <Text>Share</Text>
@@ -466,7 +467,7 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
                             <Flex gap='25px' fontWeight='bold'>
                                 <Flex alignItems='center'>
                                     <Image h='18px' pe='6px' src={CDN_IMAGES + "/eye.png"} />
-                                    <Text>{Object.keys(peers).length > 0 ? Object.keys(peers).length : 0} Watching</Text>
+                                    <Text>{participantsArray.length > 0 ? participantsArray.length : 0} Watching</Text>
                                 </Flex>
                                 <Flex alignItems='center'>
                                     <Image h='18px' pe='6px' src={CDN_IMAGES + "/clock.png"} />
