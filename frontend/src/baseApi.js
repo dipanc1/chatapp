@@ -20,4 +20,6 @@ const emailjsServiceId = 'service_ef2nk5k';
 const emailjsTemplateId = 'template_for_chatapp';
 const emailjsUserId = 'user_V88xEHCgH913EFMNqxCRw';
 
-export { backend_url, pictureUpload, stripePublicKey, stripePublicKeyLive, api_key, upload_preset, emailjsServiceId, emailjsTemplateId, emailjsUserId, folder };
+const trackingId = "G-MKMMCFR2K1";
+
+export { backend_url, pictureUpload, stripePublicKey, stripePublicKeyLive, api_key, upload_preset, emailjsServiceId, emailjsTemplateId, emailjsUserId, folder, trackingId };

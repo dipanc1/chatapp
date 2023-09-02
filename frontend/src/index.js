@@ -6,6 +6,9 @@ import { BrowserRouter } from "react-router-dom";
 import { AppContextProvider } from './context/AppContext';
 import { SocketContextProvider } from './context/SocketContext';
 import { RoomProvider } from './context/RoomContext';
+import ReactGA from 'react-ga4';
+import { trackingId } from './baseApi';
+
 
 const customTheme = extendTheme({
   semanticTokens: {
@@ -50,6 +53,8 @@ const customTheme = extendTheme({
     },
   },
 })
+
+ReactGA.initialize(trackingId)
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>

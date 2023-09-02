@@ -27,8 +27,7 @@ import PhoneNumber from '../components/Miscellaneous/PhoneNumber';
 import Otp from '../components/Miscellaneous/Otp';
 import Password from '../components/Miscellaneous/Password';
 import { AppContext } from '../context/AppContext';
-import ReactGA from 'react-ga';
-
+import ReactGA from 'react-ga4';
 
 const Login = () => {
     const [username, setUsername] = React.useState('')
@@ -173,10 +172,11 @@ const Login = () => {
                     type: "SET_USER_INFO",
                     payload: userDetails.data,
                 })
+
                 ReactGA.event({
                     category: 'User',
                     action: 'User Logged In',
-                    label: 'User Logged In'
+                    label: 'User Logged In',
                 });
 
                 navigate('/video-chat')
@@ -200,13 +200,13 @@ const Login = () => {
             try {
                 const res = await axios.post(`${backend_url}/users/login`, user);
 
+                localStorage.setItem("user", JSON.stringify(res.data));
+
                 ReactGA.event({
                     category: 'User',
                     action: 'User Logged In',
-                    label: 'User Logged In'
+                    label: 'User Logged In',
                 });
-
-                localStorage.setItem("user", JSON.stringify(res.data));
 
                 navigate('/video-chat')
                 setDisable(false)
@@ -248,10 +248,6 @@ const Login = () => {
             }
         }
     }, [match, match?.pattern.path, navigate, user])
-
-    React.useEffect(() => {
-        ReactGA.pageview(window.location.pathname + window.location.search);
-    }, [])
 
 
     return (
