@@ -4,7 +4,7 @@ import React, {
 import ChatOnline from '../Miscellaneous/ChatOnline'
 import { AppContext } from '../../context/AppContext'
 import axios from 'axios'
-import { api_key, backend_url, pictureUpload, folder } from '../../baseApi'
+import { api_key, backend_url, pictureUpload, folder } from '../../utils'
 import { HiUserRemove } from 'react-icons/hi'
 import {
   Accordion, Avatar,

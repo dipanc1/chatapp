@@ -5,7 +5,7 @@ import axios from 'axios';
 import { AppContext } from '../context/AppContext';
 import { Link, useMatch } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
-import { api_key, backend_url, pictureUpload, folder } from '../baseApi';
+import { api_key, backend_url, pictureUpload, folder } from '../utils';
 import {
     Flex,
     Box,

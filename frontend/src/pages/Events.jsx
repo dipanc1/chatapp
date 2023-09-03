@@ -17,7 +17,7 @@ import Static from "../components/common/Static"
 import EventCard from '../components/Events/EventCard';
 import { useContext } from 'react';
 import { AppContext } from '../context/AppContext';
-import { backend_url } from '../baseApi';
+import { backend_url } from '../utils';
 import axios from 'axios';
 import JoinGroupModal from '../components/UserModals/JoinGroupModal';
 import Pagination from '../components/Miscellaneous/Pagination';

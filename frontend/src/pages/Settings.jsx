@@ -24,7 +24,7 @@ import axios from 'axios';
 import {
     api_key, backend_url, pictureUpload,
     folder
-} from '../baseApi';
+} from '../utils';
 import { FiUpload } from 'react-icons/fi';
 import { AppContext } from '../context/AppContext';
 // import FullScreenLoader from '../components/common/FullScreenLoader';

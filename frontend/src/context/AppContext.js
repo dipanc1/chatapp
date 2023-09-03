@@ -1,7 +1,7 @@
 import axios from "axios";
 import { createContext, useEffect, useReducer, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { backend_url } from "../baseApi";
+import { backend_url } from "../utils";
 import AppReducer from "../reducers/AppReducer";
 import { useToast } from "@chakra-ui/react";
 

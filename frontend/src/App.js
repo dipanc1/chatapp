@@ -23,11 +23,6 @@ import UsersList from './pages/UsersList';
 import GroupsList from './pages/GroupsList';
 import Dashboard from './pages/Dashboard';
 import EventsList from './pages/EventsList';
-import ReactGA from 'react-ga';
-
-const trackingId = "G-MKMMCFR2K1"; // Replace with your Google Analytics tracking ID
-
-ReactGA.initialize(trackingId, { debug: true });
 
 //TODO: delete console statements
 

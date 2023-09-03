@@ -79,7 +79,7 @@ const Chatbox = ({ user }) => {
                     onDisplayNotification(newMessageReceived);
                 }
             } else {
-                setMessages([...messages, newMessageReceived]);
+                setMessages(prev => [newMessageReceived, ...prev]);
             }
         })
     }, []);
@@ -146,6 +146,7 @@ const Chatbox = ({ user }) => {
     }
 
     const sendMessage = async (event) => {
+        if (messages.length === 0) return;
         socket.emit("stop typing", selectedChat._id);
         try {
             const config = {
@@ -236,18 +237,20 @@ const Chatbox = ({ user }) => {
                         keyExtractor={(m) => m._id}
                         ListFooterComponent={hasMore ? <Spinner size={'lg'} color={'primary.300'} /> : null}
                         data={messages}
-                        renderItem={({ item, i }) => (
+                        renderItem={({ item, index }) => (
                             <Message
                                 profile={profile}
                                 messages={item}
                                 own={item.sender._id === userInfo?._id}
-                                sameSender={(i < messages.length - 1 &&
-                                    (messages[i + 1].sender._id !== item.sender._id ||
-                                        messages[i + 1].sender._id === undefined) &&
-                                    messages[i].sender._id !== userInfo?._id) || (i === messages.length - 1 &&
-                                        messages[messages.length - 1].sender._id !== userInfo?._id &&
+
+                                sameSender={(index < messages.length - 1 &&
+                                    (messages[index + 1].sender._id !== item.sender._id ||
+                                        messages[index + 1].sender._id === undefined) &&
+                                    messages[index].sender._id !== userInfo._id) || (index === messages.length - 1 &&
+                                        messages[messages.length - 1].sender._id !== userInfo._id &&
                                         messages[messages.length - 1].sender._id)}
-                                sameTime={(i < messages.length - 1) && format(messages[i].createdAt) === format(messages[i + 1].createdAt)}
+
+                                sameTime={(index < messages.length - 1) && format(new Date(messages[index].createdAt).valueOf()) === format(new Date(messages[index + 1].createdAt).valueOf())}
                                 user={user}
                             />
                         )}

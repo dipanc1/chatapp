@@ -16,7 +16,7 @@ import {
   useToast
 } from '@chakra-ui/react';
 import { AppContext } from '../../context/AppContext';
-import { api_key, backend_url, pictureUpload, folder } from '../../baseApi';
+import { api_key, backend_url, pictureUpload, folder } from '../../utils';
 import axios from 'axios';
 import EventModal from '../UserModals/EventModal';
 import StreamModalPeer from '../UserModals/StreamModalPeer';

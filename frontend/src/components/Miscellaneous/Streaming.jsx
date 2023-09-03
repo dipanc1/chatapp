@@ -6,7 +6,7 @@ import { AiOutlineCloseSquare } from 'react-icons/ai';
 import { BsCameraVideo, BsCameraVideoOff, BsFullscreen, BsFullscreenExit, BsMic, BsMicMute, BsRecordCircle, BsRecordCircleFill } from 'react-icons/bs';
 import ReactPlayer from 'react-player';
 import { AppContext } from '../../context/AppContext';
-import { backend_url } from '../../baseApi';
+import { backend_url } from '../../utils';
 import useSound from 'use-sound';
 import joinSound from '../../sounds/join.mp3';
 import leaveSound from '../../sounds/leave.mp3';

@@ -1,7 +1,7 @@
 import axios from "axios";
 import React from "react";
 import { AppContext } from "../../context/AppContext";
-import { backend_url } from "../../baseApi";
+import { backend_url } from "../../utils";
 import Conversation from "../Miscellaneous/Conversation";
 import GroupChat from "../Miscellaneous/GroupChat";
 import GroupChatModal from "../UserModals/GroupChatModal";
