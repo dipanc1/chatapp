@@ -15,7 +15,7 @@ import {
 
 import Static from '../components/common/Static'
 import axios from 'axios';
-import { api_key, backend_url, pictureUpload, folder } from '../baseApi';
+import { api_key, backend_url, pictureUpload, folder } from '../utils';
 import { AppContext } from '../context/AppContext';
 import { useNavigate } from 'react-router-dom';
 import { FiUpload } from 'react-icons/fi';

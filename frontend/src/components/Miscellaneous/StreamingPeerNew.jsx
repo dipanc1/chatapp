@@ -20,7 +20,7 @@ import {
     BsRecordCircleFill,
 } from "react-icons/bs";
 import { AppContext } from "../../context/AppContext";
-import { backend_url } from "../../baseApi";
+import { backend_url } from "../../utils";
 import { MembersComponent } from "../UserChat/Members";
 import { RoomContext } from "../../context/RoomContext";
 import Videoplayer from "./Videoplayer";

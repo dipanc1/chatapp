@@ -15,7 +15,7 @@ import {
     useDisclosure
 } from '@chakra-ui/react'
 import axios from 'axios';
-import { backend_url } from '../../baseApi';
+import { backend_url } from '../../utils';
 import Lottie from 'lottie-react';
 import animationData from '../../animations/red-dot.json';
 

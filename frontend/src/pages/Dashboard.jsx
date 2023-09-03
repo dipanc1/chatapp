@@ -2,7 +2,7 @@ import React from 'react'
 import Static from '../components/common/Static'
 import { Flex, Heading } from '@chakra-ui/react'
 import axios from 'axios'
-import { backend_url } from '../baseApi'
+import { backend_url } from '../utils'
 // import Highcharts from 'highcharts'
 // import HighchartsReact from 'highcharts-react-official'
 

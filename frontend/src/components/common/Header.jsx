@@ -21,7 +21,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import ProfileModal from '../UserModals/ProfileModal';
-import { backend_url } from '../../baseApi';
+import { backend_url } from '../../utils';
 import axios from 'axios';
 import { AppContext } from '../../context/AppContext';
 import UserCard from '../UserItems/UserCard';

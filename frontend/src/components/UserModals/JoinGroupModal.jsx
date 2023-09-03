@@ -12,7 +12,7 @@ import axios from 'axios';
 import { useContext } from 'react';
 import { useRef } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { backend_url } from '../../baseApi';
+import { backend_url } from '../../utils';
 import { AppContext } from '../../context/AppContext';
 
 

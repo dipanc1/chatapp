@@ -7,7 +7,7 @@ import { AppContextProvider } from './context/AppContext';
 import { SocketContextProvider } from './context/SocketContext';
 import { RoomProvider } from './context/RoomContext';
 import ReactGA from 'react-ga4';
-import { trackingId } from './baseApi';
+import { trackingId } from './utils';
 
 
 const customTheme = extendTheme({

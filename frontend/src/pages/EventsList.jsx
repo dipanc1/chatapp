@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Static from '../components/common/Static'
 import axios from 'axios';
-import { backend_url } from '../baseApi';
+import { backend_url } from '../utils';
 import { Button, Flex, Heading, Image, Table, TableContainer, Tbody, Td, Th, Thead, Tr, Text, Spinner, Box } from '@chakra-ui/react';
 
 const EventsList = () => {
