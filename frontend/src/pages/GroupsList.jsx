@@ -10,6 +10,8 @@ const GroupsList = () => {
   const [activeIndex, setActiveIndex] = useState(-1)
   const [eventsActiveIndex, setEventsActiveIndex] = useState(-1)
   const [usersRemoved, setUsersRemoved] = useState([])
+  const [eventsBlocked, setEventsBlocked] = useState([])
+  const [eventsAllowed, setEventsAllowed] = useState([])
 
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -130,16 +132,14 @@ const GroupsList = () => {
         }),
       };
       const response = await fetch(URL, options)
-      usersRemoved.push(userId)
-      setUsersRemoved(usersRemoved)
-      console.log(response, usersRemoved, "<--- remove")
+      setUsersRemoved(usersRemoved => [...usersRemoved, userId])
     } catch (e) {
       // console.log(e);
       errorToast("Something went wrong");
     }
   }
 
-  const handleEventStatus = async (eventId) => {
+  const handleEventStatus = async (type, eventId) => {
     try {
       const config = {
         headers: {
@@ -147,7 +147,11 @@ const GroupsList = () => {
         }
       };
       await axios.put(`${backend_url}/conversation/event/disable/${eventId}`, {}, config);
-
+      if(type === 'suspend') {
+        setEventsBlocked(eventsBlocked => [...eventsBlocked, eventId])
+      } else if (type === 'allow') {
+        setEventsAllowed(eventsAllowed => [...eventsAllowed, eventId])
+      }
       // setUserData()
       // setPageState(pageState)
       // fetchEvents()
@@ -344,13 +348,31 @@ const GroupsList = () => {
                                           <Td>
                                             {
                                               event.isDisabled ? (
-                                                <Button onClick={() => handleEventStatus(event._id)} h='fit-content' p='5px 15px!important' fontSize='14px!important' className='badge active'>
+                                                !eventsAllowed.includes(event._id) ? (
+                                                <Button onClick={() => handleEventStatus("allow", event._id)} h='fit-content' p='5px 15px!important' fontSize='14px!important' className='badge active'>
                                                   Allow
                                                 </Button>
+                                                ) : (
+                                                  <Button onClick={() => handleEventStatus("suspend", event._id)} h='fit-content' p='5px 15px!important' fontSize='14px!important' className="badge expired">
+                                                    Suspend
+                                                  </Button>
+                                                )
                                               ) : (
-                                                <Button onClick={() => handleEventStatus(event._id)} h='fit-content' p='5px 15px!important' fontSize='14px!important' className="badge expired">
-                                                  Suspend
-                                                </Button>
+                                                !eventsBlocked.includes(event._id) ? (
+                                                  <Button onClick={() => handleEventStatus("suspend", event._id)} h='fit-content' p='5px 15px!important' fontSize='14px!important' className="badge expired">
+                                                    Suspend
+                                                  </Button>
+                                                ) : (
+                                                  !eventsAllowed.includes(event._id) ? (
+                                                  <Button onClick={() => handleEventStatus("allow", event._id)} h='fit-content' p='5px 15px!important' fontSize='14px!important' className='badge active'>
+                                                    Allow
+                                                  </Button>
+                                                  ) : (
+                                                    <Button onClick={() => handleEventStatus("suspend", event._id)} h='fit-content' p='5px 15px!important' fontSize='14px!important' className="badge expired">
+                                                      Suspend
+                                                    </Button>
+                                                  )
+                                                )
                                               )
                                             }
                                           </Td>
