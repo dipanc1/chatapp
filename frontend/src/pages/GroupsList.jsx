@@ -2,13 +2,16 @@ import React, { useState } from 'react'
 import Static from '../components/common/Static'
 import axios from 'axios';
 import { backend_url } from '../utils';
-import { Button, Flex, Heading, Image, Table, TableContainer, Tbody, Td, Th, Thead, Tr, Text, Spinner, Box, Input } from '@chakra-ui/react';
+import { Button, Flex, Heading, Image, Table, TableContainer, Tbody, Td, Th, Thead, Tr, Text, Spinner, Box, Input, useToast } from '@chakra-ui/react';
 
 const GroupsList = () => {
   const [userData, setUserData] = useState()
   const [pageState, setPageState] = useState({"page": 1, isLoading: true})
   const [activeIndex, setActiveIndex] = useState(-1)
   const [eventsActiveIndex, setEventsActiveIndex] = useState(-1)
+  const [usersRemoved, setUsersRemoved] = useState([])
+  const [eventsBlocked, setEventsBlocked] = useState([])
+  const [eventsAllowed, setEventsAllowed] = useState([])
 
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -99,6 +102,59 @@ const GroupsList = () => {
       setUserData()
       setPageState(pageState)
       fetchUsers()
+    } catch (error) {
+      console.log(error, ":err23124")
+    }
+  }
+  const toast = useToast();
+  const errorToast = (message) => {
+    toast({
+      title: "Error",
+      description: message,
+      status: "error",
+      duration: 9000,
+      isClosable: true,
+    });
+  };
+
+  const removeUser = async (groupId, userId) => {
+    try {
+      const URL = `${backend_url}/conversation/groupremove`;
+      const options = {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${user.token}`
+        },
+        body: JSON.stringify({ 
+          "chatId": groupId,
+          "userId": userId
+        }),
+      };
+      const response = await fetch(URL, options)
+      setUsersRemoved(usersRemoved => [...usersRemoved, userId])
+    } catch (e) {
+      // console.log(e);
+      errorToast("Something went wrong");
+    }
+  }
+
+  const handleEventStatus = async (type, eventId) => {
+    try {
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${user.token}`
+        }
+      };
+      await axios.put(`${backend_url}/conversation/event/disable/${eventId}`, {}, config);
+      if(type === 'suspend') {
+        setEventsBlocked(eventsBlocked => [...eventsBlocked, eventId])
+      } else if (type === 'allow') {
+        setEventsAllowed(eventsAllowed => [...eventsAllowed, eventId])
+      }
+      // setUserData()
+      // setPageState(pageState)
+      // fetchEvents()
     } catch (error) {
       console.log(error, ":err23124")
     }
@@ -206,38 +262,40 @@ const GroupsList = () => {
                                     <Tbody>
                                       {
                                         user?.users.map((userInfo) => (
-                                          <Tr>
-                                            <Td>
-                                              <Flex gap="10px" alignItems="center">
-                                                <Image height="30px" width="30px" borderRadius="100%" src={userInfo.pic} />
-                                                <Box>
-                                                  <Text textTransform="capitalize">{userInfo.username}</Text>
-                                                </Box>
-                                              </Flex>
-                                            </Td>
-                                            <Td>{userInfo.number}</Td>
-                                            <Td>
-                                              {userInfo.isSuspeneded ? (
-                                                <span className="badge expired">Blocked</span>
-                                              ) : (
-                                                <span className="badge user-active">Active</span>
-                                              )}
-                                            </Td>
-                                            <Td>{userInfo.isOnline ? 'Yes': 'No'}</Td>
-                                            <Td>
-                                              {
-                                                user.isSuspeneded ? (
-                                                  <Button h='fit-content' p='5px 15px!important' fontSize='14px!important' className='badge active'>
-                                                    Unblock
-                                                  </Button>
+                                          !usersRemoved.includes(userInfo._id) && (
+                                            <Tr>
+                                              <Td>
+                                                <Flex gap="10px" alignItems="center">
+                                                  <Image height="30px" width="30px" borderRadius="100%" src={userInfo.pic} />
+                                                  <Box>
+                                                    <Text textTransform="capitalize">{userInfo.username}</Text>
+                                                  </Box>
+                                                </Flex>
+                                              </Td>
+                                              <Td>{userInfo.number}</Td>
+                                              <Td>
+                                                {userInfo.isSuspeneded ? (
+                                                  <span className="badge expired">Blocked</span>
                                                 ) : (
-                                                  <Button h='fit-content' p='5px 15px!important' fontSize='14px!important' className="badge expired">
-                                                    Remove
-                                                  </Button>
-                                                )
-                                              }
-                                            </Td>
-                                          </Tr>
+                                                  <span className="badge user-active">Active</span>
+                                                )}
+                                              </Td>
+                                              <Td>{userInfo.isOnline ? 'Yes': 'No'}</Td>
+                                              <Td>
+                                                {
+                                                  userInfo.isSuspeneded ? (
+                                                    <Button h='fit-content' p='5px 15px!important' fontSize='14px!important' className='badge active'>
+                                                      Unblock
+                                                    </Button>
+                                                  ) : (
+                                                    <Button onClick={() => removeUser(user._id, userInfo._id)} h='fit-content' p='5px 15px!important' fontSize='14px!important' className="badge expired">
+                                                      Remove
+                                                    </Button>
+                                                  )
+                                                }
+                                              </Td>
+                                            </Tr>
+                                          )
                                         ))
                                       }
                                     </Tbody>
@@ -256,25 +314,69 @@ const GroupsList = () => {
                                   <Table>
                                     <Thead>
                                       <Tr>
-                                        <Th>Event Name</Th>
+                                        <Th>Name</Th>
                                         <Th>Description</Th>
                                         <Th>Status</Th>
+                                        <Th>Date</Th>
+                                        <Th>Time</Th>
+                                        <Th>Action</Th>
                                       </Tr>
                                     </Thead>
                                     <Tbody>
                                       {
                                         user?.events.map((event) => (
+
                                           <Tr>
-                                            <Td>{event.name}</Td>
-                                            <Td>{event.description}</Td>
-                                            <Td>
-                                              {event.isDisabled ? (
-                                                <span className="badge expired">Inactive</span>
+                                          <Td>
+                                            <Flex gap="10px" alignItems="center">
+                                              <Image height="30px" width="30px" borderRadius="100%" src={event.thumbnail} />
+                                              <Box>
+                                                <Text textTransform="capitalize">{event.name}</Text>
+                                              </Box>
+                                            </Flex>
+                                          </Td>
+                                          <Td textTransform='capitalize'>{event.description}</Td>
+                                          <Td>
+                                            {event.isDisabled ? (
+                                              <span className="badge expired">Suspended</span>
+                                            ) : (
+                                              <span className="badge user-active">Active</span>
+                                            )}
+                                          </Td>
+                                          <Td>{event.date.split('T')[0]}</Td>
+                                          <Td>{event.time}</Td>
+                                          <Td>
+                                            {
+                                              event.isDisabled ? (
+                                                !eventsAllowed.includes(event._id) ? (
+                                                <Button onClick={() => handleEventStatus("allow", event._id)} h='fit-content' p='5px 15px!important' fontSize='14px!important' className='badge active'>
+                                                  Allow
+                                                </Button>
+                                                ) : (
+                                                  <Button onClick={() => handleEventStatus("suspend", event._id)} h='fit-content' p='5px 15px!important' fontSize='14px!important' className="badge expired">
+                                                    Suspend
+                                                  </Button>
+                                                )
                                               ) : (
-                                                <span className="badge user-active">Active</span>
-                                              )}
-                                            </Td>
-                                          </Tr>
+                                                !eventsBlocked.includes(event._id) ? (
+                                                  <Button onClick={() => handleEventStatus("suspend", event._id)} h='fit-content' p='5px 15px!important' fontSize='14px!important' className="badge expired">
+                                                    Suspend
+                                                  </Button>
+                                                ) : (
+                                                  !eventsAllowed.includes(event._id) ? (
+                                                  <Button onClick={() => handleEventStatus("allow", event._id)} h='fit-content' p='5px 15px!important' fontSize='14px!important' className='badge active'>
+                                                    Allow
+                                                  </Button>
+                                                  ) : (
+                                                    <Button onClick={() => handleEventStatus("suspend", event._id)} h='fit-content' p='5px 15px!important' fontSize='14px!important' className="badge expired">
+                                                      Suspend
+                                                    </Button>
+                                                  )
+                                                )
+                                              )
+                                            }
+                                          </Td>
+                                        </Tr>
                                         ))
                                       }
                                     </Tbody>
