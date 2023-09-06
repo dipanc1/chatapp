@@ -200,9 +200,9 @@ const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) 
             <Box onClick={() => setToggleSearch(false)} p='10px' display={['block', 'block', 'none']} zIndex='2' position='absolute' top={['17px', '17px', '2px']} left={['17px', '17px', '12px']}>
               <Image opacity='0.8' h='15px' src={CDN_IMAGES + '/search-back.png'} />
             </Box>
-            <Input
+            {!userInfo?.isSuperAdmin && <Input
               focusBorderColor='#9F85F7'
-              disabled={loading} onChange={(e) => handleSearch(e)} value={search} placeholder='Search Users / Groups / Events' py={'13px'} px={['30px', '30px', '21px']} bg={'#F4F1FF'} border={'0'} />
+              disabled={loading} onChange={(e) => handleSearch(e)} value={search} placeholder='Search Users / Groups / Events' py={'13px'} px={['30px', '30px', '21px']} bg={'#F4F1FF'} border={'0'} />}
             {
               searching && (
                 <Box zIndex='1' position='absolute' top={['17px', '2px']} right={['30px', '12px']}>

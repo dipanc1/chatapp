@@ -6,8 +6,7 @@
 #### use httponly cookies for refresh token
 #### cloudinary only whitelist our domain
 #### need to add abhishek's id to send emails
+#### need to add abhishek's id in google analytics
 #### make common function for api calls
-#### adding member in group through dashboard
-#### using google analytics
 
 ## Phone App
