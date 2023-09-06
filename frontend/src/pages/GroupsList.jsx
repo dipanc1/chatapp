@@ -1,19 +1,29 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Static from '../components/common/Static'
 import axios from 'axios';
 import { backend_url } from '../utils';
-import { Button, Flex, Heading, Image, Table, TableContainer, Tbody, Td, Th, Thead, Tr, Text, Spinner, Box, Input, useToast } from '@chakra-ui/react';
+import { Button, Flex, Heading, Image, Table, TableContainer, Tbody, Td, Th, Thead, Tr, Text, Spinner, Box, Input, useToast, Tooltip, Icon } from '@chakra-ui/react';
+import { NotAllowedIcon, StarIcon } from '@chakra-ui/icons';
+import { AppContext } from '../context/AppContext';
+import UserCard from '../components/UserItems/UserCard';
 
 const GroupsList = () => {
   const [userData, setUserData] = useState()
   const [pageState, setPageState] = useState({"page": 1, isLoading: true})
+  const { dispatch, loading } = useContext(AppContext);
   const [activeIndex, setActiveIndex] = useState(-1)
   const [eventsActiveIndex, setEventsActiveIndex] = useState(-1)
+  const [search, setSearch] = useState('');
+  const [searching, setSearching] = useState(false)
+  const [searchResultsUsers, setSearchResultsUsers] = useState([]);
   const [usersRemoved, setUsersRemoved] = useState([])
   const [eventsBlocked, setEventsBlocked] = useState([])
   const [eventsAllowed, setEventsAllowed] = useState([])
+  const [toggleSearch, setToggleSearch] = useState(false)
 
   const user = JSON.parse(localStorage.getItem("user"));
+
+  const CDN_IMAGES = "https://ik.imagekit.io/sahildhingra";
 
   React.useEffect(() => {
     fetchUsers();
@@ -88,24 +98,6 @@ const GroupsList = () => {
     }
   }
 
-  const handleChangingAdmin = async (userId, chatId) => {
-    try {
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${user.token}`
-        }
-      };
-      await axios.put(`${backend_url}/conversation/groupmakeadmin`, {
-        userId, chatId
-      }, config);
-
-      setUserData()
-      setPageState(pageState)
-      fetchUsers()
-    } catch (error) {
-      console.log(error, ":err23124")
-    }
-  }
   const toast = useToast();
   const errorToast = (message) => {
     toast({
@@ -116,6 +108,38 @@ const GroupsList = () => {
       isClosable: true,
     });
   };
+
+  const handleChangingAdmin = async (userId, chatId) => {
+    try {
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${user.token}`
+        }
+      };
+      await axios.put(`${backend_url}/conversation/groupmakeadmin`, {
+        userId, 
+        chatId
+      }, config);
+
+      toast({
+        title: "Admin Updated Successfully!",
+        description: "Admin Updated Successfully!",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "top-right",
+      });
+      fetchUsers()
+
+      // setUserData()
+      // setPageState(pageState)
+      // fetchUsers()
+    } catch (error) {
+      console.log(error, ":err23124")
+      errorToast("User is already admin!");
+    }
+  }
+
 
   const removeUser = async (groupId, userId) => {
     try {
@@ -159,6 +183,73 @@ const GroupsList = () => {
       console.log(error, ":err23124")
     }
   }
+
+  const handleSearch = async (e) => {
+    setSearching(true)
+    setSearch(e.target.value);
+    if (e.target.value === '' || e.target.value === null) {
+      setSearching(false)
+      setSearchResultsUsers([]);
+      return;
+    }
+    setSearching(true)
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.get(
+        `${backend_url}/users?search=${e.target.value}`,
+        config
+      );
+      setSearchResultsUsers(data.users);
+      setSearching(false)
+    } catch (error) {
+      // console.log(error)
+      setSearching(false)
+    }
+  };
+
+  const addUserToGroup = async (user1, groupId) => {
+    setToggleSearch(false)
+    try {
+      dispatch({ type: "SET_LOADING", payload: true });
+      setSearching(true);
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.put(
+        `${backend_url}/conversation/groupadd`,
+        {
+          chatId: groupId,
+          userId: user1,
+        },
+        config
+      );
+      fetchUsers()
+      setSearching(false);
+      setSearchResultsUsers([]);
+      dispatch({ type: "SET_LOADING", payload: false });
+    } catch (error) {
+      // console.log(error);
+      toast({
+        title: "Error Occured!",
+        description: "User already exists in the group",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+      setSearching(false);
+      setSearchResultsUsers([]);
+      dispatch({ type: "SET_LOADING", payload: false });
+    }
+    setSearch("");
+  };
 
   return (
     <Static>
@@ -242,9 +333,42 @@ const GroupsList = () => {
                               <>
                               <Tr>
                                 <Td colspan='12'>
-                                  <Box textAlign='right'>
-                                    <Input maxW='320px' placeholder='Add Users' py={'13px'} px={['30px', '30px', '21px']} bg={'#F4F1FF'} border={'0'} />
-                                  </Box>
+                                  <Box transition='all 0.3s ease-in-out' p={['15px 20px', '15px 20px', '0']} display={['block', 'block']} w={['100%', '100%', 'auto']} zIndex={['1']} top={['0']} transform={[toggleSearch ? 'unset' : 'translateY(100%)', toggleSearch ? 'unset' : 'translateY(100%)', 'unset']} right={['0']} position={['absolute', 'absolute', 'relative']} height={['100vh', '100vh', 'auto']} mx='auto' minW={['unset', 'unset', '400px']} bg='#fff'>
+            <Box onClick={() => setToggleSearch(false)} p='10px' display={['block', 'block', 'none']} zIndex='2' position='absolute' top={['17px', '17px', '2px']} left={['17px', '17px', '12px']}>
+              <Image opacity='0.8' h='15px' src={CDN_IMAGES + '/search-back.png'} />
+            </Box>
+            <Box textAlign='right'>
+            <Input
+              focusBorderColor='#9F85F7'
+              disabled={loading} onChange={(e) => handleSearch(e)} value={search} placeholder='Add Users' maxW='320px' py={'13px'} px={['30px', '30px', '21px']} bg={'#F4F1FF'} border={'0'} />
+            </Box>
+            {
+              searching && (
+                <Box zIndex='1' position='absolute' top={['17px', '2px']} right={['30px', '12px']}>
+                  <Image opacity='0.8' h='35px' src="https://ik.imagekit.io/sahildhingra/search-loading.svg" />
+                </Box>
+              )
+            }
+            <Box px='20px' background='#fff' boxShadow={['unset', '0px 3px 24px rgba(159, 133, 247, 0.6)']} borderRadius='5px' w='100%' position='absolute' top={['60px', 'calc(100% + 10px)']} right={['0']} zIndex='1'>
+              {
+                searchResultsUsers?.length ? (
+                  <>
+                    {
+                      searchResultsUsers?.map((item) => {
+                        return (
+                          <div key={item._id}
+                            onClick={() => addUserToGroup(item._id, user._id)}>
+
+                            <UserCard profileImg={item.pic} userName={item.username} />
+                          </div>
+                        );
+                      })
+                    }
+                  </>
+                ) : ('')
+              }
+            </Box>
+          </Box>
                                 </Td>
                               </Tr>
                               <Tr>
@@ -270,6 +394,15 @@ const GroupsList = () => {
                                                   <Box>
                                                     <Text textTransform="capitalize">{userInfo.username}</Text>
                                                   </Box>
+                                                  {
+                                                    user?.groupAdmin?._id === userInfo?._id && (
+                                                      <Tooltip label='Group Admin' fontSize='sm' placement='top' >
+                                                        <Button h='fit-content' p='5px 0px!important' fontSize='14px!important' className="badge user-active">
+                                                          <Icon as={StarIcon} />
+                                                        </Button>
+                                                      </Tooltip>
+                                                    )
+                                                  }
                                                 </Flex>
                                               </Td>
                                               <Td>{userInfo.number}</Td>
@@ -282,17 +415,31 @@ const GroupsList = () => {
                                               </Td>
                                               <Td>{userInfo.isOnline ? 'Yes': 'No'}</Td>
                                               <Td>
+                                                <Flex gap='10px'>
                                                 {
                                                   userInfo.isSuspeneded ? (
                                                     <Button h='fit-content' p='5px 15px!important' fontSize='14px!important' className='badge active'>
                                                       Unblock
                                                     </Button>
                                                   ) : (
-                                                    <Button onClick={() => removeUser(user._id, userInfo._id)} h='fit-content' p='5px 15px!important' fontSize='14px!important' className="badge expired">
-                                                      Remove
-                                                    </Button>
+                                                    <Tooltip label='Remove User' fontSize='sm' placement='top' >
+                                                      <Button onClick={() => removeUser(user._id, userInfo._id)} h='fit-content' p='5px 0px!important' fontSize='14px!important' className="badge expired">
+                                                        <Icon as={NotAllowedIcon} />
+                                                      </Button>
+                                                    </Tooltip>
                                                   )
                                                 }
+                                                {
+                                                    user?.groupAdmin?._id !== userInfo?._id && (
+                                                      
+                                                <Tooltip label='Make Admin' fontSize='sm' placement='top' >
+                                                <Button onClick={() => handleChangingAdmin(userInfo._id, user._id)} h='fit-content' p='5px 0px!important' fontSize='14px!important' className="badge active">
+                                                  <Icon as={StarIcon} />
+                                                </Button>
+                                              </Tooltip>
+                                                    )
+                                                  }
+                                                </Flex>
                                               </Td>
                                             </Tr>
                                           )
