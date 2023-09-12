@@ -3,7 +3,7 @@ import { useContext, useEffect } from 'react';
 import { AppContext } from '../../context/AppContext';
 import { Avatar, Box, Text } from '@chakra-ui/react';
 import axios from 'axios';
-import { backend_url } from '../../baseApi';
+import { backend_url } from '../../utils';
 
 const Message = ({ messages, own, sameSender, sameTime }) => {
     const { selectedChat } = useContext(AppContext);

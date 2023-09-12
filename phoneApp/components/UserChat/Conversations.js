@@ -60,7 +60,7 @@ const Conversations = ({ fetchAgain, setFetchAgain, conversations, user, searchR
           onEndReachedThreshold={0.5}
           ListFooterComponent={hasMoreOneOnOneChats ? <Box flex={'1'}> <Spinner size={'lg'} color={'primary.300'} /></Box> : null}
           data={conversations}
-          renderItem={({ item, i }) => (
+          renderItem={({ item, index }) => (
             <Conversation chat={item} navigation={navigation} />
           )}
           keyExtractor={(m) => m._id}

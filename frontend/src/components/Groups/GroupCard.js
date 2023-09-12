@@ -2,7 +2,7 @@ import { Box, Flex, Image, ListItem, Text, UnorderedList, useDisclosure, useToas
 import React, { useState } from 'react'
 import GroupSettingsModal from '../UserModals/GroupSettingsModal';
 import axios from 'axios';
-import { api_key, backend_url, pictureUpload, folder } from '../../baseApi';
+import { api_key, backend_url, pictureUpload, folder } from '../../utils';
 import AddMembersModal from '../UserModals/AddMembersModal';
 import { AppContext } from '../../context/AppContext';
 import EventModal from '../UserModals/EventModal';

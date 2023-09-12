@@ -1,7 +1,7 @@
 import { Button, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Textarea, useDisclosure, useToast } from '@chakra-ui/react'
 import { useRef, useState } from 'react'
 import emailjs from '@emailjs/browser';
-import { emailjsServiceId, emailjsTemplateId, emailjsUserId } from '../../baseApi';
+import { emailjsServiceId, emailjsTemplateId, emailjsUserId } from '../../utils';
 
 const SendEmailModal = ({ children }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -83,7 +83,7 @@ const SendEmailModal = ({ children }) => {
               <Button
                 isLoading={isSubmitting}
                 isLoadingText='Sending...'
-                disabled={isSubmitting}
+                isDisabled={isSubmitting}
                 type='submit' bg={'buttonPrimaryColor'}
                 color={'white'}
                 _hover={{

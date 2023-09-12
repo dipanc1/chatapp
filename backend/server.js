@@ -58,7 +58,9 @@ const server = app.listen(PORT, () => {
 const io = require("socket.io")(server, {
     pingTimeout: 60000,
     cors: {
-        origin: "*",
+        origin: [
+            process.env.CLIENT_URL, 'https://chatapp.wildcrypto.com'
+        ]
     },
 });
 
@@ -143,8 +145,9 @@ io.on("connection", (socket) => {
 
 // ---------------DEPLOYMENT--------------------
 
-app.use(express.static(path.join(__dirname, 'build')));
+app.use(express.static(path.join(__dirname, 'build'), { maxAge: 31557600000 }));
 
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'build', 'index.html'))
+    res.setHeader('Cache-Control', 'public, max-age=31557600');
 });

@@ -6,8 +6,7 @@
 #### use httponly cookies for refresh token
 #### cloudinary only whitelist our domain
 #### need to add abhishek's id to send emails
-#### user stats api and chart 
+#### need to add abhishek's id in google analytics
+#### make common function for api calls
 
 ## Phone App
-
-#### chat new message issue chat gets inverted

@@ -18,7 +18,7 @@ import {
 import Static from "../components/common/Static"
 import GroupCard from '../components/Groups/GroupCard';
 import axios from 'axios';
-import { backend_url } from '../baseApi';
+import { backend_url } from '../utils';
 import { AppContext } from '../context/AppContext';
 import GroupChatModal from '../components/UserModals/GroupChatModal';
 import Pagination from '../components/Miscellaneous/Pagination';

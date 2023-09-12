@@ -2,9 +2,9 @@ import React from 'react'
 import Static from '../components/common/Static'
 import { Flex, Heading } from '@chakra-ui/react'
 import axios from 'axios'
-import { backend_url } from '../baseApi'
-import Highcharts from 'highcharts'
-import HighchartsReact from 'highcharts-react-official'
+import { backend_url } from '../utils'
+// import Highcharts from 'highcharts'
+// import HighchartsReact from 'highcharts-react-official'
 
 const options = {
   title: {
@@ -52,10 +52,10 @@ const Dashboard = () => {
     <Static>
       <Heading as='h1' size='lg' fontWeight='500'>Dashboard</Heading>
       <Flex></Flex>
-      <HighchartsReact
+      {/* <HighchartsReact
         highcharts={Highcharts}
         options={options}
-      />
+      /> */}
     </Static>
   )
 }

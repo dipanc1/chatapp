@@ -12,7 +12,6 @@ import leaveSound from '../sounds/leave.mp3';
 
 // const ENDPOINT = "http://localhost:8080";
 const ENDPOINT = "https://peerjs.wildcrypto.com";
-// const ENDPOINT = "https://chatappeerserver.azurewebsites.net";
 
 export const RoomContext = createContext(null);
 
@@ -45,7 +44,7 @@ export const RoomProvider = ({ children }) => {
     }
 
     const removePeer = (peerId) => {
-        // console.warn("Remove Peer ::: >>>", peerId, "typeof peerId ::: >>>", typeof peerId);
+        console.warn("Remove Peer ::: >>>", peerId, "typeof peerId ::: >>>", typeof peerId);
         setParticipantsArray(participantsArray.filter((peerid) => peerid !== peerId));
         // console.log("Participants Array ::: >>>", participantsArray);
         dispatch({

@@ -24,7 +24,7 @@ import axios from 'axios';
 import {
     api_key, backend_url, pictureUpload,
     folder
-} from '../baseApi';
+} from '../utils';
 import { FiUpload } from 'react-icons/fi';
 import { AppContext } from '../context/AppContext';
 // import FullScreenLoader from '../components/common/FullScreenLoader';
@@ -410,7 +410,7 @@ const Settings = () => {
                                 </GridItem>
                             </Grid>
                             <Flex pt={['15px', '40px']} alignItems='center' justifyContent='end'>
-                                <Button disabled={currentPassword === "" || newPassword === "" || confirmPassword === ""} type='submit'>
+                                <Button isDisabled={currentPassword === "" || newPassword === "" || confirmPassword === ""} type='submit'>
                                     <Text>Update Password</Text>
                                 </Button>
                             </Flex>

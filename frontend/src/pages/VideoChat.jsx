@@ -5,7 +5,7 @@ import Conversations from '../components/UserChat/Conversations'
 import Chatbox from '../components/UserChat/Chatbox'
 import Members from '../components/UserChat/Members'
 import { AppContext } from '../context/AppContext';
-import { backend_url } from '../baseApi';
+import { backend_url } from '../utils';
 import StreamingPeer from '../components/Miscellaneous/StreamingPeerNew';
 
 import Static from "../components/common/Static"

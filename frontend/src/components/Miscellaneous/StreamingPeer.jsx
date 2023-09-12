@@ -7,7 +7,7 @@ import { BsCameraVideo, BsCameraVideoOff, BsFullscreen, BsFullscreenExit, BsMic,
 import { MdScreenShare } from 'react-icons/md';
 import ReactPlayer from 'react-player';
 import { AppContext } from '../../context/AppContext';
-import { backend_url } from '../../baseApi';
+import { backend_url } from '../../utils';
 import { MembersComponent } from '../UserChat/Members';
 import EndLeaveModal from '../UserModals/EndLeaveModal';
 import { RoomContext } from '../../context/RoomContext';
@@ -26,7 +26,7 @@ const IconButtonGeneric = ({ icon, onClick, color, size, display, disable }) => 
             icon={icon}
             size={size}
             display={display}
-            disabled={disable}
+            isDisabled={disable}
         />
     )
 }
@@ -295,7 +295,7 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
                                     size={'md'}
                                     display={'flex'}
                                     ref={stopButton}
-                                    disabled={!recording}
+                                    isDisabled={!recording}
                                 />
 
                                 <Text>
