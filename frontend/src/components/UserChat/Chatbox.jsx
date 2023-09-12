@@ -10,10 +10,13 @@ import { format } from 'timeago.js'
 import EndLeaveModal from '../UserModals/EndLeaveModal'
 import { backend_url } from '../../utils'
 import { Avatar, AvatarBadge, Box, Button, Divider, Flex, Image, Img, Input, Spinner, Text, useDisclosure, useToast } from '@chakra-ui/react'
-import { FiSend } from 'react-icons/fi'
+import { FiImage, FiPaperclip, FiSend } from 'react-icons/fi'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useLocation } from 'react-router-dom'
 import GroupSettingsModal from '../UserModals/GroupSettingsModal'
+import { BsFilePdf } from 'react-icons/bs'
+import ImageAttachmentModal from '../UserModals/ImageAttachmentModal'
+import DocumentAttachmentModal from '../UserModals/DocumentAttachmentModal'
 
 var selectedChatCompare;
 
@@ -29,6 +32,10 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
   const [socketConnected, setSocketConnected] = React.useState(false);
   const [typing, setTyping] = React.useState(false);
   const [isTyping, setIsTyping] = React.useState(false);
+  const [showAttachmentOptions, setShowAttachmentOptions] = React.useState(false)
+
+  const { isOpen: isOpenImageAttachment, onOpen: onOpenImageAttachment, onClose: onCloseImageAttachment } = useDisclosure()
+  const { isOpen: isOpenDocumentAttachment, onOpen: onOpenDocumentAttachment, onClose: onCloseDocumentAttachment } = useDisclosure()
 
   const location = useLocation();
 
@@ -296,10 +303,33 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
         alignItems={'center'}
         justifyContent={'space-between'}
         background="#F6F3FF"
-        padding="15px 30px"
+        padding="15px 10px"
       >
+        <Box position='relative'>
+          {
+            showAttachmentOptions && (
+              <Flex boxShadow='2xl' left='-10px' p='10px' borderRadius='35px' background='#fff' flexDirection='column' gap='10px' position='absolute' bottom='calc(100% + 20px)'>
+                <Button
+                  onClick={onOpenImageAttachment}
+                  borderRadius='100%'>
+                  <FiImage />
+                </Button>
+                <Button
+                  onClick={onOpenDocumentAttachment}
+                  borderRadius='100%'>
+                  <BsFilePdf />
+                </Button>
+              </Flex>
+            )
+          }
+          <Button
+            onClick={() => setShowAttachmentOptions(!showAttachmentOptions)}
+            borderRadius='100%'>
+            <FiPaperclip />
+          </Button>
+        </Box>
         <Input
-          mr={'10px'}
+          mx={'10px'}
           bgColor={'#fff'}
           border={'none'}
           placeholder='Type Your Message...'
@@ -316,6 +346,14 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
           <FiSend color="#fff" />
         </Button>
       </Box>
+      <ImageAttachmentModal 
+        isOpenImageAttachment={isOpenImageAttachment}
+        onCloseImageAttachment={onCloseImageAttachment}
+      />
+      <DocumentAttachmentModal 
+        isOpenDocumentAttachment={isOpenDocumentAttachment}
+        onCloseDocumentAttachment={onCloseDocumentAttachment}
+      />
     </>
   )
 }
