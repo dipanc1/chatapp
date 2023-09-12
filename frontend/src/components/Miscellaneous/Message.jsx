@@ -1,9 +1,9 @@
 import { format } from 'timeago.js'
 import { useContext, useEffect } from 'react';
 import { AppContext } from '../../context/AppContext';
-import { Avatar, Box, Text } from '@chakra-ui/react';
+import { Avatar, Box, Image, Text } from '@chakra-ui/react';
 import axios from 'axios';
-import { backend_url } from '../../utils';
+import { backend_url, checkIfUrlHasPngOrJpgOrJpeg } from '../../utils';
 
 const Message = ({ messages, own, sameSender, sameTime }) => {
     const { selectedChat } = useContext(AppContext);
@@ -48,7 +48,13 @@ const Message = ({ messages, own, sameSender, sameTime }) => {
                         <div style={{ width: '2.5rem' }}></div>
                     }
                     <Box p={2} borderRadius={'6px'} bg={own ? '#9F85F7' : '#F6F3FF'}>
-                        <Text color={own ? 'white' : ''}>{messages.content}</Text>
+                        {checkIfUrlHasPngOrJpgOrJpeg(messages.content) ?
+                            <Box h='300px'>
+                                <Image h='100%' w='100%' objectFit='cover' mx='auto' src={messages.content} alt='image' />
+                            </Box>
+                            :
+                            <Text color={own ? 'white' : ''}>{messages.content}</Text>
+                        }
                     </Box>
                 </Box>
                 {sameTime ?

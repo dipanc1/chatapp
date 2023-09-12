@@ -7,6 +7,7 @@ import {
   VStack
 } from '@chakra-ui/react'
 import { AppContext } from '../../context/AppContext';
+import { checkIfUrlHasPngOrJpgOrJpeg } from '../../utils';
 
 const Conversation = ({ chat }) => {
   const [friends, setFriends] = useState([]);
@@ -63,7 +64,9 @@ const Conversation = ({ chat }) => {
             friends?.username}:
             {chat
               && chat.latestMessage
-              && chat.latestMessage.content}</Text>}
+              && checkIfUrlHasPngOrJpgOrJpeg(chat.latestMessage.content) ?
+              ' Image' : " " + chat.latestMessage.content}
+          </Text>}
       </VStack>
       {chat && chat.latestMessage && chat.latestMessage.sender && chat.latestMessage.sender._id !== userInfo?._id && !chat?.latestMessage.readBy.includes(userInfo?._id) && read && <Box
         ml='auto'

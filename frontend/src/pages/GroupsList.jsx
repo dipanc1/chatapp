@@ -18,10 +18,8 @@ const GroupsList = () => {
   const [search, setSearch] = useState('');
   const [searchResultsUsers, setSearchResultsUsers] = useState([]);
   const [searching, setSearching] = useState(false);
-  const [toggleSearch, setToggleSearch] = useState(false)
 
   const toast = useToast();
-  const CDN_IMAGES = "https://ik.imagekit.io/sahildhingra";
   const user = JSON.parse(localStorage.getItem("user"));
 
   React.useEffect(() => {
@@ -59,7 +57,6 @@ const GroupsList = () => {
   };
 
   const handleAddUser = async (user1, groupId) => {
-    setToggleSearch(false)
     try {
       const config = {
         headers: {
@@ -332,37 +329,31 @@ const GroupsList = () => {
                               <>
                                 <Tr>
                                   <Td colspan='12'>
-                                    <Box transition='all 0.3s ease-in-out' p={['15px 20px', '15px 20px', '0']} display={['block', 'block']} w={['100%', '100%', 'auto']} zIndex={['1']} top={['0']} transform={[toggleSearch ? 'unset' : 'translateY(100%)', toggleSearch ? 'unset' : 'translateY(100%)', 'unset']} right={['0']} position={['absolute', 'absolute', 'relative']} height={['100vh', '100vh', 'auto']} mx='auto' minW={['unset', 'unset', '400px']} bg='#fff'>
-                                      <Box onClick={() => setToggleSearch(false)} p='10px' display={['block', 'block', 'none']} zIndex='2' position='absolute' top={['17px', '17px', '2px']} left={['17px', '17px', '12px']}>
-                                        <Image opacity='0.8' h='15px' src={CDN_IMAGES + '/search-back.png'} />
-                                      </Box>
-                                      <Box textAlign='right' position={'relative'}>
-                                        <Input focusBorderColor='#9F85F7' onChange={(e) => handleSearch(e)} value={search} maxW='320px' placeholder='Add Users' py={'13px'} px={['30px', '30px', '21px']} bg={'#F4F1FF'} border={'0'} />
+                                    <Box textAlign='right' position={'relative'}>
+                                      <Input focusBorderColor='#9F85F7' onChange={(e) => handleSearch(e)} value={search} maxW='320px' placeholder='Add Users' py={'13px'} px={['30px', '30px', '21px']} bg={'#F4F1FF'} border={'0'} />
 
+                                      {
+                                        searching && (
+                                          <Box zIndex='1' position='absolute' top={['17px', '2px']} right={['30px', '12px']}>
+                                            <Image opacity='0.8' h='35px' src="https://ik.imagekit.io/sahildhingra/search-loading.svg" />
+                                          </Box>
+                                        )
+                                      }
+                                      {searchResultsUsers.length > 0 && <Box maxH={'56'} overflowY={'scroll'} p='10px' background='#fff' boxShadow={['unset', '0px 3px 24px rgba(159, 133, 247, 0.6)']} borderRadius='0.5rem' w='17vw' position='absolute' top={'3rem'} right='0' zIndex='1'>
                                         {
-                                          searching && (
-                                            <Box zIndex='1' position='absolute' top={['17px', '2px']} right={['30px', '12px']}>
-                                              <Image opacity='0.8' h='35px' src="https://ik.imagekit.io/sahildhingra/search-loading.svg" />
+                                          searchResultsUsers.map((item) => (
+                                            <Box key={item._id} _hover={{ background: '#F4F1FF' }}
+                                              borderRadius='1rem'
+                                              onClick={() =>
+                                                handleAddUser(item._id, user._id)
+                                              }
+                                            >
+                                              <UserCard profileImg={item.pic} userName={item.username} />
                                             </Box>
-                                          )
+                                          ))
                                         }
-                                        {searchResultsUsers.length > 0 && <Box maxH={'56'} overflowY={'scroll'} p='10px' background='#fff' boxShadow={['unset', '0px 3px 24px rgba(159, 133, 247, 0.6)']} borderRadius='0.5rem' w='17vw' position='absolute' top={'3rem'} right='0' zIndex='1'>
-                                          {
-                                            searchResultsUsers.map((item) => (
-                                              <Box key={item._id} _hover={{ background: '#F4F1FF' }}
-                                                borderRadius='1rem'
-                                                onClick={() =>
-                                                  handleAddUser(item._id, user._id)
-                                                }
-                                              >
-                                                <UserCard profileImg={item.pic} userName={item.username} />
-                                              </Box>
-                                            ))
-                                          }
-                                        </Box>}
-                                      </Box>
+                                      </Box>}
                                     </Box>
-
                                   </Td>
                                 </Tr>
                                 <Tr>

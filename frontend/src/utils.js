@@ -22,4 +22,11 @@ const emailjsUserId = 'user_V88xEHCgH913EFMNqxCRw';
 
 const trackingId = "G-MKMMCFR2K1";
 
-export { backend_url, pictureUpload, stripePublicKey, stripePublicKeyLive, api_key, upload_preset, emailjsServiceId, emailjsTemplateId, emailjsUserId, folder, trackingId };
+const checkIfUrlHasPngOrJpgOrJpeg = (url) => {
+    if (url.includes('.png') || url.includes('.jpg') || url.includes('.jpeg')) {
+        return true;
+    }
+    return false;
+}
+
+export { backend_url, pictureUpload, stripePublicKey, stripePublicKeyLive, api_key, upload_preset, emailjsServiceId, emailjsTemplateId, emailjsUserId, folder, trackingId, checkIfUrlHasPngOrJpgOrJpeg };

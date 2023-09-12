@@ -1,35 +1,47 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import {
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalFooter,
-    ModalBody,
-    ModalCloseButton,
-    Button,
-    Flex,
-    Box,
-    Image
-  } from '@chakra-ui/react'
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+  Flex,
+  Box,
+  Image,
+  useToast
+} from '@chakra-ui/react'
 import { FiPlus, FiSend } from 'react-icons/fi'
+import { AppContext } from '../../context/AppContext';
 
 const ImageAttachmentModal = ({
-    isOpenImageAttachment,
-    onCloseImageAttachment
+  isOpenImageAttachment,
+  onCloseImageAttachment, selectedImage, setSelectedImage,
+  uploadImageAndSend, loadingWhileSendingImage
 }) => {
   const fileInputRef = React.createRef();
-  const [selectedImage, setSelectedImage] = useState(null);
 
-  const handleFileInputChange = (e) => {
-    const file = e.target.files[0];
+  const { getCloudinarySignature } = React.useContext(AppContext);
 
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setSelectedImage(imageUrl);
+  const toast = useToast();
+
+  const handleImageChange = (e) => {
+    if (e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/png') {
+      getCloudinarySignature();
+      setSelectedImage(e.target.files[0]);
+    } else {
+      toast({
+        title: 'Error',
+        description: 'Only jpeg and png images are allowed',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
     }
-  };
+  }
 
   const uploadImgBtn = (
     <>
@@ -43,57 +55,57 @@ const ImageAttachmentModal = ({
         type="file"
         ref={fileInputRef}
         style={{ display: 'none' }}
-        onChange={handleFileInputChange}
+        onChange={handleImageChange}
       />
     </>
   )
 
-    return (
-      <>
-        <Modal
-          isCentered
-          onClose={onCloseImageAttachment}
-          isOpen={isOpenImageAttachment}
-          motionPreset='slideInBottom'
-        >
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Attach Image</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              {
-                selectedImage ? (
-                  <Box h='300px'>
-                    <Image h='100%' w='100%' objectFit='cover' mx='auto' src={selectedImage} alt="Selected" />
-                  </Box>
-                ) : (
-                  <Flex py='50px' border='1px dashed grey' justifyContent='center'>
-                    {
-                      uploadImgBtn
-                    }
-                  </Flex>
-                )
-              }
-              {
-                selectedImage && (
-                  <Flex pt='20px' justifyContent='center'>
-                    {
-                      uploadImgBtn
-                    }
-                  </Flex>
-                )
-              }
-            </ModalBody>
-            <ModalFooter>
-              <Button
-                bg='buttonPrimaryColor'>                
-                <FiSend color="#fff" />
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
-      </>
-    )
+  return (
+    <>
+      <Modal
+        isCentered
+        onClose={onCloseImageAttachment}
+        isOpen={isOpenImageAttachment}
+        motionPreset='slideInBottom'
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Send Image</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            {
+              selectedImage ? (
+                <Box h='300px'>
+                  <Image h='100%' w='100%' objectFit='cover' mx='auto' src={URL.createObjectURL(selectedImage)} alt='image' />
+                </Box>
+              ) : (
+                <Flex py='50px' border='1px dashed grey' justifyContent='center'>
+                  {
+                    uploadImgBtn
+                  }
+                </Flex>
+              )
+            }
+            {
+              selectedImage && (
+                <Flex pt='20px' justifyContent='center'>
+                  {
+                    uploadImgBtn
+                  }
+                </Flex>
+              )
+            }
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              bg='buttonPrimaryColor' onClick={uploadImageAndSend} isDisabled={selectedImage === null || loadingWhileSendingImage}>
+              <FiSend color="#fff" />
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
+  )
 }
 
 export default ImageAttachmentModal

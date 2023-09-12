@@ -8,7 +8,7 @@ import animationData from '../../animations/typing.json'
 import DetailsModal from '../UserModals/DetailsModal'
 import { format } from 'timeago.js'
 import EndLeaveModal from '../UserModals/EndLeaveModal'
-import { backend_url } from '../../utils'
+import { api_key, backend_url, folder, pictureUpload } from '../../utils'
 import { Avatar, AvatarBadge, Box, Button, Divider, Flex, Image, Img, Input, Spinner, Text, useDisclosure, useToast } from '@chakra-ui/react'
 import { FiImage, FiPaperclip, FiSend } from 'react-icons/fi'
 import InfiniteScroll from 'react-infinite-scroll-component'
@@ -22,7 +22,7 @@ var selectedChatCompare;
 
 export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selectedChat, fetchAgain, setFetchAgain, user, toast }) => {
   const socket = React.useContext(SocketContext);
-  const { notification, dispatch, userInfo } = React.useContext(AppContext);
+  const { notification, dispatch, userInfo, signature, timestamp } = React.useContext(AppContext);
 
   const [messages, setMessages] = React.useState([]);
   const [page, setPage] = React.useState(2);
@@ -32,10 +32,13 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
   const [socketConnected, setSocketConnected] = React.useState(false);
   const [typing, setTyping] = React.useState(false);
   const [isTyping, setIsTyping] = React.useState(false);
-  const [showAttachmentOptions, setShowAttachmentOptions] = React.useState(false)
+  const [showAttachmentOptions, setShowAttachmentOptions] = React.useState(false);
+  const [loadingWhileSendingImage, setLoadingWhileSendingImage] = React.useState(false);
 
   const { isOpen: isOpenImageAttachment, onOpen: onOpenImageAttachment, onClose: onCloseImageAttachment } = useDisclosure()
   const { isOpen: isOpenDocumentAttachment, onOpen: onOpenDocumentAttachment, onClose: onCloseDocumentAttachment } = useDisclosure()
+
+  const [selectedImage, setSelectedImage] = React.useState(null);
 
   const location = useLocation();
 
@@ -134,7 +137,7 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
     }
   }
 
-  const sendMessage = async (event) => {
+  const sendMessage = async (event, imageUrl) => {
     if (event.key === "Enter" || event.type === "click") {
       socket.emit("stop typing", selectedChat._id);
       setNewMessage('');
@@ -146,13 +149,15 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
           }
         };
         const { data } = await axios.post(`${backend_url}/message`, {
-          content: newMessage,
+          content: imageUrl !== null ? imageUrl : newMessage,
           chatId: selectedChat._id
         }, config);
         socket.emit("new message", data.message);
         setMessages([data.message, ...messages]);
+        setLoadingWhileSendingImage(false);
       } catch (error) {
         // console.log(error);
+        setLoadingWhileSendingImage(false);
         toast({
           title: "Error Occured!",
           description: "Failed to Send the Message",
@@ -204,6 +209,51 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
       }
     }, typingTimer);
   }
+
+  const uploadImageAndSend = async (e) => {
+    setLoadingWhileSendingImage(true);
+    if (selectedImage !== null && selectedImage !== undefined && (selectedImage.type === 'image/jpeg' || selectedImage.type === 'image/png')) {
+      const formData = new FormData();
+      formData.append('api_key', api_key)
+      formData.append('file', selectedImage);
+      // TODO: change folder name for each user
+      formData.append('folder', folder)
+      formData.append('timestamp', timestamp)
+      formData.append('signature', signature)
+
+      await axios.post(pictureUpload, formData)
+        .then(async res => {
+          setSelectedImage(null);
+          onCloseImageAttachment();
+          setShowAttachmentOptions(false);
+          sendMessage(e, res.data.secure_url);
+        })
+        .catch(err => console.log(err), setLoadingWhileSendingImage(false))
+    }
+  }
+
+  const uploadFileAndSend = async (e) => {
+    if (selectedImage !== null && selectedImage !== undefined && (selectedImage.type === 'image/jpeg' || selectedImage.type === 'image/png')) {
+      const formData = new FormData();
+      formData.append('api_key', api_key)
+      formData.append('file', selectedImage);
+      // TODO: change folder name for each user
+      formData.append('folder', folder)
+      formData.append('timestamp', timestamp)
+      formData.append('signature', signature)
+
+      await axios.post(pictureUpload, formData)
+        .then(async res => {
+          setSelectedImage(null);
+          onCloseImageAttachment();
+          setShowAttachmentOptions(false);
+          sendMessage(e, res.data.secure_url);
+        })
+        .catch(err => console.log(err))
+    }
+  }
+
+
 
   return (
     <>
@@ -336,21 +386,25 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
           focusBorderColor='#9F85F7'
           onChange={typingHandler}
           value={newMessage}
-          onKeyDownCapture={newMessage !== "" ? sendMessage : null}
+          onKeyDownCapture={newMessage !== "" ? e => sendMessage(e, null) : null}
         />
         <Button
           bg='buttonPrimaryColor'
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          onClick={newMessage !== "" ? sendMessage : null}>
+          onClick={newMessage !== "" ? e => sendMessage(e, null) : null}>
           <FiSend color="#fff" />
         </Button>
       </Box>
-      <ImageAttachmentModal 
+      <ImageAttachmentModal
         isOpenImageAttachment={isOpenImageAttachment}
         onCloseImageAttachment={onCloseImageAttachment}
+        selectedImage={selectedImage}
+        setSelectedImage={setSelectedImage}
+        uploadImageAndSend={uploadImageAndSend}
+        loadingWhileSendingImage={loadingWhileSendingImage}
       />
-      <DocumentAttachmentModal 
+      <DocumentAttachmentModal
         isOpenDocumentAttachment={isOpenDocumentAttachment}
         onCloseDocumentAttachment={onCloseDocumentAttachment}
       />
