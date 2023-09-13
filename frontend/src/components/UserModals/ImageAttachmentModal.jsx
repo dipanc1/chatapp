@@ -30,6 +30,16 @@ const ImageAttachmentModal = ({
 
   const handleImageChange = (e) => {
     if (e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/png') {
+      if (e.target.files[0].size > 10000000) {
+        toast({
+          title: 'Error',
+          description: 'Image size should be less than 10MB',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        })
+        return;
+      }
       getCloudinarySignature();
       setSelectedImage(e.target.files[0]);
     } else {

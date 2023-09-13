@@ -253,6 +253,8 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                             cursor={"pointer"}
                                             borderBottom="1px solid #EAE4Ff"
                                             mb="1px"
+                                            maxW={'16vw'}
+                                            overflowX={'hidden'}
                                             key={c._id}
                                             _disabled={selectedChat?._id === c._id}
                                             onClick={() => {

@@ -8,7 +8,7 @@ import animationData from '../../animations/typing.json'
 import DetailsModal from '../UserModals/DetailsModal'
 import { format } from 'timeago.js'
 import EndLeaveModal from '../UserModals/EndLeaveModal'
-import { api_key, backend_url, folder, pictureUpload } from '../../utils'
+import { api_key, backend_url, folder, pictureUpload, uploadFile } from '../../utils'
 import { Avatar, AvatarBadge, Box, Button, Divider, Flex, Image, Img, Input, Spinner, Text, useDisclosure, useToast } from '@chakra-ui/react'
 import { FiImage, FiPaperclip, FiSend } from 'react-icons/fi'
 import InfiniteScroll from 'react-infinite-scroll-component'
@@ -34,11 +34,13 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
   const [isTyping, setIsTyping] = React.useState(false);
   const [showAttachmentOptions, setShowAttachmentOptions] = React.useState(false);
   const [loadingWhileSendingImage, setLoadingWhileSendingImage] = React.useState(false);
+  const [loadingWhileSendingFile, setLoadingWhileSendingFile] = React.useState(false);
 
   const { isOpen: isOpenImageAttachment, onOpen: onOpenImageAttachment, onClose: onCloseImageAttachment } = useDisclosure()
   const { isOpen: isOpenDocumentAttachment, onOpen: onOpenDocumentAttachment, onClose: onCloseDocumentAttachment } = useDisclosure()
 
   const [selectedImage, setSelectedImage] = React.useState(null);
+  const [selectedFile, setSelectedFile] = React.useState(null);
 
   const location = useLocation();
 
@@ -137,7 +139,7 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
     }
   }
 
-  const sendMessage = async (event, imageUrl) => {
+  const sendMessage = async (event, url) => {
     if (event.key === "Enter" || event.type === "click") {
       socket.emit("stop typing", selectedChat._id);
       setNewMessage('');
@@ -149,12 +151,13 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
           }
         };
         const { data } = await axios.post(`${backend_url}/message`, {
-          content: imageUrl !== null ? imageUrl : newMessage,
+          content: url !== null ? url : newMessage,
           chatId: selectedChat._id
         }, config);
         socket.emit("new message", data.message);
         setMessages([data.message, ...messages]);
         setLoadingWhileSendingImage(false);
+        setLoadingWhileSendingFile(false);
       } catch (error) {
         // console.log(error);
         setLoadingWhileSendingImage(false);
@@ -233,23 +236,25 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
   }
 
   const uploadFileAndSend = async (e) => {
-    if (selectedImage !== null && selectedImage !== undefined && (selectedImage.type === 'image/jpeg' || selectedImage.type === 'image/png')) {
+    setLoadingWhileSendingFile(true);
+    if (selectedFile !== null && selectedFile !== undefined) {
       const formData = new FormData();
       formData.append('api_key', api_key)
-      formData.append('file', selectedImage);
+      formData.append('file', selectedFile);
       // TODO: change folder name for each user
       formData.append('folder', folder)
       formData.append('timestamp', timestamp)
       formData.append('signature', signature)
 
-      await axios.post(pictureUpload, formData)
+      await axios.post(uploadFile, formData)
         .then(async res => {
-          setSelectedImage(null);
-          onCloseImageAttachment();
+          console.log(res.data)
+          setSelectedFile(null);
+          onCloseDocumentAttachment();
           setShowAttachmentOptions(false);
           sendMessage(e, res.data.secure_url);
         })
-        .catch(err => console.log(err))
+        .catch(err => console.log(err), setLoadingWhileSendingFile(false))
     }
   }
 
@@ -407,6 +412,10 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
       <DocumentAttachmentModal
         isOpenDocumentAttachment={isOpenDocumentAttachment}
         onCloseDocumentAttachment={onCloseDocumentAttachment}
+        selectedFile={selectedFile}
+        setSelectedFile={setSelectedFile}
+        uploadFileAndSend={uploadFileAndSend}
+        loadingWhileSendingFile={loadingWhileSendingFile}
       />
     </>
   )

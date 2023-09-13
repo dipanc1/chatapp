@@ -1,6 +1,8 @@
 // local server
 // const backend_url = 'http://localhost:8000';
 
+import { AUDIO, DOC, FILE, IMAGE, PDF, PPT, TXT, VIDEO, XLS } from "./constants";
+
 // staging server
 // const backend_url = 'https://chatapphosted.azurewebsites.net';
 
@@ -9,6 +11,7 @@ const backend_url = 'https://chatapp.wildcrypto.com';
 
 const cloudName = 'dipanc1';
 const pictureUpload = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+const uploadFile = `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`;
 const api_key = '835688546376544';
 const upload_preset = 'chat-app';
 const folder = 'uploads';
@@ -22,11 +25,38 @@ const emailjsUserId = 'user_V88xEHCgH913EFMNqxCRw';
 
 const trackingId = "G-MKMMCFR2K1";
 
-const checkIfUrlHasPngOrJpgOrJpeg = (url) => {
+
+const checkFileExtension = (url) => {
     if (url.includes('.png') || url.includes('.jpg') || url.includes('.jpeg')) {
-        return true;
+        return IMAGE;
     }
-    return false;
+    if (url.includes('.mp4') || url.includes('.mov') || url.includes('.avi') || url.includes('.mkv')) {
+        return VIDEO;
+    }
+    if (url.includes('.mp3') || url.includes('.wav') || url.includes('.aac') || url.includes('.flac')) {
+        return AUDIO;
+    }
+    if (url.includes('.pdf')) {
+        return PDF;
+    }
+    if (url.includes('.doc') || url.includes('.docx')) {
+        return DOC;
+    }
+    if (url.includes('.xls') || url.includes('.xlsx')) {
+        return XLS;
+    }
+    if (url.includes('.ppt') || url.includes('.pptx')) {
+        return PPT;
+    }
+    if (url.includes('.txt')) {
+        return TXT;
+    }
+    if (url.includes('.zip') || url.includes('.rar') || url.includes('.tar') || url.includes('.gz') || url.includes('.ini')) {
+        return FILE;
+    }
 }
 
-export { backend_url, pictureUpload, stripePublicKey, stripePublicKeyLive, api_key, upload_preset, emailjsServiceId, emailjsTemplateId, emailjsUserId, folder, trackingId, checkIfUrlHasPngOrJpgOrJpeg };
+const typeArray = [IMAGE, VIDEO, AUDIO, PDF, DOC, XLS, PPT, TXT, FILE];
+
+
+export { backend_url, pictureUpload, stripePublicKey, stripePublicKeyLive, api_key, upload_preset, emailjsServiceId, emailjsTemplateId, emailjsUserId, folder, trackingId, checkFileExtension, uploadFile, typeArray };

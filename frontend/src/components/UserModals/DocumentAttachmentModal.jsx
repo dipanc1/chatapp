@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import {
   Modal,
@@ -10,21 +10,42 @@ import {
   ModalCloseButton,
   Button,
   Flex,
+  useToast,
 } from '@chakra-ui/react'
 import { FiPlus, FiSend } from 'react-icons/fi'
+import { AppContext } from '../../context/AppContext';
 
 const DocumentAttachmentModal = ({
   isOpenDocumentAttachment,
-  onCloseDocumentAttachment
+  onCloseDocumentAttachment,
+  selectedFile,
+  setSelectedFile,
+  uploadFileAndSend,
+  loadingWhileSendingFile
 }) => {
   const fileInputRef = React.createRef();
-  const [selectedFile, setSelectedFile] = useState(null);
+  const { getCloudinarySignature } = React.useContext(AppContext);
+  const toast = useToast();
 
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
+    // if file size is greater than 10MB
+    if (file.size > 10000000) {
+      toast({
+        title: 'Error',
+        description: 'File size should be less than 10MB',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+      return;
+    }
 
     if (file) {
-      setSelectedFile(file.name);
+      getCloudinarySignature();
+      setSelectedFile(file);
+    } else {
+      setSelectedFile(null);
     }
   };
 
@@ -55,12 +76,12 @@ const DocumentAttachmentModal = ({
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Attach Document</ModalHeader>
+          <ModalHeader>Send Any File</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Flex py='50px' flexDirection='column' alignItems='center' gap='10px' border='1px dashed grey' justifyContent='center'>
               {
-                selectedFile
+                selectedFile !== null && selectedFile.name
               }
               {
                 uploadImgBtn
@@ -69,7 +90,7 @@ const DocumentAttachmentModal = ({
           </ModalBody>
           <ModalFooter>
             <Button
-              bg='buttonPrimaryColor'>
+              bg='buttonPrimaryColor' onClick={uploadFileAndSend} isDisabled={selectedFile === null || loadingWhileSendingFile}>
               <FiSend color="#fff" />
             </Button>
           </ModalFooter>
