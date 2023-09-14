@@ -1,14 +1,26 @@
-import { format } from 'timeago.js'
 import { useContext, useEffect } from 'react';
 import { AppContext } from '../../context/AppContext';
-import { Avatar, Box, Image, Text } from '@chakra-ui/react';
+
 import axios from 'axios';
-import { backend_url, checkFileExtension, typeArray } from '../../utils';
-import { DOC, IMAGE, PDF, PPT, TXT, XLS } from '../../constants';
+import { format } from 'timeago.js'
+import { Avatar, Box, Image, Text } from '@chakra-ui/react';
+
+import { backend_url, checkFileExtension } from '../../utils';
+import { AUDIO, DOC, IMAGE, PDF, PPT, TXT, VIDEO, XLS } from '../../constants';
+
+import { BsFiletypeDocx } from 'react-icons/bs';
+import { AiOutlineVideoCamera } from 'react-icons/ai';
+import { BsFiletypeXls } from 'react-icons/bs';
+import { MdAudiotrack } from 'react-icons/md'
+import { AiOutlineFilePdf, AiOutlineFilePpt } from 'react-icons/ai';
+import { GrDocumentTxt } from 'react-icons/gr';
+import { BiFileBlank } from 'react-icons/bi';
+
 
 const Message = ({ messages, own, sameSender, sameTime }) => {
     const { selectedChat } = useContext(AppContext);
     const user = JSON.parse(localStorage.getItem('user'))
+    const size = 30;
 
     useEffect(() => {
         const readLastMessage = async () => {
@@ -54,9 +66,27 @@ const Message = ({ messages, own, sameSender, sameTime }) => {
                                 <Image h='100%' w='100%' objectFit='cover' mx='auto' src={messages.content} alt='image' />
                             </Box>
                             : checkFileExtension(messages.content) ?
-                                <Box onClick={() => window.open(messages.content, '_blank')} cursor='pointer'>
-                                    <Image h='100%' w='100%' objectFit='cover'
-                                        mx='auto' src={typeArray[checkFileExtension(messages.content)]} alt={typeArray[checkFileExtension(messages.content)]} />
+                                <Box onClick={() => window.open(messages.content, '_blank')} cursor='pointer' display='flex' alignItems='center' justifyContent='center' flexDirection='column'>
+                                    {
+                                        checkFileExtension(messages.content) === DOC ?
+                                            <BsFiletypeDocx />
+                                            : checkFileExtension(messages.content) === PDF ?
+                                                <AiOutlineFilePdf size={size} />
+                                                : checkFileExtension(messages.content) === PPT ?
+                                                    <AiOutlineFilePpt size={size} />
+                                                    : checkFileExtension(messages.content) === TXT ?
+                                                        <GrDocumentTxt size={size} />
+                                                        : checkFileExtension(messages.content) === XLS ?
+                                                            <BsFiletypeXls size={size} />
+
+                                                            : checkFileExtension(messages.content) === AUDIO ?
+                                                                <MdAudiotrack size={size} />
+                                                                :
+                                                                checkFileExtension(messages.content) === VIDEO ?
+                                                                    <AiOutlineVideoCamera size={size} />
+                                                                    :
+                                                                    <BiFileBlank size={size} />
+                                    }
                                     <Text color={own ? 'white' : ''}>{messages.content.split('/')[messages.content.split('/').length - 1]}</Text>
                                 </Box>
                                 :
