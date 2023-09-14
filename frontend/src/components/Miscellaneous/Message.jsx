@@ -3,24 +3,66 @@ import { AppContext } from '../../context/AppContext';
 
 import axios from 'axios';
 import { format } from 'timeago.js'
-import { Avatar, Box, Image, Text } from '@chakra-ui/react';
+import { Avatar, Box, Button, Flex, Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useDisclosure } from '@chakra-ui/react';
 
 import { backend_url, checkFileExtension } from '../../utils';
 import { AUDIO, DOC, IMAGE, PDF, PPT, TXT, VIDEO, XLS } from '../../constants';
 
 import { BsFiletypeDocx } from 'react-icons/bs';
 import { AiOutlineVideoCamera } from 'react-icons/ai';
-import { BsFiletypeXls } from 'react-icons/bs';
+import { BsDownload, BsFiletypeXls } from 'react-icons/bs';
 import { MdAudiotrack } from 'react-icons/md'
 import { AiOutlineFilePdf, AiOutlineFilePpt } from 'react-icons/ai';
 import { GrDocumentTxt } from 'react-icons/gr';
 import { BiFileBlank } from 'react-icons/bi';
+import { useState } from 'react';
 
+const size = 30;
+
+const DownloadFileComponent = ({ content, children }) => {
+    const [hover, setHover] = useState(false);
+
+    return (
+        <Flex direction={'row'} alignItems={'center'} justifyContent={'space-between'} w={'100%'} position={'relative'} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} cursor={'pointer'}>
+            {children}
+            {hover && <Box borderRadius={'50%'} bg={'rgba(0,0,0,0.5)'} height={'8'} width={'8'} display={'flex'} alignItems={'center'} justifyContent={'center'} position={'absolute'} top={'0'} right={'0'} opacity={'1'} zIndex={'1'}>
+                <BsDownload size={20} onClick={() => window.open(content, '_blank')} color='white' />
+            </Box>}
+        </Flex>
+    )
+}
+
+const ImageViewer = ({ content, isOpen, onClose }) => {
+    return (
+        <Modal isOpen={isOpen} onClose={onClose} size={'3xl'}>
+            <ModalOverlay />
+            <ModalContent>
+                <ModalHeader>Image</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                    <Image src={content} width={'50vw'} height={'50vh'} objectFit={'contain'} />
+                </ModalBody>
+                <ModalFooter>
+                    <Button bg={'selectPrimaryColor'} mr={3} onClick={onClose}>
+                        Close
+                    </Button>
+                    <Button bg={'buttonPrimaryColor'} color={'white'} mr={3} onClick={() => window.open(content, '_blank')}>
+                        Download
+                    </Button>
+                </ModalFooter>
+            </ModalContent>
+        </Modal>
+    )
+}
 
 const Message = ({ messages, own, sameSender, sameTime }) => {
+    const { isOpen, onOpen, onClose } = useDisclosure();
+
     const { selectedChat } = useContext(AppContext);
+
+    const [imageHover, setImageHover] = useState(false)
+
     const user = JSON.parse(localStorage.getItem('user'))
-    const size = 30;
 
     useEffect(() => {
         const readLastMessage = async () => {
@@ -62,30 +104,53 @@ const Message = ({ messages, own, sameSender, sameTime }) => {
                     }
                     <Box p={2} borderRadius={'6px'} bg={own ? '#9F85F7' : '#F6F3FF'}>
                         {checkFileExtension(messages.content) === IMAGE ?
-                            <Box h='300px'>
-                                <Image h='100%' w='100%' objectFit='cover' mx='auto' src={messages.content} alt='image' />
+                            <Box position={'relative'} h='300px' cursor={'pointer'}
+                                onMouseEnter={() => setImageHover(true)} onMouseLeave={() => setImageHover(false)}
+                                onClick={onOpen}
+                            >
+                                {imageHover &&
+                                    <Box borderRadius={'50%'} bg={'rgba(0,0,0,0.5)'} height={'9'} width={'9'} display={'flex'} alignItems={'center'} justifyContent={'center'} position={'absolute'} top={'1'} right={'1'} opacity={'1'} zIndex={'1'}>
+                                        <BsDownload onClick={() => window.open(messages.content, '_blank')} cursor={'pointer'} color='white' />
+                                    </Box>
+                                }
+                                <Image h='100%' w='100%' objectFit='cover' mx='auto' src={messages.content} alt='image' opacity={imageHover ? '0.8' : '1'} />
                             </Box>
                             : checkFileExtension(messages.content) ?
-                                <Box onClick={() => window.open(messages.content, '_blank')} cursor='pointer' display='flex' alignItems='center' justifyContent='center' flexDirection='column'>
+                                <Box display='flex' alignItems='center' justifyContent='center' flexDirection='column'>
                                     {
                                         checkFileExtension(messages.content) === DOC ?
-                                            <BsFiletypeDocx />
+                                            <DownloadFileComponent content={messages.content}>
+                                                <BsFiletypeDocx size={size} />
+                                            </DownloadFileComponent>
                                             : checkFileExtension(messages.content) === PDF ?
-                                                <AiOutlineFilePdf size={size} />
+                                                <DownloadFileComponent content={messages.content}>
+                                                    <AiOutlineFilePdf size={size} />
+                                                </DownloadFileComponent>
                                                 : checkFileExtension(messages.content) === PPT ?
-                                                    <AiOutlineFilePpt size={size} />
+                                                    <DownloadFileComponent content={messages.content}>
+                                                        <AiOutlineFilePpt size={size} />
+                                                    </DownloadFileComponent>
                                                     : checkFileExtension(messages.content) === TXT ?
-                                                        <GrDocumentTxt size={size} />
+                                                        <DownloadFileComponent content={messages.content}>
+                                                            <GrDocumentTxt size={size} />
+                                                        </DownloadFileComponent>
                                                         : checkFileExtension(messages.content) === XLS ?
-                                                            <BsFiletypeXls size={size} />
-
+                                                            <DownloadFileComponent content={messages.content}>
+                                                                <BsFiletypeXls size={size} />
+                                                            </DownloadFileComponent>
                                                             : checkFileExtension(messages.content) === AUDIO ?
-                                                                <MdAudiotrack size={size} />
+                                                                <DownloadFileComponent content={messages.content}>
+                                                                    <MdAudiotrack size={size} />
+                                                                </DownloadFileComponent>
                                                                 :
                                                                 checkFileExtension(messages.content) === VIDEO ?
-                                                                    <AiOutlineVideoCamera size={size} />
+                                                                    <DownloadFileComponent content={messages.content}>
+                                                                        <AiOutlineVideoCamera size={size} />
+                                                                    </DownloadFileComponent>
                                                                     :
-                                                                    <BiFileBlank size={size} />
+                                                                    <DownloadFileComponent content={messages.content}>
+                                                                        <BiFileBlank size={size} />
+                                                                    </DownloadFileComponent>
                                     }
                                     <Text color={own ? 'white' : ''}>{messages.content.split('/')[messages.content.split('/').length - 1]}</Text>
                                 </Box>
@@ -101,6 +166,7 @@ const Message = ({ messages, own, sameSender, sameTime }) => {
                         {format(messages.createdAt)}
                     </Text>
                 }
+                <ImageViewer content={messages.content} isOpen={isOpen} onClose={onClose} />
             </Box>
         ) : null
     )

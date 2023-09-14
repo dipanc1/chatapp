@@ -51,7 +51,8 @@ const checkFileExtension = (url) => {
     if (url.includes('.txt')) {
         return TXT;
     }
-    if (url.includes('.zip') || url.includes('.rar') || url.includes('.tar') || url.includes('.gz') || url.includes('.ini')) {
+    if (url.includes('.zip') || url.includes('.rar') || url.includes('.tar') || url.includes('.gz') || url.includes('.ini') || ((url.split('.').slice(-3)[2] !== undefined) && url.startsWith('http'))
+    ) {
         return FILE;
     }
 }
