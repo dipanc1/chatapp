@@ -4,7 +4,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import AddModal from './AddModal';
 import EventModal from './EventModal'
 import axios from 'axios';
-import { backend_url } from '../../production';
+import { backend_url } from '../../utils';
 
 
 const OptionsModal = ({ group, deleteEvent, eventId, user, fetchAgain, setFetchAgain, chat, admin, eventDetails }) => {

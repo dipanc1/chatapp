@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Button, Flex, Heading, Modal, Text, VStack } from 'native-base';
 import React from 'react'
 import { PhoneAppContext } from '../../context/PhoneAppContext';
-import { backend_url } from '../../production';
+import { backend_url } from '../../utils';
 import { RoomContext } from '../../context/RoomContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 

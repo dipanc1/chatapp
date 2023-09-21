@@ -3,7 +3,7 @@ import { Badge, Button, FormControl, HStack, Input, Modal, ScrollView, Text, Vie
 import React from 'react'
 import { TouchableOpacity } from 'react-native';
 import { PhoneAppContext } from '../../context/PhoneAppContext';
-import { backend_url } from '../../production';
+import { backend_url } from '../../utils';
 import Searchbar from '../Miscellaneous/Searchbar';
 import UserListItem from '../UserItems/UserListItem';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';

@@ -1,11 +1,11 @@
 import React, { useRef } from 'react';
-import { Avatar, Box, Button, Flex, FormControl, Heading, HStack, Icon, IconButton, Input, InputGroup, InputLeftAddon, InputRightAddon, Link, Stack, Text, useColorModeValue, useTheme, VStack } from 'native-base';
+import { Avatar, Box, Button, Flex, FormControl, Heading, HStack, Icon, IconButton, Input, InputGroup, InputLeftAddon, InputRightAddon, Link, Text, VStack } from 'native-base';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import PhoneInput from 'react-native-phone-number-input';
 import { StyleSheet } from 'react-native';
 import OTPTextView from 'react-native-otp-textinput';
 import { PhoneAppContext } from '../context/PhoneAppContext';
-import { api_key, backend_url, folder, pictureUpload } from '../production';
+import { api_key, backend_url, folder, pictureUpload } from '../utils';
 import axios from 'axios';
 import { launchImageLibrary } from 'react-native-image-picker';
 
@@ -96,28 +96,6 @@ const Register = ({ navigation }) => {
         });
     }
 
-    const cloudinaryUpload = (photo) => {
-        setLoading(true)
-        let apiUrl = pictureUpload;
-        const data = new FormData()
-        data.append('api_key', api_key)
-        data.append('file', photo);
-        data.append('folder', folder)
-        data.append('timestamp', timestamp)
-        data.append('signature', signature)
-        fetch(apiUrl, {
-            method: "post",
-            body: data
-        }).then(res => res.json()).
-            then(data => {
-                setSelectedImage(data.secure_url)
-                setLoading(false)
-            }).catch(err => {
-                console.log(err)
-                setLoading(false)
-                alert("An Error Occured While Uploading")
-            })
-    }
 
     const handleRegister = () => {
         setLoading(true)

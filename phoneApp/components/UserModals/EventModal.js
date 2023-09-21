@@ -4,7 +4,7 @@ import { Box, Button, FormControl, IconButton, Input, Modal, Stack, TextArea, VS
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import DatePicker from 'react-native-date-picker'
 import { PhoneAppContext } from '../../context/PhoneAppContext';
-import { api_key, folder, pictureUpload } from '../../production';
+import { api_key, folder, pictureUpload } from '../../utils';
 import { Image } from 'react-native';
 
 

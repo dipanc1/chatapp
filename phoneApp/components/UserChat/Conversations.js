@@ -5,7 +5,7 @@ import UserListItem from '../UserItems/UserListItem'
 import { PhoneAppContext } from '../../context/PhoneAppContext'
 import Conversation from '../Miscellaneous/Conversation'
 import { TouchableOpacity } from 'react-native'
-import { backend_url } from '../../production'
+import { backend_url } from '../../utils'
 import axios from 'axios'
 
 const Conversations = ({ fetchAgain, setFetchAgain, conversations, user, searchResultsUsers, search, setSearch, navigation, fetchMoreOneOnOneChats, hasMoreOneOnOneChats }) => {

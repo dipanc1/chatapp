@@ -7,7 +7,7 @@ import GroupChatModal from '../UserModals/GroupChatModal'
 import GroupListItem from '../UserItems/GroupListItem'
 import { TouchableOpacity } from 'react-native'
 import { PhoneAppContext } from '../../context/PhoneAppContext'
-import { backend_url } from '../../production'
+import { backend_url } from '../../utils'
 import SearchGroupListItem from '../UserItems/SearchGroupListItem'
 
 const Groups = ({ user, groupConversations, searchResultsGroups, search, setSearch, fetchAgain, setFetchAgain, admin, fetchMoreGroupChats, hasMoreGroupChats, navigation }) => {

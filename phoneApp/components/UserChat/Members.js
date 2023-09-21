@@ -10,7 +10,7 @@ import { Box, Button, IconButton } from 'native-base';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import EventModal from '../UserModals/EventModal';
 import axios from 'axios';
-import { backend_url } from '../../production';
+import { backend_url } from '../../utils';
 
 const Tab = createMaterialTopTabNavigator();
 

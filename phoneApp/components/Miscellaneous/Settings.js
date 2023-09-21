@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, Flex, FormControl, HStack, Icon, Input, Text, VStack } from 'native-base'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { PhoneAppContext } from '../../context/PhoneAppContext';
-import { backend_url } from '../../production';
+import { backend_url } from '../../utils';
 import axios from 'axios';
 
 const Settings = ({ user, fetchAgain, setFetchAgain }) => {

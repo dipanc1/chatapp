@@ -6,7 +6,7 @@ import JoinGroupModal from '../UserModals/JoinGroupModal'
 import { TouchableOpacity } from 'react-native'
 import { PhoneAppContext } from '../../context/PhoneAppContext'
 import axios from 'axios'
-import { backend_url } from '../../production'
+import { backend_url } from '../../utils'
 import Pagination from '../Miscellaneous/Pagination'
 
 import animationData from '../../assets/red-dot.json';

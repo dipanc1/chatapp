@@ -1,7 +1,7 @@
 import React from 'react'
 import GroupCard from '../components/Groups/GroupCard';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { backend_url } from '../production';
+import { backend_url } from '../utils';
 import axios from 'axios';
 import TabNavigatorStyled from '../components/Miscellaneous/TabNavigatorStyled';
 import { PhoneAppContext } from '../context/PhoneAppContext';

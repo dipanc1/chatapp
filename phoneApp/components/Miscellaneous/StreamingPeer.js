@@ -3,7 +3,7 @@ import { Button, Flex, HStack, Icon, IconButton, VStack, Text } from 'native-bas
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { PhoneAppContext } from '../../context/PhoneAppContext'
 import axios from 'axios'
-import { backend_url } from '../../production'
+import { backend_url } from '../../utils'
 import { RoomContext } from '../../context/RoomContext'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { RTCView } from 'react-native-webrtc'

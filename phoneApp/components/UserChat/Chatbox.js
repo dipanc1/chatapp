@@ -1,24 +1,52 @@
 import axios from 'axios'
-import { Box, FlatList, Flex, HStack, Icon, IconButton, Input, Spinner, Text, View } from 'native-base'
+import { Box, FlatList, Flex, HStack, Icon, IconButton, Input, Popover, Spinner, Text, View } from 'native-base'
 import React from 'react'
 import notifee from '@notifee/react-native';
 import Lottie from 'lottie-react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { PhoneAppContext } from '../../context/PhoneAppContext'
 import Message from '../Miscellaneous/Message'
-import { backend_url } from '../../production'
+import { api_key, backend_url, folder, pictureUpload, uploadFile } from '../../utils'
 import { format } from 'timeago.js'
 import { SocketContext } from '../../context/socketContext'
 import animation from '../../assets/typing.json'
+import DocumentAttachmentModal from '../UserModals/DocumentAttachmentModal';
+import { FILE, IMAGE } from '../../constants';
+import { set } from 'react-native-reanimated';
 
 var selectedChatCompare;
+
+const SendFilesOptions = ({ isOpen, setIsOpen, setShowModal, setType }) => {
+    return (
+        <Popover
+            placement={'top'} trigger={triggerProps => {
+                return <IconButton {...triggerProps} onPress={() => setIsOpen(true)} colorScheme={'purple'} variant={'outline'} icon={<MaterialIcons name="add" size={24} color={'#9F85F7'} />} />;
+            }} isOpen={isOpen} onClose={() => setIsOpen(!isOpen)}>
+            <Popover.Content w='16'>
+                <Popover.Body>
+                    <IconButton icon={<MaterialIcons name="insert-drive-file" size={20} color={'#9F85F7'} />} onPress={
+                        () => {
+                            setShowModal(true)
+                            setType(FILE)
+                        }
+                    } />
+                    <IconButton icon={<MaterialIcons name="image" size={20} color={'#9F85F7'} />} onPress={() => {
+                        setShowModal(true)
+                        setType(IMAGE)
+                    }} />
+                </Popover.Body>
+            </Popover.Content>
+        </Popover>
+    )
+}
 
 const Chatbox = ({ user }) => {
     const socket = React.useContext(SocketContext);
 
-    const { dispatch, selectedChat, stream, userInfo, notification } = React.useContext(PhoneAppContext);
+    const { dispatch, selectedChat, stream, userInfo, notification, timestamp, signature } = React.useContext(PhoneAppContext);
 
     const [online, setOnline] = React.useState(false);
+    const [isOpen, setIsOpen] = React.useState(false);
     const [page, setPage] = React.useState(2);
     const [socketConnected, setSocketConnected] = React.useState(false);
     const [newMessage, setNewMessage] = React.useState();
@@ -28,6 +56,11 @@ const Chatbox = ({ user }) => {
     const [loading, setLoading] = React.useState(false);
     const [typing, setTyping] = React.useState(false);
     const [isTyping, setIsTyping] = React.useState(false);
+    const [showModal, setShowModal] = React.useState(false);
+    const [selectedImage, setSelectedImage] = React.useState(null);
+    const [selectedFile, setSelectedFile] = React.useState(null);
+
+    const [type, setType] = React.useState('');
 
 
     async function onDisplayNotification(newMessageReceived) {
@@ -145,8 +178,7 @@ const Chatbox = ({ user }) => {
         }
     }
 
-    const sendMessage = async (event) => {
-        if (messages.length === 0) return;
+    const sendMessage = async (event, url) => {
         socket.emit("stop typing", selectedChat._id);
         try {
             const config = {
@@ -157,7 +189,7 @@ const Chatbox = ({ user }) => {
             };
             setNewMessage('');
             const { data } = await axios.post(`${backend_url}/message`, {
-                content: newMessage,
+                content: url !== null ? url : newMessage,
                 chatId: selectedChat._id
             }, config);
 
@@ -203,6 +235,32 @@ const Chatbox = ({ user }) => {
         } catch (error) {
             console.log(error);
         }
+    }
+
+    const fileUploadAndSend = (file) => {
+        setLoading(true)
+        let apiUrl = type === IMAGE ? pictureUpload : uploadFile;
+        const data = new FormData()
+        data.append('api_key', api_key)
+        data.append('file', file);
+        data.append('folder', folder)
+        data.append('timestamp', timestamp)
+        data.append('signature', signature)
+        fetch(apiUrl, {
+            method: "post",
+            body: data
+        }).then(res => res.json()).
+            then(data => {
+                setSelectedImage(null)
+                setSelectedFile(null)
+                setShowModal(false)
+                sendMessage(null, data.secure_url)
+                setLoading(false)
+            }).catch(err => {
+                console.log(err)
+                setLoading(false)
+                alert("An Error Occured While Uploading")
+            })
     }
 
 
@@ -267,10 +325,22 @@ const Chatbox = ({ user }) => {
 
                 {/* BOTTOM PART */}
                 <HStack alignItems={'center'} justifyContent={'space-between'} h={'16'}>
-                    <Input value={newMessage} bg={'primary.200'} w={'72'} placeholder={'Type a message'} onChangeText={typingHandler} />
-                    <IconButton onPress={newMessage !== "" ? sendMessage : null} bg={'primary.300'} icon={<MaterialIcons name="send" size={24} color={'#fff'} />} />
+                    <SendFilesOptions isOpen={isOpen} setIsOpen={setIsOpen} setShowModal={setShowModal} setType={setType} />
+                    <Input value={newMessage} bg={'primary.200'} w={'70%'} placeholder={'Type a message'} onChangeText={typingHandler} />
+                    <IconButton onPress={newMessage !== "" ? e => sendMessage(e, null) : null} bg={'primary.300'} icon={<MaterialIcons name="send" size={24} color={'#fff'} />} />
                 </HStack>
             </Flex>
+            <DocumentAttachmentModal
+                showModal={showModal}
+                setShowModal={setShowModal}
+                selectedImage={selectedImage}
+                setSelectedImage={setSelectedImage}
+                selectedFile={selectedFile}
+                setSelectedFile={setSelectedFile}
+                fileUploadAndSend={fileUploadAndSend}
+                type={type}
+                loading={loading}
+            />
         </>
 
     )

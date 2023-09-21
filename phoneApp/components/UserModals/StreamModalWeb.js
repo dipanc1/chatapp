@@ -1,6 +1,6 @@
 import { Button, Flex, Heading, Modal, Text, VStack } from 'native-base';
 import React from 'react'
-import { backend_url } from '../../production';
+import { backend_url } from '../../utils';
 import { Alert, Linking } from 'react-native';
 
 const StreamModal = ({ open, setOpen, admin }) => {

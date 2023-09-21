@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useReducer } from 'react';
 import AppReducer from '../reducers/AppReducer'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { backend_url } from '../production';
+import { backend_url } from '../utils';
 import axios from 'axios';
 import { useNavigationContainerRef } from '@react-navigation/native';
 

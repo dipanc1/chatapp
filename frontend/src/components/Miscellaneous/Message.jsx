@@ -106,14 +106,15 @@ const Message = ({ messages, own, sameSender, sameTime }) => {
                         {checkFileExtension(messages.content) === IMAGE ?
                             <Box position={'relative'} h='300px' cursor={'pointer'}
                                 onMouseEnter={() => setImageHover(true)} onMouseLeave={() => setImageHover(false)}
-                                onClick={onOpen}
                             >
                                 {imageHover &&
                                     <Box borderRadius={'50%'} bg={'rgba(0,0,0,0.5)'} height={'9'} width={'9'} display={'flex'} alignItems={'center'} justifyContent={'center'} position={'absolute'} top={'1'} right={'1'} opacity={'1'} zIndex={'1'}>
-                                        <BsDownload onClick={() => window.open(messages.content, '_blank')} cursor={'pointer'} color='white' />
+                                        <BsDownload onClick={() => {
+                                            window.open(messages.content, '_blank')
+                                        }} cursor={'pointer'} color='white' />
                                     </Box>
                                 }
-                                <Image h='100%' w='100%' objectFit='cover' mx='auto' src={messages.content} alt='image' opacity={imageHover ? '0.8' : '1'} />
+                                <Image onClick={onOpen} h='100%' w='100%' objectFit='cover' mx='auto' src={messages.content} alt='image' opacity={imageHover ? '0.8' : '1'} />
                             </Box>
                             : checkFileExtension(messages.content) ?
                                 <Box display='flex' alignItems='center' justifyContent='center' flexDirection='column'>

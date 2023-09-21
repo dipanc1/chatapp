@@ -2,6 +2,7 @@ import React from 'react'
 import { Box, HStack, Text, Heading, VStack } from 'native-base'
 import { PhoneAppContext } from '../../context/PhoneAppContext';
 import { TouchableOpacity, Image } from 'react-native';
+import { checkFileExtension, typeArray } from '../../utils';
 
 const Conversation = ({ chat, navigation }) => {
     const { userInfo, dispatch } = React.useContext(PhoneAppContext);
@@ -22,10 +23,10 @@ const Conversation = ({ chat, navigation }) => {
             <Box borderBottomWidth="1" borderBottomColor={'primary.100'} p={'3'} mx={'4'}>
                 <HStack space={[2, 3]} justifyContent="space-between" alignItems={'center'}>
                     <HStack alignItems={'center'}>
-                        <>
+                        {chat && <>
                             <Image
                                 source={{
-                                    uri: friends.pic || "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"
+                                    uri: friends.pic
                                 }}
                                 alt={friends?.username}
                                 style={{
@@ -36,6 +37,7 @@ const Conversation = ({ chat, navigation }) => {
                                 }}
                             />
                         </>
+                        }
                         <VStack>
                             <Heading size={'sm'} ml={'3'} _dark={{
                                 color: "warmGray.50"
@@ -54,7 +56,10 @@ const Conversation = ({ chat, navigation }) => {
                                         friends?.username}:
                                     {chat
                                         && chat.latestMessage
-                                        && chat.latestMessage.content}
+                                        &&
+                                        typeArray.includes(checkFileExtension(chat.latestMessage.content))
+                                        ? " " + checkFileExtension(chat.latestMessage.content)
+                                        : chat.latestMessage.content}
                                 </Text>}
                         </VStack>
                     </HStack>

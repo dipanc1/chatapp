@@ -1,14 +1,7 @@
 import { AUDIO, DOC, FILE, IMAGE, PDF, PPT, TXT, VIDEO, XLS } from "./constants";
 
-// local server
-// const backend_url = 'http://localhost:8000';
-
-
-// staging server
-// const backend_url = 'https://chatapphosted.azurewebsites.net';
-
-// abhishek's server
-const backend_url = 'https://chatapp.wildcrypto.com';
+const backend_url = 'https://chatapp.wildcrypto.com';  // only https is supported
+// const backend_url = 'http://localhost:8000'; // it doesn't work with http
 
 const cloudName = 'dipanc1';
 const pictureUpload = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
@@ -23,9 +16,6 @@ const stripePublicKeyLive = 'pk_test_51N136dLHtaKT8adL3kfRwpts2g1xBKHE9A1flPHC1e
 const emailjsServiceId = 'service_ef2nk5k';
 const emailjsTemplateId = 'template_for_chatapp';
 const emailjsUserId = 'user_V88xEHCgH913EFMNqxCRw';
-
-const trackingId = "G-MKMMCFR2K1";
-
 
 const checkFileExtension = (url) => {
     if (url.includes('.png') || url.includes('.jpg') || url.includes('.jpeg')) {
@@ -61,4 +51,4 @@ const checkFileExtension = (url) => {
 const typeArray = [IMAGE, VIDEO, AUDIO, PDF, DOC, XLS, PPT, TXT, FILE];
 
 
-export { backend_url, pictureUpload, stripePublicKey, stripePublicKeyLive, api_key, upload_preset, emailjsServiceId, emailjsTemplateId, emailjsUserId, folder, trackingId, checkFileExtension, uploadFile, typeArray };
+export { backend_url, pictureUpload, stripePublicKey, stripePublicKeyLive, api_key, upload_preset, emailjsServiceId, emailjsTemplateId, emailjsUserId, folder, checkFileExtension, typeArray, uploadFile };

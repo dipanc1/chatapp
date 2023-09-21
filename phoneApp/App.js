@@ -21,7 +21,7 @@ import Events from './screens/Events';
 import { Image } from 'react-native';
 import VideoChat from './screens/VideoChat';
 import { StripeProvider } from '@stripe/stripe-react-native';
-import { stripePublicKeyLive, stripePublicKey } from './production';
+import { stripePublicKeyLive, stripePublicKey } from './utils';
 
 const newColorTheme = {
   text: {

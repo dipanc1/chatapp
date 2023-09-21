@@ -1,7 +1,7 @@
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import React from 'react'
 import { Button, FormControl, Icon, Input, Modal, TextArea } from 'native-base';
-import { emailjsServiceId, emailjsTemplateId, emailjsUserId } from '../../production';
+import { emailjsServiceId, emailjsTemplateId, emailjsUserId } from '../../utils';
 import emailjs from '@emailjs/browser';
 
 const SupportModal = () => {

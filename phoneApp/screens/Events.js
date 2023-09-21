@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import EventsCard from '../components/Events/EventsCard';
-import { backend_url } from '../production';
+import { backend_url } from '../utils';
 import axios from 'axios';
 import { PhoneAppContext } from '../context/PhoneAppContext';
 import TabNavigatorStyled from '../components/Miscellaneous/TabNavigatorStyled';

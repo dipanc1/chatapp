@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, AlertDialog, Text } from 'native-base'
 import axios from 'axios';
 import { PhoneAppContext } from '../../context/PhoneAppContext';
-import { backend_url } from '../../production';
+import { backend_url } from '../../utils';
 
 const JoinGroupModal = ({ showModal, setShowModal, chatName, user, navigation, chatId }) => {
     const cancelRef = React.useRef(null);

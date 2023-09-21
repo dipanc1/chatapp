@@ -2,6 +2,7 @@ import React from 'react'
 import { Box, HStack, Heading, Text, VStack } from 'native-base'
 import { PhoneAppContext } from '../../context/PhoneAppContext';
 import { TouchableOpacity } from 'react-native';
+import { checkFileExtension, typeArray } from '../../utils';
 
 const GroupListItem = ({ group, navigation }) => {
     const { userInfo, dispatch } = React.useContext(PhoneAppContext);
@@ -26,7 +27,9 @@ const GroupListItem = ({ group, navigation }) => {
                         <Text _dark={{
                             color: "warmGray.50"
                         }} color="coolGray.800">
-                            {group && group.latestMessage && group.latestMessage.sender && group.latestMessage.sender._id === userInfo?._id ? 'You' : group && group.latestMessage && group.latestMessage.sender && group.latestMessage.sender.username}{group && group.latestMessage ? ':' : null} {group && group.latestMessage && group.latestMessage.content}
+                            {group && group.latestMessage && group.latestMessage.sender && group.latestMessage.sender._id === userInfo?._id ? 'You' : group && group.latestMessage && group.latestMessage.sender && group.latestMessage.sender.username}{group && group.latestMessage ? ':' : null} {group && group.latestMessage && typeArray.includes(checkFileExtension(group.latestMessage.content))
+                                ? " " + checkFileExtension(group.latestMessage.content)
+                                : group.latestMessage?.content}
                         </Text>
                     </VStack>
                     {group && group.latestMessage && (group.latestMessage.sender?._id !== userInfo?._id && !group.latestMessage?.readBy?.includes(userInfo?._id) && read) && <Box

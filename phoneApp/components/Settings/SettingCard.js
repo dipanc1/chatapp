@@ -2,7 +2,7 @@ import React from 'react'
 import { Box, Button, Center, Divider, Flex, FormControl, HStack, IconButton, Input, Radio, ScrollView, Switch, Text, VStack } from 'native-base'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
-import { api_key, backend_url, folder, pictureUpload } from '../../production';
+import { api_key, backend_url, folder, pictureUpload } from '../../utils';
 import { TouchableOpacity } from 'react-native';
 import { useStripe } from '@stripe/stripe-react-native';
 import Accordian from '../Miscellaneous/Accordian';
@@ -311,7 +311,7 @@ const SettingCard = ({ name, user }) => {
     }, []);
 
     React.useEffect(() => {
-        if (subscribeData["amount"] < 0 || subscribeData["amount"] === undefined || subscribeData === {}) {
+        if (subscribeData["amount"] < 0 || subscribeData["amount"] === undefined) {
             return;
         }
         initializePaymentSheet();

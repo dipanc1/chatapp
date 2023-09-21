@@ -2,7 +2,7 @@ import { Button, Spinner, Flex, HStack, ScrollView, Text, VStack } from 'native-
 import React from 'react'
 import { TouchableOpacity } from 'react-native'
 import { PhoneAppContext } from '../../context/PhoneAppContext'
-import { backend_url } from '../../production'
+import { backend_url } from '../../utils'
 import ParticipantListItem from '../UserItems/ParticipantListItem'
 import AddModal from '../UserModals/AddModal'
 import axios from 'axios'

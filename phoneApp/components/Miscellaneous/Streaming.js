@@ -4,7 +4,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { PhoneAppContext } from '../../context/PhoneAppContext'
 import { RTCView, useMeeting, useParticipant } from '@videosdk.live/react-native-sdk'
 import axios from 'axios'
-import { backend_url } from '../../production'
+import { backend_url } from '../../utils'
 
 function Controls({ fetchAgain, setFetchAgain, user, admin }) {
 

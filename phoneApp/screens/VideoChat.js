@@ -4,7 +4,7 @@ import Conversations from '../components/UserChat/Conversations'
 import Groups from '../components/UserChat/Groups'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import axios from 'axios';
-import { backend_url } from '../production';
+import { backend_url } from '../utils';
 import { PhoneAppContext } from '../context/PhoneAppContext';
 import { SocketContextProvider } from '../context/socketContext';
 import Members from '../components/UserChat/Members';

@@ -3,7 +3,7 @@ import { Alert, Box, Button, Flex, FormControl, Heading, HStack, Icon, Input, In
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import axios from 'axios';
-import { backend_url } from '../production';
+import { backend_url } from '../utils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 

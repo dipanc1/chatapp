@@ -3,7 +3,7 @@ import { Button, FormControl, Input, Modal, ScrollView, Text, VStack } from 'nat
 import React from 'react'
 import { TouchableOpacity } from 'react-native';
 import { PhoneAppContext } from '../../context/PhoneAppContext';
-import { backend_url } from '../../production';
+import { backend_url } from '../../utils';
 import UserListItem from '../UserItems/UserListItem';
 
 const AddModal = ({ user, showModal, setShowModal, fetchAgain, setFetchAgain, chat }) => {

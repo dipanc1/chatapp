@@ -68,7 +68,7 @@ const Conversation = ({ chat }) => {
               &&
               typeArray.includes(checkFileExtension(chat.latestMessage.content))
               ? " " + checkFileExtension(chat.latestMessage.content)
-              : " " + chat.latestMessage.content}
+              : chat.latestMessage.content}
           </Text>}
       </VStack>
       {chat && chat.latestMessage && chat.latestMessage.sender && chat.latestMessage.sender._id !== userInfo?._id && !chat?.latestMessage.readBy.includes(userInfo?._id) && read && <Box
