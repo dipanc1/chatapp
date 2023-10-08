@@ -31,12 +31,16 @@ import { ResendOTP } from "otp-input-react";
 import PhoneNumber from '../components/Miscellaneous/PhoneNumber';
 import Otp from '../components/Miscellaneous/Otp';
 import Password from '../components/Miscellaneous/Password';
+import BaseApi from '../services/apis/baseApi';
+import authApi from '../services/apis/authApi';
+import conversationApi from '../services/apis/conversationApi';
 
 const Register = () => {
     const { dispatch, signature, timestamp, getCloudinarySignature } = React.useContext(AppContext);
+    const baseApi = new BaseApi();
 
-    const [verify, setVerify] = React.useState(true);
-    const [otp, setOtp] = React.useState(true);
+    const [verify, setVerify] = React.useState(false);
+    const [otp, setOtp] = React.useState(false);
     const [OTP, setOTP] = React.useState("");
     const [username, setUsername] = React.useState('');
     const [number, setNumber] = React.useState('');
@@ -56,21 +60,18 @@ const Register = () => {
 
     const fileInputRef = React.createRef();
 
-    const apiUrlMobile = `${backend_url}/mobile`;
-    const apiUrlOtp = `${backend_url}/otp`;
-    const apiUrlRegister = `${backend_url}/users/register`;
-    const apiUrlUsername = `${backend_url}/users/check-username`;
-
     const handleUsername = async (e) => {
         setUsername(e.target.value);
-        e.target.value.length > 2 && await axios.get(`${apiUrlUsername}/${e.target.value}`)
-            .then(res => {
-                if (res.data) {
-                    setFormhelpUsername(res.data.message)
-                }
+        if (e.target.value.length > 2 && e.target.value.length < 20) {
+            let response = await authApi.checkIfUserNameExists(e.target.value)
+
+            if (response.data) {
+                setFormhelpUsername(response.data.message)
             }
-            )
-            .catch(err => console.log(err))
+            else {
+                setFormhelpUsername('')
+            }
+        }
 
     }
 
@@ -98,13 +99,13 @@ const Register = () => {
             if (selectedImage === null) {
                 if (match && match.pattern.path === "/join-group/:groupId/register") {
                     try {
-                        const res = await axios.post(apiUrlRegister, {
+                        const res = await authApi.register({
                             number1: number1,
                             username: username,
                             password: password,
                             pic: null
                         });
-                        const groupDetails = await axios.get(`${backend_url}/conversation/encrypted/chat/${match.params.groupId}`);
+                        const groupDetails = await conversationApi.getConversationDetailWithEncryptedUrl(match.params.groupId);
 
                         const config = {
                             headers: {
@@ -112,8 +113,7 @@ const Register = () => {
                                 Authorization: `Bearer ${res.data.token}`,
                             },
                         };
-                        const { data } = await axios.put(
-                            `${backend_url}/conversation/groupadd`,
+                        const { data } = await conversationApi.addToGroup(
                             { userId: res.data._id, chatId: groupDetails.data._id },
                             config
                         );
@@ -137,27 +137,27 @@ const Register = () => {
                     }
 
                 } else {
-                    await axios.post(apiUrlRegister, {
-                        number1: number1,
+                    const res = await authApi.register({
+                        number1: { number: "911234567890" },
                         username: username,
                         password: password,
                         pic: null
-                    })
-                        .then(res => {
-                            setLoading(false)
-                            localStorage.setItem("user", JSON.stringify(res.data));
-                            navigate('/');
-                        })
-                        .catch(err => {
-                            setLoading(false)
-                            toast({
-                                title: "Error",
-                                description: "Please enter valid details",
-                                status: "error",
-                                duration: 9000,
-                                isClosable: true,
-                            });
-                        })
+                    });
+                    if (res.status === 200) {
+                        setLoading(false)
+                        localStorage.setItem("user", JSON.stringify(res.data));
+                        navigate('/');
+                    }
+                    else {
+                        setLoading(false)
+                        toast({
+                            title: "Error",
+                            description: "Please enter valid details",
+                            status: "error",
+                            duration: 9000,
+                            isClosable: true,
+                        });
+                    }
                 }
             } else {
                 const formData = new FormData();
@@ -169,70 +169,71 @@ const Register = () => {
                 if (match && match.pattern.path === "/join-group/:groupId/register") {
                     await axios.post(pictureUpload, formData)
                         .then(async res => {
-                            await axios.post(apiUrlRegister, {
+                            const response = await authApi.register({
                                 number1: number1,
                                 username: username,
                                 password: password,
                                 pic: res.data.url
-                            })
-                                .then(async res => {
-                                    setLoading(false)
-                                    const groupDetails = await axios.get(`${backend_url}/conversation/encrypted/chat/${match.params.groupId}`);
+                            });
+                            if (response.data) {
+                                setLoading(false)
+                                const groupDetails = await conversationApi.getConversationDetailWithEncryptedUrl(match.params.groupId);
 
-                                    const config = {
-                                        headers: {
-                                            "Content-Type": "application/json",
-                                            Authorization: `Bearer ${res.data.token}`,
-                                        },
-                                    };
-                                    const { data } = await axios.put(
-                                        `${backend_url}/conversation/groupadd`,
-                                        { userId: res.data._id, chatId: groupDetails.data._id },
-                                        config
-                                    );
+                                const config = {
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                        Authorization: `Bearer ${response.data.token}`,
+                                    },
+                                };
+                                const userDetails = await axios.get(`${backend_url}/users/user-info`, config);
 
-                                    localStorage.setItem("user", JSON.stringify(res.data));
+                                const { data } = await conversationApi.addToGroup(
+                                    { userId: userDetails.data._id, chatId: groupDetails.data._id },
+                                    config
+                                );
 
-                                    navigate('/video-chat')
+                                localStorage.setItem("user", JSON.stringify(response.data));
 
-                                    dispatch({ type: 'SET_SELECTED_CHAT', payload: data })
-                                })
-                                .catch(err => {
-                                    setLoading(false)
-                                    toast({
-                                        title: "Error",
-                                        description: "Please enter valid details",
-                                        status: "error",
-                                        duration: 9000,
-                                        isClosable: true,
-                                    });
-                                })
+                                navigate('/video-chat')
+
+                                dispatch({ type: 'SET_SELECTED_CHAT', payload: data })
+                            }
+                            else {
+                                setLoading(false)
+                                toast({
+                                    title: "Error",
+                                    description: "Please enter valid details",
+                                    status: "error",
+                                    duration: 9000,
+                                    isClosable: true,
+                                });
+                            }
                         })
 
                 } else {
                     await axios.post(pictureUpload, formData)
                         .then(async res => {
-                            await axios.post(apiUrlRegister, {
+                            const response = await authApi.register({
                                 number1: number1,
                                 username: username,
                                 password: password,
                                 pic: res.data.url
-                            })
-                                .then(res => {
-                                    setLoading(false)
-                                    localStorage.setItem("user", JSON.stringify(res.data));
-                                    navigate('/video-chat');
-                                })
-                                .catch(err => {
-                                    setLoading(false)
-                                    toast({
-                                        title: "Error",
-                                        description: "Please enter valid details",
-                                        status: "error",
-                                        duration: 9000,
-                                        isClosable: true,
-                                    });
-                                })
+                            });
+                            if (response.data) {
+                                setLoading(false)
+                                localStorage.setItem("user", JSON.stringify(response.data));
+                                navigate('/video-chat');
+                            }
+                            else {
+                                setLoading(false)
+                                toast({
+                                    title: "Error",
+                                    description: "Please enter valid details",
+                                    status: "error",
+                                    duration: 9000,
+                                    isClosable: true,
+                                });
+                            }
                         })
                         .catch(err => {
                             toast({
@@ -247,7 +248,7 @@ const Register = () => {
             }
         }
     }
-    
+
     const imageChange = async (e) => {
         await getCloudinarySignature();
         if (e.target.files && e.target.files.length > 0 && (e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/png')) {
@@ -289,22 +290,22 @@ const Register = () => {
         dispatch({ type: "SET_NUMBER", payload: number });
         const isValidPhoneNumber = validator.isMobilePhone(number)
         if (isValidPhoneNumber) {
-            setVerify(false);
-            await axios.post(apiUrlMobile, { number }).then((res) => {
-                if (res.data) {
-                    // console.log(res)
-                    setNumber("");
-                }
-                else
-                    toast({
-                        title: "Error",
-                        description: "Please enter valid phone number",
-                        status: "error",
-                        duration: 9000,
-                        isClosable: true,
-                    });
-            })
-        } else {
+            const response = baseApi.sendOtpOnPhoneNumber({ number });
+            if (response !== undefined && response.data) {
+                setVerify(false);
+                setNumber("");
+            }
+            else {
+                toast({
+                    title: "Error",
+                    description: "Please enter valid phone number",
+                    status: "error",
+                    duration: 9000,
+                    isClosable: true,
+                });
+            }
+        }
+        else {
             toast({
                 title: "Error",
                 description: "Please enter valid phone number",
@@ -320,21 +321,20 @@ const Register = () => {
         // console.log(OTP);
         if (OTP.length === 5) {
             setTimeout(async () => {
-                await axios.post(apiUrlOtp, { OTP, number1 }).then((res) => {
-                    // console.log(res)
-                    if (res.data.message === "Welcome") {
-                        setOtp(false)
-                    } else {
-                        setOtp(true);
-                        toast({
-                            title: "Error",
-                            description: "Please enter valid OTP",
-                            status: "error",
-                            duration: 9000,
-                            isClosable: true,
-                        });
-                    }
-                });
+                const response = baseApi.verifyOtp({ OTP, number1 });
+                // console.log(res)
+                if (response.data.message === "Welcome") {
+                    setOtp(false)
+                } else {
+                    setOtp(true);
+                    toast({
+                        title: "Error",
+                        description: "Please enter valid OTP",
+                        status: "error",
+                        duration: 9000,
+                        isClosable: true,
+                    });
+                }
             }, 1000);
         }
     }
@@ -344,7 +344,7 @@ const Register = () => {
             setMatchPath(true);
             try {
                 const getGroupDetails = async () => {
-                    const { data } = await axios.get(`${backend_url}/conversation/encrypted/chat/${match.params.groupId}`)
+                    const { data } = await conversationApi.getConversationDetailWithEncryptedUrl(match.params.groupId);
 
                     setGroupDetails(data)
 
@@ -492,7 +492,7 @@ const Register = () => {
 
                                     }
                                     <Stack spacing={10} pt={8}>
-                                        {verify ?
+                                        {verify &&
                                             <Button
                                                 type="submit"
                                                 onClick={handleVerify}
@@ -505,7 +505,7 @@ const Register = () => {
                                                     color: 'text'
                                                 }}>
                                                 Verify Phone Number
-                                            </Button> : null}
+                                            </Button>}
 
                                         {!otp ?
                                             <Button

@@ -15,10 +15,11 @@ import {
 
 import Static from '../components/common/Static'
 import axios from 'axios';
-import { api_key, backend_url, pictureUpload, folder } from '../utils';
+import { api_key, pictureUpload, folder } from '../utils';
 import { AppContext } from '../context/AppContext';
 import { useNavigate } from 'react-router-dom';
 import { FiUpload } from 'react-icons/fi';
+import conversationApi from '../services/apis/conversationApi';
 
 const CreateEvent = () => {
 	const { selectedChat, userInfo, timestamp, signature, getCloudinarySignature } = useContext(AppContext);
@@ -33,7 +34,7 @@ const CreateEvent = () => {
 
 	const toast = useToast();
 	let navigate = useNavigate();
-	
+
 	const imageChange = async (e) => {
 		await getCloudinarySignature();
 		if (e.target.files && e.target.files.length > 0 && (e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/png')) {
@@ -63,7 +64,7 @@ const CreateEvent = () => {
 		};
 
 		if (selectedImage === null) {
-			await axios.put(`${backend_url}/conversation/event/${selectedChat._id}`, {
+			await conversationApi.addEvent(selectedChat._id, {
 				name,
 				description,
 				date,
@@ -88,7 +89,7 @@ const CreateEvent = () => {
 
 			await axios.post(pictureUpload, formData)
 				.then(async (res) => {
-					await axios.put(`${backend_url}/conversation/event/${selectedChat._id}`, {
+					await conversationApi.addEvent(selectedChat._id, {
 						name,
 						description,
 						date,

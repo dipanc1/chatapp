@@ -48,11 +48,10 @@ const GroupChat = ({ chat }) => {
                         'You' : chat && chat.latestMessage && chat.latestMessage.sender && chat.latestMessage.sender.username}
                     {chat && chat.latestMessage ? ':' : null}
                     {chat
-                        && chat.latestMessage
-                        &&
-                        typeArray.includes(checkFileExtension(chat.latestMessage.content))
-                        ? " " + checkFileExtension(chat.latestMessage.content)
-                        : chat.latestMessage.content}
+                        && chat.latestMessage &&
+                        typeArray.includes(checkFileExtension(chat.latestMessage?.content))
+                        ? " " + checkFileExtension(chat.latestMessage?.content)
+                        : chat.latestMessage?.content}
                 </Text>
             </VStack>}
             {chat && chat.latestMessage && chat?.latestMessage.sender._id !== userInfo?._id && !chat?.latestMessage.readBy.includes(userInfo?._id) && read && <Box

@@ -3,6 +3,7 @@ import Static from '../components/common/Static'
 import axios from 'axios';
 import { backend_url } from '../utils';
 import { Button, Flex, Heading, Image, Table, TableContainer, Tbody, Td, Th, Thead, Tr, Text, Spinner, Box } from '@chakra-ui/react';
+import conversationApi from '../services/apis/conversationApi';
 
 const EventsList = () => {
   const [userData, setUserData] = useState()
@@ -51,7 +52,7 @@ const EventsList = () => {
           'Authorization': `Bearer ${user.token}`
         }
       };
-      await axios.put(`${backend_url}/conversation/event/disable/${eventId}`, {}, config);
+      await conversationApi.disableEvent(eventId, config);
 
       setUserData()
       setPageState(pageState)

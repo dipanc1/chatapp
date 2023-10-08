@@ -1,12 +1,12 @@
 import { useContext, useEffect } from 'react';
 import { AppContext } from '../../context/AppContext';
 
-import axios from 'axios';
 import { format } from 'timeago.js'
 import { Avatar, Box, Button, Flex, Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useDisclosure } from '@chakra-ui/react';
 
-import { backend_url, checkFileExtension } from '../../utils';
+import { checkFileExtension } from '../../utils';
 import { AUDIO, DOC, IMAGE, PDF, PPT, TXT, VIDEO, XLS } from '../../constants';
+import messageApi from '../../services/apis/messageApi'
 
 import { BsFiletypeDocx } from 'react-icons/bs';
 import { AiOutlineVideoCamera } from 'react-icons/ai';
@@ -73,7 +73,7 @@ const Message = ({ messages, own, sameSender, sameTime }) => {
                         Authorization: `Bearer ${user.token}`
                     }
                 }
-                await axios.post(`${backend_url}/message/read`, {
+                await messageApi.readMessages({
                     messageId: messages._id
                 }, config)
 

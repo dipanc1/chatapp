@@ -8,12 +8,11 @@ import {
     Button,
     AlertDialogCloseButton,
 } from '@chakra-ui/react'
-import axios from 'axios';
 import { useContext } from 'react';
 import { useRef } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { backend_url } from '../../utils';
 import { AppContext } from '../../context/AppContext';
+import conversationApi from '../../services/apis/conversationApi';
 
 
 const JoinGroupModal = ({ isOpenJoinEvent, onCloseJoinEvent, chatId, chatName }) => {
@@ -28,8 +27,7 @@ const JoinGroupModal = ({ isOpenJoinEvent, onCloseJoinEvent, chatId, chatName })
                 Authorization: `Bearer ${user.token}`,
             },
         };
-        const { data } = await axios.put(
-            `${backend_url}/conversation/groupadd`,
+        const { data } = await conversationApi.addToGroup(
             {
                 chatId,
                 userId: userInfo._id,

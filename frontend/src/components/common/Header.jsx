@@ -21,10 +21,10 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import ProfileModal from '../UserModals/ProfileModal';
-import { backend_url } from '../../utils';
-import axios from 'axios';
 import { AppContext } from '../../context/AppContext';
 import UserCard from '../UserItems/UserCard';
+import conversationApi from '../../services/apis/conversationApi';
+import authApi from '../../services/apis/authApi';
 
 const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) => {
   const user = JSON.parse(localStorage.getItem('user'));
@@ -70,10 +70,7 @@ const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) 
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.get(
-        `${backend_url}/users?search=${e.target.value}`,
-        config
-      );
+      const { data } = await authApi.searchUser(e.target.value, config);
       setSearchResultsUsers(data.users);
       setSearchResultsGroups(data.groups);
       setSearchResultsEvents(data.events);
@@ -100,11 +97,8 @@ const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) 
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.post(
-        `${backend_url}/conversation`,
-        { userId },
-        config
-      );
+
+      const { data } = await conversationApi.accessConversation({ userId }, config);
 
       if (location.pathname !== "/video-chat") {
         navigate("/video-chat");
@@ -142,8 +136,8 @@ const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) 
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.put(
-        `${backend_url}/conversation/groupadd`,
+
+      const { data } = await conversationApi.addToGroup(
         {
           chatId: groupId,
           userId: user1,

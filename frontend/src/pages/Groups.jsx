@@ -17,11 +17,11 @@ import {
 
 import Static from "../components/common/Static"
 import GroupCard from '../components/Groups/GroupCard';
-import axios from 'axios';
-import { backend_url } from '../utils';
 import { AppContext } from '../context/AppContext';
 import GroupChatModal from '../components/UserModals/GroupChatModal';
 import Pagination from '../components/Miscellaneous/Pagination';
+import conversationApi from '../services/apis/conversationApi';
+import { ONE } from '../constants';
 
 function Groups() {
   const user = JSON.parse(localStorage.getItem('user'));
@@ -70,10 +70,7 @@ function Groups() {
             Authorization: `Bearer ${user.token}`,
           },
         };
-        const { data } = await axios.get(
-          `${backend_url}/conversation/my/1`,
-          config
-        );
+        const { data } = await conversationApi.fetchGroupWhereIamPart(ONE, config);
         setGroupConversations(
           data.chats.filter((friend) => friend.isGroupChat && friend.chatName)
         );
@@ -108,10 +105,7 @@ function Groups() {
             Authorization: `Bearer ${user.token}`,
           },
         };
-        const { data } = await axios.get(
-          `${backend_url}/conversation/admin/1`,
-          config
-        );
+        const { data } = await conversationApi.fetchGroupWhereAdmin(ONE, config);
         setGroupConversationsAdmin(data.chats);
         setTotalCountMyChatsAdmin(data.totalCount);
         setCurrentPageMyChatsAdmin(data.currentPage);
@@ -142,8 +136,7 @@ function Groups() {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      // 1 is page number, 10 is limit, use it for pagination
-      await axios.get(`${backend_url}/conversation/all/1`, config).then(
+      await conversationApi.fetchGroups(ONE, config).then(
         (response) => {
           setGroupsList(response.data.groups);
           setTotalCount(response.data.totalCount);
@@ -181,8 +174,7 @@ function Groups() {
         Authorization: `Bearer ${user.token}`,
       },
     };
-    // 1 is page number, 10 is limit, use it for pagination
-    await axios.get(`${backend_url}/conversation/all/${page}`, config).then(
+    await conversationApi.fetchGroups(page, config).then(
       (response) => {
         setGroupsList(response.data.groups);
         setTotalCount(response.data.totalCount);
@@ -207,10 +199,7 @@ function Groups() {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.get(
-        `${backend_url}/conversation/my/${page}`,
-        config
-      );
+      const { data } = await conversationApi.fetchGroupWhereIamPart(page, config);
       setGroupConversations(
         data.chats.filter((friend) => friend.isGroupChat && friend.chatName)
       );
@@ -244,10 +233,7 @@ function Groups() {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.get(
-        `${backend_url}/conversation/admin/${page}`,
-        config
-      );
+      const { data } = await conversationApi.fetchGroupWhereAdmin(page, config);
       setGroupConversationsAdmin(data.chats);
       setTotalCountMyChatsAdmin(data.totalCount);
       setCurrentPageMyChatsAdmin(data.currentPage);

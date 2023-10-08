@@ -16,10 +16,11 @@ import {
   useToast
 } from '@chakra-ui/react';
 import { AppContext } from '../../context/AppContext';
-import { api_key, backend_url, pictureUpload, folder } from '../../utils';
+import { api_key, pictureUpload, folder } from '../../utils';
 import axios from 'axios';
 import EventModal from '../UserModals/EventModal';
 import StreamModalPeer from '../UserModals/StreamModalPeer';
+import conversationApi from '../../services/apis/conversationApi';
 
 const EventCard = ({
   index,
@@ -65,7 +66,7 @@ const EventCard = ({
               'Authorization': `Bearer ${user.token}`
             }
           }
-          const { data } = await axios.get(`${backend_url}/conversation/streaming/${selectedChat._id}`, config);
+          const { data } = await conversationApi.checkStream(selectedChat._id, config);
           if (data) {
             localStorage.setItem('roomId', data);
             setMeetingIdExists(true)
@@ -141,7 +142,7 @@ const EventCard = ({
     };
 
     if (selectedImage === null) {
-      await axios.put(`${backend_url}/conversation/event/edit/${id}`, {
+      await conversationApi.editEvent(id, {
         name: name,
         description: descriptiond,
         date: dated,
@@ -150,7 +151,7 @@ const EventCard = ({
         chatId: selectedChat._id
       }, config)
         .then(async (res) => {
-          await axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
+          await conversationApi.getEvents(selectedChat._id, config).then((res) => {
             selectedChat.events = res.data;
             toast({
               title: "Event Edited!",
@@ -198,7 +199,7 @@ const EventCard = ({
 
       await axios.put(pictureUpload, formData)
         .then(async (res) => {
-          await axios.put(`${backend_url}/conversation/event/edit/${id}`, {
+          await conversationApi.editEvent(id, {
             name: name,
             description: descriptiond,
             date: dated,
@@ -207,7 +208,7 @@ const EventCard = ({
             chatId: selectedChat._id
           }, config)
             .then(async (res) => {
-              await axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
+              await conversationApi.getEvents(selectedChat._id, config).then((res) => {
                 selectedChat.events = res.data;
                 toast({
                   title: "Event Created!",
@@ -275,7 +276,7 @@ const EventCard = ({
     };
 
     try {
-      await axios.delete(`${backend_url}/conversation/event/delete/${id}/${selectedChat._id}`, config).then((res) => {
+      await conversationApi.deleteEvent(id, selectedChat._id, config).then((res) => {
         toast({
           title: "Event Deleted!",
           description: "Event deleted successfully",
@@ -287,7 +288,7 @@ const EventCard = ({
         if (fetchAgain !== undefined) setFetchAgain(!fetchAgain);
       });
     } catch (error) {
-      await axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
+      await conversationApi.getEvents(selectedChat._id, config).then((res) => {
         selectedChat.events = res.data;
       }).catch((err) => {
         console.log(err);

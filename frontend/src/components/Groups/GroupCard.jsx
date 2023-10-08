@@ -2,10 +2,12 @@ import { Box, Flex, Image, ListItem, Text, UnorderedList, useDisclosure, useToas
 import React, { useState } from 'react'
 import GroupSettingsModal from '../UserModals/GroupSettingsModal';
 import axios from 'axios';
-import { api_key, backend_url, pictureUpload, folder } from '../../utils';
+import { api_key, pictureUpload, folder } from '../../utils';
 import AddMembersModal from '../UserModals/AddMembersModal';
 import { AppContext } from '../../context/AppContext';
 import EventModal from '../UserModals/EventModal';
+import conversationApi from '../../services/apis/conversationApi';
+import authApi from '../../services/apis/authApi';
 
 const GroupCard = ({
   chatId,
@@ -100,14 +102,14 @@ const GroupCard = ({
 
 
     if (selectedImage === null) {
-      await axios.put(`${backend_url}/conversation/event/${chatId}`, {
+      await conversationApi.addEvent(chatId, {
         name,
         description,
         date,
         time
       }, config)
         .then(async (res) => {
-          await axios.get(`${backend_url}/conversation/event/${chatId}`, config).then((res) => {
+          await conversationApi.getEvents(chatId, config).then((res) => {
             toast({
               title: "Event Created!",
               description: "Event created successfully",
@@ -171,7 +173,7 @@ const GroupCard = ({
 
       await axios.post(pictureUpload, formData)
         .then(async (res) => {
-          await axios.put(`${backend_url}/conversation/event/${chatId}`, {
+          await conversationApi.addEvent(chatId, {
             name,
             description,
             date,
@@ -179,7 +181,7 @@ const GroupCard = ({
             thumbnail: res.data.url
           }, config)
             .then(async (res) => {
-              await axios.get(`${backend_url}/conversation/event/${chatId}`, config).then((res) => {
+              await conversationApi.getEvents(chatId, config).then((res) => {
                 upcomingEvents = res.data;
                 toast({
                   title: "Event Created!",
@@ -273,7 +275,7 @@ const GroupCard = ({
         chatName: groupChatName,
         chatId: chatId
       }
-      await axios.put(`${backend_url}/conversation/rename`, body, config)
+      await conversationApi.renameConversation(body, config)
       toast({
         title: "Group chat renamed",
         description: "Group chat renamed to " + groupChatName,
@@ -309,9 +311,8 @@ const GroupCard = ({
           'Authorization': `Bearer ${user.token}`
         }
       }
-      const { data } = await axios.get(`${backend_url}/users?search=${search}`, config)
+      const { data } = await authApi.searchUser(search, config);
       setSearchResults(data.users);
-      // console.log(searchResults);
       setLoading(false);
     } catch (error) {
       toast({
@@ -354,15 +355,13 @@ const GroupCard = ({
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.put(
-        `${backend_url}/conversation/groupadd`,
+      await conversationApi.addToGroup(
         {
           chatId: chatId,
           userId: user1,
         },
         config
       );
-      console.log(data);
       setFetchAgain(!fetchAgain);
       setLoading(false);
       toast({

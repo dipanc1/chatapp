@@ -1,8 +1,6 @@
-import axios from 'axios'
 import React from 'react'
 import { Link, useMatch } from 'react-router-dom'
 import { useNavigate } from "react-router-dom";
-import { backend_url } from '../utils';
 import {
     Flex,
     Box,
@@ -28,6 +26,8 @@ import Otp from '../components/Miscellaneous/Otp';
 import Password from '../components/Miscellaneous/Password';
 import { AppContext } from '../context/AppContext';
 import ReactGA from 'react-ga4';
+import authApi from '../services/apis/authApi';
+import conversationApi from '../services/apis/conversationApi';
 
 const Login = () => {
     const [username, setUsername] = React.useState('')
@@ -78,20 +78,20 @@ const Login = () => {
 
     const handleVerify = async () => {
         if (number.length >= 10) {
-            await axios.post(`${backend_url}/users/forget-password-check-number`,
-                { number: number })
-                .then(res => {
-                    setOtpSent(true)
+            const response = await authApi.forgotPasswordCheckPassword({ number: number });
+            const { data } = response;
+            if (response.status === 200) {
+                setOtpSent(true)
+            }
+            else {
+                toast({
+                    title: "Error",
+                    description: data.message,
+                    status: "error",
+                    duration: 9000,
+                    isClosable: true,
                 })
-                .catch(err => {
-                    toast({
-                        title: "Error",
-                        description: err.data.message,
-                        status: "error",
-                        duration: 9000,
-                        isClosable: true,
-                    })
-                })
+            }
         }
         else {
             toast({
@@ -106,28 +106,28 @@ const Login = () => {
 
     const handleResetPassword = async () => {
         if (forgetPasswordValue.length >= 8) {
-            await axios.post(`${backend_url}/users/forget-password-check-otp-change-password`,
-                { number: number, otp: OTP, password: forgetPasswordValue })
-                .then(res => {
-                    toast({
-                        title: "Success",
-                        description: "Password reset successfully",
-                        status: "success",
-                        duration: 9000,
-                        isClosable: true,
-                    })
-                    setOtpSent(false)
-                    setForgetPassword(false)
+            const response = await authApi.forgotPasswordCheckOtpChangePassword({ number: number, otp: OTP, password: forgetPasswordValue });
+            const { data } = response;
+            if (response.status === 200) {
+                toast({
+                    title: "Success",
+                    description: "Password reset successfully",
+                    status: "success",
+                    duration: 9000,
+                    isClosable: true,
                 })
-                .catch(err => {
-                    toast({
-                        title: "Error",
-                        description: err.data.message,
-                        status: "error",
-                        duration: 9000,
-                        isClosable: true,
-                    })
+                setOtpSent(false)
+                setForgetPassword(false)
+            }
+            else {
+                toast({
+                    title: "Error",
+                    description: data.message,
+                    status: "error",
+                    duration: 9000,
+                    isClosable: true,
                 })
+            }
         }
         else {
             toast({
@@ -149,9 +149,9 @@ const Login = () => {
         setDisable(true)
         if (match && match.pattern.path === "/join-group/:groupId/login") {
             try {
-                const res = await axios.post(`${backend_url}/users/login`, user);
+                const res = await authApi.login(user);
 
-                const groupDetails = await axios.get(`${backend_url}/conversation/encrypted/chat/${match.params.groupId}`);
+                const groupDetails = await conversationApi.getConversationDetailWithEncryptedUrl(match.params.groupId);
 
                 const config = {
                     headers: {
@@ -159,10 +159,9 @@ const Login = () => {
                         Authorization: `Bearer ${res.data.token}`,
                     },
                 };
-                const userDetails = await axios.get(`${backend_url}/users/user-info`, config);
+                const userDetails = await authApi.userInfo(config);
 
-                const { data } = await axios.put(
-                    `${backend_url}/conversation/groupadd`,
+                const { data } = await conversationApi.addToGroup(
                     { userId: userDetails.data._id, chatId: groupDetails.data._id },
                     config
                 );
@@ -197,10 +196,10 @@ const Login = () => {
 
             }
         } else {
-            try {
-                const res = await axios.post(`${backend_url}/users/login`, user);
-
-                localStorage.setItem("user", JSON.stringify(res.data));
+            const response = await authApi.login(user);
+            const { data } = response;
+            if (response.status === 200) {
+                localStorage.setItem("user", JSON.stringify(data));
 
                 ReactGA.event({
                     category: 'User',
@@ -210,8 +209,7 @@ const Login = () => {
 
                 navigate('/video-chat')
                 setDisable(false)
-
-            } catch (err) {
+            } else {
                 toast({
                     title: "Invalid username or password",
                     description: "Please try again",
@@ -219,7 +217,6 @@ const Login = () => {
                     duration: 9000,
                     isClosable: true,
                 });
-                // console.log("ERORO<<><<<<<<<<<<<", err)
                 setDisable(false)
             }
         }
@@ -237,7 +234,7 @@ const Login = () => {
             setMatchPath(true);
             try {
                 const getGroupDetails = async () => {
-                    const { data } = await axios.get(`${backend_url}/conversation/encrypted/chat/${match.params.groupId}`)
+                    const { data } = await conversationApi.getConversationDetailWithEncryptedUrl(match.params.groupId);
 
                     setGroupDetails(data)
 

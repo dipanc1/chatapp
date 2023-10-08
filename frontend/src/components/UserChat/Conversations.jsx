@@ -1,7 +1,5 @@
-import axios from "axios";
 import React from "react";
 import { AppContext } from "../../context/AppContext";
-import { backend_url } from "../../utils";
 import Conversation from "../Miscellaneous/Conversation";
 import GroupChat from "../Miscellaneous/GroupChat";
 import GroupChatModal from "../UserModals/GroupChatModal";
@@ -19,6 +17,8 @@ import {
 } from "@chakra-ui/react";
 import { AddIcon, RepeatIcon } from "@chakra-ui/icons";
 import InfiniteScroll from "react-infinite-scroll-component";
+import conversationApi from "../../services/apis/conversationApi";
+import { ONE } from "../../constants";
 
 export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
     const { dispatch, chats, selectedChat, conversations, groupConversations, loading, userInfo } = React.useContext(AppContext);
@@ -32,10 +32,6 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
 
     const user = JSON.parse(localStorage.getItem("user"));
 
-    const axiosJwt = axios.create({
-        baseURL: backend_url,
-    });
-
     const fetchOneOnOneChats = async () => {
         try {
             const config = {
@@ -45,9 +41,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                 },
             };
 
-            const { data } = await axiosJwt.get(
-                `/conversation/one-on-one/1`, config
-            );
+            const { data } = await conversationApi.getOneOnOne(ONE, config)
 
             dispatch({ type: "SET_CONVERSATIONS", payload: data.chats });
             setHasMoreOneOnOneChats(data.hasMore);
@@ -74,9 +68,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                 },
             };
 
-            const { data } = await axiosJwt.get(
-                `/conversation/group-chats/1`, config
-            );
+            const { data } = await conversationApi.getGroupChats(ONE, config)
 
             dispatch({ type: "SET_GROUP_CONVERSATIONS", payload: data.groups });
             setHasMoreGroupChats(data.hasMore);
@@ -104,9 +96,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                 },
             };
 
-            const { data } = await axiosJwt.get(
-                `/conversation/one-on-one/${oneOnOneChatsPage}`, config
-            );
+            const { data } = await conversationApi.getOneOnOne(oneOnOneChatsPage, config);
 
             dispatch({
                 type: "SET_CONVERSATIONS", payload:
@@ -137,9 +127,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                 },
             };
 
-            const { data } = await axiosJwt.get(
-                `/conversation/group-chats/${groupChatsPage}`, config
-            );
+            const { data } = await conversationApi.getGroupChats(groupChatsPage, config);
 
             dispatch({
                 type: "SET_GROUP_CONVERSATIONS", payload:

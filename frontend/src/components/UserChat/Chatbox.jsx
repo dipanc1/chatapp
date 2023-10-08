@@ -17,6 +17,8 @@ import GroupSettingsModal from '../UserModals/GroupSettingsModal'
 import { BsFilePdf } from 'react-icons/bs'
 import ImageAttachmentModal from '../UserModals/ImageAttachmentModal'
 import DocumentAttachmentModal from '../UserModals/DocumentAttachmentModal'
+import messageApi from '../../services/apis/messageApi'
+import conversationApi from '../../services/apis/conversationApi'
 
 var selectedChatCompare;
 
@@ -93,7 +95,7 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
         }
       };
       setLoading(true);
-      const { data } = await axios.get(`${backend_url}/message/${selectedChat._id}/1`, config);
+      const { data } = await messageApi.fetchMessages(selectedChat._id, config);
       // console.log("Data fetch 1", data);
       setMessages(data.messages);
       setHasMore(data.hasMore);
@@ -122,7 +124,7 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
           'Authorization': `Bearer ${user.token}`
         }
       };
-      const { data } = await axios.get(`${backend_url}/message/${selectedChat._id}/${page}`, config);
+      const { data } = await messageApi.fetchMoreMessages(selectedChat._id, page, config);
       setMessages([...messages, ...data.messages]);
       setHasMore(data.hasMore);
       // console.log("Fetch more", page, data);
@@ -150,10 +152,10 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
             'Authorization': `Bearer ${user.token}`
           }
         };
-        const { data } = await axios.post(`${backend_url}/message`, {
+        const { data } = await messageApi.sendMessage({
           content: url !== null ? url : newMessage,
           chatId: selectedChat._id
-        }, config);
+        }, config)
         socket.emit("new message", data.message);
         setMessages([data.message, ...messages]);
         setLoadingWhileSendingImage(false);
@@ -457,8 +459,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
           Authorization: `Bearer ${user.token}`,
         },
       };
-      await axios.put(
-        `${backend_url}/conversation/groupremove`,
+      await conversationApi.removeFromGroup(
         {
           chatId: selectedChat._id,
           userId: user1._id,
@@ -514,7 +515,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
         description: groupChatDescription,
         chatId: selectedChat._id
       }
-      await axios.put(`${backend_url}/conversation/rename`, body, config)
+      await conversationApi.renameConversation(body, config)
       toast({
         title: "Group chat renamed",
         description: "Group chat renamed to " + groupChatName,

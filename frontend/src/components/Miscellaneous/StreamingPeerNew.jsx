@@ -11,7 +11,6 @@ import {
     useToast,
     VStack,
 } from "@chakra-ui/react";
-import axios from "axios";
 import React, { useContext, useEffect, useRef } from "react";
 import {
     BsFullscreen,
@@ -20,11 +19,10 @@ import {
     BsRecordCircleFill,
 } from "react-icons/bs";
 import { AppContext } from "../../context/AppContext";
-import { backend_url } from "../../utils";
 import { MembersComponent } from "../UserChat/Members";
 import { RoomContext } from "../../context/RoomContext";
 import Videoplayer from "./Videoplayer";
-import { NavLink } from "react-router-dom";
+import conversationApi from "../../services/apis/conversationApi";
 
 const IconButtonGeneric = ({
     icon,
@@ -91,8 +89,7 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
             const data = {
                 chatId: selectedChat._id,
             };
-            const result = await axios.put(
-                `${backend_url}/conversation/stop-stream`,
+            const result = await conversationApi.stopStream(
                 { data },
                 config
             );
@@ -139,8 +136,7 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
                     Authorization: `Bearer ${user.token}`,
                 },
             };
-            await axios.put(
-                `${backend_url}/conversation/stream`,
+            await conversationApi.startStream(
                 { data },
                 config
             );
@@ -257,10 +253,7 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
                             Authorization: `Bearer ${user.token}`,
                         },
                     };
-                    const { data } = await axios.get(
-                        `${backend_url}/conversation/streaming/${selectedChat._id}`,
-                        config
-                    );
+                    const { data } = await conversationApi.checkStream(selectedChat._id, config);
                     if (!data) {
                         toast({
                             title: "Meeting Ended!",

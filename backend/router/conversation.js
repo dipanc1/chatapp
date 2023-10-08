@@ -203,7 +203,7 @@ router.get("/group-chats/:page", protect, asyncHandler(async (req, res) => {
 }));
 
 
-// get all chats of user with pagination
+// get all group chats of user with pagination
 router.get("/my/:page", protect, async (req, res) => {
     const { page } = req.params;
     const limit = 5;
@@ -211,16 +211,19 @@ router.get("/my/:page", protect, async (req, res) => {
 
     try {
         const totalCount = await Chat.countDocuments({
-            users: { $elemMatch: { $eq: req.user._id } }
+            isGroupChat: true,
+            users: { $elemMatch: { $eq: req.user._id } },
         });
         const currentCount = await Chat.countDocuments({
-            users: { $elemMatch: { $eq: req.user._id } }
+            isGroupChat: true,
+            users: { $elemMatch: { $eq: req.user._id } },
         }, { skip, limit });
         const totalPages = Math.ceil(totalCount / limit);
         const currentPage = parseInt(page);
         const hasNextPage = currentPage < totalPages;
         const hasPrevPage = currentPage > 1;
         let chats = await Chat.find({
+            isGroupChat: true,
             users: { $elemMatch: { $eq: req.user._id } },
         })
             .populate("users", "-password -events")

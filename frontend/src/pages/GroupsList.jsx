@@ -5,6 +5,7 @@ import { backend_url } from '../utils';
 import { Button, Flex, Heading, Image, Table, TableContainer, Tbody, Td, Th, Thead, Tr, Text, Spinner, Box, Input, useToast, Tooltip, Icon } from '@chakra-ui/react';
 import UserCard from '../components/UserItems/UserCard';
 import { NotAllowedIcon, StarIcon } from '@chakra-ui/icons';
+import conversationApi from '../services/apis/conversationApi';
 
 const GroupsList = () => {
   const [userData, setUserData] = useState()
@@ -63,8 +64,7 @@ const GroupsList = () => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.put(
-        `${backend_url}/conversation/groupadd`,
+      const { data } = await conversationApi.addToGroup(
         {
           chatId: groupId,
           userId: user1,
@@ -159,9 +159,7 @@ const GroupsList = () => {
           'Authorization': `Bearer ${user.token}`
         }
       };
-      await axios.put(`${backend_url}/conversation/groupsuspend`, {
-        chatId
-      }, config);
+      await conversationApi.suspendGroup({ chatId }, config);
 
       setUserData()
       setPageState(pageState)
@@ -178,7 +176,8 @@ const GroupsList = () => {
           'Authorization': `Bearer ${user.token}`
         }
       };
-      await axios.put(`${backend_url}/conversation/groupmakeadmin`, {
+
+      await conversationApi.changeGroupAdmin({
         userId, chatId
       }, config);
 
@@ -238,7 +237,7 @@ const GroupsList = () => {
           'Authorization': `Bearer ${user.token}`
         }
       };
-      await axios.put(`${backend_url}/conversation/event/disable/${eventId}`, {}, config);
+      await conversationApi.disableEvent(eventId, config);
       if (type === 'suspend') {
         setEventsBlocked(eventsBlocked => [...eventsBlocked, eventId])
       } else if (type === 'allow') {

@@ -19,6 +19,7 @@ import { NavLink } from 'react-router-dom'
 
 import EventModal from '../UserModals/EventModal'
 import AddMembersModal from '../UserModals/AddMembersModal'
+import conversationApi from '../../services/apis/conversationApi'
 
 export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, setFetchAgain, admin }) => {
   const user = JSON.parse(localStorage.getItem('user'));
@@ -104,14 +105,14 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
 
 
     if (selectedImage === null) {
-      await axios.put(`${backend_url}/conversation/event/${selectedChat._id}`, {
+      await conversationApi.editEvent(selectedChat._id, {
         name,
         description,
         date,
         time
       }, config)
         .then(async (res) => {
-          await axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
+          await conversationApi.getEvents(selectedChat._id, config).then((res) => {
             selectedChat.events = res.data;
             toast({
               title: "Event Created!",
@@ -175,7 +176,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
 
       await axios.post(pictureUpload, formData)
         .then(async (res) => {
-          await axios.put(`${backend_url}/conversation/event/${selectedChat._id}`, {
+          await conversationApi.editEvent(selectedChat._id, {
             name,
             description,
             date,
@@ -183,7 +184,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
             thumbnail: res.data.url
           }, config)
             .then(async (res) => {
-              await axios.get(`${backend_url}/conversation/event/${selectedChat._id}`, config).then((res) => {
+              await conversationApi.getEvents(selectedChat._id, config).then((res) => {
                 selectedChat.events = res.data;
                 toast({
                   title: "Event Created!",
@@ -278,8 +279,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.put(
-        `${backend_url}/conversation/groupremove`,
+      const { data } = await conversationApi.removeFromGroup(
         {
           chatId: selectedChat._id,
           userId: user1._id,
@@ -339,8 +339,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.put(
-        `${backend_url}/conversation/groupadd`,
+      const { data } = await conversationApi.addToGroup(
         {
           chatId: selectedChat._id,
           userId: user1,
@@ -390,7 +389,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
         chatName: groupChatName,
         chatId: selectedChat._id
       }
-      const { data } = await axios.put(`${backend_url}/conversation/rename`, body, config)
+      const { data } = await conversationApi.renameConversation(body, config)
       dispatch({ type: 'SET_SELECTED_CHAT', payload: data })
       toast({
         title: "Group chat renamed",
@@ -450,10 +449,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.get(
-        `${backend_url}/conversation/encrypted/${selectedChat._id}`,
-        config
-      );
+      const { data } = await conversationApi.getEncryptedChatUrl(selectedChat._id, config);
       onAddOpen();
       setChatIdValue(data.encryptedChatId);
     } catch (error) {

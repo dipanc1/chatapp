@@ -26,6 +26,7 @@ import {
 } from '@chakra-ui/icons'
 import UserBadgeItem from '../UserItems/UserBadgeItem';
 import UserListItem from '../UserItems/UserListItem';
+import conversationApi from '../../services/apis/conversationApi';
 
 
 const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
@@ -89,7 +90,7 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
                     'Authorization': `Bearer ${user.token}`
                 }
             }
-            const { data } = await axios.post(`${backend_url}/conversation/group`, { name: groupChatName, description: groupChatDescription, users: JSON.stringify(selectedUsers.map(u => u._id)) }, config);
+            const { data } = await conversationApi.createAGroup({ name: groupChatName, description: groupChatDescription, users: JSON.stringify(selectedUsers.map(u => u._id)) }, config);
 
             if (!chats.find(chat => chat._id === data._id)) {
                 dispatch({ type: 'SET_SELECTED_CHAT', payload: data })

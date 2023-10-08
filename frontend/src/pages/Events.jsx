@@ -17,17 +17,17 @@ import Static from "../components/common/Static"
 import EventCard from '../components/Events/EventCard';
 import { useContext } from 'react';
 import { AppContext } from '../context/AppContext';
-import { backend_url } from '../utils';
-import axios from 'axios';
 import JoinGroupModal from '../components/UserModals/JoinGroupModal';
 import Pagination from '../components/Miscellaneous/Pagination';
+import conversationApi from '../services/apis/conversationApi';
+import { ONE } from '../constants';
 
 function Events() {
   const [activeTab, setActiveTab] = useState(1);
   const [chatId, setChatId] = useState();
   const [chatName, setChatName] = useState("");
   const [fetchAgain, setFetchAgain] = useState(false);
-  
+
   const [eventsList, setEventsList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
@@ -36,7 +36,7 @@ function Events() {
   const [currentCount, setCurrentCount] = useState(0);
   const [hasNextPage, setHasNextPage] = useState(false);
   const [hasPrevPage, setHasPrevPage] = useState(false);
-  
+
   const [upcomingEventsList, setUpcomingEventsList] = useState([]);
   const [loadingUpcoming, setLoadingUpcoming] = useState(false);
   const [totalUpcomingCount, setTotalUpcomingCount] = useState(0);
@@ -45,7 +45,7 @@ function Events() {
   const [currentUpcomingCount, setCurrentUpcomingCount] = useState(0);
   const [hasNextUpcomingPage, setHasNextUpcomingPage] = useState(false);
   const [hasPrevUpcomingPage, setHasPrevUpcomingPage] = useState(false);
-  
+
   const [pastEventsList, setPastEventsList] = useState([]);
   const [loadingPast, setLoadingPast] = useState(false);
   const [totalPastCount, setTotalPastCount] = useState(0);
@@ -73,10 +73,7 @@ function Events() {
             Authorization: `Bearer ${user.token}`,
           },
         };
-        const { data } = await axios.get(
-          `${backend_url}/conversation/event/all/1`,
-          config
-        );
+        const { data } = await conversationApi.getAllEvents(ONE, config);
         setEventsList(data.events);
         setTotalCount(data.totalCount);
         setCurrentPage(data.currentPage);
@@ -107,10 +104,7 @@ function Events() {
             Authorization: `Bearer ${user.token}`,
           },
         };
-        const { data } = await axios.get(
-          `${backend_url}/conversation/event/upcoming/1`,
-          config
-        );
+        const { data } = await conversationApi.getUpcomingEvents(ONE, config);
         setUpcomingEventsList(data.events);
         setTotalUpcomingCount(data.totalCount);
         setCurrentUpcomingPage(data.currentPage);
@@ -141,10 +135,8 @@ function Events() {
             Authorization: `Bearer ${user.token}`,
           },
         };
-        const { data } = await axios.get(
-          `${backend_url}/conversation/event/past/1`,
-          config
-        );
+        const { data } = await conversationApi.getPastEvents(ONE, config);
+
         setPastEventsList(data.events);
         setTotalPastCount(data.totalCount);
         setCurrentPastPage(data.currentPage);
@@ -187,10 +179,7 @@ function Events() {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.get(
-        `${backend_url}/conversation/${chatId}`,
-        config
-      );
+      const { data } = await conversationApi.getChatWithId(chatId, config);
       setChatId(data._id);
       setChatName(data.chatName);
 
@@ -223,10 +212,8 @@ function Events() {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.get(
-        `${backend_url}/conversation/event/all/${page}`,
-        config
-      );
+      const { data } = await conversationApi.getAllEvents(page, config);
+
       setEventsList(data.events);
       setTotalCount(data.totalCount);
       setCurrentPage(data.currentPage);
@@ -257,10 +244,7 @@ function Events() {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.get(
-        `${backend_url}/conversation/event/upcoming/${page}`,
-        config
-      );
+      const { data } = await conversationApi.getUpcomingEvents(page, config);
       setUpcomingEventsList(data.events);
       setTotalUpcomingCount(data.totalCount);
       setCurrentUpcomingPage(data.currentPage);
@@ -291,10 +275,7 @@ function Events() {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.get(
-        `${backend_url}/conversation/event/past/${page}`,
-        config
-      );
+      const { data } = await conversationApi.getPastEvents(page, config);
       setPastEventsList(data.events);
       setTotalPastCount(data.totalCount);
       setCurrentPastPage(data.currentPage);

@@ -1,8 +1,7 @@
 import { Box, Button, Text } from '@chakra-ui/react'
-import axios from 'axios';
 import React from 'react'
-import { backend_url } from '../utils';
 import { useNavigate, useParams } from 'react-router-dom'
+import conversationApi from '../services/apis/conversationApi';
 
 const JoinGroup = () => {
   const { groupId } = useParams();
@@ -12,7 +11,7 @@ const JoinGroup = () => {
   React.useEffect(() => {
     try {
       const getGroupDetails = async () => {
-        const { data } = await axios.get(`${backend_url}/conversation/encrypted/chat/${groupId}`)
+        const { data } = await conversationApi.getConversationDetailWithEncryptedUrl(groupId)
 
         setGroupDetails(data)
 
