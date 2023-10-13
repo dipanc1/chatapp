@@ -57,7 +57,6 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
     const stopButton = useRef(null);
 
     const [id, setId] = React.useState(localStorage.getItem("roomId"));
-    const [fullscreenOn, setFullscreenOn] = React.useState(false);
 
     const { selectedChat, dispatch, fullScreen, eventInfo } = useContext(AppContext);
 
@@ -211,7 +210,6 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
     };
 
     const fullscreenToggle = () => {
-        setFullscreenOn(!fullscreenOn);
         dispatch({ type: "SET_FULLSCREEN" });
     };
 
@@ -296,6 +294,7 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
                     height={["100%", "auto"]}
                 >
                     <Box
+                        key={id}
                         className="video-container"
                         width={"100%"}
                         boxShadow={['unset', "0px 3px 24px rgba(159, 133, 247, 0.6)"]}
@@ -315,7 +314,7 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
                             )}
 
                             {screenSharingVideo && (
-                                <Box transform="rotateY(180deg)">
+                                <Box>
                                     <Videoplayer
                                         width={"100%"}
                                         peerstream={screenSharingVideo}
@@ -350,11 +349,10 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
                             width="100%"
                             p="50px 40px 20px"
                         >
-                            {admin && fullScreen && (
+                            {admin && (
                                 <HStack
                                     justifyContent='center'
                                 >
-
                                     <IconButtonGeneric
                                         onClick={startRecording}
                                         color={"tomato"}
@@ -399,35 +397,27 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
                             {
                                 !admin && (
                                     <HStack justifyContent='center'>
-                                        <button onClick={leaveStream}>
-                                            <img src="https://ik.imagekit.io/sahildhingra/hang-up.png" alt="end" />
-                                        </button>
+                                        <IconButtonGeneric
+                                            onClick={fullscreenToggle}
+                                            color={"tomato"}
+                                            icon={
+                                                <BsFullscreen />
+                                            }
+                                            size={fullScreen ? "md" : "sm"}
+                                            display={["flex"]}
+                                            toolTip={
+                                                "Fullscreen"
+                                            }
+                                        />
+                                        <Tooltip label={"Leave Meeting"} aria-label='A tooltip'>
+                                            <button onClick={leaveStream}>
+                                                <img src="https://ik.imagekit.io/sahildhingra/hang-up.png" alt="end" />
+                                            </button>
+                                        </Tooltip>
                                     </HStack>
                                 )
                             }
-                            <>
-                                <IconButtonGeneric
-                                    onClick={fullscreenToggle}
-                                    color={"tomato"}
-                                    icon={
-                                        fullscreenOn ? (
-                                            <BsFullscreen />
-                                        ) : (
-                                            <BsFullscreenExit />
-                                        )
-                                    }
-                                    size={fullScreen ? "md" : "sm"}
-                                    display={["flex", "none!important", "none!important", "none!important"]}
-                                />
-                                <Text
-                                    display={["block", "none", "none", "none"]}
-                                    fontSize={fullScreen ? "15" : "7"}
-                                >
-                                    {fullscreenOn
-                                        ? "Full Screen"
-                                        : "Fit Screen"}
-                                </Text>
-                            </>
+
                         </Box>
                     </Box>
                     <Box p={['0 20px', '0']} overflow='auto' flex='1'>

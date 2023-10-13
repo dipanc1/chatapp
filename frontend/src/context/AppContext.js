@@ -12,7 +12,7 @@ const INITIAL_STATE = {
   chats: [],
   notification: [],
   stream: false,
-  fullScreen: true,
+  fullScreen: false,
   conversations: [],
   groupConversations: [],
   loading: false,
