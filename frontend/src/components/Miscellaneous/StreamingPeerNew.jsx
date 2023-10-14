@@ -223,19 +223,6 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
         setRoomId(id);
     }, [id, setRoomId]);
 
-    // console.log(
-    //     { screenSharingId },
-    //     "Screen Sharing Id",
-    //     "adminVideo",
-    //     adminVideo,
-    //     "peers",
-    //     peers,
-    //     "me",
-    //     me,
-    //     "selectedChat",
-    //     selectedChat
-    // );
-
     const screenSharingVideo =
         screenSharingId === me?.id
             ? screenStream
@@ -290,7 +277,7 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
                     display={"flex"}
                     justifyContent={"space-between"}
                     flexDirection={"column"}
-                    p={["0", "50px 25px 0"]}
+                    p={["0", "25px 25px"]}
                     height={["100%", "auto"]}
                 >
                     <Box
@@ -304,7 +291,7 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
                         height={["30%", "auto"]}
                         flexShrink='0'
                     >
-                        <Box transform="rotateY(180deg)" height={["100%", "unset"]}>
+                        <Box transform="rotateY(180deg)" height={["100%", "67vh"]}>
                             {admin && screenSharingId !== me?.id && (
                                 <Videoplayer
                                     width={"100%"}
@@ -314,7 +301,7 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
                             )}
 
                             {screenSharingVideo && (
-                                <Box>
+                                <Box height={["100%", "67vh"]}>
                                     <Videoplayer
                                         width={"100%"}
                                         peerstream={screenSharingVideo}
@@ -324,22 +311,23 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
 
                             {adminVideo.length > 0
                                 ? adminVideo.map((peer) => (
-                                    <div key={peer?.peerId}>
+                                    <Box key={peer?.peerId} height={["100%", "67vh"]}>
                                         <Videoplayer
                                             width={"100%"}
                                             peerstream={peer?.stream}
                                         />
-                                    </div>
+                                    </Box>
                                 ))
                                 : !admin && (
-                                    <div>
+                                    <Box transform="rotateY(180deg)" height={["100%", "67vh"]}>
                                         <Text>
                                             Admin left the meeting, Please
                                             wait or leave the meeting
                                         </Text>
-                                    </div>
+                                    </Box>
                                 )}
                         </Box>
+
                         <Box
                             className="video-controls"
                             position="absolute"
@@ -420,6 +408,7 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
 
                         </Box>
                     </Box>
+
                     <Box p={['0 20px', '0']} overflow='auto' flex='1'>
                         <Heading pt='20px' pb='15px' as='h1' size='lg' fontWeight='500'>{eventInfo.title}</Heading>
                         <Text as='h2' size='lg' fontWeight='500' pb='35px'>

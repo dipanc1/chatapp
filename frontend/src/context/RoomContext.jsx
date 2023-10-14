@@ -44,7 +44,7 @@ export const RoomProvider = ({ children }) => {
     }
 
     const removePeer = (peerId) => {
-        console.warn("Remove Peer ::: >>>", peerId, "typeof peerId ::: >>>", typeof peerId);
+        // console.warn("Remove Peer ::: >>>", peerId, "typeof peerId ::: >>>", typeof peerId);
         setParticipantsArray(participantsArray.filter((peerid) => peerid !== peerId));
         // console.log("Participants Array ::: >>>", participantsArray);
         dispatch({
@@ -101,7 +101,7 @@ export const RoomProvider = ({ children }) => {
         if (screenSharingId) {
             navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(switchScreen).catch((err) => {
                 console.error(err);
-                setCameraPermission(false);
+                // setCameraPermission(false);
             });
         } else {
             navigator.mediaDevices.getDisplayMedia({}).then((stream) => {
@@ -109,7 +109,7 @@ export const RoomProvider = ({ children }) => {
                 setScreenStream(stream)
             }).catch((err) => {
                 console.error(err);
-                setCameraPermission(false);
+                // setCameraPermission(false);
             });
         }
     }
