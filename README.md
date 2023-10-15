@@ -10,7 +10,6 @@
 #### need to add abhishek's id in google analytics -- google analaytics
 #### need twilio replacement for sending sms -- twilio
 
-#### make it full screen while broadcasting
-#### for unread message color use different color and an icon
+#### stop streaming event message gone
 
 ## Phone App

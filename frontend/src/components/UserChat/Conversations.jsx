@@ -295,10 +295,6 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                 colorScheme='blue'
                                 onClick={() => {
                                     setFetchAgain(!fetchAgain);
-                                    dispatch({
-                                        type: "SET_SELECTED_CHAT",
-                                        payload: null,
-                                    });
                                 }}
                             >
                                 <RepeatIcon />

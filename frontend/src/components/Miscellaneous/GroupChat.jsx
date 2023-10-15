@@ -59,7 +59,7 @@ const GroupChat = ({ chat }) => {
                 w='10px'
                 h='10px'
                 borderRadius='50%'
-                bg='red.500'
+                bg='green.500'
             >
             </Box>}
         </Box>
