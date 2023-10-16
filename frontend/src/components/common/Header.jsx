@@ -19,16 +19,19 @@ import {
   MenuButton,
   Portal,
   useToast,
+  useColorMode,
 } from '@chakra-ui/react';
 import ProfileModal from '../UserModals/ProfileModal';
 import { AppContext } from '../../context/AppContext';
 import UserCard from '../UserItems/UserCard';
 import conversationApi from '../../services/apis/conversationApi';
 import authApi from '../../services/apis/authApi';
+import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 
 const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) => {
   const user = JSON.parse(localStorage.getItem('user'));
   const { dispatch, loading, notification, pushNotification, userInfo } = useContext(AppContext);
+
   const [toggleProfiledd, setToggleProfiledd] = useState(false)
   const [toggleSearch, setToggleSearch] = useState(false)
   const [search, setSearch] = useState('');
@@ -37,6 +40,7 @@ const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) 
   const [searchResultsGroups, setSearchResultsGroups] = useState([]);
   const [searchResultsEvents, setSearchResultsEvents] = useState([]);
   const [activeTab, setActiveTab] = useState(1)
+  const { colorMode, toggleColorMode } = useColorMode();
 
   let navigate = useNavigate();
   let location = useLocation();
@@ -279,6 +283,9 @@ const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) 
             <Flex alignItems='center'>
               <Image onClick={() => setToggleSearch(true)} display={['block', 'block', 'none']} px='18px' height='21px' src={CDN_IMAGES + "/search-icon.png"} />
               <Menu>
+                <Button bg={colorMode === 'dark' ? '#805AD5' : '#FAF5FF'} onClick={toggleColorMode} >
+                  {colorMode === 'light' ? <MoonIcon /> : <SunIcon color="red.500" />}
+                </Button>
                 <MenuButton position='relative'>
                   {
                     pushNotification && notification.length > 0 && (

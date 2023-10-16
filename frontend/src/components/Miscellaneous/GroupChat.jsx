@@ -2,6 +2,7 @@ import { Avatar, Box, Heading, Text, VStack } from '@chakra-ui/react'
 import { AppContext } from '../../context/AppContext';
 import { useContext, useState } from 'react';
 import { checkFileExtension, typeArray } from '../../utils';
+import { BellIcon } from '@chakra-ui/icons';
 
 const GroupChat = ({ chat }) => {
     const { userInfo } = useContext(AppContext);
@@ -54,14 +55,7 @@ const GroupChat = ({ chat }) => {
                         : chat.latestMessage?.content}
                 </Text>
             </VStack>}
-            {chat && chat.latestMessage && chat?.latestMessage.sender._id !== userInfo?._id && !chat?.latestMessage.readBy.includes(userInfo?._id) && read && <Box
-                ml='auto'
-                w='10px'
-                h='10px'
-                borderRadius='50%'
-                bg='green.500'
-            >
-            </Box>}
+            {chat && chat.latestMessage && chat?.latestMessage.sender._id !== userInfo?._id && !chat?.latestMessage.readBy.includes(userInfo?._id) && read && <BellIcon ml='auto' color='green.500' />}
         </Box>
     )
 }

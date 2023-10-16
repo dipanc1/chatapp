@@ -9,6 +9,7 @@ import {
 import { AppContext } from '../../context/AppContext';
 import { checkFileExtension } from '../../utils';
 import { typeArray } from '../../utils';
+import { BellIcon } from '@chakra-ui/icons';
 
 const Conversation = ({ chat }) => {
   const [friends, setFriends] = useState([]);
@@ -71,14 +72,7 @@ const Conversation = ({ chat }) => {
               : chat.latestMessage.content}
           </Text>}
       </VStack>
-      {chat && chat.latestMessage && chat.latestMessage.sender && chat.latestMessage.sender._id !== userInfo?._id && !chat?.latestMessage.readBy.includes(userInfo?._id) && read && <Box
-        ml='auto'
-        w='10px'
-        h='10px'
-        borderRadius='50%'
-        bg='green.500'
-      >
-      </Box>}
+      {chat && chat.latestMessage && chat.latestMessage.sender && chat.latestMessage.sender._id !== userInfo?._id && !chat?.latestMessage.readBy.includes(userInfo?._id) && read && <BellIcon ml='auto' color='green.500' />}
 
 
     </Box>

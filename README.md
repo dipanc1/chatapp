@@ -11,5 +11,7 @@
 #### need twilio replacement for sending sms -- twilio
 
 #### stop streaming event message gone
+#### adding emoticons with socket.io
+#### darkmode
 
 ## Phone App
