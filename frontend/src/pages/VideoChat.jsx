@@ -101,7 +101,7 @@ const Chat = () => {
           <StreamingPeer setToggleChat={setToggleChat} admin={admin} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
           :
           <>
-            <Box width={['100%', '100%', 'auto']} flex={['1', '1', '2', '3']}>
+            <Box width={['100%', '100%', 'auto']} display="flex" flex={['1', '1', '2', '3']}>
               {user.token && <Conversations fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
             </Box>
             <Box
@@ -117,21 +117,25 @@ const Chat = () => {
             </Box>
           </>
         }
-        <Box
-          h={[toggleChat ? stream ? '70%' : '0%' : '0%', toggleChat ? stream ? '70%' : '0%' : '0%', stream ? 'calc(100vh - 141px)' : '100%']}
-          overflow='hidden'
-          // h={stream ? toggleChat ? ['70%', 'calc(100vh - 141px)'] : 'calc(100vh - 141px)' : '100%'}
-          position={['absolute', 'absolute', 'sticky']}
-          top={['unset', 'unset', '0']}
-          flex={(stream && token && meetingId) ? ['0', '0', '3', '3'] : ['12', '12', '5', '4']}
-          zIndex='1'
-          bottom={['0', '0', 'unset']}
-          width={['100%', '100%', 'auto']}
-          transition='all 0.25s ease-in-out'
-        // height={['70%', 'auto']}
-        >
-          {user.token && <Members setToggleChat={setToggleChat} admin={admin} token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
-        </Box>
+        {
+          selectedChat && (
+            <Box
+            h={[toggleChat ? stream ? '70%' : '0%' : '0%', toggleChat ? stream ? '70%' : '0%' : '0%', stream ? 'calc(100vh - 141px)' : '100%']}
+            overflow='hidden'
+            // h={stream ? toggleChat ? ['70%', 'calc(100vh - 141px)'] : 'calc(100vh - 141px)' : '100%'}
+            position={['absolute', 'absolute', 'sticky']}
+            top={['unset', 'unset', '0']}
+            flex={(stream && token && meetingId) ? ['0', '0', '3', '3'] : ['12', '12', '5', '4']}
+            zIndex='1'
+            bottom={['0', '0', 'unset']}
+            width={['100%', '100%', 'auto']}
+            transition='all 0.25s ease-in-out'
+          // height={['70%', 'auto']}
+          >
+            {user.token && <Members setToggleChat={setToggleChat} admin={admin} token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+          </Box>
+          )
+        }
       </Box>
     </Static>
 

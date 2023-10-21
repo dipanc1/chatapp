@@ -50,20 +50,21 @@ const Conversation = ({ chat }) => {
       variants={list}
       display={'flex'}
       flexDirection={'row'}
-      px={['5px', '10px']}
+      px={['5px']}
       alignItems={'center'}
       onClick={() => setRead(false)}
     >
       <Avatar size={['sm', 'md']} me={['10px', '15px']} variants={item} name={chat && friends?.username} src={chat && friends?.pic} />
       <VStack alignItems={'flex-start'}>
-        <Heading variants={item} fontSize='md'>{chat && friends?.username}</Heading>
+        <Heading textTransform="capitalize" variants={item} fontSize='md'>{chat && friends?.username}</Heading>
         {chat
-          && chat.latestMessage && <Text variants={item} fontSize='sm' ml='auto'>{chat
+          && chat.latestMessage && <Text textTransform="capitalize" variants={item} fontSize='sm' ml='auto'>
+            {/* {chat
             && chat.latestMessage
             && chat.latestMessage.sender
             && chat.latestMessage.sender._id === userInfo?._id
             ? 'You' :
-            friends?.username}:
+            friends?.username}: */}
             {chat
               && chat.latestMessage
               &&

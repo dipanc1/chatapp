@@ -1,14 +1,17 @@
 import React, { useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { Box, Text, Flex, List, ListItem, Image } from "@chakra-ui/react";
+import { Box, Text, Flex, List, ListItem, Image, Button, useColorMode } from "@chakra-ui/react";
 import "./style.css";
 import { AppContext } from "../../context/AppContext";
+import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 
 const SideBar = ({
   toggleSidebar
 }) => {
   const { dispatch, stream, selectedChat, userInfo } = useContext(AppContext);
   const navigate = useNavigate();
+  const { colorMode, toggleColorMode } = useColorMode();
+
   const CDN_IMAGES = "https://ik.imagekit.io/sahildhingra";
   const userMenu = [
     // {
@@ -86,7 +89,7 @@ const SideBar = ({
         position="fixed"
         transform={[toggleSidebar ? 'unset' : 'translateX(-100%)', toggleSidebar ? 'unset' : 'translateX(-100%)', 'unset']}
         boxShadow={[toggleSidebar ? '-50px 0 250px rgba(0,0,0,0.5)' : 'unset', toggleSidebar ? '100px 0 250px rgba(0,0,0,0.5)' : 'unset', 'Base']}
-        bg={"white"}
+        bg={colorMode === 'light' ? "white" : "#2b2929"}
         p={["7px 15px", "7px 15px", "20px"]}
         height={["100%", "100%", "calc(100vh - 40px)"]}
         width={["240px"]}
@@ -96,7 +99,7 @@ const SideBar = ({
         transition='all 0.3s ease-in-out'
       >
         <Flex
-          className="sidebar-nav"
+          className={`sidebar-nav ${colorMode === 'light' ? '' : 'dark-theme'}`}
           height={"100%"}
           flexDirection={["column"]}
         >
@@ -142,7 +145,7 @@ const SideBar = ({
                             }
                             alt={navitem.title}
                           />
-                          <Text>{navitem.title}</Text>
+                          <Text fontWeight={"500"}>{navitem.title}</Text>
                         </NavLink>
                       </ListItem>
                     )
@@ -154,6 +157,18 @@ const SideBar = ({
           </List>
           <Box mt={["auto"]} py={["auto"]}>
             <List>
+              <ListItem>
+                <Flex alignItems="center">
+                  <Button w="100%" justifyContent="flex-start"
+                  //  bg={colorMode === 'dark' ? '#805AD5' : '#FAF5FF'} 
+                    bg="transparent"
+                    onClick={toggleColorMode} 
+                  >
+                    {colorMode === 'light' ? <MoonIcon w="22px" /> : <SunIcon w="22px" color="red.500" />}
+                    <Text ms="15px">{colorMode === 'light' ? "Dark" : "Light"} Mode</Text>
+                  </Button>
+                </Flex>
+              </ListItem>
               <ListItem onClick={handleLogout}>
                 <NavLink to={"/"}>
                   <Image

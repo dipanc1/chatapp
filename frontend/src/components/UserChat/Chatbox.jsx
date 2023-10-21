@@ -9,7 +9,7 @@ import DetailsModal from '../UserModals/DetailsModal'
 import { format } from 'timeago.js'
 import EndLeaveModal from '../UserModals/EndLeaveModal'
 import { api_key, backend_url, folder, pictureUpload, uploadFile } from '../../utils'
-import { Avatar, AvatarBadge, Box, Button, Divider, Flex, Image, Img, Input, Spinner, Text, useDisclosure, useToast } from '@chakra-ui/react'
+import { Avatar, AvatarBadge, Box, Button, Divider, Flex, Image, Img, Input, Spinner, Text, useColorMode, useDisclosure, useToast } from '@chakra-ui/react'
 import { FiImage, FiPaperclip, FiSend } from 'react-icons/fi'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useLocation } from 'react-router-dom'
@@ -25,6 +25,7 @@ var selectedChatCompare;
 export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selectedChat, fetchAgain, setFetchAgain, user, toast }) => {
   const socket = React.useContext(SocketContext);
   const { notification, dispatch, userInfo, signature, timestamp } = React.useContext(AppContext);
+  const { colorMode } = useColorMode();
 
   const [messages, setMessages] = React.useState([]);
   const [page, setPage] = React.useState(2);
@@ -359,7 +360,7 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
         display={'flex'}
         alignItems={'center'}
         justifyContent={'space-between'}
-        background="#F6F3FF"
+        background={colorMode === 'light' ? "#F6F3FF" : "#282020"}
         padding="15px 10px"
       >
         <Box position='relative'>
@@ -387,7 +388,7 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
         </Box>
         <Input
           mx={'10px'}
-          bgColor={'#fff'}
+          bgColor={colorMode === 'light' ? "white" : "#121212"}
           border={'none'}
           placeholder='Type Your Message...'
           focusBorderColor='#9F85F7'
@@ -434,6 +435,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
   const { isOpen: isConfirmOpen, onOpen: onConfirmOpen, onClose: onConfirmClose } = useDisclosure()
   const [online, setOnline] = React.useState(false);
   const [profile, setProfile] = React.useState(null);
+  const { colorMode } = useColorMode();
 
   const { selectedChat } = React.useContext(AppContext);
 
@@ -602,7 +604,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
       bg={'whiteColor'}
       my={'5'}
       m='0'
-      borderLeft='1px solid #EAE4FF'
+      borderLeft={colorMode === 'light' ? '1px solid #EAE4FF' : '1px solid #545454'}
       display='flex'
       flexDirection='column'
     >
@@ -616,11 +618,11 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
               justifyContent={'space-between'}
               alignItems={'center'}
               px={4}
-              py="17px"
+              py="8.5px"
               initial="hidden"
               animate="visible"
               variants={variants}
-              background="#F6F3FF"
+              background={colorMode === 'light' ? "#F6F3FF" : "#282020"}
             >
               <Box
                 display="flex"
@@ -630,7 +632,8 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
                 initial="hidden"
                 animate="visible"
                 variants={variants}
-                style={{ margin: selectedChat?.isGroupChat ? '8px' : null }}>
+                // style={{ margin: selectedChat?.isGroupChat ? '8px' : null }}
+                >
                 <Box
                   display={['block', 'block', 'none']}
                   pe='10px'
@@ -646,15 +649,15 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
                     initial="hidden"
                     animate="visible"
                     variants={variants}
-                    height='46px'
-                    width='46px'
+                    height='24px'
+                    width='24px'
                     name={profile?.username}
                     src={profile?.pic}
                     mr={4}
                   >
                     {online ?
-                      <AvatarBadge boxSize='1em' bg='green.500' />
-                      : <AvatarBadge borderColor='papayawhip' bg='tomato' boxSize='1em' />}
+                      <AvatarBadge boxSize='0.7em' bg='green.500' />
+                      : <AvatarBadge borderColor='papayawhip' bg='tomato' boxSize='0.7em' />}
                   </Avatar>
                 }
 
@@ -663,9 +666,10 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
                   animate="visible"
                   variants={variants}
                   fontSize='16px'
-                  fontWeight={'bold'}
+                  fontWeight={'500'}
+                  textTransform="capitalize"
                 >
-                  {selectedChat?.isGroupChat ? selectedChat?.chatName.toUpperCase() : profile?.username}
+                  {selectedChat?.isGroupChat ? selectedChat?.chatName : profile?.username}
                 </Text>
               </Box>
               <Flex>
@@ -678,13 +682,14 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
                           borderRadius="100%"
                           ms="15px"
                           me='10px'
-                          h='40px'
-                          w='40px'
+                          h='24px'
+                          w='24px'
                           p='0'
                           onClick={onOpen}
                         >
                           <Img
-                            h='22px'
+                          filter={colorMode === 'light' ? '' : 'invert(1) brightness(10)'}
+                            h='20px'
                             src="https://ik.imagekit.io/sahildhingra/settings.png" alt="" />
                         </Button>
                       )
@@ -743,13 +748,13 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
             animate="visible"
             variants={variants}
           >
-            <Image src='./images/chatmain.png' h='150px' mb='10px' />
-            <Text fontSize={['xl', 'xl', 'xl', '2xl']} color={'buttonPrimaryColor'}>
+            <Image src='https://cdn3d.iconscout.com/3d/free/thumb/free-chat-5658961-4715767.png' h='150px' mb='10px' />
+            {/* <Text fontSize={['xl', 'xl', 'xl', '2xl']} color={'buttonPrimaryColor'}>
               Open a Conversation to Start a Chat
             </Text>
             <Text fontSize={['xs', 'md', 'md', 'md']} px='50px' textAlign='center' pt='20px' color={'greyTextColor'}>
               Select or create a group to have conversation, share video and start connecting with other users.
-            </Text>
+            </Text> */}
           </Box>)
       }
     </Box>
