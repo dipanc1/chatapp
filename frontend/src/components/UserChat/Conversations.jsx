@@ -14,6 +14,7 @@ import {
     TabList,
     TabPanels,
     TabPanel,
+    useColorMode,
 } from "@chakra-ui/react";
 import { AddIcon, RepeatIcon } from "@chakra-ui/icons";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -25,6 +26,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
 
     const [hasMoreGroupChats, setHasMoreGroupChats] = React.useState(true);
     const [groupChatsPage, setGroupChatsPage] = React.useState(2);
+    const { colorMode } = useColorMode();
 
     const [hasMoreOneOnOneChats, setHasMoreOneOnOneChats] = React.useState(true);
     const [oneOnOneChatsPage, setOneOnOneChatsPage] = React.useState(2);
@@ -166,13 +168,13 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
     return (
         <>
 
-            <Tabs>
+            <Tabs width="100%" display="flex" flexDirection="column">
                 <TabList>
-                    <Tab flex="1">Users</Tab>
-                    <Tab flex="1">Groups</Tab>
+                    <Tab flex="1" fontWeight="500">Users</Tab>
+                    <Tab flex="1" fontWeight="500">Groups</Tab>
                 </TabList>
 
-                <TabPanels>
+                <TabPanels flex="1" overflow="auto">
                     <TabPanel p="0">
                         {loading ? (
                             <Box
@@ -190,7 +192,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                 />
                             </Box>
                         ) : (
-                            <div id="scrollableDiv" style={{ height: 200 }}>
+                            <Box pt="10px" id="scrollableDiv" style={{ height: "100%" }}>
                                 <InfiniteScroll
                                     dataLength={conversations.length}
                                     next={fetchMoreOneOnOneChats}
@@ -210,7 +212,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                         />
                                     </Box>}
                                     scrollThreshold={0.9}
-                                    height={200}
+                                    height="100%"
                                     endMessage={
                                         <Box
                                             display={"flex"}
@@ -230,18 +232,19 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                     {conversations.map((c) => (
                                         <Box
                                             _hover={{
-                                                background: "selectPrimaryColor",
+                                                background: `${colorMode === 'light' ? "selectPrimaryColor" : "#3f3f3f"}`,
                                             }}
                                             bg={
                                                 selectedChat?._id === c._id
-                                                    ? "selectPrimaryColor"
+                                                    ? `${colorMode === 'light' ? "selectPrimaryColor" : "#3f3f3f"}`
                                                     : ""
                                             }
                                             p={2}
                                             cursor={"pointer"}
-                                            borderBottom="1px solid #EAE4Ff"
-                                            mb="1px"
-                                            maxW={'16vw'}
+                                            borderBottom={colorMode === 'light' ? "1px solid #f5f5f7" : "1px solid #3b3b3b"}
+                                            maxW={'100%'}
+                                            m="0 10px"
+                                            borderRadius='5px'
                                             overflowX={'hidden'}
                                             key={c._id}
                                             _disabled={selectedChat?._id === c._id}
@@ -256,7 +259,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                         </Box>
                                     ))}
                                 </InfiniteScroll>
-                            </div>
+                            </Box>
                         )
                         }
                         {conversations.length === 0 &&
@@ -317,7 +320,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                 />
                             </Box>
                         ) : (
-                            <div id="scrollableDiv" style={{ height: 300 }}>
+                            <Box pt="10px" id="scrollableDiv" style={{ height: "100%" }}>
                                 <InfiniteScroll
                                     dataLength={groupConversations.length}
                                     next={fetchMoreGroupChats}
@@ -357,17 +360,19 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                     {groupConversations.map((c) => (
                                         <Box
                                             _hover={{
-                                                background: "selectPrimaryColor",
+                                                background: `${colorMode === 'light' ? "selectPrimaryColor" : "#3f3f3f"}`,
                                             }}
                                             bg={
                                                 selectedChat?._id === c._id
-                                                    ? "selectPrimaryColor"
+                                                    ? `${colorMode === 'light' ? "selectPrimaryColor" : "#3f3f3f"}`
                                                     : ""
                                             }
                                             p={2}
                                             cursor={"pointer"}
-                                            borderBottom="1px solid #EAE4Ff"
-                                            mb="1px"
+                                            borderBottom={colorMode === 'light' ? "1px solid #f5f5f7" : "1px solid #3b3b3b"}
+                                            maxW={'100%'}
+                                            m="0 10px"
+                                            borderRadius='5px'
                                             key={c._id}
                                             _disabled={selectedChat?._id === c._id}
                                             onClick={() => {
@@ -381,7 +386,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                         </Box>
                                     ))}
                                 </InfiniteScroll>
-                            </div>
+                            </Box>
                         )}
                         {groupConversations.length === 0 &&
                             !loading ? (
@@ -457,7 +462,8 @@ const Conversations = ({ fetchAgain, setFetchAgain }) => {
         <>
             <Box
                 bg={"whiteColor"}
-                display={["block", "block", "block", "block"]}
+                display="flex"
+                width="100%"
             >
                 <DrawerConversations
                     fetchAgain={fetchAgain}

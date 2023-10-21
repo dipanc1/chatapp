@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import Cookies from "universal-cookie";
 
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, useColorMode } from "@chakra-ui/react";
 import SideBar from "./SideBar";
 import Header from "./Header";
 
 const Static = ({ noSmPadding, noPadding, children, fetchAgain, setFetchAgain }) => {
   const cookies = new Cookies();
   let cookieVal = cookies.get("maximized");
+  const { colorMode } = useColorMode();
 
   const [maximizedValue, setMaximizedValue] = useState(cookieVal);
   const [toggleSidebar, setToggleSidebar] = useState(false);
@@ -28,7 +29,7 @@ const Static = ({ noSmPadding, noPadding, children, fetchAgain, setFetchAgain })
           minH="100vh"
           py={["0", "0", "20px"]}
           px={["0", "0", "30px"]}
-          bg="backgroundColor"
+          bg={colorMode === 'light' ? "backgroundColor" : "#121212"}
         >
           <Flex height="100%">
             <Box height="100%">
@@ -50,12 +51,12 @@ const Static = ({ noSmPadding, noPadding, children, fetchAgain, setFetchAgain })
                 right={["0", "0", "30px"]}
                 left={["0", "0", "290px"]}
                 mt={["56px", "56px", "100px"]}
-                bg="#fff"
+                bg={colorMode === 'light' ? "white" : "#2b2929"}
                 borderRadius={["0", "0", "10px"]}
               >
                 <button
                   onClick={handleExpand}
-                  className="expand-btn"
+                  className={`expand-btn ${colorMode === 'light' ? '' : 'dark-theme'}`}
                 >
                   <img
                     src="https://ik.imagekit.io/sahildhingra/maximize.png"

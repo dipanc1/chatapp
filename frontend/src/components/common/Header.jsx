@@ -19,14 +19,13 @@ import {
   MenuButton,
   Portal,
   useToast,
-  useColorMode,
+  useColorMode
 } from '@chakra-ui/react';
 import ProfileModal from '../UserModals/ProfileModal';
 import { AppContext } from '../../context/AppContext';
 import UserCard from '../UserItems/UserCard';
 import conversationApi from '../../services/apis/conversationApi';
 import authApi from '../../services/apis/authApi';
-import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 
 const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) => {
   const user = JSON.parse(localStorage.getItem('user'));
@@ -40,7 +39,8 @@ const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) 
   const [searchResultsGroups, setSearchResultsGroups] = useState([]);
   const [searchResultsEvents, setSearchResultsEvents] = useState([]);
   const [activeTab, setActiveTab] = useState(1)
-  const { colorMode, toggleColorMode } = useColorMode();
+
+  const { colorMode } = useColorMode();
 
   let navigate = useNavigate();
   let location = useLocation();
@@ -185,7 +185,7 @@ const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) 
 
   return (
     <>
-      <Box className='header' zIndex='9' position='fixed' right={['0', '0', '30px']} left={['0', '0', '290px']} boxShadow={'Base'} bg={'white'} p={['7px 10px', '7px 10px', '20px']} borderRadius={['0', '0', '10px']}>
+      <Box className={`header ${colorMode === 'light' ? '' : 'dark-theme'}`} zIndex='9' position='fixed' right={['0', '0', '30px']} left={['0', '0', '290px']} boxShadow={'Base'} bg={colorMode === 'light' ? "white" : "#2b2929"} p={['7px 10px', '7px 10px', '20px']} borderRadius={['0', '0', '10px']}>
         <Flex alignItems='center'>
           <Box onClick={() => setToggleSidebar(!toggleSidebar)}>
             <Image display={['block', 'block', 'none']} height={['25px', '35px']} mr='15px' src={CDN_IMAGES + "/menu.png"} alt="Menu" />
@@ -194,13 +194,13 @@ const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) 
             <Image display={['none', 'none', 'block']} height={['25px', '35px']} mx='auto' src={CDN_IMAGES + "/chatapp-logo.png"} alt="ChatApp" />
             <Image display={['block', 'block', 'none!important']} height={['25px', '35px']} mx='auto' src={CDN_IMAGES + "/chatapp-logo-small.png"} alt="ChatApp" />
           </Box>
-          <Box transition='all 0.3s ease-in-out' p={['15px 20px', '15px 20px', '0']} display={['block', 'block']} w={['100%', '100%', 'auto']} zIndex={['1']} top={['0']} transform={[toggleSearch ? 'unset' : 'translateY(100%)', toggleSearch ? 'unset' : 'translateY(100%)', 'unset']} right={['0']} position={['absolute', 'absolute', 'relative']} height={['100vh', '100vh', 'auto']} mx='auto' minW={['unset', 'unset', '400px']} bg='#fff'>
+          <Box transition='all 0.3s ease-in-out' p={['15px 20px', '15px 20px', '0']} display={['block', 'block']} w={['100%', '100%', 'auto']} zIndex={['1']} top={['0']} transform={[toggleSearch ? 'unset' : 'translateY(100%)', toggleSearch ? 'unset' : 'translateY(100%)', 'unset']} right={['0']} position={['absolute', 'absolute', 'relative']} height={['100vh', '100vh', 'auto']} mx='auto' minW={['unset', 'unset', '400px']} bg="transparent">
             <Box onClick={() => setToggleSearch(false)} p='10px' display={['block', 'block', 'none']} zIndex='2' position='absolute' top={['17px', '17px', '2px']} left={['17px', '17px', '12px']}>
               <Image opacity='0.8' h='15px' src={CDN_IMAGES + '/search-back.png'} />
             </Box>
             {!userInfo?.isSuperAdmin && <Input
               focusBorderColor='#9F85F7'
-              disabled={loading} onChange={(e) => handleSearch(e)} value={search} placeholder='Search Users / Groups / Events' py={'13px'} px={['30px', '30px', '21px']} bg={'#F4F1FF'} border={'0'} />}
+              disabled={loading} onChange={(e) => handleSearch(e)} value={search} placeholder='Search Users / Groups / Events' py={'13px'} px={['30px', '30px', '21px']} bg={colorMode === 'light' ? "#F4F1FF" : "#121212"} border={'0'} />}
             {
               searching && (
                 <Box zIndex='1' position='absolute' top={['17px', '2px']} right={['30px', '12px']}>
@@ -208,11 +208,11 @@ const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) 
                 </Box>
               )
             }
-            <Box px='20px' background='#fff' boxShadow={['unset', '0px 3px 24px rgba(159, 133, 247, 0.6)']} borderRadius='5px' w='100%' position='absolute' top={['60px', 'calc(100% + 10px)']} right={['0']} zIndex='1'>
+            <Box px='20px' background={colorMode === 'light' ? "white" : "#1d2127"} boxShadow={['unset', `${colorMode === 'light' ? '0px 3px 24px rgba(159, 133, 247, 0.6)' : '0px 3px 24px rgb(27 27 27 / 60%)'}`]} borderRadius='5px' w='100%' position='absolute' top={['60px', 'calc(100% + 10px)']} right={['0']} zIndex='1'>
               {
                 searchResultsUsers?.length || searchResultsGroups?.length || searchResultsEvents?.length ? (
                   <>
-                    <UnorderedList ms='0' display='flex' className="tab-nav">
+                    <UnorderedList ms='0' display='flex' className="tab-nav" overflow={"hidden"}>
                       {
                         searchResultsUsers?.length && (
                           <ListItem mr='0!important' onClick={() => setActiveTab(1)} className={activeTab === 1 ? "active" : ""}>
@@ -283,9 +283,6 @@ const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) 
             <Flex alignItems='center'>
               <Image onClick={() => setToggleSearch(true)} display={['block', 'block', 'none']} px='18px' height='21px' src={CDN_IMAGES + "/search-icon.png"} />
               <Menu>
-                <Button bg={colorMode === 'dark' ? '#805AD5' : '#FAF5FF'} onClick={toggleColorMode} >
-                  {colorMode === 'light' ? <MoonIcon /> : <SunIcon color="red.500" />}
-                </Button>
                 <MenuButton position='relative'>
                   {
                     pushNotification && notification.length > 0 && (
@@ -324,15 +321,15 @@ const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) 
               </Menu>
               <Box position='relative' ms='7px'>
                 {userInfo && <Button onClick={() => setToggleProfiledd(!toggleProfiledd)} className='btn-default' ms={['5px', '15px']} display='flex' alignItems='center' bg='transparent'>
-                  <Image borderRadius='full' objectFit='cover' boxSize={['30px', '40px']} src={userInfo.pic} alt='Profile Pic' />
-                  <Text display={["none", "block"]} ps='15px' pe='10px'>
+                  <Image filter={"unset!important"} borderRadius='full' objectFit='cover' boxSize={['30px', '40px']} src={userInfo.pic} alt='Profile Pic' />
+                  <Text textTransform="capitalize" fontWeight="500" display={["none", "block"]} ps='15px' pe='10px'>
                     {userInfo?.username}
                   </Text>
                   <Image display={["none", "block"]} height='17px' src={CDN_IMAGES + "/down-arrow.png"} alt='' />
                 </Button>}
                 {
                   toggleProfiledd && (
-                    <Box className='header-dd' width='fit-content' borderRadius='4px' overflow='hidden' position='absolute' top={['calc(100% + 10px)', 'calc(100% + 20px)']} right='0' background='#fff' boxShadow='0px 3px 24px rgb(159 133 247 / 60%)'>
+                    <Box className='header-dd' width='fit-content' borderRadius='4px' overflow='hidden' position='absolute' top={['calc(100% + 10px)', 'calc(100% + 20px)']} right='0' background={colorMode === 'light' ? "white" : "#1d2127"} boxShadow={['unset', `${colorMode === 'light' ? '0px 3px 24px rgba(159, 133, 247, 0.6)' : '0px 3px 24px rgb(27 27 27 / 60%)'}`]}>
                       <UnorderedList listStyleType='none' p='10px 0' ms='0'>
                         <ListItem ps='0'>
                           <ProfileModal>

@@ -16,6 +16,19 @@
     background-color: #EAE4FF;
 }
 
+.sidebar-nav.dark-theme li a:hover,
+.sidebar-nav.dark-theme li a.active {
+    background-color: #3f3f3f;
+}
+
+.sidebar-nav.dark-theme li a img, .header.dark-theme img {
+    filter: invert(1) brightness(10);
+}
+
+.header.dark-theme .header-dd a:hover {
+    background-color: #3f3f3f;
+}
+
 .expand-btn {
     height: 24px;
     width: 24px;
@@ -28,6 +41,14 @@
     transform: translate(-50%, -50%);
     border: 1px solid rgba(159, 133, 247, 0.3);
     z-index: 1;
+}
+
+.expand-btn.dark-theme {
+    background-color: #1d1d1d;
+}
+
+.expand-btn.dark-theme img {
+    filter: invert(1) brightness(10);
 }
 
 .btn-text {

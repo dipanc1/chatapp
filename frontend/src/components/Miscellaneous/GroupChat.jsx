@@ -33,7 +33,7 @@ const GroupChat = ({ chat }) => {
         <Box
             display={'flex'}
             flexDirection={'row'}
-            px={['5px', '10px']}
+            px={['5px']}
             alignItems={'center'}
             initial="hidden"
             animate="visible"
@@ -43,11 +43,11 @@ const GroupChat = ({ chat }) => {
             {/* TODO : will add image later */}
             <Avatar size={['sm', 'md']} me={['10px', '15px']} variants={item} />
             {chat && <VStack alignItems={'flex-start'}>
-                <Heading variants={item} fontSize='md'>{chat.chatName}</Heading>
+                <Heading  textTransform="capitalize" variants={item} fontSize='md'>{chat.chatName}</Heading>
                 <Text variants={item} fontSize='sm' ml='auto'>
-                    {chat && chat.latestMessage && chat.latestMessage.sender && chat.latestMessage.sender._id === userInfo?._id ?
+                    {/* {chat && chat.latestMessage && chat.latestMessage.sender && chat.latestMessage.sender._id === userInfo?._id ?
                         'You' : chat && chat.latestMessage && chat.latestMessage.sender && chat.latestMessage.sender.username}
-                    {chat && chat.latestMessage ? ':' : null}
+                    {chat && chat.latestMessage ? ':' : null} */}
                     {chat
                         && chat.latestMessage &&
                         typeArray.includes(checkFileExtension(chat.latestMessage?.content))

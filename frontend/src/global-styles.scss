@@ -1,7 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Martel:wght@400;600&family=Nunito+Sans:wght@300;400;500;600&display=swap');
+
 * {
     margin: 0;
     padding: 0;
-    font-family: 'Nunito', sans-serif;
+    font-family: 'Inter', sans-serif;
 
     ::-webkit-scrollbar {
         width: 4px;
@@ -17,6 +19,15 @@
         border-radius: 10px;
         background-color: darkgrey;
     }
+}
+
+* {
+    font-weight: 400;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: inherit!important;
+    font-weight: 500!important;
 }
 
 video {

@@ -2,7 +2,7 @@ import { useContext, useEffect } from 'react';
 import { AppContext } from '../../context/AppContext';
 
 import { format } from 'timeago.js'
-import { Avatar, Box, Button, Flex, Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useDisclosure } from '@chakra-ui/react';
+import { Avatar, Box, Button, Flex, Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useColorMode, useDisclosure } from '@chakra-ui/react';
 
 import { checkFileExtension } from '../../utils';
 import { AUDIO, DOC, IMAGE, PDF, PPT, TXT, VIDEO, XLS } from '../../constants';
@@ -57,6 +57,7 @@ const ImageViewer = ({ content, isOpen, onClose }) => {
 
 const Message = ({ messages, own, sameSender, sameTime }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const { colorMode } = useColorMode();
 
     const { selectedChat } = useContext(AppContext);
 
@@ -153,10 +154,10 @@ const Message = ({ messages, own, sameSender, sameTime }) => {
                                                                         <BiFileBlank size={size} />
                                                                     </DownloadFileComponent>
                                     }
-                                    <Text color={own ? 'white' : ''}>{messages.content.split('/')[messages.content.split('/').length - 1]}</Text>
+                                    <Text color={own ? 'white' : `${colorMode === 'light' ? '' : '#2b2929'}`}>{messages.content.split('/')[messages.content.split('/').length - 1]}</Text>
                                 </Box>
                                 :
-                                <Text color={own ? 'white' : ''}>{messages.content}</Text>
+                                <Text color={own ? 'white' : `${colorMode === 'light' ? '' : '#2b2929'}`}>{messages.content}</Text>
                         }
                     </Box>
                 </Box>

@@ -8,7 +8,7 @@ import { api_key, backend_url, pictureUpload, folder } from '../../utils'
 import { HiUserRemove } from 'react-icons/hi'
 import {
   Accordion, Avatar,
-  Box, Button, Divider, Flex, Image, Input, Spinner, Tab, TabList, TabPanel, TabPanels, Tabs, Text, useDisclosure, useToast,
+  Box, Button, Divider, Flex, Image, Input, Spinner, Tab, TabList, TabPanel, TabPanels, Tabs, Text, useColorMode, useDisclosure, useToast,
 } from '@chakra-ui/react'
 import { GrUserAdd } from 'react-icons/gr'
 import { BsTelephone, BsPerson } from 'react-icons/bs'
@@ -671,7 +671,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
             display={'flex'}
             justifyContent={'space-around'}
             alignItems={'center'}>
-            <Text as='kbd' fontSize={'lg'}>Personal Information </Text>
+            <Text fontWeight="500" fontSize={'lg'}>Personal Information </Text>
           </Box>
           <Divider orientation='horizontal' />
 
@@ -687,12 +687,12 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
             <Avatar my={'10'} size={'2xl'} name={selectedChat?.users.find(member => member._id !== userInfo?._id)?.username} src={selectedChat?.users.find(member => member._id !== userInfo?._id)?.pic} />
 
             <BsPerson />
-            <Text as='samp' mb={'5'}>
+            <Text fontWeight="500" textTransform="capitalize" mb={'5'}>
               {selectedChat?.users.find(member => member._id !== userInfo?._id)?.username}
             </Text>
 
             <BsTelephone />
-            <Text as='samp'>
+            <Text fontWeight="500">
               {selectedChat?.users.find(member => member._id !== userInfo?._id)?.number}
             </Text>
 
@@ -701,24 +701,28 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
       )
     )
       :
-      (<Box
-        display={'flex'}
-        justifyContent={'center'}
-        alignItems={'center'}
-        flexDirection={'column'}
-        height={'100%'}
-      >
-        <Text cursor={'default'} color={'buttonPrimaryColor'} fontSize={'2xl'}>
-          Select a chat
-        </Text>
-        <Text fontSize={['xs', 'md', 'md', 'md']} px='50px' textAlign='center' pt='20px' color={'greyTextColor'}>
-          Select or create a group to see the participants of that group along with settings and other information.
-        </Text>
-      </Box>)
+      (
+        ""
+      // <Box
+      //   display={'flex'}
+      //   justifyContent={'center'}
+      //   alignItems={'center'}
+      //   flexDirection={'column'}
+      //   height={'100%'}
+      // >
+      //   <Text cursor={'default'} color={'buttonPrimaryColor'} fontSize={'2xl'}>
+      //     Select a chat
+      //   </Text>
+      //   <Text fontSize={['xs', 'md', 'md', 'md']} px='50px' textAlign='center' pt='20px' color={'greyTextColor'}>
+      //     Select or create a group to see the participants of that group along with settings and other information.
+      //   </Text>
+      // </Box>
+      )
   )
 }
 
 const Members = ({ setToggleChat, fetchAgain, setFetchAgain, token, meetingId, admin }) => {
+  const { colorMode } = useColorMode();
 
   return (
     // <Box
@@ -734,7 +738,7 @@ const Members = ({ setToggleChat, fetchAgain, setFetchAgain, token, meetingId, a
     <Box
       bg={'whiteColor'}
       display={['block', 'block', 'block', 'block']}
-      borderLeft='1px solid #EAE4FF'
+      borderLeft={colorMode === 'light' ? '1px solid #EAE4FF' : '1px solid #545454'}
       h='100%'
     >
       <MembersComponent setToggleChat={setToggleChat} admin={admin} token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
