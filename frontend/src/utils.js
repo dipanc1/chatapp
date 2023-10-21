@@ -24,7 +24,7 @@ const emailjsServiceId = 'service_ef2nk5k';
 const emailjsTemplateId = 'template_for_chatapp';
 const emailjsUserId = 'user_V88xEHCgH913EFMNqxCRw';
 
-const trackingId = "G-MKMMCFR2K1";
+const trackingId = "G-RQ7Z6QSMZF";
 
 
 const checkFileExtension = (url) => {

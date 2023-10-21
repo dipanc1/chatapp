@@ -137,6 +137,19 @@ io.on("connection", (socket) => {
         });
     });
 
+    // send emoticons in a chat room
+    socket.on("new emoticon", (newEmoticonReceived) => {
+        var chat = newEmoticonReceived.chat;
+        if (!chat.users) {
+            console.log("No users in chat");
+        }
+
+        chat.users.forEach((user) => {
+            if (user._id == newEmoticonReceived.sender._id) return;
+            socket.in(user._id).emit("emoticon received", newEmoticonReceived);
+        });
+    });
+
     socket.off("setup", (userData) => {
         console.log("USER DISCONNECTED");
         socket.leave(userData._id);
