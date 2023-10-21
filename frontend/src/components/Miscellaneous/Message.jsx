@@ -21,12 +21,13 @@ const size = 30;
 
 const DownloadFileComponent = ({ content, children }) => {
     const [hover, setHover] = useState(false);
+    const { colorMode } = useColorMode();
 
     return (
         <Flex direction={'row'} alignItems={'center'} justifyContent={'space-between'} w={'100%'} position={'relative'} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} cursor={'pointer'}>
             {children}
             {hover && <Box borderRadius={'50%'} bg={'rgba(0,0,0,0.5)'} height={'8'} width={'8'} display={'flex'} alignItems={'center'} justifyContent={'center'} position={'absolute'} top={'0'} right={'0'} opacity={'1'} zIndex={'1'}>
-                <BsDownload size={20} onClick={() => window.open(content, '_blank')} color='white' />
+                <BsDownload size={20} onClick={() => window.open(content, '_blank')} color={colorMode === 'light' ? 'black' : 'white'} />
             </Box>}
         </Flex>
     )
@@ -112,7 +113,7 @@ const Message = ({ messages, own, sameSender, sameTime }) => {
                                     <Box borderRadius={'50%'} bg={'rgba(0,0,0,0.5)'} height={'9'} width={'9'} display={'flex'} alignItems={'center'} justifyContent={'center'} position={'absolute'} top={'1'} right={'1'} opacity={'1'} zIndex={'1'}>
                                         <BsDownload onClick={() => {
                                             window.open(messages.content, '_blank')
-                                        }} cursor={'pointer'} color='white' />
+                                        }} cursor={'pointer'} color={colorMode === 'light' ? '' : 'black'} />
                                     </Box>
                                 }
                                 <Image onClick={onOpen} h='100%' w='100%' objectFit='cover' mx='auto' src={messages.content} alt='image' opacity={imageHover ? '0.8' : '1'} />
@@ -122,36 +123,36 @@ const Message = ({ messages, own, sameSender, sameTime }) => {
                                     {
                                         checkFileExtension(messages.content) === DOC ?
                                             <DownloadFileComponent content={messages.content}>
-                                                <BsFiletypeDocx size={size} />
+                                                <BsFiletypeDocx size={size} color={colorMode === 'light' ? '' : 'black'} />
                                             </DownloadFileComponent>
                                             : checkFileExtension(messages.content) === PDF ?
                                                 <DownloadFileComponent content={messages.content}>
-                                                    <AiOutlineFilePdf size={size} />
+                                                    <AiOutlineFilePdf size={size} color={colorMode === 'light' ? '' : 'black'} />
                                                 </DownloadFileComponent>
                                                 : checkFileExtension(messages.content) === PPT ?
                                                     <DownloadFileComponent content={messages.content}>
-                                                        <AiOutlineFilePpt size={size} />
+                                                        <AiOutlineFilePpt size={size} color={colorMode === 'light' ? '' : 'black'} />
                                                     </DownloadFileComponent>
                                                     : checkFileExtension(messages.content) === TXT ?
                                                         <DownloadFileComponent content={messages.content}>
-                                                            <GrDocumentTxt size={size} />
+                                                            <GrDocumentTxt size={size} color={colorMode === 'light' ? '' : 'black'} />
                                                         </DownloadFileComponent>
                                                         : checkFileExtension(messages.content) === XLS ?
                                                             <DownloadFileComponent content={messages.content}>
-                                                                <BsFiletypeXls size={size} />
+                                                                <BsFiletypeXls size={size} color={colorMode === 'light' ? '' : 'black'} />
                                                             </DownloadFileComponent>
                                                             : checkFileExtension(messages.content) === AUDIO ?
                                                                 <DownloadFileComponent content={messages.content}>
-                                                                    <MdAudiotrack size={size} />
+                                                                    <MdAudiotrack size={size} color={colorMode === 'light' ? '' : 'black'} />
                                                                 </DownloadFileComponent>
                                                                 :
                                                                 checkFileExtension(messages.content) === VIDEO ?
                                                                     <DownloadFileComponent content={messages.content}>
-                                                                        <AiOutlineVideoCamera size={size} />
+                                                                        <AiOutlineVideoCamera size={size} color={colorMode === 'light' ? '' : 'black'} />
                                                                     </DownloadFileComponent>
                                                                     :
                                                                     <DownloadFileComponent content={messages.content}>
-                                                                        <BiFileBlank size={size} />
+                                                                        <BiFileBlank size={size} color={colorMode === 'light' ? '' : 'black'} />
                                                                     </DownloadFileComponent>
                                     }
                                     <Text color={own ? 'white' : `${colorMode === 'light' ? '' : '#2b2929'}`}>{messages.content.split('/')[messages.content.split('/').length - 1]}</Text>

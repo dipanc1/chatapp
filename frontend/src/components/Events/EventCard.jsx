@@ -13,7 +13,8 @@ import {
   UnorderedList,
   ListItem,
   useDisclosure,
-  useToast
+  useToast,
+  useColorMode
 } from '@chakra-ui/react';
 import { AppContext } from '../../context/AppContext';
 import { api_key, pictureUpload, folder } from '../../utils';
@@ -51,6 +52,7 @@ const EventCard = ({
   const [meetingIdExists, setMeetingIdExists] = React.useState(false);
 
   const toast = useToast();
+  const { colorMode } = useColorMode();
 
   const { isOpen: isOpenEditEvent, onOpen: onOpenEditEvent, onClose: onCloseEditEvent } = useDisclosure();
 
@@ -339,7 +341,7 @@ const EventCard = ({
           <Image onClick={() => selectEvent(chatId)} src={imageUrl ?? "https://ik.imagekit.io/sahildhingra/default-no-image-wide.jpg"} w='100%' height='220px' objectFit='cover' />
           <Flex alignItems='center' justifyContent='space-between' px='10px' py='10px'>
             <Box>
-              <Text flex='1' fontSize='18px'>
+              <Text flex='1' fontSize='18px' color={colorMode === 'light' ? 'black' : "#7B7A7A"}>
                 {title}
               </Text>
               <Text color='#999' pt='4px' fontSize='13px'>

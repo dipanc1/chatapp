@@ -1,4 +1,4 @@
-import { Box, Flex, Image, ListItem, Text, UnorderedList, useDisclosure, useToast } from '@chakra-ui/react'
+import { Box, Flex, Image, ListItem, Text, UnorderedList, useColorMode, useDisclosure, useToast } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import GroupSettingsModal from '../UserModals/GroupSettingsModal';
 import axios from 'axios';
@@ -38,6 +38,7 @@ const GroupCard = ({
   const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure()
   const { isOpen: isOpenCreateEvent, onOpen: onOpenCreateEvent, onClose: onCloseCreateEvent } = useDisclosure()
 
+  const { colorMode } = useColorMode();
 
   const { userInfo, fullScreen, getCloudinarySignature, signature, timestamp } = React.useContext(AppContext);
 
@@ -409,15 +410,15 @@ const GroupCard = ({
                   <UnorderedList listStyleType='none' ms='0'>
                     <ListItem onClick={onAddOpen} cursor={"pointer"} whiteSpace='pre' p='10px 50px 10px 20px' display='flex' alignItems='center'>
                       <Image h='22px' me='15px' src="https://ik.imagekit.io/sahildhingra/user.png" />
-                      <Text>Add Member</Text>
+                      <Text color={colorMode === 'light' ? 'black' : "black"}>Add Member</Text>
                     </ListItem>
                     <ListItem cursor={"pointer"} onClick={onOpenCreateEvent} whiteSpace='pre' p='10px 50px 10px 20px' display='flex' alignItems='center'>
                       <Image h='22px' me='15px' src="https://ik.imagekit.io/sahildhingra/events.png" />
-                      <Text>Create Event</Text>
+                      <Text color={colorMode === 'light' ? 'black' : "black"}>Create Event</Text>
                     </ListItem>
                     <ListItem cursor={"pointer"} onClick={onOpen} p='10px 50px 10px 20px' display='flex' alignItems='center'>
                       <Image h='22px' me='15px' src="https://ik.imagekit.io/sahildhingra/settings.png" />
-                      <Text>Settings</Text>
+                      <Text color={colorMode === 'light' ? 'black' : "black"}>Settings</Text>
                     </ListItem>
                   </UnorderedList>
                 </Box>
@@ -428,11 +429,11 @@ const GroupCard = ({
       </Flex>
       <Flex pt="60px" justifyContent="space-between">
         <Box>
-          <Text color="#032E2B" fontWeight="600" as="h3">Members</Text>
+          <Text color={colorMode === 'dark' ? '#805AD5' : "#032E2B"} fontWeight="600" as="h3">Members</Text>
           <Text color="#737373">{members.length}</Text>
         </Box>
         <Box textAlign="right">
-          <Text color="#032E2B" fontWeight="600" as="h3">Upcoming Events</Text>
+          <Text color={colorMode === 'dark' ? '#805AD5' : "#032E2B"} fontWeight="600" as="h3">Upcoming Events</Text>
           <Text color="#737373">{upcomingEvents.length}</Text>
         </Box>
       </Flex>

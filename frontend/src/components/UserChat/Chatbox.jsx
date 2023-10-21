@@ -366,7 +366,7 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
         <Box position='relative'>
           {
             showAttachmentOptions && (
-              <Flex boxShadow='2xl' left='-10px' p='10px' borderRadius='35px' background='#fff' flexDirection='column' gap='10px' position='absolute' bottom='calc(100% + 20px)'>
+              <Flex boxShadow='2xl' left='-10px' p='10px' borderRadius='35px' background='#fff' flexDirection='column' gap='10px' position='absolute' bottom='calc(100% + 20px)' bgColor={colorMode === 'light' ? "white" : "#121212"}>
                 <Button
                   onClick={onOpenImageAttachment}
                   borderRadius='100%'>
@@ -632,8 +632,8 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
                 initial="hidden"
                 animate="visible"
                 variants={variants}
-                // style={{ margin: selectedChat?.isGroupChat ? '8px' : null }}
-                >
+              // style={{ margin: selectedChat?.isGroupChat ? '8px' : null }}
+              >
                 <Box
                   display={['block', 'block', 'none']}
                   pe='10px'
@@ -688,7 +688,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
                           onClick={onOpen}
                         >
                           <Img
-                          filter={colorMode === 'light' ? '' : 'invert(1) brightness(10)'}
+                            filter={colorMode === 'light' ? '' : 'invert(1) brightness(10)'}
                             h='20px'
                             src="https://ik.imagekit.io/sahildhingra/settings.png" alt="" />
                         </Button>

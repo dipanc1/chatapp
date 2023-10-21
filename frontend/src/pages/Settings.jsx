@@ -17,7 +17,8 @@ import {
     Switch,
     useToast,
     Avatar,
-    IconButton
+    IconButton,
+    useColorMode
 } from '@chakra-ui/react';
 import "./Settings.css"
 import axios from 'axios';
@@ -34,6 +35,7 @@ const Settings = () => {
     const user = JSON.parse(localStorage.getItem('user'));
 
     const toast = useToast();
+    const { colorMode } = useColorMode();
     const fileInputRef = React.createRef();
     const { pushNotification, dispatch, userInfo, getCloudinarySignature, timestamp, signature } = useContext(AppContext);
 
@@ -300,13 +302,13 @@ const Settings = () => {
                             <Grid mt='70px' templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)']} gap='5rem' rowGap={['1rem', '3rem']} className='form-wrapper form-details'>
                                 <GridItem w='100%'>
                                     <FormControl className="filled">
-                                        <Input pt='25px' pb='20px' type='text' onChange={e => setUsername(e.target.value)} value={username} />
+                                        <Input color={colorMode === 'light' ? 'black' : "black"} pt='25px' pb='20px' type='text' onChange={e => setUsername(e.target.value)} value={username} />
                                         <FormLabel>USERNAME</FormLabel>
                                     </FormControl>
                                 </GridItem>
                                 <GridItem w='100%'>
                                     <FormControl className="filled">
-                                        <Input pt='25px' pb='20px' type='text' disabled value={number} />
+                                        <Input color={colorMode === 'light' ? 'black' : "black"} pt='25px' pb='20px' type='text' disabled value={number} />
                                         <FormLabel>NUMBER</FormLabel>
                                     </FormControl>
                                 </GridItem>
