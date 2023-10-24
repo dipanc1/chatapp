@@ -6,12 +6,12 @@ const DonationsSchema = new mongoose.Schema({
         required: true
     },
     currentAmount: {
-        type: Number,
-        required: true
+        type: Number
     },
     event: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Event'
+        ref: 'Event',
+        required: true
     },
     donatedByAndAmount: [{
         user: {
@@ -20,7 +20,6 @@ const DonationsSchema = new mongoose.Schema({
         },
         amount: {
             type: Number,
-            required: true
         }
     }]
 }, { timestamps: true });
