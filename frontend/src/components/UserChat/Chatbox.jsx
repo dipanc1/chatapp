@@ -9,7 +9,7 @@ import DetailsModal from '../UserModals/DetailsModal'
 import { format } from 'timeago.js'
 import EndLeaveModal from '../UserModals/EndLeaveModal'
 import { api_key, backend_url, folder, pictureUpload, uploadFile } from '../../utils'
-import { Avatar, AvatarBadge, Box, Button, Divider, Flex, Image, Img, Input, Spinner, Text, useColorMode, useDisclosure, useToast } from '@chakra-ui/react'
+import { Avatar, AvatarBadge, Box, Button, Divider, Flex, Image, Img, Input, Progress, Spinner, Text, useColorMode, useDisclosure, useToast } from '@chakra-ui/react'
 import { FiImage, FiPaperclip, FiSend } from 'react-icons/fi'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useLocation } from 'react-router-dom'
@@ -436,6 +436,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
   const [online, setOnline] = React.useState(false);
   const [profile, setProfile] = React.useState(null);
   const { colorMode } = useColorMode();
+  const [toggleDonation, setToggleDonation] = React.useState(false)
 
   const { selectedChat } = React.useContext(AppContext);
 
@@ -674,13 +675,100 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
               </Box>
               <Flex>
                 <Box display='flex' alignItems='center'>
+                {
+                  selectedChat && (
+                    selectedChat?.isGroupChat && (
+                      <Box position={"relative"}>
+                        <Button
+                          background="transparent"
+                          borderRadius="100%"
+                          ms="5px"
+                          me='5px'
+                          h='24px'
+                          w='24px'
+                          p='0'
+                          onClick={() => setToggleDonation(!toggleDonation)}
+                        >
+                          <Img
+                            filter={colorMode === 'light' ? '' : 'invert(1) brightness(10)'}
+                            h='20px'
+                            src="https://ik.imagekit.io/sahildhingra/dollar.png" alt="" />
+                        </Button>
+                        {/* <Box 
+                          position={"absolute"} 
+                          top="calc(100% + 10px)" 
+                          right="0" 
+                          shadow={"lg"} 
+                          p="10px 20px"
+                          bg="#fff"
+                          borderRadius={"5px"}
+                          zIndex={"1"}
+                          minWidth={"220px"}
+                          transition={"all 0.15s ease-in-out"}
+                          opacity={toggleDonation ? "1" : "0"}
+                          transform={toggleDonation ? "unset" : "translateY(15px)"}
+                        >
+                          <Text pb="10px" fontSize={"18px"} as={"h1"} whiteSpace={"pre"}>
+                            Set Fundraising Goal
+                          </Text>
+                          <Flex pb="10px" gap="15px" flexDirection={"column"}>
+                            <Input p="5px" fontSize="14px" type="text" placeholder='Goal Name' />
+                            <Input p="5px" fontSize="14px" type="number" placeholder='Goal Amount' />
+                            <button className='btn btn-primary'>Raise</button>
+                          </Flex>
+                        </Box> */}
+                        <Box 
+                          position={"absolute"} 
+                          top="calc(100% + 10px)" 
+                          right="0" 
+                          shadow={"lg"} 
+                          p="10px 20px"
+                          bg="#fff"
+                          borderRadius={"5px"}
+                          zIndex={"1"}
+                          minWidth={"420px"}
+                          whiteSpace={"pre"}
+                          transition={"all 0.15s ease-in-out"}
+                          opacity={toggleDonation ? "1" : "0"}
+                          transform={toggleDonation ? "unset" : "translateY(15px)"}
+                        >
+                          <Text pb="10px" fontSize={"18px"} as={"h1"} whiteSpace={"pre"}>
+                            Support Fundraising
+                          </Text>
+                          <Flex pb="10px" gap="10px" alignItems={"center"} justifyContent={"space-between"}>
+                            <Text whiteSpace={"pre"} color="#1c1c1c">Goal Name</Text>
+                            <Input w="120px" p="5px" fontSize="14px" type="number" placeholder='Enter Amount' />
+                          </Flex>
+                          <Flex position={"relative"} mb="10px" h="12px" background={"#e6e6e6"} borderRadius={"10px"} overflow={"hidden"}>
+                            <Box textAlign={"right"} background={"#ffd700"} h="100%" w="34%">
+                              <Text fontSize={"10px"} pe="5px">
+                                $1500
+                              </Text>
+                            </Box>
+                            <Text position={"absolute"} top="0" right="0" fontSize={"10px"} pe="10px">
+                              $5000
+                            </Text>
+                          </Flex>
+                          <Flex pb="15px" color="#1c1c1c" fontSize={"13px"} justifyContent={"space-between"}>
+                            <Text>25 People Contributed</Text>
+                            <Text>$1500 / $5000 Raised</Text>
+                          </Flex>
+                          <Box textAlign={"right"}>
+                            <button button className='btn btn-primary'>Contribute</button>
+                          </Box>
+                        </Box>
+                      </Box>
+                    )
+                  )
+                }
+
                   {
                     selectedChat && (
                       selectedChat?.isGroupChat && (
                         <Button
                           background="transparent"
                           borderRadius="100%"
-                          ms="15px"
+                          ms="5px"
                           me='10px'
                           h='24px'
                           w='24px'
