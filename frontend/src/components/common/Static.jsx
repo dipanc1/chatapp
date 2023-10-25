@@ -1,9 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import CheckoutForm from './CheckoutForm';
 import Cookies from "universal-cookie";
 
-import { Box, Flex, useColorMode } from "@chakra-ui/react";
+import { Box, Button, Flex, useColorMode } from "@chakra-ui/react";
 import SideBar from "./SideBar";
 import Header from "./Header";
+
+const stripePromise = loadStripe('pk_test_51N136dLHtaKT8adL3kfRwpts2g1xBKHE9A1flPHC1eE5rQzHZHO6NcdCNZEmuQWJ2lZiqMJ0hdeqRUdWvaWnVkaa000amUm8tU');
 
 const Static = ({ noSmPadding, noPadding, children, fetchAgain, setFetchAgain }) => {
   const cookies = new Cookies();
@@ -23,8 +28,30 @@ const Static = ({ noSmPadding, noPadding, children, fetchAgain, setFetchAgain })
     }
   };
 
+  const [isPaymentSheetOpen, setPaymentSheetOpen] = useState(false);
+
+  const openPaymentSheet = () => {
+    setPaymentSheetOpen(true);
+  };
+
+  const closePaymentSheet = () => {
+    setPaymentSheetOpen(false);
+  };
+
   return (
       <div className={maximizedValue === "true" ? "maximized-view" : "s"}>
+        {isPaymentSheetOpen && (
+        <div className="payment-sheet">
+          <Elements stripe={stripePromise}>
+            <CheckoutForm />
+          </Elements>
+          <button onClick={closePaymentSheet}>Close Payment Modal</button>
+        </div>
+      )}
+        {/* <Elements stripe={stripePromise}>
+          <CheckoutForm />
+        </Elements>*/}
+          <Button onClick={openPaymentSheet}>Pay</Button> 
         <Box
           minH="100vh"
           py={["0", "0", "20px"]}
