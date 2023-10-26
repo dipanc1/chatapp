@@ -6,15 +6,17 @@ import {
     HStack,
     IconButton,
     Image,
+    Img,
+    Input,
     Text,
     Tooltip,
+    useColorMode,
     useToast,
     VStack,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useRef } from "react";
 import {
     BsFullscreen,
-    BsFullscreenExit,
     BsRecordCircle,
     BsRecordCircleFill,
 } from "react-icons/bs";
@@ -23,6 +25,7 @@ import { MembersComponent } from "../UserChat/Members";
 import { RoomContext } from "../../context/RoomContext";
 import Videoplayer from "./Videoplayer";
 import conversationApi from "../../services/apis/conversationApi";
+import donationApi from "../../services/apis/donationApi";
 
 const IconButtonGeneric = ({
     icon,
@@ -54,6 +57,11 @@ const IconButtonGeneric = ({
 const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
     const user = JSON.parse(localStorage.getItem("user"));
     const [recording, setRecording] = React.useState(false);
+    const [toggleDonation, setToggleDonation] = React.useState(false);
+    const [targetAmount, setTargetAmount] = React.useState('');
+    const [currentAmount, setCurrentAmount] = React.useState('');
+    const [peopleContributed, setPeopleContributed] = React.useState(0);
+    const [name, setName] = React.useState('');
     const stopButton = useRef(null);
 
     const [id, setId] = React.useState(localStorage.getItem("roomId"));
@@ -74,7 +82,10 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
     } = useContext(RoomContext);
 
     const CDN_IMAGES = "https://ik.imagekit.io/sahildhingra";
+
     const toast = useToast();
+    const { colorMode } = useColorMode();
+
     let recorder;
 
     const endStream = async () => {
@@ -153,17 +164,6 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
         }
     };
 
-    useEffect(() => {
-        if (streamState)
-            ws.emit("join-room", { roomId: id, peerId: me._id, userId });
-
-        if (id) {
-            sendMeetingId();
-        }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [id, me, streamState]);
-
     const recordedChunks = [];
 
     if (streamState !== null) {
@@ -223,10 +223,6 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
         setRoomId(id);
     }, [id, setRoomId]);
 
-    const screenSharingVideo =
-        screenSharingId === me?.id
-            ? screenStream
-            : peers[screenSharingId]?.stream;
 
     useEffect(() => {
         if (!admin) {
@@ -268,7 +264,91 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [adminVideo]);
 
+
+    useEffect(() => {
+        if (streamState)
+            ws.emit("join-room", { roomId: id, peerId: me._id, userId });
+
+        if (id) {
+            sendMeetingId();
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [id, me, streamState]);
+
+    useEffect(() => {
+        const config = {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${user.token}`,
+            },
+        };
+        const donation = async () => {
+            const { data } = await donationApi.getDonationOfAnEvent(eventInfo.id, config);
+            if (data.length > 0) {
+                setTargetAmount(data[0].targetAmount);
+                setName(data[0].name);
+                setCurrentAmount(data[0].currentAmount);
+                setPeopleContributed(data[0].donatedByAndAmount.length);
+            }
+        }
+
+        donation();
+
+    }, [eventInfo.id, user.token])
+
+    const percentage = (currentAmount / targetAmount) * 100;
+
+    const startFundraising = async () => {
+        try {
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${user.token}`,
+                },
+            };
+            const dontation = await donationApi.startDonation(
+                {
+                    event: eventInfo.id,
+                    name,
+                    targetAmount
+                }
+                , config);
+            if (dontation) {
+                setToggleDonation(false);
+                setTargetAmount('');
+                setName('');
+                toast({
+                    title: "Fundraising Started!",
+                    description: "You can now accept donations",
+                    status: "success",
+                    isClosable: true,
+                    position: "bottom",
+                    duration: 5000,
+                });
+            }
+        } catch (error) {
+            toast({
+                title: "Error Occured!",
+                description: "Failed to start fundraising",
+                status: "error",
+                isClosable: true,
+                position: "bottom",
+                duration: 5000,
+            });
+            setTargetAmount('');
+            setName('');
+            setToggleDonation(false);
+            console.log(error);
+        }
+    }
+
     // const { [screenSharingId]: sharing, ...peersToShow } = peers;
+
+    const screenSharingVideo =
+        screenSharingId === me?.id
+            ? screenStream
+            : peers[screenSharingId]?.stream;
 
     return (
         <Box height={"100%"} flex={["12", "9", "9", "9"]}>
@@ -411,30 +491,89 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
 
                     <Box p={['0 20px', '0']} overflow='auto' flex='1'>
                         <Heading pt='20px' pb='15px' as='h1' size='lg' fontWeight='500'>{eventInfo.title}</Heading>
-                        <Text as='h2' size='lg' fontWeight='500' pb='35px'>
+                        <Text as='h2' size='lg' fontWeight='500' pb='15px'>
                             Host: {selectedChat.groupAdmin.username.toUpperCase()}
                         </Text>
-                        <Flex justifyContent='end'>
-                            {/* <NavLink className='btn btn-primary'>
-                                <Flex alignItems='center'>
-                                    <Image h='18px' pe='15px' src={CDN_IMAGES + "/like-white.png"} />
-                                    <Text>Like</Text>
-                                </Flex>
-                            </NavLink> 
-                            <NavLink style={{ "margin": "0 20px" }} className='btn btn-primary'>
-                                <Flex alignItems='center'>
-                                    <Image h='18px' pe='15px' src={CDN_IMAGES + "/share-white.png"} />
-                                    <Text>Share</Text>
-                                </Flex>
-                            </NavLink>
-                            <NavLink className='btn btn-primary'>
-                                <Flex alignItems='center'>
-                                    <Image h='18px' pe='15px' src={CDN_IMAGES + "/save-white.png"} />
-                                    <Text>Save</Text>
-                                </Flex>
-                            </NavLink> */}
-                        </Flex>
-                        <Box py='40px'><hr /></Box>
+                        <Box position={"relative"}>
+                            <Button
+                                background="transparent"
+                                h='3rem'
+                                w='3rem'
+                                onClick={() => setToggleDonation(!toggleDonation)}
+                            >
+                                <Img
+                                    filter={colorMode === 'light' ? '' : 'invert(1) brightness(10)'}
+                                    h='20px'
+                                    src="https://ik.imagekit.io/sahildhingra/dollar.png" alt="" />
+                            </Button>
+                            {!admin ?
+                                <Box
+                                    position={"absolute"}
+                                    top="0"
+                                    left="4rem"
+                                    shadow={"lg"}
+                                    p="10px 20px"
+                                    bg="#fff"
+                                    borderRadius={"5px"}
+                                    zIndex={"1"}
+                                    minWidth={"220px"}
+                                    transition={"all 0.15s ease-in-out"}
+                                    opacity={toggleDonation ? "1" : "0"}
+                                    transform={toggleDonation ? "unset" : "translateY(15px)"}
+                                >
+                                    <Text pb="10px" fontSize={"18px"} as={"h1"} whiteSpace={"pre"}>
+                                        Set Fundraising Goal
+                                    </Text>
+                                    <Flex pb="10px" gap="15px" flexDirection={"column"}>
+                                        <Input p="5px" fontSize="14px" type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='Goal Name' focusBorderColor={"#9F85F7"} />
+                                        <Input p="5px" fontSize="14px" type="number" placeholder='Goal Amount' value={targetAmount} onChange={(e) => setTargetAmount(e.target.value)} focusBorderColor={"#9F85F7"} />
+                                        <button onClick={() => startFundraising()} className='btn btn-primary'>Raise</button>
+                                    </Flex>
+                                </Box>
+                                :
+                                <Box
+                                    position={"absolute"}
+                                    top="0"
+                                    right="0"
+                                    shadow={"lg"}
+                                    p="10px 20px"
+                                    bg="#fff"
+                                    borderRadius={"5px"}
+                                    zIndex={"1"}
+                                    minWidth={"420px"}
+                                    whiteSpace={"pre"}
+                                    transition={"all 0.15s ease-in-out"}
+                                    opacity={toggleDonation ? "1" : "0"}
+                                    transform={toggleDonation ? "unset" : "translateY(15px)"}
+                                >
+                                    <Text pb="10px" fontSize={"18px"} as={"h1"} whiteSpace={"pre"}>
+                                        Support Fundraising
+                                    </Text>
+                                    <Flex pb="10px" gap="10px" alignItems={"center"} justifyContent={"space-between"}>
+                                        <Text whiteSpace={"pre"} color="#1c1c1c">{name}</Text>
+                                        <Input w="120px" p="5px" fontSize="14px" type="number" placeholder='Enter Amount' />
+                                    </Flex>
+                                    <Flex position={"relative"} mb="10px" h="12px" background={"#e6e6e6"} borderRadius={"10px"} overflow={"hidden"}>
+                                        <Box textAlign={"right"} background={"#ffd700"} h="100%" w={percentage + "%"}>
+                                            <Text fontSize={"10px"} pe="5px">
+                                                ${currentAmount}
+                                            </Text>
+                                        </Box>
+                                        <Text position={"absolute"} top="0" right="0" fontSize={"10px"} pe="10px">
+                                            ${targetAmount}
+                                        </Text>
+                                    </Flex>
+                                    <Flex pb="15px" color="#1c1c1c" fontSize={"13px"} justifyContent={"space-between"}>
+                                        <Text>{peopleContributed} People Contributed</Text>
+                                        <Text>${currentAmount} / ${targetAmount} Raised</Text>
+                                    </Flex>
+                                    <Box textAlign={"right"}>
+                                        <button button className='btn btn-primary'>Contribute</button>
+                                    </Box>
+                                </Box>
+                            }
+                        </Box>
+                        <Box py='30px'><hr /></Box>
                         <Box>
                             <Flex gap='25px' fontWeight='bold'>
                                 <Flex alignItems='center'>

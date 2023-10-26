@@ -350,7 +350,7 @@ const EventCard = ({
             </Box>
             {selectedChat?.isGroupChat && (admin || meetingIdExists) && (index === 0) &&
               <Box>
-                <StreamModalPeer admin={admin} title={title} date={date} time={time} imageUrl={imageUrl} description={description} />
+                <StreamModalPeer admin={admin} id={id} title={title} date={date} time={time} imageUrl={imageUrl} description={description} />
               </Box>
             }
           </Flex>

@@ -2,6 +2,7 @@ const router = require('express').Router();
 const asyncHandler = require('express-async-handler');
 
 const Donation = require('../models/Donations');
+const EventTable = require('../models/EventTable');
 
 // GET all donations
 router.get('/', asyncHandler(async (req, res) => {
@@ -41,12 +42,35 @@ router.get('/event/:id', asyncHandler(async (req, res) => {
     }
 }));
 
+// GET donation of a group
+router.get('/group/:id', asyncHandler(async (req, res) => {
+    try {
+        const event = await EventTable.find({ chatId: req.params.id });
+
+        const donation = await Donation.find({ event: event }).populate('donatedByAndAmount.user').populate('event');
+
+        res.status(200).json(donation);
+
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}));
+
 // POST start a donation
 router.post('/', asyncHandler(async (req, res) => {
-    const { targetAmount, event } = req.body;
+    const { targetAmount, event, name } = req.body;
+    parseInt(targetAmount);
+
+    const findDonation = await Donation.findOne({ event });
+
+    if (findDonation) {
+        await Donation.findByIdAndDelete(findDonation._id);
+    }
 
     try {
         const donation = await Donation.create({
+            name,
             targetAmount,
             event,
             currentAmount: 0

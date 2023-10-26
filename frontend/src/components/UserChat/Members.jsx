@@ -105,7 +105,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
 
 
     if (selectedImage === null) {
-      await conversationApi.editEvent(selectedChat._id, {
+      await conversationApi.addEvent(selectedChat._id, {
         name,
         description,
         date,
@@ -176,7 +176,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
 
       await axios.post(pictureUpload, formData)
         .then(async (res) => {
-          await conversationApi.editEvent(selectedChat._id, {
+          await conversationApi.addEvent(selectedChat._id, {
             name,
             description,
             date,

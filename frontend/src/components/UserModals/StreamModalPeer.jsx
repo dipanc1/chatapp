@@ -22,6 +22,7 @@ import { RoomContext } from '../../context/RoomContext';
 const StreamModalPeer = ({
     children,
     admin,
+    id,
     title,
     date,
     time,
@@ -42,6 +43,7 @@ const StreamModalPeer = ({
         dispatch({
             type: "SET_EVENT_INFO",
             payload: {
+                id,
                 title,
                 date,
                 time,
@@ -58,6 +60,7 @@ const StreamModalPeer = ({
         dispatch({
             type: "SET_EVENT_INFO",
             payload: {
+                id,
                 title,
                 date,
                 time,

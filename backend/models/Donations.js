@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const DonationsSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
     targetAmount: {
         type: Number,
         required: true
