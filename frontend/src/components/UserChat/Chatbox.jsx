@@ -19,6 +19,7 @@ import ImageAttachmentModal from '../UserModals/ImageAttachmentModal'
 import DocumentAttachmentModal from '../UserModals/DocumentAttachmentModal'
 import messageApi from '../../services/apis/messageApi'
 import conversationApi from '../../services/apis/conversationApi'
+import donationApi from '../../services/apis/donationApi'
 
 var selectedChatCompare;
 
@@ -429,6 +430,10 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
   const [groupChatName, setGroupChatName] = React.useState('');
   const [groupChatDescription, setGroupChatDescription] = React.useState('');
   const [renameLoading, setRenameLoading] = React.useState(false);
+
+  const [targetAmount, setTargetAmount] = React.useState('');
+  const [currentAmount, setCurrentAmount] = React.useState('');
+  const [peopleContributed, setPeopleContributed] = React.useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure()
   const user = JSON.parse(localStorage.getItem('user'));
   const cancelRef = React.useRef()
@@ -442,6 +447,8 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
   const toast = useToast();
   const [loading, setLoading] = React.useState(false);
   const admin = selectedChat?.isGroupChat && selectedChat?.groupAdmin._id === userInfo._id;
+  const percentage = (currentAmount / targetAmount) * 100;
+
 
   const handleRemove = async (user1) => {
     if (user1._id !== userInfo._id) {
@@ -592,6 +599,33 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedChat])
 
+  React.useEffect(() => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
+    };
+    const donation = async () => {
+      const { data } = await donationApi.getDonationOfAGroup(selectedChat?._id, config);
+      if (data.length > 0) {
+        const targetAmount = data.reduce((a, b) => a + b.targetAmount, 0);
+        const currentAmount = data.reduce((a, b) => a + b.currentAmount, 0);
+        const peopleContributed = data.reduce((a, b) => a + b.donatedByAndAmount.length, 0);
+        setTargetAmount(targetAmount);
+        setCurrentAmount(currentAmount);
+        setPeopleContributed(peopleContributed);
+      } else {
+        setTargetAmount(0);
+        setCurrentAmount(0);
+        setPeopleContributed(0);
+      }
+    }
+
+    donation();
+
+  }, [selectedChat?._id, user.token])
+
 
   const variants = {
     visible: { opacity: 1 },
@@ -632,7 +666,8 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
                 initial="hidden"
                 animate="visible"
                 variants={variants}
-              // style={{ margin: selectedChat?.isGroupChat ? '8px' : null }}
+                // style={{ margin: selectedChat?.isGroupChat ? '8px' : null }}
+                w='70%'
               >
                 <Box
                   display={['block', 'block', 'none']}
@@ -673,7 +708,35 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
                 </Text>
               </Box>
 
-              
+              <Box
+                shadow={"lg"}
+                p="10px 20px"
+                bg="#fff"
+                borderRadius={"5px"}
+                zIndex={"1"}
+                minWidth={"420px"}
+                whiteSpace={"pre"}
+                transition={"all 0.15s ease-in-out"}
+              >
+                <Flex position={"relative"} width={"400px"} h="12px" background={"#e6e6e6"} borderRadius={"10px"} overflow={"hidden"}>
+                  <Text fontSize={"10px"} position={"absolute"} top="0" right="100px">
+                    Money Raised in this Group
+                  </Text>
+                  <Box textAlign={"right"} background={"#ffd700"} h="100%" w={percentage + "%"}>
+                    <Text fontSize={"10px"} pe="5px">
+                      ${currentAmount}
+                    </Text>
+                  </Box>
+                  <Text position={"absolute"} top="0" right="0" fontSize={"10px"} pe="10px">
+                    ${targetAmount}
+                  </Text>
+                </Flex>
+                <Flex color="#1c1c1c" fontSize={"13px"} justifyContent={"space-between"}>
+                  <Text>{peopleContributed} People Contributed</Text>
+                  <Text>${currentAmount} / ${targetAmount} Raised</Text>
+                </Flex>
+              </Box>
+
               <Flex>
                 <Box display='flex' alignItems='center'>
                   {

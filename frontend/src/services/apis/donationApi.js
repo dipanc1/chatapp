@@ -23,17 +23,9 @@ class DonationApi extends BaseApi {
         }
     }
 
-    fetchMoreMessages(chatId, page, config) {
+    getDonationOfAGroup(groupId, config) {
         try {
-            return this.get(`/${chatId}/${page}`, config);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    readMessages(data, config) {
-        try {
-            return this.post(`/read`, data, config);
+            return this.get(`/group/${groupId}`, config);
         } catch (error) {
             console.log(error);
         }

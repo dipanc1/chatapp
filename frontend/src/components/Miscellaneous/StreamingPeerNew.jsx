@@ -506,7 +506,7 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
                                     h='20px'
                                     src="https://ik.imagekit.io/sahildhingra/dollar.png" alt="" />
                             </Button>
-                            {!admin ?
+                            {admin ?
                                 <Box
                                     position={"absolute"}
                                     top="0"
@@ -534,7 +534,7 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
                                 <Box
                                     position={"absolute"}
                                     top="0"
-                                    right="0"
+                                    left="4rem"
                                     shadow={"lg"}
                                     p="10px 20px"
                                     bg="#fff"
