@@ -31,6 +31,14 @@ class DonationApi extends BaseApi {
         }
     }
 
+    contributeToDonation(donationId, data, config) {
+        try {
+            return this.put(`/${donationId}`, data, config);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
 }
 
 

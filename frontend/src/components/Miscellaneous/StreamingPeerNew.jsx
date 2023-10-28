@@ -62,6 +62,8 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
     const [currentAmount, setCurrentAmount] = React.useState('');
     const [peopleContributed, setPeopleContributed] = React.useState(0);
     const [name, setName] = React.useState('');
+    const [contributeAmount, setContributeAmount] = React.useState('');
+    const [donationId, setDonationId] = React.useState('');
     const stopButton = useRef(null);
 
     const [id, setId] = React.useState(localStorage.getItem("roomId"));
@@ -286,6 +288,7 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
         const donation = async () => {
             const { data } = await donationApi.getDonationOfAnEvent(eventInfo.id, config);
             if (data.length > 0) {
+                setDonationId(data[0]._id);
                 setTargetAmount(data[0].targetAmount);
                 setName(data[0].name);
                 setCurrentAmount(data[0].currentAmount);
@@ -342,6 +345,58 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
             console.log(error);
         }
     }
+
+    const contributeToFundraising = async () => {
+        if (contributeAmount === '') {
+            toast({
+                title: "Error Occured!",
+                description: "Please enter amount",
+                status: "error",
+                isClosable: true,
+                position: "bottom",
+                duration: 5000,
+            });
+            return;
+        }
+        try {
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${user.token}`,
+                },
+            };
+            const dontation = await donationApi.contributeToDonation(donationId, {amount: contributeAmount}, config);
+            if (dontation) {
+                toast({
+                    title: "Donation Successful!",
+                    description: "Thank you for your contribution",
+                    status: "success",
+                    isClosable: true,
+                    position: "bottom",
+                    duration: 5000,
+                });
+
+                setContributeAmount('');
+                setToggleDonation(false);
+                setCurrentAmount(dontation.currentAmount);
+                setPeopleContributed(dontation.donatedByAndAmount.length);
+                setTargetAmount(dontation.targetAmount);
+            }
+        } catch (error) {
+            toast({
+                title: "Error Occured!",
+                description: "Failed to contribute to fundraising",
+                status: "error",
+                isClosable: true,
+                position: "bottom",
+                duration: 5000,
+            });
+            console.log(error);
+        }
+    }
+            
+
+                    
 
     // const { [screenSharingId]: sharing, ...peersToShow } = peers;
 
@@ -506,7 +561,7 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
                                     h='20px'
                                     src="https://ik.imagekit.io/sahildhingra/dollar.png" alt="" />
                             </Button>
-                            {admin ?
+                            {!admin ?
                                 <Box
                                     position={"absolute"}
                                     top="0"
@@ -527,7 +582,9 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
                                     <Flex pb="10px" gap="15px" flexDirection={"column"}>
                                         <Input p="5px" fontSize="14px" type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='Goal Name' focusBorderColor={"#9F85F7"} />
                                         <Input p="5px" fontSize="14px" type="number" placeholder='Goal Amount' value={targetAmount} onChange={(e) => setTargetAmount(e.target.value)} focusBorderColor={"#9F85F7"} />
-                                        <button onClick={() => startFundraising()} className='btn btn-primary'>Raise</button>
+                                        <button onClick={() => startFundraising()} className='btn btn-primary' disabled={
+                                            name === '' || targetAmount === '' ? true : false
+                                        }>Raise</button>
                                     </Flex>
                                 </Box>
                                 :
@@ -551,7 +608,9 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
                                     </Text>
                                     <Flex pb="10px" gap="10px" alignItems={"center"} justifyContent={"space-between"}>
                                         <Text whiteSpace={"pre"} color="#1c1c1c">{name}</Text>
-                                        <Input w="120px" p="5px" fontSize="14px" type="number" placeholder='Enter Amount' />
+                                        <Input value={contributeAmount} onChange={
+                                            (e) => setContributeAmount(e.target.value) 
+                                        } w="120px" p="5px" fontSize="14px" type="number" placeholder='Enter Amount' />
                                     </Flex>
                                     <Flex position={"relative"} mb="10px" h="12px" background={"#e6e6e6"} borderRadius={"10px"} overflow={"hidden"}>
                                         <Box textAlign={"right"} background={"#ffd700"} h="100%" w={percentage + "%"}>
@@ -568,7 +627,11 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
                                         <Text>${currentAmount} / ${targetAmount} Raised</Text>
                                     </Flex>
                                     <Box textAlign={"right"}>
-                                        <button button className='btn btn-primary'>Contribute</button>
+                                        <button disabled={
+                                            contributeAmount === '' ? true : false
+                                        } button className='btn btn-primary' onClick={
+                                            () => contributeToFundraising()
+                                        }>Contribute</button>
                                     </Box>
                                 </Box>
                             }

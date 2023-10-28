@@ -10,8 +10,8 @@ import useSound from 'use-sound';
 import joinSound from '../sounds/join.mp3';
 import leaveSound from '../sounds/leave.mp3';
 
-// const ENDPOINT = "http://localhost:8080";
-const ENDPOINT = "https://peerjs.wildcrypto.com";
+const ENDPOINT = "http://localhost:8080";
+// const ENDPOINT = "https://peerjs.wildcrypto.com";
 
 export const RoomContext = createContext(null);
 
