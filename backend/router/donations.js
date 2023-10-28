@@ -107,7 +107,15 @@ router.put('/:id', asyncHandler(async (req, res) => {
         }
 
         donation.currentAmount += amount;
-        donation.donatedByAndAmount.push({ user: req.user._id, amount });
+
+        const findUser = await Donation.where({ _id: id, donatedByAndAmount: { $elemMatch: { user: req.user._id } } });
+
+        if (findUser.length > 0) {
+            await Donation.updateOne({ _id: id, donatedByAndAmount: { $elemMatch: { user: req.user._id } } }, { $inc: { 'donatedByAndAmount.$.amount': amount } });
+        }
+        else {
+            donation.donatedByAndAmount.push({ user: req.user._id, amount });
+        }
 
         await donation.save();
 
