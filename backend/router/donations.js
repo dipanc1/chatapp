@@ -62,6 +62,10 @@ router.post('/', asyncHandler(async (req, res) => {
     const { targetAmount, event, name } = req.body;
     parseInt(targetAmount);
 
+    if (!targetAmount || !event || !name) {
+        res.status(400).json({ message: 'Please provide the target amount, event and name' });
+    }
+
     const findDonation = await Donation.findOne({ event });
 
     if (findDonation) {
@@ -89,6 +93,11 @@ router.post('/', asyncHandler(async (req, res) => {
 router.put('/:id', asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { amount } = req.body;
+    parseInt(amount);
+
+    if (!amount) {
+        res.status(400).json({ message: 'Please provide the amount' });
+    }
 
     try {
         const donation = await Donation.findById(id);

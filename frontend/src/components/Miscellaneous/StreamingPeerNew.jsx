@@ -298,7 +298,8 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
 
         donation();
 
-    }, [eventInfo.id, user.token])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     const percentage = (currentAmount / targetAmount) * 100;
 
@@ -347,7 +348,7 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
     }
 
     const contributeToFundraising = async () => {
-        if (contributeAmount === '') {
+        if (contributeAmount === '' || contributeAmount === '0') {
             toast({
                 title: "Error Occured!",
                 description: "Please enter amount",
@@ -365,8 +366,8 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
                     Authorization: `Bearer ${user.token}`,
                 },
             };
-            const dontation = await donationApi.contributeToDonation(donationId, {amount: contributeAmount}, config);
-            if (dontation) {
+            const { data } = await donationApi.contributeToDonation(donationId, { amount: parseInt(contributeAmount) }, config);
+            if (data) {
                 toast({
                     title: "Donation Successful!",
                     description: "Thank you for your contribution",
@@ -378,9 +379,9 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
 
                 setContributeAmount('');
                 setToggleDonation(false);
-                setCurrentAmount(dontation.currentAmount);
-                setPeopleContributed(dontation.donatedByAndAmount.length);
-                setTargetAmount(dontation.targetAmount);
+                setCurrentAmount(data.currentAmount);
+                setTargetAmount(data.targetAmount);
+                setPeopleContributed(data.donatedByAndAmount.length);
             }
         } catch (error) {
             toast({
@@ -394,9 +395,9 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
             console.log(error);
         }
     }
-            
 
-                    
+
+
 
     // const { [screenSharingId]: sharing, ...peersToShow } = peers;
 
@@ -609,7 +610,7 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
                                     <Flex pb="10px" gap="10px" alignItems={"center"} justifyContent={"space-between"}>
                                         <Text whiteSpace={"pre"} color="#1c1c1c">{name}</Text>
                                         <Input value={contributeAmount} onChange={
-                                            (e) => setContributeAmount(e.target.value) 
+                                            (e) => setContributeAmount(e.target.value)
                                         } w="120px" p="5px" fontSize="14px" type="number" placeholder='Enter Amount' />
                                     </Flex>
                                     <Flex position={"relative"} mb="10px" h="12px" background={"#e6e6e6"} borderRadius={"10px"} overflow={"hidden"}>
