@@ -2,7 +2,7 @@ import { Box, Checkbox, Flex, FormControl, FormLabel, IconButton, Image, Input, 
 import React from 'react'
 import { FiUpload } from 'react-icons/fi'
 
-const EventModal = ({ type, createEventLoading, isOpenCreateEvent, onCloseCreateEvent, name, setEventName, description, setDescription, date, setDate, time, setTime, selectedImage, imageChange, handleSubmit, fileInputRef, imageUrl }) => {
+const EventModal = ({ type, createEventLoading, isOpenCreateEvent, onCloseCreateEvent, name, setEventName, description, setDescription, date, setDate, time, setTime, selectedImage, imageChange, handleSubmit, fileInputRef, imageUrl, targetAmount, setTargetAmount }) => {
 
     return (
         <Modal isOpen={isOpenCreateEvent} onClose={onCloseCreateEvent}>
@@ -44,7 +44,7 @@ const EventModal = ({ type, createEventLoading, isOpenCreateEvent, onCloseCreate
                                 } />
                             </FormControl>
                         </Flex>
-                        <Box>
+                        <Flex>
                             <FormControl className={"filled"}>
                                 <Text>Upload Thumbnail</Text>
                                 {
@@ -85,7 +85,15 @@ const EventModal = ({ type, createEventLoading, isOpenCreateEvent, onCloseCreate
                                     style={{ display: 'none' }}
                                 />
                             </FormControl>
-                        </Box>
+                            <FormControl className={"filled"}>
+                                <Text pb="10px">
+                                    Set Fundraising Goal
+                                </Text>
+                                <Input p="5px" fontSize="14px" type="number" placeholder='Goal Amount' focusBorderColor={"#9F85F7"} value={targetAmount} onChange={
+                                    (e) => setTargetAmount(e.target.value)
+                                } />
+                            </FormControl>
+                        </Flex>
                         <Box>
                             <Checkbox position='relative!important' defaultChecked pointerEvents='all!important' left='0!important' top='0!important' padding='0!important'>
                                 Send Notification

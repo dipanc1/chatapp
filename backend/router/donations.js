@@ -127,4 +127,25 @@ router.put('/:id', asyncHandler(async (req, res) => {
 }
 ));
 
+// DELETE a donation
+router.delete('/:id', asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const donation = await Donation.findById(id);
+
+        if (!donation) {
+            res.status(404).json({ message: 'Donation not found' });
+        }
+
+        await Donation.findByIdAndDelete(id);
+
+        res.status(200).json({ message: 'Donation deleted successfully' });
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+));
+
 module.exports = router;

@@ -8,6 +8,7 @@ import { useToast } from "@chakra-ui/react";
 
 const INITIAL_STATE = {
   number: "",
+  fetchGroupDonations: false,
   selectedChat: null,
   chats: [],
   notification: [],
@@ -122,6 +123,7 @@ export const AppContextProvider = ({ children }) => {
         eventInfo: state.eventInfo,
         signature: signature,
         timestamp: timestamp,
+        fetchGroupDonations: state.fetchGroupDonations,
         getCloudinarySignature,
         dispatch
       }}>

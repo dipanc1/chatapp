@@ -20,6 +20,7 @@ import { NavLink } from 'react-router-dom'
 import EventModal from '../UserModals/EventModal'
 import AddMembersModal from '../UserModals/AddMembersModal'
 import conversationApi from '../../services/apis/conversationApi'
+import donationApi from '../../services/apis/donationApi'
 
 export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, setFetchAgain, admin }) => {
   const user = JSON.parse(localStorage.getItem('user'));
@@ -45,6 +46,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
   const [time, setTime] = useState("");
   const [selectedImage, setSelectedImage] = React.useState(null);
   const [createEventLoading, setCreateEventLoading] = useState(false);
+  const [targetAmount, setTargetAmount] = useState('');
   const [chatIdValue, setChatIdValue] = React.useState('');
 
   const fileInputRef = React.createRef();
@@ -81,11 +83,12 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
       setDescription("");
       setDate("");
       setTime("");
+      setTargetAmount('');
       setSelectedImage(null);
       return;
     }
 
-    if (name === "" || description === "" || date === "" || time === "") {
+    if (name === "" || description === "" || date === "" || time === "" || targetAmount === "") {
       setCreateEventLoading(false)
       toast({
         title: "Please fill all the fields",
@@ -111,24 +114,36 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
         date,
         time
       }, config)
-        .then(async (res) => {
-          await conversationApi.getEvents(selectedChat._id, config).then((res) => {
-            selectedChat.events = res.data;
-            toast({
-              title: "Event Created!",
-              description: "Event created successfully",
-              status: "success",
-              duration: 5000,
-              isClosable: true,
-              position: "bottom-left",
-            });
-            setCreateEventLoading(false);
-            setEventName("");
-            setDescription("");
-            setDate("");
-            setTime("");
-            setSelectedImage(null);
-            onCloseCreateEvent();
+        .then(async (r) => {
+          let eventId = r.data._id;
+          await conversationApi.getEvents(selectedChat._id, config).then(async (res) => {
+            const dontation = await donationApi.startDonation(
+              {
+                event: eventId,
+                name,
+                targetAmount
+              }
+              , config);
+            if (dontation) {
+              selectedChat.events = res.data;
+              toast({
+                title: "Event Created!",
+                description: "Event created successfully",
+                status: "success",
+                duration: 5000,
+                isClosable: true,
+                position: "bottom-left",
+              });
+              dispatch({ type: 'SET_FETCH_GROUP_DONATIONS' });
+              setCreateEventLoading(false);
+              setEventName("");
+              setDescription("");
+              setDate("");
+              setTime("");
+              setTargetAmount('');
+              setSelectedImage(null);
+              onCloseCreateEvent();
+            }
           }).catch((err) => {
             console.log(err);
             toast({
@@ -143,6 +158,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
             setEventName("");
             setDescription("");
             setDate("");
+            setTargetAmount('');
             setTime("");
             setSelectedImage(null);
             onCloseCreateEvent();
@@ -161,6 +177,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
           setCreateEventLoading(false);
           setEventName("");
           setDescription("");
+          setTargetAmount('');
           setDate("");
           setTime("");
           setSelectedImage(null);
@@ -183,24 +200,35 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
             time,
             thumbnail: res.data.url
           }, config)
-            .then(async (res) => {
-              await conversationApi.getEvents(selectedChat._id, config).then((res) => {
-                selectedChat.events = res.data;
-                toast({
-                  title: "Event Created!",
-                  description: "Event created successfully",
-                  status: "success",
-                  duration: 5000,
-                  isClosable: true,
-                  position: "bottom-left",
-                });
-                setCreateEventLoading(false);
-                setEventName("");
-                setDescription("");
-                setDate("");
-                setTime("");
-                setSelectedImage(null);
-                onCloseCreateEvent();
+            .then(async (r) => {
+              let eventId = r.data._id;
+              await conversationApi.getEvents(selectedChat._id, config).then(async (res) => {
+                const dontation = await donationApi.startDonation(
+                  {
+                    event: eventId,
+                    name,
+                    targetAmount
+                  }
+                  , config);
+                if (dontation) {
+                  selectedChat.events = res.data;
+                  toast({
+                    title: "Event Created!",
+                    description: "Event created successfully",
+                    status: "success",
+                    duration: 5000,
+                    isClosable: true,
+                    position: "bottom-left",
+                  });
+                  setCreateEventLoading(false);
+                  setEventName("");
+                  setDescription("");
+                  setDate("");
+                  setTime("");
+                  setTargetAmount('');
+                  setSelectedImage(null);
+                  onCloseCreateEvent();
+                }
               }).catch((err) => {
                 console.log(err);
                 toast({
@@ -215,6 +243,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
                 setEventName("");
                 setDescription("");
                 setDate("");
+                setTargetAmount('');
                 setTime("");
                 setSelectedImage(null);
                 onCloseCreateEvent();
@@ -233,6 +262,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
               setCreateEventLoading(false);
               setEventName("");
               setDescription("");
+              setTargetAmount('');
               setDate("");
               setTime("");
               setSelectedImage(null);
@@ -252,6 +282,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
           setCreateEventLoading(false);
           setEventName("");
           setDescription("");
+          setTargetAmount('');
           setDate("");
           setTime("");
           setSelectedImage(null);
@@ -582,7 +613,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
               </Box>
 
               {/* Create Event Modal */}
-              <EventModal type={"Create"} createEventLoading={createEventLoading} isOpenCreateEvent={isOpenCreateEvent} onCloseCreateEvent={onCloseCreateEvent} name={name} setEventName={setEventName} description={description} setDescription={setDescription} date={date} setDate={setDate} time={time} setTime={setTime} selectedImage={selectedImage} imageChange={imageChange} handleSubmit={handleCreateEvent} fileInputRef={fileInputRef} />
+              <EventModal type={"Create"} createEventLoading={createEventLoading} isOpenCreateEvent={isOpenCreateEvent} onCloseCreateEvent={onCloseCreateEvent} name={name} setEventName={setEventName} description={description} setDescription={setDescription} date={date} setDate={setDate} time={time} setTime={setTime} selectedImage={selectedImage} imageChange={imageChange} handleSubmit={handleCreateEvent} fileInputRef={fileInputRef} targetAmount={targetAmount} setTargetAmount={setTargetAmount} />
 
               {/* Add Member Modal */}
               <AddMembersModal chatIdValue={`${backend_url}/join-group/${chatIdValue}`} isAddOpen={isAddOpen} onAddClose={onAddClose} handleSearch={handleSearch} search={search} searchResults={searchResults} loading={loading} handleAddUser={handleAddUser} fullScreen={fullScreen} />
@@ -703,20 +734,20 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
       :
       (
         ""
-      // <Box
-      //   display={'flex'}
-      //   justifyContent={'center'}
-      //   alignItems={'center'}
-      //   flexDirection={'column'}
-      //   height={'100%'}
-      // >
-      //   <Text cursor={'default'} color={'buttonPrimaryColor'} fontSize={'2xl'}>
-      //     Select a chat
-      //   </Text>
-      //   <Text fontSize={['xs', 'md', 'md', 'md']} px='50px' textAlign='center' pt='20px' color={'greyTextColor'}>
-      //     Select or create a group to see the participants of that group along with settings and other information.
-      //   </Text>
-      // </Box>
+        // <Box
+        //   display={'flex'}
+        //   justifyContent={'center'}
+        //   alignItems={'center'}
+        //   flexDirection={'column'}
+        //   height={'100%'}
+        // >
+        //   <Text cursor={'default'} color={'buttonPrimaryColor'} fontSize={'2xl'}>
+        //     Select a chat
+        //   </Text>
+        //   <Text fontSize={['xs', 'md', 'md', 'md']} px='50px' textAlign='center' pt='20px' color={'greyTextColor'}>
+        //     Select or create a group to see the participants of that group along with settings and other information.
+        //   </Text>
+        // </Box>
       )
   )
 }

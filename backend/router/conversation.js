@@ -8,6 +8,7 @@ const EventTable = require("../models/EventTable");
 
 const { protect } = require("../middleware/authMiddleware");
 const { generateChatToken } = require("../config/generateToken");
+const Donations = require("../models/Donations");
 
 const LIMIT = 5;
 
@@ -761,7 +762,7 @@ router.put("/event/:chatId", protect, asyncHandler(async (req, res) => {
         user.events.push(savedEvent);
         await updateGroupChat.save();
         await user.save();
-        res.status(200).json("Event added");
+        res.status(200).json(savedEvent);
     } else {
         res.status(404).send("Chat not found or user not found or event not saved");
     }
@@ -835,7 +836,9 @@ router.delete("/event/delete/:eventId/:chatId", protect, asyncHandler(async (req
 
     const findEventAndDelete = await EventTable.findByIdAndDelete(eventId);
 
-    if (!findEventInConversationAndDelete || !findEventInUserAndDelete || !findEventAndDelete) {
+    const findEventInDonationsAndDeleteDonation = await Donations.deleteOne({ event: eventId });
+
+    if (!findEventInConversationAndDelete || !findEventInUserAndDelete || !findEventAndDelete || !findEventInDonationsAndDeleteDonation) {
         return res.status(404).send("Event not found")
     }
 

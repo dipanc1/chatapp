@@ -3,12 +3,17 @@ import { AUDIO, DOC, FILE, IMAGE, PDF, PPT, TXT, VIDEO, XLS } from "./constants"
 // local server
 const backend_url = 'http://localhost:8000';
 
-
 // staging server
 // const backend_url = 'https://chatapphosted.azurewebsites.net';
 
 // abhishek's server
 // const backend_url = 'https://chatapp.wildcrypto.com';
+
+// local peer server
+const peer_server_url = 'http://localhost:8080';
+
+// abhishek's peer server
+// const peer_server_url = 'https://peerjs.wildcrypto.com';
 
 const cloudName = 'dipanc1';
 const pictureUpload = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
@@ -61,4 +66,4 @@ const checkFileExtension = (url) => {
 const typeArray = [IMAGE, VIDEO, AUDIO, PDF, DOC, XLS, PPT, TXT, FILE];
 
 
-export { backend_url, pictureUpload, stripePublicKey, stripePublicKeyLive, api_key, upload_preset, emailjsServiceId, emailjsTemplateId, emailjsUserId, folder, trackingId, checkFileExtension, uploadFile, typeArray };
+export { backend_url, pictureUpload, stripePublicKey, stripePublicKeyLive, api_key, upload_preset, emailjsServiceId, emailjsTemplateId, emailjsUserId, folder, trackingId, checkFileExtension, uploadFile, typeArray, peer_server_url };

@@ -8,6 +8,7 @@ import { AppContext } from '../../context/AppContext';
 import EventModal from '../UserModals/EventModal';
 import conversationApi from '../../services/apis/conversationApi';
 import authApi from '../../services/apis/authApi';
+import donationApi from '../../services/apis/donationApi';
 
 const GroupCard = ({
   chatId,
@@ -32,6 +33,7 @@ const GroupCard = ({
   const [time, setTime] = useState("");
   const [selectedImage, setSelectedImage] = React.useState(null);
   const [createEventLoading, setCreateEventLoading] = useState(false)
+  const [targetAmount, setTargetAmount] = useState('');
 
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -78,12 +80,13 @@ const GroupCard = ({
       setEventName("");
       setDescription("");
       setDate("");
+      setTargetAmount("");
       setTime("");
       setSelectedImage(null);
       return;
     }
 
-    if (name === "" || description === "" || date === "" || time === "") {
+    if (name === "" || description === "" || date === "" || time === "" || targetAmount === "") {
       setCreateEventLoading(false)
       toast({
         title: "Please fill all the fields",
@@ -110,23 +113,34 @@ const GroupCard = ({
         time
       }, config)
         .then(async (res) => {
-          await conversationApi.getEvents(chatId, config).then((res) => {
-            toast({
-              title: "Event Created!",
-              description: "Event created successfully",
-              status: "success",
-              duration: 5000,
-              isClosable: true,
-              position: "bottom-left",
-            });
-            setCreateEventLoading(false);
-            setEventName("");
-            setDescription("");
-            setDate("");
-            setTime("");
-            setSelectedImage(null);
-            onCloseCreateEvent();
-            setFetchAgain(!fetchAgain);
+          const eventId = res.data._id;
+          await conversationApi.getEvents(chatId, config).then(async (res) => {
+            const dontation = await donationApi.startDonation(
+              {
+                event: eventId,
+                name,
+                targetAmount
+              }
+              , config);
+            if (dontation) {
+              toast({
+                title: "Event Created!",
+                description: "Event created successfully",
+                status: "success",
+                duration: 5000,
+                isClosable: true,
+                position: "bottom-left",
+              });
+              setCreateEventLoading(false);
+              setEventName("");
+              setDescription("");
+              setTargetAmount("");
+              setDate("");
+              setTime("");
+              setSelectedImage(null);
+              onCloseCreateEvent();
+              setFetchAgain(!fetchAgain);
+            }
           }).catch((err) => {
             console.log(err);
             toast({
@@ -141,6 +155,7 @@ const GroupCard = ({
             setEventName("");
             setDescription("");
             setDate("");
+            setTargetAmount("");
             setTime("");
             setSelectedImage(null);
             onCloseCreateEvent();
@@ -159,6 +174,7 @@ const GroupCard = ({
           setCreateEventLoading(false);
           setEventName("");
           setDescription("");
+          setTargetAmount("");
           setDate("");
           setTime("");
           setSelectedImage(null);
@@ -195,6 +211,7 @@ const GroupCard = ({
                 setCreateEventLoading(false);
                 setEventName("");
                 setDescription("");
+                setTargetAmount("");
                 setDate("");
                 setTime("");
                 setSelectedImage(null);
@@ -211,6 +228,7 @@ const GroupCard = ({
                 });
                 setCreateEventLoading(false);
                 setEventName("");
+                setTargetAmount("");
                 setDescription("");
                 setDate("");
                 setTime("");
@@ -230,6 +248,7 @@ const GroupCard = ({
               });
               setCreateEventLoading(false);
               setEventName("");
+              setTargetAmount("");
               setDescription("");
               setDate("");
               setTime("");
@@ -248,6 +267,7 @@ const GroupCard = ({
             position: "bottom-left",
           });
           setCreateEventLoading(false);
+          setTargetAmount("");
           setEventName("");
           setDescription("");
           setDate("");
@@ -451,7 +471,7 @@ const GroupCard = ({
       <AddMembersModal isAddOpen={isAddOpen} onAddClose={onAddClose} handleSearch={handleSearch} search={search} searchResults={searchResults} loading={loading} handleAddUser={handleAddUser} fullScreen={fullScreen} />
 
       {/* Create Event Modal */}
-      <EventModal type={"Create"} createEventLoading={createEventLoading} isOpenCreateEvent={isOpenCreateEvent} onCloseCreateEvent={onCloseCreateEvent} name={eventName} setEventName={setEventName} description={description} setDescription={setDescription} date={date} setDate={setDate} time={time} setTime={setTime} selectedImage={selectedImage} imageChange={imageChange} handleSubmit={handleCreateEvent} fileInputRef={fileInputRef} />
+      <EventModal type={"Create"} createEventLoading={createEventLoading} isOpenCreateEvent={isOpenCreateEvent} onCloseCreateEvent={onCloseCreateEvent} name={eventName} setEventName={setEventName} description={description} setDescription={setDescription} date={date} setDate={setDate} time={time} setTime={setTime} selectedImage={selectedImage} imageChange={imageChange} handleSubmit={handleCreateEvent} fileInputRef={fileInputRef} targetAmount={targetAmount} setTargetAmount={setTargetAmount} />
     </Box>
   )
 }

@@ -9,9 +9,9 @@ import { AppContext } from "./AppContext";
 import useSound from 'use-sound';
 import joinSound from '../sounds/join.mp3';
 import leaveSound from '../sounds/leave.mp3';
+import { peer_server_url } from "../utils";
 
-const ENDPOINT = "http://localhost:8080";
-// const ENDPOINT = "https://peerjs.wildcrypto.com";
+const ENDPOINT = peer_server_url;
 
 export const RoomContext = createContext(null);
 
@@ -198,6 +198,7 @@ export const RoomProvider = ({ children }) => {
             ws.off("user-joined");
         };
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [me, playJoin, streamState, userId])
 
     useEffect(() => {
