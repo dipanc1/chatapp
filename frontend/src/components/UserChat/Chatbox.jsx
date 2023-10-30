@@ -426,7 +426,7 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
 }
 
 const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) => {
-  const { dispatch, userInfo } = React.useContext(AppContext);
+  const { dispatch, userInfo, fetchGroupDonations } = React.useContext(AppContext);
   const [groupChatName, setGroupChatName] = React.useState('');
   const [groupChatDescription, setGroupChatDescription] = React.useState('');
   const [renameLoading, setRenameLoading] = React.useState(false);
@@ -624,7 +624,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
 
     donation();
 
-  }, [selectedChat?._id, user.token])
+  }, [selectedChat?._id, user.token, fetchGroupDonations])
 
 
   const variants = {
@@ -708,7 +708,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
                 </Text>
               </Box>
 
-              <Box
+              {admin && <Box
                 shadow={"lg"}
                 p="10px 20px"
                 bg="#fff"
@@ -718,24 +718,19 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
                 whiteSpace={"pre"}
                 transition={"all 0.15s ease-in-out"}
               >
+                
                 <Flex position={"relative"} width={"400px"} h="12px" background={"#e6e6e6"} borderRadius={"10px"} overflow={"hidden"}>
                   <Text fontSize={"10px"} position={"absolute"} top="0" right="100px">
                     Money Raised in this Group
                   </Text>
                   <Box textAlign={"right"} background={"#ffd700"} h="100%" w={percentage + "%"}>
-                    <Text fontSize={"10px"} pe="5px">
-                      ${currentAmount}
-                    </Text>
                   </Box>
-                  <Text position={"absolute"} top="0" right="0" fontSize={"10px"} pe="10px">
-                    ${targetAmount}
-                  </Text>
                 </Flex>
                 <Flex color="#1c1c1c" fontSize={"13px"} justifyContent={"space-between"}>
                   <Text>{peopleContributed} People Contributed</Text>
                   <Text>${currentAmount} / ${targetAmount} Raised</Text>
                 </Flex>
-              </Box>
+              </Box>}
 
               <Flex>
                 <Box display='flex' alignItems='center'>

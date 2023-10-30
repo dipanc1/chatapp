@@ -74,6 +74,7 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
     const [currentAmount, setCurrentAmount] = React.useState('');
     const [peopleContributed, setPeopleContributed] = React.useState(0);
     const [name, setName] = React.useState('');
+    const [refresh, setRefresh] = React.useState(false);
     const [contributeAmount, setContributeAmount] = React.useState('');
     const [donationId, setDonationId] = React.useState('');
     const stopButton = useRef(null);
@@ -327,59 +328,16 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
                 setName(data[0].name);
                 setCurrentAmount(data[0].currentAmount);
                 setPeopleContributed(data[0].donatedByAndAmount.length);
+                setRefresh(false);
             }
         }
 
         donation();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [refresh])
 
     const percentage = (currentAmount / targetAmount) * 100;
-
-    const startFundraising = async () => {
-        try {
-            const config = {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${user.token}`,
-                },
-            };
-            const dontation = await donationApi.startDonation(
-                {
-                    event: eventInfo.id,
-                    name,
-                    targetAmount
-                }
-                , config);
-            if (dontation) {
-                setToggleDonation(false);
-                setTargetAmount('');
-                setName('');
-                toast({
-                    title: "Fundraising Started!",
-                    description: "You can now accept donations",
-                    status: "success",
-                    isClosable: true,
-                    position: "bottom",
-                    duration: 5000,
-                });
-            }
-        } catch (error) {
-            toast({
-                title: "Error Occured!",
-                description: "Failed to start fundraising",
-                status: "error",
-                isClosable: true,
-                position: "bottom",
-                duration: 5000,
-            });
-            setTargetAmount('');
-            setName('');
-            setToggleDonation(false);
-            console.log(error);
-        }
-    }
 
     const contributeToFundraising = async () => {
         if (contributeAmount === '' || contributeAmount === '0') {
@@ -593,68 +551,8 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
                             Host: {selectedChat.groupAdmin.username.toUpperCase()}
                         </Text>
                         <Box position={"relative"}>
-                            <Button
-                                background="transparent"
-                                h='3rem'
-                                w='3rem'
-                                onClick={() => setToggleDonation(!toggleDonation)}
-                            >
-                                <Img
-                                    filter={colorMode === 'light' ? '' : 'invert(1) brightness(10)'}
-                                    h='20px'
-                                    src="https://ik.imagekit.io/sahildhingra/dollar.png" alt="" />
-                            </Button>
                             {admin ?
-                                <Box
-                                    position={"absolute"}
-                                    top="0"
-                                    left="4rem"
-                                    shadow={"lg"}
-                                    p="10px 20px"
-                                    bg="#fff"
-                                    borderRadius={"5px"}
-                                    zIndex={"1"}
-                                    minWidth={"220px"}
-                                    transition={"all 0.15s ease-in-out"}
-                                    opacity={toggleDonation ? "1" : "0"}
-                                    transform={toggleDonation ? "unset" : "translateY(15px)"}
-                                >
-                                    <Text pb="10px" fontSize={"18px"} as={"h1"} whiteSpace={"pre"}>
-                                        Set Fundraising Goal
-                                    </Text>
-                                    <Flex pb="10px" gap="15px" flexDirection={"column"}>
-                                        <Input p="5px" fontSize="14px" type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='Goal Name' focusBorderColor={"#9F85F7"} />
-                                        <Input p="5px" fontSize="14px" type="number" placeholder='Goal Amount' value={targetAmount} onChange={(e) => setTargetAmount(e.target.value)} focusBorderColor={"#9F85F7"} />
-                                        <button onClick={() => startFundraising()} className='btn btn-primary' disabled={
-                                            name === '' || targetAmount === '' ? true : false
-                                        }>Raise</button>
-                                    </Flex>
-                                </Box>
-                                :
-                                <Box
-                                    position={"absolute"}
-                                    top="0"
-                                    left="4rem"
-                                    shadow={"lg"}
-                                    p="10px 20px"
-                                    bg="#fff"
-                                    borderRadius={"5px"}
-                                    zIndex={"1"}
-                                    minWidth={"420px"}
-                                    whiteSpace={"pre"}
-                                    transition={"all 0.15s ease-in-out"}
-                                    opacity={toggleDonation ? "1" : "0"}
-                                    transform={toggleDonation ? "unset" : "translateY(15px)"}
-                                >
-                                    <Text pb="10px" fontSize={"18px"} as={"h1"} whiteSpace={"pre"}>
-                                        Support Fundraising
-                                    </Text>
-                                    <Flex pb="10px" gap="10px" alignItems={"center"} justifyContent={"space-between"}>
-                                        <Text whiteSpace={"pre"} color="#1c1c1c">{name}</Text>
-                                        <Input value={contributeAmount} onChange={
-                                            (e) => setContributeAmount(e.target.value)
-                                        } w="120px" p="5px" fontSize="14px" type="number" placeholder='Enter Amount' />
-                                    </Flex>
+                                <>
                                     <Flex position={"relative"} mb="10px" h="12px" background={"#e6e6e6"} borderRadius={"10px"} overflow={"hidden"}>
                                         <Box textAlign={"right"} background={"#ffd700"} h="100%" w={percentage + "%"}>
                                             <Text fontSize={"10px"} pe="5px">
@@ -669,12 +567,76 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
                                         <Text>{peopleContributed} People Contributed</Text>
                                         <Text>${currentAmount} / ${targetAmount} Raised</Text>
                                     </Flex>
-                                    <Box textAlign={"right"}>
-                                        <button className='btn btn-primary' onClick={
-                                            () => contributeToFundraising() 
-                                        }>Contribute</button>
+                                    <button className='btn btn-primary' disabled={
+                                        refresh ? true : false
+                                    } onClick={
+                                        () => {
+                                            setRefresh(!refresh);
+                                        }
+                                    }>
+                                        {refresh ? 'Refreshing...' : 'Refresh'}
+                                    </button>
+                                </>
+                                :
+                                <>
+                                    <Button
+                                        background="transparent"
+                                        h='3rem'
+                                        w='3rem'
+                                        onClick={() => setToggleDonation(!toggleDonation)}
+                                    >
+                                        <Img
+                                            filter={colorMode === 'light' ? '' : 'invert(1) brightness(10)'}
+                                            h='20px'
+                                            src="https://ik.imagekit.io/sahildhingra/dollar.png" alt="" />
+                                    </Button>
+                                    <Box
+                                        position={"absolute"}
+                                        top="0"
+                                        left="4rem"
+                                        shadow={"lg"}
+                                        p="10px 20px"
+                                        bg="#fff"
+                                        borderRadius={"5px"}
+                                        zIndex={"1"}
+                                        minWidth={"420px"}
+                                        whiteSpace={"pre"}
+                                        transition={"all 0.15s ease-in-out"}
+                                        opacity={toggleDonation ? "1" : "0"}
+                                        transform={toggleDonation ? "unset" : "translateY(15px)"}
+                                    >
+                                        <Text pb="10px" fontSize={"18px"} as={"h1"} whiteSpace={"pre"}>
+                                            Support Fundraising
+                                        </Text>
+                                        <Flex pb="10px" gap="10px" alignItems={"center"} justifyContent={"space-between"}>
+                                            <Text whiteSpace={"pre"} color="#1c1c1c">{name}</Text>
+                                            <Input value={contributeAmount} onChange={
+                                                (e) => setContributeAmount(e.target.value)
+                                            } w="120px" p="5px" fontSize="14px" type="number" placeholder='Enter Amount' />
+                                        </Flex>
+                                        <Flex position={"relative"} mb="10px" h="12px" background={"#e6e6e6"} borderRadius={"10px"} overflow={"hidden"}>
+                                            <Box textAlign={"right"} background={"#ffd700"} h="100%" w={percentage + "%"}>
+                                                <Text fontSize={"10px"} pe="5px">
+                                                    ${currentAmount}
+                                                </Text>
+                                            </Box>
+                                            <Text position={"absolute"} top="0" right="0" fontSize={"10px"} pe="10px">
+                                                ${targetAmount}
+                                            </Text>
+                                        </Flex>
+                                        <Flex pb="15px" color="#1c1c1c" fontSize={"13px"} justifyContent={"space-between"}>
+                                            <Text>{peopleContributed} People Contributed</Text>
+                                            <Text>${currentAmount} / ${targetAmount} Raised</Text>
+                                        </Flex>
+                                        <Box textAlign={"right"}>
+                                            <button disabled={
+                                                contributeAmount === '' ? true : false
+                                            } button className='btn btn-primary' onClick={
+                                                () => contributeToFundraising()
+                                            }>Contribute</button>
+                                        </Box>
                                     </Box>
-                                </Box>
+                                </>
                             }
                         </Box>
                         <Box py='30px'><hr /></Box>

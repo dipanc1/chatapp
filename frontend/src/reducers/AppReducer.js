@@ -60,6 +60,11 @@ const AppReducer = (state, action) => {
                 ...state,
                 eventInfo: action.payload
             };
+        case "SET_FETCH_GROUP_DONATIONS":
+            return {
+                ...state,
+                fetchGroupDonations: !state.fetchGroupDonations
+            };
         default:
             return state;
     }
