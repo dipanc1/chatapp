@@ -1,6 +1,6 @@
 const router = require("express").Router();
 
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const stripe = require('stripe')('sk_test_51N136dLHtaKT8adLEh4BGAHPvUws0q0lc4pQ69cIqBsL4iWzBKAcDWIKGwXvaamRsU9HwK2SRaaEeGSbL2hE56wj00G7LXRzdq');
 
 router.post('/create-checkout-session', async (req, res) => {
   const { subscribeData } = req.body;
@@ -27,6 +27,21 @@ router.post('/create-checkout-session', async (req, res) => {
   res.json({ id: session.id });
 });
 
+router.post("/create-payment-intent", async (req, res) => {
+  const { amount } = req.body;
+
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: amount * 100,
+    currency: "usd",
+    automatic_payment_methods: {
+      enabled: true,
+    },
+  });
+
+  res.send({
+    clientSecret: paymentIntent.client_secret,
+  });
+});
 
 router.post('/payment-sheet', async (req, res) => {
   const { amount } = req.body;

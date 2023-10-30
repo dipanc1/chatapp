@@ -11,8 +11,16 @@ import {
     Text,
     Tooltip,
     useColorMode,
+    useDisclosure,
     useToast,
     VStack,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useRef } from "react";
 import {
@@ -26,6 +34,10 @@ import { RoomContext } from "../../context/RoomContext";
 import Videoplayer from "./Videoplayer";
 import conversationApi from "../../services/apis/conversationApi";
 import donationApi from "../../services/apis/donationApi";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+import CheckoutForm from "./CheckoutForm";
+import { backend_url } from "../../utils";
 
 const IconButtonGeneric = ({
     icon,
@@ -66,6 +78,28 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
     const [contributeAmount, setContributeAmount] = React.useState('');
     const [donationId, setDonationId] = React.useState('');
     const stopButton = useRef(null);
+    const [clientSecret, setClientSecret] = React.useState("");
+
+    const stripePromise = loadStripe("pk_test_51N136dLHtaKT8adL3kfRwpts2g1xBKHE9A1flPHC1eE5rQzHZHO6NcdCNZEmuQWJ2lZiqMJ0hdeqRUdWvaWnVkaa000amUm8tU");
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    React.useEffect(() => {
+        // Create PaymentIntent as soon as the page loads
+        // fetch(`${backend_url}/checkout/create-payment-intent`, {
+        // method: "POST",
+        // headers: { "Content-Type": "application/json" },
+        // body: JSON.stringify({ items: [{ id: "xl-tshirt" }] }),
+        // })
+        // .then((res) => res.json())
+        // .then((data) => setClientSecret(data.clientSecret));
+    }, []);
+
+    const appearance = {
+        theme: 'stripe',
+    };
+    const options = {
+        clientSecret,
+        appearance,
+    };
 
     const [id, setId] = React.useState(localStorage.getItem("roomId"));
 
@@ -318,38 +352,46 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
             return;
         }
         try {
-            const config = {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${user.token}`,
-                },
-            };
-            const { data } = await donationApi.contributeToDonation(donationId, { amount: parseInt(contributeAmount) }, config);
-            if (data) {
-                toast({
-                    title: "Donation Successful!",
-                    description: "Thank you for your contribution",
-                    status: "success",
-                    isClosable: true,
-                    position: "bottom",
-                    duration: 5000,
-                });
+            onOpen()
+            fetch(`${backend_url}/checkout/create-payment-intent`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({amount: parseInt(contributeAmount)}),
+                })
+                .then((res) => res.json())
+                .then((data) => setClientSecret(data.clientSecret));
+            // const config = {
+            //     headers: {
+            //         "Content-Type": "application/json",
+            //         Authorization: `Bearer ${user.token}`,
+            //     },
+            // };
+            // const { data } = await donationApi.contributeToDonation(donationId, { amount: parseInt(contributeAmount) }, config);
+            // if (data) {
+            //     toast({
+            //         title: "Donation Successful!",
+            //         description: "Thank you for your contribution",
+            //         status: "success",
+            //         isClosable: true,
+            //         position: "bottom",
+            //         duration: 5000,
+            //     });
 
-                setContributeAmount('');
-                setToggleDonation(false);
-                setCurrentAmount(data.currentAmount);
-                setTargetAmount(data.targetAmount);
-                setPeopleContributed(data.donatedByAndAmount.length);
-            }
+            //     setContributeAmount('');
+            //     setToggleDonation(false);
+            //     setCurrentAmount(data.currentAmount);
+            //     setTargetAmount(data.targetAmount);
+            //     setPeopleContributed(data.donatedByAndAmount.length);
+            // }
         } catch (error) {
-            toast({
-                title: "Error Occured!",
-                description: "Failed to contribute to fundraising",
-                status: "error",
-                isClosable: true,
-                position: "bottom",
-                duration: 5000,
-            });
+            // toast({
+            //     title: "Error Occured!",
+            //     description: "Failed to contribute to fundraising",
+            //     status: "error",
+            //     isClosable: true,
+            //     position: "bottom",
+            //     duration: 5000,
+            // });
             console.log(error);
         }
     }
@@ -673,6 +715,20 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
                     </VStack>
                 </Box>
             )}
+            <Modal isOpen={isOpen} onClose={onClose}>
+                <ModalOverlay />
+                <ModalContent>
+                <ModalHeader>Payment</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                    {clientSecret && (
+                        <Elements options={options} stripe={stripePromise}>
+                            <CheckoutForm />
+                        </Elements>
+                    )}
+                </ModalBody>
+                </ModalContent>
+            </Modal>
         </Box>
     );
 };
