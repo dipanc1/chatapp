@@ -116,53 +116,33 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
       }, config)
         .then(async (r) => {
           let eventId = r.data._id;
-          await conversationApi.getEvents(selectedChat._id, config).then(async (res) => {
-            const dontation = await donationApi.startDonation(
-              {
-                event: eventId,
-                name,
-                targetAmount
-              }
-              , config);
-            if (dontation) {
-              selectedChat.events = res.data;
-              toast({
-                title: "Event Created!",
-                description: "Event created successfully",
-                status: "success",
-                duration: 5000,
-                isClosable: true,
-                position: "bottom-left",
-              });
-              dispatch({ type: 'SET_FETCH_GROUP_DONATIONS' });
-              setCreateEventLoading(false);
-              setEventName("");
-              setDescription("");
-              setDate("");
-              setTime("");
-              setTargetAmount('');
-              setSelectedImage(null);
-              onCloseCreateEvent();
+          const dontation = await donationApi.startDonation(
+            {
+              event: eventId,
+              name,
+              targetAmount
             }
-          }).catch((err) => {
-            console.log(err);
+            , config);
+          if (dontation) {
+            selectedChat.events = [...selectedChat.events, r.data];
             toast({
-              title: "Error Occured!",
-              description: "Something went wrong",
-              status: "error",
+              title: "Event Created!",
+              description: "Event created successfully",
+              status: "success",
               duration: 5000,
               isClosable: true,
               position: "bottom-left",
             });
+            dispatch({ type: 'SET_FETCH_GROUP_DONATIONS' });
             setCreateEventLoading(false);
             setEventName("");
             setDescription("");
             setDate("");
-            setTargetAmount('');
             setTime("");
+            setTargetAmount('');
             setSelectedImage(null);
             onCloseCreateEvent();
-          })
+          }
         })
         .catch((err) => {
           console.log(err);
@@ -202,52 +182,33 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
           }, config)
             .then(async (r) => {
               let eventId = r.data._id;
-              await conversationApi.getEvents(selectedChat._id, config).then(async (res) => {
-                const dontation = await donationApi.startDonation(
-                  {
-                    event: eventId,
-                    name,
-                    targetAmount
-                  }
-                  , config);
-                if (dontation) {
-                  selectedChat.events = res.data;
-                  toast({
-                    title: "Event Created!",
-                    description: "Event created successfully",
-                    status: "success",
-                    duration: 5000,
-                    isClosable: true,
-                    position: "bottom-left",
-                  });
-                  setCreateEventLoading(false);
-                  setEventName("");
-                  setDescription("");
-                  setDate("");
-                  setTime("");
-                  setTargetAmount('');
-                  setSelectedImage(null);
-                  onCloseCreateEvent();
+              const dontation = await donationApi.startDonation(
+                {
+                  event: eventId,
+                  name,
+                  targetAmount
                 }
-              }).catch((err) => {
-                console.log(err);
+                , config);
+              if (dontation) {
+                selectedChat.events = res.data;
                 toast({
-                  title: "Error Occured!",
-                  description: "Something went wrong",
-                  status: "error",
+                  title: "Event Created!",
+                  description: "Event created successfully",
+                  status: "success",
                   duration: 5000,
                   isClosable: true,
                   position: "bottom-left",
                 });
                 setCreateEventLoading(false);
                 setEventName("");
+                dispatch({ type: 'SET_FETCH_GROUP_DONATIONS' });
                 setDescription("");
                 setDate("");
-                setTargetAmount('');
                 setTime("");
+                setTargetAmount('');
                 setSelectedImage(null);
                 onCloseCreateEvent();
-              })
+              }
             })
             .catch((err) => {
               console.log(err);

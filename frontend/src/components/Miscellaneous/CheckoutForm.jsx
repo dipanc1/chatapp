@@ -8,7 +8,7 @@ import {
 import { Box, useToast } from "@chakra-ui/react";
 import donationApi from "../../services/apis/donationApi";
 
-export default function CheckoutForm() {
+export default function CheckoutForm({ donationId }) {
   const stripe = useStripe();
   const elements = useElements();
   const user = JSON.parse(localStorage.getItem("user"));
@@ -32,23 +32,24 @@ export default function CheckoutForm() {
     }
 
     const handleContribution = async (payload) => {
-        const config = {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${user.token}`,
-            },
-        };
-        const { data } = await donationApi.contributeToDonation(payload.id, { amount: payload.amount/100 }, config);
-        if (data) {
-            toast({
-                title: "Donation Successful!",
-                description: "Thank you for your contribution",
-                status: "success",
-                isClosable: true,
-                position: "bottom",
-                duration: 5000,
-            });
-        }
+      console.log(payload, "<--- payload")
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await donationApi.contributeToDonation(donationId, { amount: payload.amount }, config);
+      if (data) {
+        toast({
+          title: "Donation Successful!",
+          description: "Thank you for your contribution",
+          status: "success",
+          isClosable: true,
+          position: "bottom",
+          duration: 5000,
+        });
+      }
     }
 
     stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
@@ -116,11 +117,11 @@ export default function CheckoutForm() {
       />
       <PaymentElement id="payment-element" options={paymentElementOptions} />
       <Box py="20px" textAlign="right">
-      <button className="btn btn-primary" disabled={isLoading || !stripe || !elements} id="submit">
-        <span id="button-text">
-          {isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
-        </span>
-      </button>
+        <button className="btn btn-primary" disabled={isLoading || !stripe || !elements} id="submit">
+          <span id="button-text">
+            {isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
+          </span>
+        </button>
       </Box>
       {/* Show any error or success messages */}
       {message && <div id="payment-message">{message}</div>}

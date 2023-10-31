@@ -22,6 +22,7 @@ import axios from 'axios';
 import EventModal from '../UserModals/EventModal';
 import StreamModalPeer from '../UserModals/StreamModalPeer';
 import conversationApi from '../../services/apis/conversationApi';
+import donationApi from '../../services/apis/donationApi';
 
 const EventCard = ({
   index,
@@ -40,7 +41,7 @@ const EventCard = ({
 }) => {
   const user = JSON.parse(localStorage.getItem('user'));
 
-  const { selectedChat, userInfo, getCloudinarySignature, signature, timestamp } = useContext(AppContext);
+  const { selectedChat, userInfo, getCloudinarySignature, signature, timestamp, dispatch } = useContext(AppContext);
 
   const [toggleEventMenu, setToggleEventMenu] = useState(false);
   const [name, setEventName] = useState(title);
@@ -49,6 +50,7 @@ const EventCard = ({
   const [timed, setTimed] = useState(time);
   const [selectedImage, setSelectedImage] = React.useState(null);
   const [editEventLoading, setEditEventLoading] = useState(false);
+  const [targetAmount, setTargetAmount] = useState('');
   const [meetingIdExists, setMeetingIdExists] = React.useState(false);
 
   const toast = useToast();
@@ -60,14 +62,14 @@ const EventCard = ({
 
   React.useEffect(() => {
     if (selectedChat?.isGroupChat) {
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.token}`
+        }
+      }
       try {
         const checkStream = async () => {
-          const config = {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${user.token}`
-            }
-          }
           const { data } = await conversationApi.checkStream(selectedChat._id, config);
           if (data) {
             localStorage.setItem('roomId', data);
@@ -76,6 +78,13 @@ const EventCard = ({
             setMeetingIdExists(false);
           }
         }
+        const getTargetAmount = async () => {
+          const { data } = await donationApi.getDonationOfAnEvent(id, config);
+          if (data) {
+            setTargetAmount(data[0].targetAmount);
+          }
+        }
+        getTargetAmount();
         checkStream();
       } catch (error) {
         toast({
@@ -122,7 +131,7 @@ const EventCard = ({
       return;
     };
 
-    if (name === "" || descriptiond === "" || dated === "" || timed === "") {
+    if (name === "" || descriptiond === "" || dated === "" || timed === "" || targetAmount === "") {
       setEditEventLoading(false);
       toast({
         title: "Feilds cannot be empty",
@@ -153,8 +162,27 @@ const EventCard = ({
         chatId: selectedChat._id
       }, config)
         .then(async (res) => {
-          await conversationApi.getEvents(selectedChat._id, config).then((res) => {
-            selectedChat.events = res.data;
+          const eventId = res.data._id;
+          const dontation = await donationApi.startDonation(
+            {
+              event: eventId,
+              name,
+              targetAmount
+            }
+            , config);
+          if (dontation) {
+            selectedChat.events = selectedChat.events.map((event) => {
+              if (event._id === id) {
+                event.name = name;
+                event.description = descriptiond;
+                event.date = dated;
+                event.time = timed;
+                event.thumbnail = res.data.url;
+                return event;
+              } else {
+                return event;
+              }
+            });
             toast({
               title: "Event Edited!",
               description: "Event edited successfully",
@@ -167,30 +195,29 @@ const EventCard = ({
             setEventName(name);
             setDescriptiond(descriptiond);
             setDated(dated);
+            dispatch({ type: 'SET_FETCH_GROUP_DONATIONS' });
             setTimed(timed);
             if (fetchAgain !== undefined) setFetchAgain(!fetchAgain);
             onCloseEditEvent();
-          }).catch((err) => {
-            console.log(err);
-            toast({
-              title: "Error Occured!",
-              description: "Something went wrong",
-              status: "error",
-              duration: 5000,
-              isClosable: true,
-              position: "bottom-left",
-            });
-            setEditEventLoading(false);
-            setEventName(name);
-            setDescriptiond(descriptiond);
-            setDated(dated);
-            setTimed(timed);
-            onCloseEditEvent();
-          })
+          }
         })
         .catch((err) => {
+          toast({
+            title: "Error Occured!",
+            description: "Something went wrong",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom-left",
+          });
+          setEditEventLoading(false);
+          setEventName(name);
+          setDescriptiond(descriptiond);
+          setDated(dated);
+          setTimed(timed);
+          onCloseEditEvent();
           console.log(err);
-        });
+        })
     } else {
       const formData = new FormData();
       formData.append('api_key', api_key)
@@ -210,8 +237,27 @@ const EventCard = ({
             chatId: selectedChat._id
           }, config)
             .then(async (res) => {
-              await conversationApi.getEvents(selectedChat._id, config).then((res) => {
-                selectedChat.events = res.data;
+              const eventId = res.data._id;
+              const dontation = await donationApi.startDonation(
+                {
+                  event: eventId,
+                  name,
+                  targetAmount
+                }
+                , config);
+              if (dontation) {
+                selectedChat.events = selectedChat.events.map((event) => {
+                  if (event._id === id) {
+                    event.name = name;
+                    event.description = descriptiond;
+                    event.date = dated;
+                    event.time = timed;
+                    event.thumbnail = res.data.url;
+                    return event;
+                  } else {
+                    return event;
+                  }
+                });
                 toast({
                   title: "Event Created!",
                   description: "Event edited successfully",
@@ -224,33 +270,46 @@ const EventCard = ({
                 setEventName(name);
                 setDescriptiond(descriptiond);
                 setDated(dated);
+                dispatch({ type: 'SET_FETCH_GROUP_DONATIONS' });
                 setTimed(timed);
                 if (fetchAgain !== undefined) setFetchAgain(!fetchAgain);
                 onCloseEditEvent();
-              }).catch((err) => {
-                console.log(err);
-                toast({
-                  title: "Error Occured!",
-                  description: "Something went wrong",
-                  status: "error",
-                  duration: 5000,
-                  isClosable: true,
-                  position: "bottom-left",
-                });
-                setEditEventLoading(false);
-                setEventName(name);
-                setDescriptiond(descriptiond);
-                setDated(dated);
-                setTimed(timed);
-                onCloseEditEvent();
-              })
+              }
             })
             .catch((err) => {
               console.log(err);
+              toast({
+                title: "Error Occured!",
+                description: "Something went wrong",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "bottom-left",
+              });
+              setEditEventLoading(false);
+              setEventName(name);
+              setDescriptiond(descriptiond);
+              setDated(dated);
+              setTimed(timed);
+              onCloseEditEvent();
             });
         })
         .catch((err) => {
           console.log(err);
+          toast({
+            title: "Error Occured!",
+            description: "Something went wrong",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom-left",
+          });
+          setEditEventLoading(false);
+          setEventName(name);
+          setDescriptiond(descriptiond);
+          setDated(dated);
+          setTimed(timed);
+          onCloseEditEvent();
         });
     }
 
@@ -288,6 +347,7 @@ const EventCard = ({
           position: "bottom-left",
         });
         if (fetchAgain !== undefined) setFetchAgain(!fetchAgain);
+        dispatch({ type: 'SET_FETCH_GROUP_DONATIONS' });
       });
     } catch (error) {
       await conversationApi.getEvents(selectedChat._id, config).then((res) => {
@@ -356,7 +416,7 @@ const EventCard = ({
           </Flex>
         </GridItem>
       </NavLink>
-      <EventModal type={"Update"} createEventLoading={editEventLoading} isOpenCreateEvent={isOpenEditEvent} onCloseCreateEvent={onCloseEditEvent} name={name} setEventName={setEventName} description={descriptiond} setDescription={setDescriptiond} date={dated} setDate={setDated} time={timed} setTime={setTimed} selectedImage={selectedImage} imageChange={imageChange} handleSubmit={handleEditEvent} fileInputRef={fileInputRef} imageUrl={imageUrl} />
+      <EventModal type={"Update"} createEventLoading={editEventLoading} isOpenCreateEvent={isOpenEditEvent} onCloseCreateEvent={onCloseEditEvent} name={name} setEventName={setEventName} description={descriptiond} setDescription={setDescriptiond} date={dated} setDate={setDated} time={timed} setTime={setTimed} selectedImage={selectedImage} imageChange={imageChange} handleSubmit={handleEditEvent} fileInputRef={fileInputRef} imageUrl={imageUrl} targetAmount={targetAmount} setTargetAmount={setTargetAmount} />
     </>
   )
 }

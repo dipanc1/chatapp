@@ -18,7 +18,6 @@ import {
     ModalOverlay,
     ModalContent,
     ModalHeader,
-    ModalFooter,
     ModalBody,
     ModalCloseButton,
 } from "@chakra-ui/react";
@@ -356,8 +355,8 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
             fetch(`${backend_url}/checkout/create-payment-intent`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({amount: parseInt(contributeAmount)}),
-                })
+                body: JSON.stringify({ amount: parseInt(contributeAmount) }),
+            })
                 .then((res) => res.json())
                 .then((data) => setClientSecret(data.clientSecret));
             // const config = {
@@ -718,15 +717,15 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent>
-                <ModalHeader>Payment</ModalHeader>
-                <ModalCloseButton />
-                <ModalBody>
-                    {clientSecret && (
-                        <Elements options={options} stripe={stripePromise}>
-                            <CheckoutForm />
-                        </Elements>
-                    )}
-                </ModalBody>
+                    <ModalHeader>Payment</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        {clientSecret && (
+                            <Elements options={options} stripe={stripePromise}>
+                                <CheckoutForm donationId={donationId} />
+                            </Elements>
+                        )}
+                    </ModalBody>
                 </ModalContent>
             </Modal>
         </Box>

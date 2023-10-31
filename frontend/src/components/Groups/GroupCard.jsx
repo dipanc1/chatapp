@@ -114,39 +114,19 @@ const GroupCard = ({
       }, config)
         .then(async (res) => {
           const eventId = res.data._id;
-          await conversationApi.getEvents(chatId, config).then(async (res) => {
-            const dontation = await donationApi.startDonation(
-              {
-                event: eventId,
-                name,
-                targetAmount
-              }
-              , config);
-            if (dontation) {
-              toast({
-                title: "Event Created!",
-                description: "Event created successfully",
-                status: "success",
-                duration: 5000,
-                isClosable: true,
-                position: "bottom-left",
-              });
-              setCreateEventLoading(false);
-              setEventName("");
-              setDescription("");
-              setTargetAmount("");
-              setDate("");
-              setTime("");
-              setSelectedImage(null);
-              onCloseCreateEvent();
-              setFetchAgain(!fetchAgain);
+          const dontation = await donationApi.startDonation(
+            {
+              event: eventId,
+              name,
+              targetAmount
             }
-          }).catch((err) => {
-            console.log(err);
+            , config);
+          if (dontation) {
+            upcomingEvents = [...upcomingEvents, res.data]
             toast({
-              title: "Error Occured!",
-              description: "Something went wrong",
-              status: "error",
+              title: "Event Created!",
+              description: "Event created successfully",
+              status: "success",
               duration: 5000,
               isClosable: true,
               position: "bottom-left",
@@ -154,12 +134,13 @@ const GroupCard = ({
             setCreateEventLoading(false);
             setEventName("");
             setDescription("");
-            setDate("");
             setTargetAmount("");
+            setDate("");
             setTime("");
             setSelectedImage(null);
             onCloseCreateEvent();
-          })
+            setFetchAgain(!fetchAgain);
+          }
         })
         .catch((err) => {
           console.log(err);
@@ -198,8 +179,16 @@ const GroupCard = ({
             thumbnail: res.data.url
           }, config)
             .then(async (res) => {
-              await conversationApi.getEvents(chatId, config).then((res) => {
-                upcomingEvents = res.data;
+              const eventId = res.data._id;
+              const dontation = await donationApi.startDonation(
+                {
+                  event: eventId,
+                  name,
+                  targetAmount
+                }
+                , config);
+              if (dontation) {
+                upcomingEvents = [...upcomingEvents, res.data]
                 toast({
                   title: "Event Created!",
                   description: "Event created successfully",
@@ -216,25 +205,7 @@ const GroupCard = ({
                 setTime("");
                 setSelectedImage(null);
                 onCloseCreateEvent();
-              }).catch((err) => {
-                console.log(err);
-                toast({
-                  title: "Error Occured!",
-                  description: "Something went wrong",
-                  status: "error",
-                  duration: 5000,
-                  isClosable: true,
-                  position: "bottom-left",
-                });
-                setCreateEventLoading(false);
-                setEventName("");
-                setTargetAmount("");
-                setDescription("");
-                setDate("");
-                setTime("");
-                setSelectedImage(null);
-                onCloseCreateEvent();
-              })
+              }
             })
             .catch((err) => {
               console.log(err);
@@ -348,7 +319,6 @@ const GroupCard = ({
   }
 
   const handleAddUser = async (user1) => {
-    // console.warn("USER ID TO ADD", selectedChat.users.map(user => user._id).includes(user1));
     if (members.map(user => userInfo._id).includes(user1)) {
       return toast({
         title: "Error Occured!",

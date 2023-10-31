@@ -68,17 +68,17 @@ router.post('/', asyncHandler(async (req, res) => {
 
     const findDonation = await Donation.findOne({ event });
 
-    if (findDonation) {
-        await Donation.findByIdAndDelete(findDonation._id);
-    }
-
     try {
         const donation = await Donation.create({
             name,
             targetAmount,
             event,
-            currentAmount: 0
+            currentAmount: findDonation ? findDonation.currentAmount : 0,
         });
+
+        if (findDonation) {
+            await Donation.findByIdAndDelete(findDonation._id);
+        }
 
         res.status(201).json(donation);
 

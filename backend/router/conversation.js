@@ -803,7 +803,7 @@ router.put("/event/edit/:eventId", protect, asyncHandler(async (req, res) => {
     if (!findEventandUpdate) {
         return res.status(404).send("Event not found")
     } else {
-        res.status(200).send("Event updated");
+        res.status(200).json(findEventandUpdate);
     }
 
 }));

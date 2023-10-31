@@ -9,7 +9,7 @@ import DetailsModal from '../UserModals/DetailsModal'
 import { format } from 'timeago.js'
 import EndLeaveModal from '../UserModals/EndLeaveModal'
 import { api_key, backend_url, folder, pictureUpload, uploadFile } from '../../utils'
-import { Avatar, AvatarBadge, Box, Button, Divider, Flex, Image, Img, Input, Progress, Spinner, Text, useColorMode, useDisclosure, useToast } from '@chakra-ui/react'
+import { Avatar, AvatarBadge, Box, Button, Divider, Flex, Image, Img, Input, Spinner, Text, useColorMode, useDisclosure, useToast } from '@chakra-ui/react'
 import { FiImage, FiPaperclip, FiSend } from 'react-icons/fi'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useLocation } from 'react-router-dom'
@@ -600,6 +600,8 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
   }, [selectedChat])
 
   React.useEffect(() => {
+    if (!selectedChat || !selectedChat.isGroupChat || !admin) return;
+
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -624,7 +626,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
 
     donation();
 
-  }, [selectedChat?._id, user.token, fetchGroupDonations])
+  }, [admin, selectedChat, user.token, fetchGroupDonations])
 
 
   const variants = {
@@ -718,7 +720,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
                 whiteSpace={"pre"}
                 transition={"all 0.15s ease-in-out"}
               >
-                
+
                 <Flex position={"relative"} width={"400px"} h="12px" background={"#e6e6e6"} borderRadius={"10px"} overflow={"hidden"}>
                   <Text fontSize={"10px"} position={"absolute"} top="0" right="100px">
                     Money Raised in this Group
