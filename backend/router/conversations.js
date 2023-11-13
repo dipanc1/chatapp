@@ -1,9 +1,10 @@
 const router = require("express").Router();
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
+const _ = require("lodash");
 
 const User = require("../models/User");
-const Chat = require("../models/Conversation");
+const Chat = require("../models/Chat");
 const EventTable = require("../models/EventTable");
 
 const { protect } = require("../middleware/authMiddleware");
@@ -350,9 +351,11 @@ router.get("/encrypted/:id", protect, asyncHandler(async (req, res) => {
     const { id } = req.params;
 
     try {
-        const encryptedChatId = generateChatToken(id);
+        const findChat = await Chat.findById(id);
+
         res.status(200).json({
-            encryptedChatId
+            encryptedChatId: findChat.encryptedId,
+            slug: findChat.slug
         });
     } catch (error) {
         res.status(500).send("Something went wrong")
@@ -416,8 +419,15 @@ router.post("/group", protect, asyncHandler(async (req, res) => {
             description: req.body.description,
             isGroupChat: true,
             users: users,
+            slug: _.kebabCase(req.body.name),
             groupAdmin: req.user
         });
+
+        const encryptedChatId = generateChatToken(groupChat._id);
+
+        groupChat.encryptedId = encryptedChatId;
+
+        await groupChat.save();
 
         const fullGroupChat = await Chat.findOne({ _id: groupChat._id }).populate("users", "-password").populate("groupAdmin", "-password");
 

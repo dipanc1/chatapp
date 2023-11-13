@@ -14,7 +14,7 @@ const serviceSID = process.env.OTP_SERVICE_SID;
 
 const client = require("twilio")(accountSID, authToken);
 
-const Chat = require("../models/Conversation");
+const Chat = require("../models/Chat");
 const User = require("../models/User");
 const EventTable = require("../models/EventTable");
 

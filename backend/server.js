@@ -7,7 +7,7 @@ const bodyParser = require("body-parser");
 
 const userRoute = require("./router/users");
 const otpRoute = require("./router/otp");
-const conversationRoute = require("./router/conversation");
+const conversationRoute = require("./router/conversations");
 const messageRoute = require("./router/messages");
 const meetingRoute = require("./router/meetings");
 const checkoutRoute = require("./router/checkouts");
@@ -19,7 +19,6 @@ require("dotenv").config();
 const { protect } = require("./middleware/authMiddleware");
 
 const User = require("./models/User");
-const Donation = require("./models/Donations");
 
 const app = express();
 
@@ -62,7 +61,7 @@ const io = require("socket.io")(server, {
     pingTimeout: 60000,
     cors: {
         origin: [
-            process.env.CLIENT_URL, 'https://chatapp.wildcrypto.com'
+            process.env.CLIENT_URL, 'https://fundsdome.com'
         ]
     },
 });

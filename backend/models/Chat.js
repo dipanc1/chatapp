@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const ConversationSchema = mongoose.Schema({
+const ChatSchema = mongoose.Schema({
     chatName: { type: String, trim: true },
     isGroupChat: { type: Boolean, default: false },
     description: { type: String, trim: true },
@@ -19,9 +19,11 @@ const ConversationSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Event",
     },],
+    slug: { type: String, trim: true },
+    encryptedId: { type: String, trim: true },
     isSuspended: { type: Boolean, default: false },
 }, { timestamps: true });
 
-const Chat = mongoose.model("Chat", ConversationSchema);
+const Chat = mongoose.model("Chat", ChatSchema);
 
 module.exports = Chat;
