@@ -1,19 +1,16 @@
 import { AUDIO, DOC, FILE, IMAGE, PDF, PPT, TXT, VIDEO, XLS } from "./constants";
 
 // local server
-const backend_url = 'http://localhost:8000';
-
-// staging server
-// const backend_url = 'https://chatapphosted.azurewebsites.net';
+// const backend_url = 'http://localhost:8000';
 
 // abhishek's server
-// const backend_url = 'https://chatapp.wildcrypto.com';
+const backend_url = 'https://fundsdome.com';
 
 // local peer server
-const peer_server_url = 'http://localhost:8080';
+// const peer_server_url = 'http://localhost:8080';
 
 // abhishek's peer server
-// const peer_server_url = 'https://peerjs.wildcrypto.com';
+const peer_server_url = 'https://peerjs.fundsdome.com';
 
 const cloudName = 'dipanc1';
 const pictureUpload = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
