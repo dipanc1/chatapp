@@ -26,10 +26,11 @@ import { AppContext } from '../../context/AppContext';
 import UserCard from '../UserItems/UserCard';
 import conversationApi from '../../services/apis/conversationApi';
 import authApi from '../../services/apis/authApi';
+import PostPictureModal from '../UserModals/PostPictureModal';
 
 const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) => {
   const user = JSON.parse(localStorage.getItem('user'));
-  const { dispatch, loading, notification, pushNotification, userInfo } = useContext(AppContext);
+  const { dispatch, loading, notification, pushNotification, userInfo, selectedChat } = useContext(AppContext);
 
   const [toggleProfiledd, setToggleProfiledd] = useState(false)
   const [toggleSearch, setToggleSearch] = useState(false)
@@ -41,6 +42,8 @@ const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) 
   const [activeTab, setActiveTab] = useState(1)
 
   const { colorMode } = useColorMode();
+
+  const admin = selectedChat?.isGroupChat && selectedChat?.groupAdmin._id === userInfo?._id;
 
   let navigate = useNavigate();
   let location = useLocation();
@@ -336,6 +339,11 @@ const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) 
                             <Link display='block' p='5px 25px' textDecoration='none'>Profile</Link>
                           </ProfileModal>
                         </ListItem>
+                        {admin && <ListItem ps='0'>
+                          <PostPictureModal>
+                            <Link display='block' p='5px 25px' textDecoration='none'>Create Post</Link>
+                          </PostPictureModal>
+                        </ListItem>}
                         <ListItem ps='0'>
                           <Link onClick={handleLogout} display='block' p='5px 25px' textDecoration='none'>Logout</Link>
                         </ListItem>

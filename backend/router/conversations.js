@@ -6,10 +6,10 @@ const _ = require("lodash");
 const User = require("../models/User");
 const Chat = require("../models/Chat");
 const EventTable = require("../models/EventTable");
+const Post = require("../models/Post");
+const Donations = require("../models/Donations");
 
 const { protect } = require("../middleware/authMiddleware");
-const { generateChatToken } = require("../config/generateToken");
-const Donations = require("../models/Donations");
 
 const LIMIT = 5;
 
@@ -354,7 +354,7 @@ router.get("/encrypted/:id", protect, asyncHandler(async (req, res) => {
         const findChat = await Chat.findById(id);
 
         res.status(200).json({
-            encryptedChatId: findChat.encryptedId,
+            encryptedChatId: id,
             slug: findChat.slug
         });
     } catch (error) {
@@ -368,27 +368,23 @@ router.get("/encrypted/chat/:id", asyncHandler(async (req, res) => {
     const { id } = req.params;
 
     try {
-        jwt.verify(id, process.env.CHATID_SECRET, async (err, decoded) => {
-            if (err) {
-                return res.status(500).send("Something went wrong")
-            }
+        const findChat = await Chat.findById(id)
+            .populate("users", "-password")
+            .populate("groupAdmin", "-password")
+            .populate("events")
+            .populate("posts");
 
-            const findChat = await Chat.findById(decoded.id)
-                .populate("users", "-password")
-                .populate("groupAdmin", "-password")
-                .populate("events");
+        // check if chat is suspended
+        if (findChat.isSuspended) {
+            return res.status(400).send("Chat is suspended")
+        }
 
-            // check if chat is suspended
-            if (findChat.isSuspended) {
-                return res.status(400).send("Chat is suspended")
-            }
+        if (!findChat) {
+            return res.status(404).send("No chat found")
+        }
 
-            if (!findChat) {
-                return res.status(404).send("No chat found")
-            }
+        res.status(200).json(findChat);
 
-            res.status(200).json(findChat);
-        })
     } catch (error) {
         res.status(500).send("Something went wrong")
     }
@@ -422,10 +418,6 @@ router.post("/group", protect, asyncHandler(async (req, res) => {
             slug: _.kebabCase(req.body.name),
             groupAdmin: req.user
         });
-
-        const encryptedChatId = generateChatToken(groupChat._id);
-
-        groupChat.encryptedId = encryptedChatId;
 
         await groupChat.save();
 
@@ -664,6 +656,54 @@ router.get("/list/:limit", protect, asyncHandler(async (req, res) => {
             message: "Something went wrong",
         })
     }
+}));
+
+
+// create post for a group
+router.post("/post/:chatId", protect, asyncHandler(async (req, res) => {
+    const { chatId } = req.params;
+
+    const { title, description, image } = req.body;
+
+    if (!title || !description || !image) {
+        return res.status(400).send("All Feilds are required")
+    }
+
+    const userId = req.user._id;
+
+    const updateGroupChat = await Chat.findById(chatId);
+
+    // check if chat is suspended
+    if (updateGroupChat.isSuspended) {
+        return res.status(400).send("Chat is suspended")
+    }
+
+    if (updateGroupChat.groupAdmin.toString() != userId.toString()) {
+        return res.status(400).send("You are not admin of this group")
+    }
+
+    const newPost = new Post({
+        title,
+        description,
+        image,
+        createdBy: userId,
+    });
+    
+    try {
+        const savedPost = await newPost.save();
+
+        if (updateGroupChat) {
+            updateGroupChat.posts.push(savedPost);
+            await updateGroupChat.save();
+            res.status(200).json(savedPost);
+        } else {
+            res.status(404).send("Chat not found or post not saved");
+        }
+    } catch (error) {
+
+        res.status(500).json(error)
+    }
+
 }));
 
 
