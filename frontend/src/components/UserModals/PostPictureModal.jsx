@@ -1,31 +1,42 @@
-import { FormControl, FormLabel, IconButton, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, Textarea, useDisclosure, useToast } from '@chakra-ui/react'
-import conversationApi from '../../services/apis/conversationApi';
 import React from 'react'
-import { AppContext } from '../../context/AppContext';
-import { useContext } from 'react'
-import { FiUpload } from 'react-icons/fi'
-import { api_key, folder, pictureUpload } from '../../utils';
-import FullScreenLoader from '../common/FullScreenLoader';
+import { FormControl, FormLabel, IconButton, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, Textarea, useDisclosure, useToast } from '@chakra-ui/react'
+
 import axios from 'axios';
+import { FiUpload } from 'react-icons/fi'
+
+import conversationApi from '../../services/apis/conversationApi';
+
+import { AppContext } from '../../context/AppContext';
+
+import { api_key, folder, pictureUpload } from '../../utils';
+
+import FullScreenLoader from '../common/FullScreenLoader';
 
 const PostPictureModal = ({ children }) => {
     const user = JSON.parse(localStorage.getItem('user'));
     const { isOpen, onOpen, onClose } = useDisclosure()
 
-    const { signature, timestamp, selectedChat, getCloudinarySignature } = useContext(AppContext)
+    const { signature, timestamp, selectedChat, getCloudinarySignature } = React.useContext(AppContext)
+    const [userInfo, setUserInfo] = React.useState(
+        {
+            title: '',
+            description: '',
+            selectedImage: null,
+            loading: false,
+        }
+    )
+
     const initialRef = React.useRef(null)
     const fileInputRef = React.createRef();
     const toast = useToast();
 
-    const [title, setTitle] = React.useState('');
-    const [description, setDescription] = React.useState('');
-    const [selectedImage, setSelectedImage] = React.useState(null);
-    const [loading, setLoading] = React.useState(false);
+
+    const { title, description, selectedImage, loading } = userInfo;
 
     const imageChange = async (e) => {
         await getCloudinarySignature();
         if (e.target.files && e.target.files.length > 0 && (e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/png')) {
-            setSelectedImage(e.target.files[0]);
+            setUserInfo({ ...userInfo, selectedImage: e.target.files[0] });
         } else {
             toast({
                 title: "Error",
@@ -38,7 +49,8 @@ const PostPictureModal = ({ children }) => {
     }
 
     const handleCreatePost = async (e) => {
-        setLoading(true);
+        setUserInfo({ ...userInfo, loading: true });
+        const { title, description, selectedImage } = userInfo;
         if (title === '' || description === '' || selectedImage === null) {
             toast({
                 title: "Error",
@@ -47,7 +59,7 @@ const PostPictureModal = ({ children }) => {
                 duration: 9000,
                 isClosable: true,
             });
-            setLoading(false);
+            setUserInfo({ ...userInfo, loading: false });
             return;
         }
 
@@ -93,10 +105,7 @@ const PostPictureModal = ({ children }) => {
                     position: "bottom-left",
                 });
             });
-        setSelectedImage(null);
-        setTitle('');
-        setDescription('');
-        setLoading(false);
+        setUserInfo({ ...userInfo, loading: false, title: '', description: '', selectedImage: null });
         onClose();
     }
 
@@ -121,13 +130,13 @@ const PostPictureModal = ({ children }) => {
                                 <FormControl>
                                     <FormLabel>Title</FormLabel>
                                     <Input required value={title}
-                                        onChange={(e) => setTitle(e.target.value)} focusBorderColor='#9F85F7' ref={initialRef} placeholder='Title' />
+                                        onChange={(e) => setUserInfo({ ...userInfo, title: e.target.value })} focusBorderColor='#9F85F7' ref={initialRef} placeholder='Title' />
                                 </FormControl>
 
                                 <FormControl mt={4}>
                                     <FormLabel>Description</FormLabel>
                                     <Textarea required value={description}
-                                        onChange={(e) => setDescription(e.target.value)}
+                                        onChange={(e) => setUserInfo({ ...userInfo, description: e.target.value })}
                                         focusBorderColor='#9F85F7' placeholder='Description' size='md'
                                         resize={'none'} />
                                 </FormControl>
