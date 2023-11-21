@@ -22,16 +22,16 @@ const PostPictureModal = ({ children }) => {
             title: '',
             description: '',
             selectedImage: null,
-            loading: false,
         }
     )
+    const [loading, setLoading] = React.useState(false);
 
     const initialRef = React.useRef(null)
     const fileInputRef = React.createRef();
     const toast = useToast();
 
 
-    const { title, description, selectedImage, loading } = userInfo;
+    const { title, description, selectedImage } = userInfo;
 
     const imageChange = async (e) => {
         await getCloudinarySignature();
@@ -49,7 +49,7 @@ const PostPictureModal = ({ children }) => {
     }
 
     const handleCreatePost = async (e) => {
-        setUserInfo({ ...userInfo, loading: true });
+        setLoading(true);
         const { title, description, selectedImage } = userInfo;
         if (title === '' || description === '' || selectedImage === null) {
             toast({
@@ -59,7 +59,7 @@ const PostPictureModal = ({ children }) => {
                 duration: 9000,
                 isClosable: true,
             });
-            setUserInfo({ ...userInfo, loading: false });
+            setLoading(false);
             return;
         }
 
@@ -105,7 +105,8 @@ const PostPictureModal = ({ children }) => {
                     position: "bottom-left",
                 });
             });
-        setUserInfo({ ...userInfo, loading: false, title: '', description: '', selectedImage: null });
+        setUserInfo({ ...userInfo, title: '', description: '', selectedImage: null });
+        setLoading(false);
         onClose();
     }
 
