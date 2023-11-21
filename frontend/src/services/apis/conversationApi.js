@@ -218,6 +218,14 @@ class ConversationApi extends BaseApi {
         }
     }
 
+    createPost(chatId, data, config) {
+        try {
+            return this.post(`/post/${chatId}`, data, config);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
 }
 
 
