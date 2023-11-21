@@ -19,8 +19,15 @@ const generateRefreshToken = (id) => {
     });
 };
 
+const generateGroupToken = (id) => {
+    const SECRET_KEY = process.env.GROUP_ID_JWT_SECRET;
+
+    return jwt.sign({ id }, SECRET_KEY);
+};
+
 
 module.exports = {
     generateToken,
     generateRefreshToken,
+    generateGroupToken
 };

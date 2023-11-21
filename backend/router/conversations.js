@@ -10,6 +10,7 @@ const Post = require("../models/Post");
 const Donations = require("../models/Donations");
 
 const { protect } = require("../middleware/authMiddleware");
+const { generateGroupToken } = require("../config/generateToken");
 
 const LIMIT = 5;
 
@@ -351,11 +352,10 @@ router.get("/encrypted/:id", protect, asyncHandler(async (req, res) => {
     const { id } = req.params;
 
     try {
-        const findChat = await Chat.findById(id);
+        const encryptedChatId = generateGroupToken(id);
 
         res.status(200).json({
-            encryptedChatId: id,
-            slug: findChat.slug
+            encryptedChatId,
         });
     } catch (error) {
         res.status(500).send("Something went wrong")
@@ -368,11 +368,37 @@ router.get("/encrypted/chat/:id", asyncHandler(async (req, res) => {
     const { id } = req.params;
 
     try {
-        const findChat = await Chat.findById(id)
-            .populate("users", "-password")
-            .populate("groupAdmin", "-password")
-            .populate("events")
-            .populate("posts");
+        jwt.verify(id, process.env.GROUP_ID_JWT_SECRET, async (err, decoded) => {
+            if (err) {
+                return res.status(500).send("Something went wrong")
+            }
+
+            const findChat = await Chat.findById(decoded.id)
+                .populate("users", "-password")
+                .populate("groupAdmin", "-password")
+                .populate("events");
+
+            // check if chat is suspended
+            if (findChat.isSuspended) {
+                return res.status(400).send("Chat is suspended")
+            }
+
+            if (!findChat) {
+                return res.status(404).send("No chat found")
+            }
+
+            res.status(200).json(findChat);
+        })
+    } catch (error) {
+        res.status(500).send("Something went wrong")
+    }
+}));
+
+
+// get chat by slug
+router.get("/slug/:slug", asyncHandler(async (req, res) => {
+    try {
+        const findChat = await Chat.findOne({ slug: req.params.slug })
 
         // check if chat is suspended
         if (findChat.isSuspended) {
@@ -383,8 +409,13 @@ router.get("/encrypted/chat/:id", asyncHandler(async (req, res) => {
             return res.status(404).send("No chat found")
         }
 
-        res.status(200).json(findChat);
+        const chat = await Chat.findById(findChat._id)
+            .populate("users", "-password")
+            .populate("groupAdmin", "-password")
+            .populate("events")
+            .populate("posts");
 
+        res.status(200).json(chat);
     } catch (error) {
         res.status(500).send("Something went wrong")
     }
@@ -688,7 +719,7 @@ router.post("/post/:chatId", protect, asyncHandler(async (req, res) => {
         image,
         createdBy: userId,
     });
-    
+
     try {
         const savedPost = await newPost.save();
 
