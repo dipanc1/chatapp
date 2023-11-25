@@ -22,6 +22,7 @@ import GroupChatModal from '../components/UserModals/GroupChatModal';
 import Pagination from '../components/Miscellaneous/Pagination';
 import conversationApi from '../services/apis/conversationApi';
 import { ONE } from '../constants';
+import NothingToShowMessage from '../components/Miscellaneous/NothingToShowMessage';
 
 function Groups() {
   const user = JSON.parse(localStorage.getItem('user'));
@@ -315,8 +316,12 @@ function Groups() {
                   />
                 ))}
               </Grid>
-              <Pagination paginateFunction={listMoreGroups} currentPage={currentPage} totalPages={totalPages} totalCount={totalCount} currentCount={currentCount} hasNextPage={hasNextPage} hasPrevPage={hasPrevPage} />
-
+              {groupsList.length > 0 ?
+                <Pagination paginateFunction={listMoreGroups} currentPage={currentPage} totalPages={totalPages} totalCount={totalCount} currentCount={currentCount} hasNextPage={hasNextPage} hasPrevPage={hasPrevPage} />
+                :
+                <NothingToShowMessage>
+                  Groups
+                </NothingToShowMessage>}
             </div>}
           {loadingMyChats ?
             <Box py='100px' background='transparent' textAlign='center'>
@@ -344,7 +349,12 @@ function Groups() {
                   />
                 ))}
               </Grid>
-              <Pagination paginateFunction={fetchMoreChats} currentPage={currentPageMyChats} totalPages={totalPagesMyChats} totalCount={totalCountMyChats} currentCount={currentCountMyChats} hasNextPage={hasNextPageMyChats} hasPrevPage={hasPrevPageMyChats} />
+              {groupConversations.length > 0 ?
+                <Pagination paginateFunction={fetchMoreChats} currentPage={currentPageMyChats} totalPages={totalPagesMyChats} totalCount={totalCountMyChats} currentCount={currentCountMyChats} hasNextPage={hasNextPageMyChats} hasPrevPage={hasPrevPageMyChats} />
+                :
+                <NothingToShowMessage>
+                  Groups
+                </NothingToShowMessage>}
             </div>}
           {loadingMyChatsAdmin ?
             <Box py='100px' background='transparent' textAlign='center'>
@@ -372,7 +382,12 @@ function Groups() {
                   />
                 )}
               </Grid>
-              <Pagination paginateFunction={fetchMoreChatsAdmin} currentPage={currentPageMyChatsAdmin} totalPages={totalPagesMyChatsAdmin} totalCount={totalCountMyChatsAdmin} currentCount={currentCountMyChatsAdmin} hasNextPage={hasNextPageMyChatsAdmin} hasPrevPage={hasPrevPageMyChatsAdmin} />
+              {groupConversationsAdmin.length > 0 ?
+                <Pagination paginateFunction={fetchMoreChatsAdmin} currentPage={currentPageMyChatsAdmin} totalPages={totalPagesMyChatsAdmin} totalCount={totalCountMyChatsAdmin} currentCount={currentCountMyChatsAdmin} hasNextPage={hasNextPageMyChatsAdmin} hasPrevPage={hasPrevPageMyChatsAdmin} />
+                :
+                <NothingToShowMessage>
+                  Groups
+                </NothingToShowMessage>}
 
             </div>}
         </div>

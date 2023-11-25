@@ -26,7 +26,7 @@ import { AppContext } from '../../context/AppContext';
 import UserCard from '../UserItems/UserCard';
 import conversationApi from '../../services/apis/conversationApi';
 import authApi from '../../services/apis/authApi';
-import PostPictureModal from '../UserModals/PostPictureModal';
+import PostModal from '../UserModals/PostModal';
 
 const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) => {
   const user = JSON.parse(localStorage.getItem('user'));
@@ -340,9 +340,9 @@ const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) 
                           </ProfileModal>
                         </ListItem>
                         {admin && <ListItem ps='0'>
-                          <PostPictureModal>
+                          <PostModal>
                             <Link display='block' p='5px 25px' textDecoration='none'>Create Post</Link>
-                          </PostPictureModal>
+                          </PostModal>
                         </ListItem>}
                         <ListItem ps='0'>
                           <Link onClick={handleLogout} display='block' p='5px 25px' textDecoration='none'>Logout</Link>

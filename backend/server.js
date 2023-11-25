@@ -19,6 +19,7 @@ require("dotenv").config();
 const { protect } = require("./middleware/authMiddleware");
 
 const User = require("./models/User");
+const Post = require("./models/Post");
 
 const app = express();
 

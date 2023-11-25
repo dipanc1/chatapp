@@ -226,6 +226,22 @@ class ConversationApi extends BaseApi {
         }
     }
 
+    getAllPosts(data, config) {
+        try {
+            return this.get(`/post/all/${data}`, config);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    deletePost(id, chatId, config) {
+        try {
+            return this.delete(`/post/delete/${id}/${chatId}`, config);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
 }
 
 

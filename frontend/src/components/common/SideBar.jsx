@@ -35,10 +35,11 @@ const SideBar = ({
       icon: "groups",
       disable: stream,
     },
-    // {
-    // 	'title': 'Messages',
-    // 	'icon': 'messages',
-    // },
+    {
+      title: 'Posts',
+      url: "posts",
+      icon: 'messages',
+    },
     // {
     // 	'title': 'Subscription',
     // 	'icon': 'subscription',
@@ -152,7 +153,7 @@ const SideBar = ({
                   );
                 })
               )
-            
+
             }
           </List>
           <Box mt={["auto"]} py={["auto"]}>
@@ -160,9 +161,9 @@ const SideBar = ({
               <ListItem>
                 <Flex alignItems="center">
                   <Button w="100%" justifyContent="flex-start"
-                  //  bg={colorMode === 'dark' ? '#805AD5' : '#FAF5FF'} 
+                    //  bg={colorMode === 'dark' ? '#805AD5' : '#FAF5FF'} 
                     bg="transparent"
-                    onClick={toggleColorMode} 
+                    onClick={toggleColorMode}
                   >
                     {colorMode === 'light' ? <MoonIcon w="22px" /> : <SunIcon w="22px" color="red.500" />}
                     <Text ms="15px">{colorMode === 'light' ? "Dark" : "Light"} Mode</Text>

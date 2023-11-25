@@ -2,7 +2,7 @@ import { Box, Flex, Image, ListItem, Text, UnorderedList, useColorMode, useDiscl
 import React, { useState } from 'react'
 import GroupSettingsModal from '../UserModals/GroupSettingsModal';
 import axios from 'axios';
-import { api_key, pictureUpload, folder } from '../../utils';
+import { api_key, pictureUpload, folder, backend_url } from '../../utils';
 import AddMembersModal from '../UserModals/AddMembersModal';
 import { AppContext } from '../../context/AppContext';
 import EventModal from '../UserModals/EventModal';
@@ -34,6 +34,7 @@ const GroupCard = ({
   const [selectedImage, setSelectedImage] = React.useState(null);
   const [createEventLoading, setCreateEventLoading] = useState(false)
   const [targetAmount, setTargetAmount] = useState('');
+  const [chatIdValue, setChatIdValue] = React.useState('');
 
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -377,6 +378,30 @@ const GroupCard = ({
 
   }
 
+  const openMembersModal = async () => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await conversationApi.getEncryptedChatUrl(chatId, config);
+      onAddOpen();
+      setChatIdValue(data.encryptedChatId);
+    } catch (error) {
+      toast({
+        title: "Error Occured!",
+        description: "Failed to Load the Members",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      })
+    }
+
+  }
+
 
   return (
     <Box p='18px 29px' borderRadius='10px' border="0">
@@ -398,7 +423,7 @@ const GroupCard = ({
               toggleGroupMenu && (
                 <Box zIndex='1' overflow='hidden' className='lightHover' width='fit-content' position='absolute' borderRadius='10px' boxShadow='md' background='#fff' right='0' top='100%'>
                   <UnorderedList listStyleType='none' ms='0'>
-                    <ListItem onClick={onAddOpen} cursor={"pointer"} whiteSpace='pre' p='10px 50px 10px 20px' display='flex' alignItems='center'>
+                    <ListItem onClick={openMembersModal} cursor={"pointer"} whiteSpace='pre' p='10px 50px 10px 20px' display='flex' alignItems='center'>
                       <Image h='22px' me='15px' src="https://ik.imagekit.io/sahildhingra/user.png" />
                       <Text color={colorMode === 'light' ? 'black' : "black"}>Add Member</Text>
                     </ListItem>
@@ -438,7 +463,8 @@ const GroupCard = ({
         groupsTab={true}
       />
 
-      <AddMembersModal isAddOpen={isAddOpen} onAddClose={onAddClose} handleSearch={handleSearch} search={search} searchResults={searchResults} loading={loading} handleAddUser={handleAddUser} fullScreen={fullScreen} />
+      {/* Add Member Modal */}
+      <AddMembersModal chatIdValue={`${backend_url}/join-group/${chatIdValue}`} isAddOpen={isAddOpen} onAddClose={onAddClose} handleSearch={handleSearch} search={search} searchResults={searchResults} loading={loading} handleAddUser={handleAddUser} fullScreen={fullScreen} />
 
       {/* Create Event Modal */}
       <EventModal type={"Create"} createEventLoading={createEventLoading} isOpenCreateEvent={isOpenCreateEvent} onCloseCreateEvent={onCloseCreateEvent} name={eventName} setEventName={setEventName} description={description} setDescription={setDescription} date={date} setDate={setDate} time={time} setTime={setTime} selectedImage={selectedImage} imageChange={imageChange} handleSubmit={handleCreateEvent} fileInputRef={fileInputRef} targetAmount={targetAmount} setTargetAmount={setTargetAmount} />

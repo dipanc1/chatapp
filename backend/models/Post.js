@@ -6,6 +6,7 @@ const PostSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     image: { type: String, trim: true },
+    chat: { type: mongoose.Schema.Types.ObjectId, ref: "Chat" },
 });
 
 const Post = mongoose.model('Post', PostSchema);

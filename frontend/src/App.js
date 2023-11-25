@@ -23,6 +23,7 @@ import UsersList from './pages/UsersList';
 import GroupsList from './pages/GroupsList';
 import Dashboard from './pages/Dashboard';
 import EventsList from './pages/EventsList';
+import Posts from './pages/Posts';
 
 //TODO: delete console statements
 
@@ -61,6 +62,7 @@ function App() {
               <Route path="events-listing" element={<EventsList />} />
               <Route path="video-chat" element={<VideoChat />} />
               <Route path="groups" element={<Groups />} />
+              <Route path="posts" element={<Posts  />} />
               <Route path="search" element={<Search />} />
               <Route path="subscribed-successfully" element={<SubscribedSuccessfully />} />
               <Route path="error-subscribing" element={<ErrorSubscribing />} />

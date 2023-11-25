@@ -12,7 +12,7 @@ import { api_key, folder, pictureUpload } from '../../utils';
 
 import FullScreenLoader from '../common/FullScreenLoader';
 
-const PostPictureModal = ({ children }) => {
+const PostModal = ({ children }) => {
     const user = JSON.parse(localStorage.getItem('user'));
     const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -193,4 +193,4 @@ const PostPictureModal = ({ children }) => {
     )
 }
 
-export default PostPictureModal
+export default PostModal
