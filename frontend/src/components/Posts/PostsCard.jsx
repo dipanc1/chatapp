@@ -58,7 +58,6 @@ const PostsCard = ({ post, deletePost }) => {
                 <Button
                     w={'100%'}
                     mt={2}
-                    mx={'3'}
                     bg={useColorModeValue('#151f21', 'gray.900')}
                     color={'white'}
                     rounded={'md'}
