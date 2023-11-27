@@ -12,17 +12,9 @@ const ChatSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Message",
     },
-    posts : [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Post",
-    },],
     groupAdmin: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     isStreaming: { type: Boolean, default: false },
     meetingId: { type: String, default: null },
-    events: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Event",
-    },],
     slug: { type: String, trim: true },
     isSuspended: { type: Boolean, default: false },
 }, { timestamps: true });

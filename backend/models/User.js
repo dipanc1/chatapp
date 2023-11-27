@@ -45,10 +45,6 @@ const UserSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    events: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Event",
-    },],
 }, { timestamps: true });
 
 const User = mongoose.model("User", UserSchema);

@@ -13,6 +13,8 @@ const meetingRoute = require("./router/meetings");
 const checkoutRoute = require("./router/checkouts");
 const uploadRoute = require("./router/uploadFiles");
 const donationRoute = require("./router/donations");
+const eventsRoute = require("./router/events");
+const postsRoute = require("./router/posts");
 
 require("dotenv").config();
 
@@ -47,6 +49,8 @@ app.use(bodyParser.json());
 app.use("/", otpRoute)
 app.use("/users", userRoute);
 app.use("/conversation", conversationRoute);
+app.use("/events", eventsRoute);
+app.use("/posts", postsRoute);
 app.use("/message", protect, messageRoute);
 app.use("/meetings", meetingRoute);
 app.use("/checkout", checkoutRoute);

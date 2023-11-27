@@ -9,8 +9,6 @@
 #### need to add abhishek's id to send emails -- emailjs
 #### need twilio replacement for sending sms -- twilio
 
-#### adding emoticons with socket.io
-#### darkmode
-#### payment option and progress bar
+#### use new endpoints in frontend
 
 ## Phone App

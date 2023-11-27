@@ -2,11 +2,12 @@ const mongoose = require("mongoose");
 
 const EventSchema = mongoose.Schema({
     name: { type: String, unique: true },
-    description: { type: String },
-    date: { type: Date },
-    time: { type: String },
-    thumbnail: { type: String },
-    chatId: { type: String },
+    description: { type: String, trim: true },
+    date: { type: Date, default: Date.now },
+    time: { type: String, trim: true },
+    thumbnail: { type: String, trim: true },
+    chatId: { type: mongoose.Schema.Types.ObjectId, ref: "Chat" },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     isDisabled: { type: Boolean, default: false },
 }, { timestamps: true });
 
