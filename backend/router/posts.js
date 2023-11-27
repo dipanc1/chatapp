@@ -4,7 +4,7 @@ const asyncHandler = require("express-async-handler");
 require("dotenv").config();
 
 const Chat = require("../models/Chat");
-const Post = require("../models");
+const Post = require("../models/Post");
 
 const { protect } = require("../middleware/authMiddleware");
 
