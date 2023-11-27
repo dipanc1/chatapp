@@ -4,14 +4,14 @@ const asyncHandler = require("express-async-handler");
 require("dotenv").config();
 
 const Chat = require("../models/Chat");
-const Post = require("../models/Post");
+const Post = require("../models");
 
 const { protect } = require("../middleware/authMiddleware");
 
 const LIMIT = process.env.LIMIT;
 
 // create post for a group
-router.post("/post/:chatId", protect, asyncHandler(async (req, res) => {
+router.post("/:chatId", protect, asyncHandler(async (req, res) => {
     const { chatId } = req.params;
 
     const { title, description, image } = req.body;
@@ -54,7 +54,7 @@ router.post("/post/:chatId", protect, asyncHandler(async (req, res) => {
 
 
 // edit post
-router.put("/post/edit/:chatId/:postId", protect, asyncHandler(async (req, res) => {
+router.put("/edit/:chatId/:postId", protect, asyncHandler(async (req, res) => {
     const { title, description, image } = req.body;
     const { postId, chatId } = req.params;
     const userId = req.user._id;
@@ -86,7 +86,7 @@ router.put("/post/edit/:chatId/:postId", protect, asyncHandler(async (req, res) 
 
 
 // delete post
-router.delete("/post/delete/:postId/:chatId", protect, asyncHandler(async (req, res) => {
+router.delete("/delete/:postId/:chatId", protect, asyncHandler(async (req, res) => {
     const { postId, chatId } = req.params;
     const userId = req.user._id;
 
@@ -115,7 +115,7 @@ router.delete("/post/delete/:postId/:chatId", protect, asyncHandler(async (req, 
 
 
 // get all posts made by a user
-router.get("/post/all/:page", protect, asyncHandler(async (req, res) => {
+router.get("/all/:page", protect, asyncHandler(async (req, res) => {
     const { page } = req.params;
     const limit = LIMIT;
     const skip = (page - 1) * limit;
