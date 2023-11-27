@@ -4,7 +4,7 @@ import { FormControl, FormLabel, IconButton, Image, Input, Modal, ModalBody, Mod
 import axios from 'axios';
 import { FiUpload } from 'react-icons/fi'
 
-import conversationApi from '../../services/apis/conversationApi';
+import postApi from '../../services/apis/postApi';
 
 import { AppContext } from '../../context/AppContext';
 
@@ -79,7 +79,7 @@ const PostModal = ({ children }) => {
 
         await axios.put(pictureUpload, formData)
             .then(async (res) => {
-                await conversationApi.createPost(selectedChat._id, {
+                await postApi.createPost(selectedChat._id, {
                     title,
                     description,
                     image: res.data.url,

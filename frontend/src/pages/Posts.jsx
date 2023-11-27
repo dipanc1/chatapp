@@ -7,6 +7,7 @@ import { ONE } from '../constants'
 import Pagination from '../components/Miscellaneous/Pagination'
 import PostsCard from '../components/Posts/PostsCard'
 import NothingToShowMessage from '../components/Miscellaneous/NothingToShowMessage'
+import postApi from '../services/apis/postApi'
 
 
 const Posts = () => {
@@ -33,7 +34,7 @@ const Posts = () => {
         const fetchPosts = async () => {
             try {
                 setLoading(true)
-                const { data } = await conversationApi.getAllPosts(ONE, config)
+                const { data } = await postApi.getAllPosts(ONE, config)
                 setPosts(data.posts)
                 setTotalCount(data.totalCount);
                 setCurrentPage(data.currentPage);
@@ -60,7 +61,7 @@ const Posts = () => {
 
     const fetchMorePosts = async (page) => {
         setLoading(true);
-        await conversationApi.getAllPosts(page, config).then(
+        await postApi.getAllPosts(page, config).then(
             (response) => {
                 setPosts(response.data.posts);
                 setTotalCount(response.data.totalCount);

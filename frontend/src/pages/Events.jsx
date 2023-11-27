@@ -21,6 +21,7 @@ import JoinGroupModal from '../components/UserModals/JoinGroupModal';
 import Pagination from '../components/Miscellaneous/Pagination';
 import conversationApi from '../services/apis/conversationApi';
 import { ONE } from '../constants';
+import eventsApi from '../services/apis/eventsApi';
 
 function Events() {
   const [activeTab, setActiveTab] = useState(1);
@@ -73,7 +74,7 @@ function Events() {
             Authorization: `Bearer ${user.token}`,
           },
         };
-        const { data } = await conversationApi.getAllEvents(ONE, config);
+        const { data } = await eventsApi.getAllEvents(ONE, config);
         setEventsList(data.events);
         setTotalCount(data.totalCount);
         setCurrentPage(data.currentPage);
@@ -104,7 +105,7 @@ function Events() {
             Authorization: `Bearer ${user.token}`,
           },
         };
-        const { data } = await conversationApi.getUpcomingEvents(ONE, config);
+        const { data } = await eventsApi.getUpcomingEvents(ONE, config);
         setUpcomingEventsList(data.events);
         setTotalUpcomingCount(data.totalCount);
         setCurrentUpcomingPage(data.currentPage);
@@ -135,7 +136,7 @@ function Events() {
             Authorization: `Bearer ${user.token}`,
           },
         };
-        const { data } = await conversationApi.getPastEvents(ONE, config);
+        const { data } = await eventsApi.getPastEvents(ONE, config);
 
         setPastEventsList(data.events);
         setTotalPastCount(data.totalCount);
@@ -212,7 +213,7 @@ function Events() {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await conversationApi.getAllEvents(page, config);
+      const { data } = await eventsApi.getAllEvents(page, config);
 
       setEventsList(data.events);
       setTotalCount(data.totalCount);
@@ -275,7 +276,7 @@ function Events() {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await conversationApi.getPastEvents(page, config);
+      const { data } = await eventsApi.getPastEvents(page, config);
       setPastEventsList(data.events);
       setTotalPastCount(data.totalCount);
       setCurrentPastPage(data.currentPage);

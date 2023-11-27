@@ -6,6 +6,7 @@ import { Button, Flex, Heading, Image, Table, TableContainer, Tbody, Td, Th, The
 import UserCard from '../components/UserItems/UserCard';
 import { NotAllowedIcon, StarIcon } from '@chakra-ui/icons';
 import conversationApi from '../services/apis/conversationApi';
+import eventsApi from '../services/apis/eventsApi';
 
 const GroupsList = () => {
   const [userData, setUserData] = useState()
@@ -237,7 +238,7 @@ const GroupsList = () => {
           'Authorization': `Bearer ${user.token}`
         }
       };
-      await conversationApi.disableEvent(eventId, config);
+      await eventsApi.disableEvent(eventId, config);
       if (type === 'suspend') {
         setEventsBlocked(eventsBlocked => [...eventsBlocked, eventId])
       } else if (type === 'allow') {

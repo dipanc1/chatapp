@@ -10,6 +10,7 @@ const INITIAL_STATE = {
   number: "",
   fetchGroupDonations: false,
   selectedChat: null,
+  events: [],
   chats: [],
   notification: [],
   stream: false,
@@ -124,6 +125,7 @@ export const AppContextProvider = ({ children }) => {
         signature: signature,
         timestamp: timestamp,
         fetchGroupDonations: state.fetchGroupDonations,
+        events: state.events,
         getCloudinarySignature,
         dispatch
       }}>

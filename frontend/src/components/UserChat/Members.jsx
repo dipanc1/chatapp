@@ -21,11 +21,13 @@ import EventModal from '../UserModals/EventModal'
 import AddMembersModal from '../UserModals/AddMembersModal'
 import conversationApi from '../../services/apis/conversationApi'
 import donationApi from '../../services/apis/donationApi'
+import { useEffect } from 'react'
+import eventsApi from '../../services/apis/eventsApi'
 
 export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, setFetchAgain, admin }) => {
   const user = JSON.parse(localStorage.getItem('user'));
 
-  const { selectedChat, dispatch, stream, fullScreen, userInfo, signature, timestamp, getCloudinarySignature } = React.useContext(AppContext);
+  const { selectedChat, dispatch, stream, fullScreen, userInfo, signature, timestamp, getCloudinarySignature, events } = React.useContext(AppContext);
 
   const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure()
   const { isOpen: isOpenCreateEvent, onOpen: onOpenCreateEvent, onClose: onCloseCreateEvent } = useDisclosure()
@@ -50,6 +52,28 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
   const [chatIdValue, setChatIdValue] = React.useState('');
 
   const fileInputRef = React.createRef();
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+          ContentType: 'application/json'
+        },
+      };
+      await eventsApi.getEvents(selectedChat._id, config)
+        .then((res) => {
+          dispatch({ type: 'SET_EVENTS', payload: res.data });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+    }
+    fetchEvents();
+
+  }, [dispatch, selectedChat, user.token])
+
 
   const imageChange = async (e) => {
     await getCloudinarySignature();
@@ -108,7 +132,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
 
 
     if (selectedImage === null) {
-      await conversationApi.addEvent(selectedChat._id, {
+      await eventsApi.addEvent(selectedChat._id, {
         name,
         description,
         date,
@@ -124,7 +148,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
             }
             , config);
           if (dontation) {
-            selectedChat.events = [...selectedChat.events, r.data];
+            dispatch({ type: 'SET_EVENTS', payload: r.data });
             toast({
               title: "Event Created!",
               description: "Event created successfully",
@@ -173,7 +197,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
 
       await axios.post(pictureUpload, formData)
         .then(async (res) => {
-          await conversationApi.addEvent(selectedChat._id, {
+          await eventsApi.addEvent(selectedChat._id, {
             name,
             description,
             date,
@@ -190,7 +214,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
                 }
                 , config);
               if (dontation) {
-                selectedChat.events = res.data;
+                dispatch({ type: 'SET_EVENTS', payload: res.data });
                 toast({
                   title: "Event Created!",
                   description: "Event created successfully",
@@ -510,7 +534,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
                   flex='1'
                   p='4'
                 >
-                  {selectedChat?.events.map((eventItem, index) => {
+                  {events.map((eventItem, index) => {
                     return (
                       <>
                         <Box key={eventItem._id} className='group-event' mb='20px'>

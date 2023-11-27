@@ -47,7 +47,7 @@ router.put("/:chatId", protect, asyncHandler(async (req, res) => {
         time,
         thumbnail,
         chatId,
-        user: userId,
+        createdBy: userId,
     });
 
     const savedEvent = await newEvent.save();
@@ -149,8 +149,12 @@ router.get("/:chatId", protect, asyncHandler(async (req, res) => {
     }
 
     // find all events of a group
-    const findEvents = await EventTable.find({ chatId: chatId, isDisabled: false });
-
+    const findEvents = await EventTable.find(
+        {
+            chatId,
+            isDisabled: false
+        }
+    ).sort({ createdAt: -1 });
     res.status(200).json(findEvents);
 }));
 

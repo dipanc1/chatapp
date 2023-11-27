@@ -19,7 +19,7 @@ import { api_key, pictureUpload, folder } from '../utils';
 import { AppContext } from '../context/AppContext';
 import { useNavigate } from 'react-router-dom';
 import { FiUpload } from 'react-icons/fi';
-import conversationApi from '../services/apis/conversationApi';
+import eventsApi from '../services/apis/eventsApi';
 
 const CreateEvent = () => {
 	const { selectedChat, userInfo, timestamp, signature, getCloudinarySignature } = useContext(AppContext);
@@ -64,7 +64,7 @@ const CreateEvent = () => {
 		};
 
 		if (selectedImage === null) {
-			await conversationApi.addEvent(selectedChat._id, {
+			await eventsApi.addEvent(selectedChat._id, {
 				name,
 				description,
 				date,
@@ -89,7 +89,7 @@ const CreateEvent = () => {
 
 			await axios.post(pictureUpload, formData)
 				.then(async (res) => {
-					await conversationApi.addEvent(selectedChat._id, {
+					await eventsApi.addEvent(selectedChat._id, {
 						name,
 						description,
 						date,

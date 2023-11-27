@@ -9,6 +9,7 @@ import EventModal from '../UserModals/EventModal';
 import conversationApi from '../../services/apis/conversationApi';
 import authApi from '../../services/apis/authApi';
 import donationApi from '../../services/apis/donationApi';
+import eventsApi from '../../services/apis/eventsApi';
 
 const GroupCard = ({
   chatId,
@@ -107,7 +108,7 @@ const GroupCard = ({
 
 
     if (selectedImage === null) {
-      await conversationApi.addEvent(chatId, {
+      await eventsApi.addEvent(chatId, {
         name,
         description,
         date,
@@ -172,7 +173,7 @@ const GroupCard = ({
 
       await axios.post(pictureUpload, formData)
         .then(async (res) => {
-          await conversationApi.addEvent(chatId, {
+          await eventsApi.addEvent(chatId, {
             name,
             description,
             date,

@@ -23,6 +23,7 @@ import EventModal from '../UserModals/EventModal';
 import StreamModalPeer from '../UserModals/StreamModalPeer';
 import conversationApi from '../../services/apis/conversationApi';
 import donationApi from '../../services/apis/donationApi';
+import eventsApi from '../../services/apis/eventsApi';
 
 const EventCard = ({
   index,
@@ -41,7 +42,7 @@ const EventCard = ({
 }) => {
   const user = JSON.parse(localStorage.getItem('user'));
 
-  const { selectedChat, userInfo, getCloudinarySignature, signature, timestamp, dispatch } = useContext(AppContext);
+  const { selectedChat, userInfo, getCloudinarySignature, signature, timestamp, dispatch, events } = useContext(AppContext);
 
   const [toggleEventMenu, setToggleEventMenu] = useState(false);
   const [name, setEventName] = useState(title);
@@ -80,7 +81,7 @@ const EventCard = ({
         }
         const getTargetAmount = async () => {
           const { data } = await donationApi.getDonationOfAnEvent(id, config);
-          if (data) {
+          if (data.length > 0) {
             setTargetAmount(data[0].targetAmount);
           }
         }
@@ -153,7 +154,7 @@ const EventCard = ({
     };
 
     if (selectedImage === null) {
-      await conversationApi.editEvent(id, {
+      await eventsApi.editEvent(id, {
         name: name,
         description: descriptiond,
         date: dated,
@@ -171,7 +172,7 @@ const EventCard = ({
             }
             , config);
           if (dontation) {
-            selectedChat.events = selectedChat.events.map((event) => {
+            events.map((event) => {
               if (event._id === id) {
                 event.name = name;
                 event.description = descriptiond;
@@ -228,7 +229,7 @@ const EventCard = ({
 
       await axios.put(pictureUpload, formData)
         .then(async (res) => {
-          await conversationApi.editEvent(id, {
+          await eventsApi.editEvent(id, {
             name: name,
             description: descriptiond,
             date: dated,
@@ -246,7 +247,7 @@ const EventCard = ({
                 }
                 , config);
               if (dontation) {
-                selectedChat.events = selectedChat.events.map((event) => {
+                events.map((event) => {
                   if (event._id === id) {
                     event.name = name;
                     event.description = descriptiond;
@@ -326,8 +327,8 @@ const EventCard = ({
       return;
     }
 
-    const newEvents = selectedChat.events.filter((event) => event._id !== id);
-    selectedChat.events = newEvents;
+    const newEvents = events.filter((event) => event._id !== id);
+    dispatch({ type: 'SET_EVENTS', payload: newEvents });
 
     const config = {
       headers: {
@@ -337,7 +338,7 @@ const EventCard = ({
     };
 
     try {
-      await conversationApi.deleteEvent(id, selectedChat._id, config).then((res) => {
+      await eventsApi.deleteEvent(id, selectedChat._id, config).then((res) => {
         toast({
           title: "Event Deleted!",
           description: "Event deleted successfully",
@@ -350,8 +351,8 @@ const EventCard = ({
         dispatch({ type: 'SET_FETCH_GROUP_DONATIONS' });
       });
     } catch (error) {
-      await conversationApi.getEvents(selectedChat._id, config).then((res) => {
-        selectedChat.events = res.data;
+      await eventsApi.getEvents(selectedChat._id, config).then((res) => {
+        dispatch({ type: 'SET_EVENTS', payload: res.data });
       }).catch((err) => {
         console.log(err);
       });
