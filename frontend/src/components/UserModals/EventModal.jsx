@@ -27,19 +27,19 @@ const EventModal = ({ type, createEventLoading, isOpenCreateEvent, onCloseCreate
                     <ModalCloseButton />
                     <ModalBody className='form-wrapper'>
                         <FormControl className={"filled"}>
-                            <Input type='text' value={name} onChange={(e) => setEventName(e.target.value)} />
+                            <Input focusBorderColor='#9F85F7' type='text' value={name} onChange={(e) => setEventName(e.target.value)} />
                             <FormLabel>Event Name</FormLabel>
                         </FormControl>
                         <FormControl className={"filled"}>
-                            <Textarea type='text' value={description} onChange={(e) => setDescription(e.target.value)} />
+                            <Textarea focusBorderColor='#9F85F7' type='text' value={description} onChange={(e) => setDescription(e.target.value)} />
                             <FormLabel>Description</FormLabel>
                         </FormControl>
                         <Flex gap='6'>
                             <FormControl className={"filled"}>
-                                <Input type='date' value={date?.split('T')[0]} onChange={(e) => setDate(e.target.value)} />
+                                <Input focusBorderColor='#9F85F7' type='date' value={date?.split('T')[0]} onChange={(e) => setDate(e.target.value)} min={new Date().toISOString().split('T')[0]} />
                             </FormControl>
                             <FormControl className={"filled"}>
-                                <Input type='time' value={time} onChange={
+                                <Input focusBorderColor='#9F85F7' type='time' value={time} onChange={
                                     (e) => setTime(e.target.value)
                                 } />
                             </FormControl>
@@ -89,7 +89,7 @@ const EventModal = ({ type, createEventLoading, isOpenCreateEvent, onCloseCreate
                                 <Text pb="10px">
                                     Set Fundraising Goal
                                 </Text>
-                                <Input p="5px" fontSize="14px" type="number" placeholder='Goal Amount' focusBorderColor={"#9F85F7"} value={targetAmount} onChange={
+                                <Input focusBorderColor='#9F85F7' p="5px" fontSize="14px" type="number" placeholder='Goal Amount' value={targetAmount} onChange={
                                     (e) => setTargetAmount(e.target.value)
                                 } />
                             </FormControl>

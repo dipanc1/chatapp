@@ -1,17 +1,22 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Static from '../components/common/Static'
 import { Box, Center, Heading, Spinner, useToast } from '@chakra-ui/react'
 import { useEffect } from 'react'
-import conversationApi from '../services/apis/conversationApi'
 import { ONE } from '../constants'
 import Pagination from '../components/Miscellaneous/Pagination'
 import PostsCard from '../components/Posts/PostsCard'
 import NothingToShowMessage from '../components/Miscellaneous/NothingToShowMessage'
 import postApi from '../services/apis/postApi'
+import { AppContext } from '../context/AppContext'
+import { api_key, folder, pictureUpload } from '../utils'
+import axios from 'axios'
 
 
 const Posts = () => {
     const user = JSON.parse(localStorage.getItem('user'))
+
+    const { timestamp, signature } = useContext(AppContext)
+
     const [posts, setPosts] = React.useState([])
     const [loading, setLoading] = React.useState(false);
     const [totalCount, setTotalCount] = React.useState(0);
@@ -85,7 +90,7 @@ const Posts = () => {
 
     const deletePost = async (postId, chatId) => {
         try {
-            await conversationApi.deletePost(postId, chatId, config)
+            await postApi.deletePost(postId, chatId, config)
             fetchMorePosts(currentPage)
             toast({
                 title: 'Success',
@@ -106,6 +111,75 @@ const Posts = () => {
         }
     }
 
+    const editPost = async (postId, chatId, title, description, image, type) => {
+        setLoading(true);
+        if (title === '' || description === '' || image === null) {
+            toast({
+                title: "Error",
+                description: "Please fill all the fields",
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+            });
+            setLoading(false);
+            return;
+        }
+
+        if (type === null) {
+            try {
+                await postApi.editPost(postId, chatId, { title, description, image: image }, config)
+                fetchMorePosts(currentPage)
+                toast({
+                    title: 'Success',
+                    description: 'Post edited successfully',
+                    status: 'success',
+                    duration: 3000,
+                    isClosable: true,
+                })
+            } catch (error) {
+                console.log(error)
+                toast({
+                    title: 'Error',
+                    description: 'Could not edit post',
+                    status: 'error',
+                    duration: 3000,
+                    isClosable: true,
+
+                })
+            }
+        } else {
+            const formData = new FormData();
+            formData.append('api_key', api_key)
+            formData.append('file', image);
+            formData.append('folder', folder)
+            formData.append('timestamp', timestamp)
+            formData.append('signature', signature)
+
+            await axios.put(pictureUpload, formData)
+                .then(async (res) => {
+                    await postApi.editPost(postId, chatId, { title, description, image: res.data.url }, config)
+                    fetchMorePosts(currentPage)
+                    toast({
+                        title: 'Success',
+                        description: 'Post edited successfully',
+                        status: 'success',
+                        duration: 3000,
+                        isClosable: true,
+                    })
+                }).catch((error) => {
+                    console.log(error)
+                    toast({
+                        title: 'Error',
+                        description: 'Could not edit post',
+                        status: 'error',
+                        duration: 3000,
+                        isClosable: true,
+                    })
+                })
+        }
+        setLoading(false);
+    }
+
     return (
         <Static>
             <Heading as="h1" size="lg">Posts</Heading>
@@ -124,7 +198,7 @@ const Posts = () => {
                     <Center w={'73.5vw'} flexWrap={'wrap'} my={'5'}>
                         {posts.map((post, index) =>
                             <div key={post._id}>
-                                <PostsCard post={post} />
+                                <PostsCard post={post} deletePost={deletePost} editPost={editPost} loading={loading} setLoading={setLoading} />
                             </div>
                         )}
                     </Center>

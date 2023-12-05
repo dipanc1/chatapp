@@ -9,6 +9,8 @@
 #### need to add abhishek's id to send emails -- emailjs
 #### need twilio replacement for sending sms -- twilio
 
-#### use new endpoints in frontend
+#### update cors
+#### limit requests to server
+#### give node engine in node server
 
 ## Phone App

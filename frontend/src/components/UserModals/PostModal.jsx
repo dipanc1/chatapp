@@ -1,5 +1,5 @@
-import React from 'react'
-import { FormControl, FormLabel, IconButton, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, Textarea, useDisclosure, useToast } from '@chakra-ui/react'
+import React, { useEffect } from 'react'
+import { Button, FormControl, FormLabel, HStack, IconButton, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, Textarea, useDisclosure, useToast } from '@chakra-ui/react'
 
 import axios from 'axios';
 import { FiUpload } from 'react-icons/fi'
@@ -12,11 +12,13 @@ import { api_key, folder, pictureUpload } from '../../utils';
 
 import FullScreenLoader from '../common/FullScreenLoader';
 
-const PostModal = ({ children }) => {
+const PostModal = ({ children, post, deletePost, editPost, loading, setLoading }) => {
     const user = JSON.parse(localStorage.getItem('user'));
+
     const { isOpen, onOpen, onClose } = useDisclosure()
 
     const { signature, timestamp, selectedChat, getCloudinarySignature } = React.useContext(AppContext)
+
     const [userInfo, setUserInfo] = React.useState(
         {
             title: '',
@@ -24,12 +26,20 @@ const PostModal = ({ children }) => {
             selectedImage: null,
         }
     )
-    const [loading, setLoading] = React.useState(false);
+
+    useEffect(() => {
+        if (post !== undefined) {
+            setUserInfo({
+                title: post.title,
+                description: post.description,
+                selectedImage: null,
+            })
+        }
+    }, [post])
 
     const initialRef = React.useRef(null)
     const fileInputRef = React.createRef();
     const toast = useToast();
-
 
     const { title, description, selectedImage } = userInfo;
 
@@ -125,7 +135,7 @@ const PostModal = ({ children }) => {
                     {loading ? <FullScreenLoader />
                         :
                         <>
-                            <ModalHeader>Create Post</ModalHeader>
+                            <ModalHeader>{post !== undefined ? 'Edit' : 'Create'} Post</ModalHeader>
                             <ModalCloseButton />
                             <ModalBody pb={6}>
                                 <FormControl>
@@ -145,15 +155,23 @@ const PostModal = ({ children }) => {
                                 <FormControl mt={4}>
                                     <Text>Image</Text>
                                     {
-                                        selectedImage && (
+                                        selectedImage ? (
                                             <Image
                                                 width={'100px'}
                                                 height={'100px'}
-                                                src={selectedImage ? URL.createObjectURL(selectedImage) : ''}
+                                                src={URL.createObjectURL(selectedImage)}
                                                 alt={''}
                                                 mt='3'
                                             />
-                                        )
+                                        ) : post !== undefined ? (
+                                            <Image
+                                                width={'100px'}
+                                                height={'100px'}
+                                                src={post.image}
+                                                alt={''}
+                                                mt='3'
+                                            />
+                                        ) : null
 
                                     }
                                     <IconButton
@@ -179,16 +197,21 @@ const PostModal = ({ children }) => {
                             </ModalBody>
 
                             <ModalFooter>
-                                <button onClick={
-                                    e => { handleCreatePost(e) }
-                                } type='submit' className='btn btn-primary'>
-                                    Create
-                                </button>
+                                <HStack spacing={4}>
+                                    {post !== undefined && <Button onClick={() => deletePost(post._id, post.chat)} height={'fit-content'} p={'15px 49px'} bg={'red.400'} borderRadius={'10px'} color={'white'}>
+                                        Delete
+                                    </Button>}
+                                    <Button onClick={
+                                        e => { post !== undefined ? editPost(post._id, post.chat, title, description, (selectedImage === null ? post.image : selectedImage), selectedImage === null ? null : "upload") : handleCreatePost(e) }
+                                    } type='submit' height={'fit-content'} p={'15px 49px'} bg={'buttonPrimaryColor'} borderRadius={'10px'} color={'white'} isDisabled={post !== undefined && (title === post.title && description === post.description && selectedImage === null)}>
+                                        {post !== undefined ? 'Edit' : 'Create'}
+                                    </Button>
+                                </HStack>
                             </ModalFooter>
                         </>
                     }
                 </ModalContent>
-            </Modal>
+            </Modal >
         </>
     )
 }

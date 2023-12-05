@@ -54,7 +54,7 @@ router.post("/:chatId", protect, asyncHandler(async (req, res) => {
 
 
 // edit post
-router.put("/edit/:chatId/:postId", protect, asyncHandler(async (req, res) => {
+router.put("/edit/:postId/:chatId", protect, asyncHandler(async (req, res) => {
     const { title, description, image } = req.body;
     const { postId, chatId } = req.params;
     const userId = req.user._id;

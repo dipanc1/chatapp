@@ -2,7 +2,7 @@ import { Box, Button, Heading, Image, Stack, Text, useColorModeValue } from '@ch
 import React from 'react'
 import PostModal from '../UserModals/PostModal'
 
-const PostsCard = ({ post, deletePost }) => {
+const PostsCard = ({ post, deletePost, editPost, loading, setLoading }) => {
     return (
         <Box
             role={'group'}
@@ -54,7 +54,7 @@ const PostsCard = ({ post, deletePost }) => {
                     {post.description.slice(0, 30)}{post.description.length > 30 ? '...' : ''}
                 </Text>
             </Stack>
-            <PostModal>
+            <PostModal post={post} deletePost={deletePost} editPost={editPost} loading={loading} setLoading={setLoading}>
                 <Button
                     w={'100%'}
                     mt={2}
@@ -68,22 +68,6 @@ const PostsCard = ({ post, deletePost }) => {
                     Edit
                 </Button>
             </PostModal>
-            {/* <Button
-                onClick={
-                    () => deletePost(post._id, post.chat)
-                }
-                w={'40%'}
-                mt={2}
-                mx={'3'}
-                bg={useColorModeValue('red.500', 'gray.900')}
-                color={'white'}
-                rounded={'md'}
-                _hover={{
-                    transform: 'translateY(-2px)',
-                    boxShadow: 'lg',
-                }}>
-                Delete
-            </Button> */}
         </Box>
     )
 }

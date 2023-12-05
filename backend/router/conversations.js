@@ -478,13 +478,21 @@ router.put("/rename", protect, asyncHandler(async (req, res) => {
         return res.status(400).send("All Feilds are required")
     }
 
-    // check if chat is suspended
-    const chat = await Chat.findById(chatId);
-    if (chat.isSuspended) {
+    // check if chat is suspended    
+    const checkGroupChat = await Chat.find({ chatName });
+
+    if (checkGroupChat.isSuspended) {
         return res.status(400).send("Chat is suspended")
     }
 
-    const updatedChat = await Chat.findByIdAndUpdate(chatId, { chatName, description }, { new: true })
+    if (checkGroupChat.length > 0) {
+        return res.status(400).send("Group chat with same name already exists")
+    }
+
+    const updatedChat = await Chat.findByIdAndUpdate(chatId, {
+        chatName, description,
+        slug: _.kebabCase(chatName)
+    }, { new: true })
         .populate("users", "-password")
         .populate("groupAdmin", "-password")
 

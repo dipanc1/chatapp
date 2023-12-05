@@ -14,6 +14,14 @@ class PostApi extends BaseApi {
         }
     }
 
+    editPost(id, chatId, body, config) {
+        try {
+            return this.put(`/edit/${id}/${chatId}`, body, config);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     getAllPosts(data, config) {
         try {
             return this.get(`/all/${data}`, config);

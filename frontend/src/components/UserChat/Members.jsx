@@ -148,7 +148,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
             }
             , config);
           if (dontation) {
-            dispatch({ type: 'SET_EVENTS', payload: r.data });
+            dispatch({ type: 'SET_EVENTS', payload: [...events, r.data] });
             toast({
               title: "Event Created!",
               description: "Event created successfully",
@@ -214,7 +214,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
                 }
                 , config);
               if (dontation) {
-                dispatch({ type: 'SET_EVENTS', payload: res.data });
+                dispatch({ type: 'SET_EVENTS', payload: [...events, res.data] });
                 toast({
                   title: "Event Created!",
                   description: "Event created successfully",

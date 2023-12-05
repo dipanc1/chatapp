@@ -152,6 +152,7 @@ router.get("/:chatId", protect, asyncHandler(async (req, res) => {
     const findEvents = await EventTable.find(
         {
             chatId,
+            date: { $gte: new Date() },
             isDisabled: false
         }
     ).sort({ createdAt: -1 });
@@ -167,9 +168,15 @@ router.get("/all/:page", protect, asyncHandler(async (req, res) => {
 
     try {
         const events = await EventTable.find({
-            isDisabled: false
+            isDisabled: false,
+            date: { $gte: new Date() }
         }).skip(skip).limit(limit).sort({ createdAt: -1 });
-        const totalCount = await EventTable.countDocuments({ isDisabled: false });
+        const totalCount = await EventTable.countDocuments({
+            isDisabled: false,
+            date: {
+                $gte: new Date()
+            }
+        });
         const currentCount = events.length;
         const totalPages = Math.ceil(totalCount / limit);
         const currentPage = parseInt(page);
@@ -275,44 +282,6 @@ router.get("/past/:page", protect, asyncHandler(async (req, res) => {
 }));
 
 
-// disable an event
-router.put("/disable/:eventId", protect, asyncHandler(async (req, res) => {
-    const { eventId } = req.params;
-
-    try {
-        if (!eventId) {
-            return res.status(400).send("eventId is required")
-        }
-
-        // find event
-        const findEvent = await EventTable.findById(eventId);
-
-        if (!findEvent) {
-            return res.status(404).send("Event not found")
-        }
-
-        // if event is already disabled
-        if (findEvent.isDisabled) {
-            // enable event
-            await EventTable.findByIdAndUpdate(eventId, { isDisabled: false });
-            return res.status(200).send("Event enabled");
-        }
-
-        // disable event
-        await EventTable.findByIdAndUpdate(eventId, { isDisabled: true });
-        return res.status(200).send("Event disabled");
-
-
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            message: "Something went wrong"
-        })
-    }
-
-}));
-
-
 // get all list of all events
 router.get("/list/:limit", protect, asyncHandler(async (req, res) => {
     if (!req.user.isSuperAdmin) {
@@ -352,6 +321,44 @@ router.get("/list/:limit", protect, asyncHandler(async (req, res) => {
             message: "Something went wrong",
         })
     }
+}));
+
+
+// disable an event
+router.put("/disable/:eventId", protect, asyncHandler(async (req, res) => {
+    const { eventId } = req.params;
+
+    try {
+        if (!eventId) {
+            return res.status(400).send("eventId is required")
+        }
+
+        // find event
+        const findEvent = await EventTable.findById(eventId);
+
+        if (!findEvent) {
+            return res.status(404).send("Event not found")
+        }
+
+        // if event is already disabled
+        if (findEvent.isDisabled) {
+            // enable event
+            await EventTable.findByIdAndUpdate(eventId, { isDisabled: false });
+            return res.status(200).send("Event enabled");
+        }
+
+        // disable event
+        await EventTable.findByIdAndUpdate(eventId, { isDisabled: true });
+        return res.status(200).send("Event disabled");
+
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: "Something went wrong"
+        })
+    }
+
 }));
 
 
