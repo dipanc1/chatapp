@@ -9,7 +9,6 @@ const serviceSID = process.env.OTP_SERVICE_SID;
 const client = require("twilio")(accountSID, authToken);
 
 router.post("/mobile", (req, res) => {
-    console.log("number", req.body.number);
     client.verify
         .services(serviceSID)
         .verifications.create({

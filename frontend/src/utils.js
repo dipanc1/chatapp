@@ -4,7 +4,7 @@ import { AUDIO, DOC, FILE, IMAGE, PDF, PPT, TXT, VIDEO, XLS } from "./constants"
 const backend_url = 'http://localhost:8000';
 
 // abhishek's server
-// const backend_url = 'https://fundsdome.com';
+// const backend_url = 'https://www.fundsdome.com';
 
 // local peer server
 const peer_server_url = 'http://localhost:8080';

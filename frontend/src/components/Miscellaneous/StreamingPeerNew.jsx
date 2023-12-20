@@ -67,6 +67,7 @@ const IconButtonGeneric = ({
 
 const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
     const user = JSON.parse(localStorage.getItem("user"));
+
     const [recording, setRecording] = React.useState(false);
     const [toggleDonation, setToggleDonation] = React.useState(false);
     const [targetAmount, setTargetAmount] = React.useState('');
@@ -76,11 +77,17 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
     const [refresh, setRefresh] = React.useState(false);
     const [contributeAmount, setContributeAmount] = React.useState('');
     const [donationId, setDonationId] = React.useState('');
-    const stopButton = useRef(null);
     const [clientSecret, setClientSecret] = React.useState("");
+    const [id, setId] = React.useState(localStorage.getItem("roomId"));
+
+    const { selectedChat, dispatch, fullScreen, eventInfo } = useContext(AppContext);
+
+    const stopButton = useRef(null);
 
     const stripePromise = loadStripe("pk_test_51N136dLHtaKT8adL3kfRwpts2g1xBKHE9A1flPHC1eE5rQzHZHO6NcdCNZEmuQWJ2lZiqMJ0hdeqRUdWvaWnVkaa000amUm8tU");
+
     const { isOpen, onOpen, onClose } = useDisclosure()
+
     React.useEffect(() => {
         // Create PaymentIntent as soon as the page loads
         // fetch(`${backend_url}/checkout/create-payment-intent`, {
@@ -100,9 +107,6 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
         appearance,
     };
 
-    const [id, setId] = React.useState(localStorage.getItem("roomId"));
-
-    const { selectedChat, dispatch, fullScreen, eventInfo } = useContext(AppContext);
 
     const {
         ws,
@@ -394,11 +398,6 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
             console.log(error);
         }
     }
-
-
-
-
-    // const { [screenSharingId]: sharing, ...peersToShow } = peers;
 
     const screenSharingVideo =
         screenSharingId === me?.id

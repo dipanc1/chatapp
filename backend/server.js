@@ -21,7 +21,6 @@ require("dotenv").config();
 const { protect } = require("./middleware/authMiddleware");
 
 const User = require("./models/User");
-const Post = require("./models/Post");
 
 const app = express();
 
@@ -46,6 +45,7 @@ mongoose.connect(
 )
 
 app.use(bodyParser.json());
+
 app.use("/", otpRoute)
 app.use("/users", userRoute);
 app.use("/conversation", conversationRoute);
@@ -72,8 +72,6 @@ const io = require("socket.io")(server, {
 });
 
 io.on("connection", (socket) => {
-    // console.log("New user connected", socket.id);
-
     socket.on("setup", (userData) => {
         socket.join(userData._id);
         socket.emit("connected", userData);
@@ -144,19 +142,6 @@ io.on("connection", (socket) => {
         });
     });
 
-    // send emoticons in a chat room
-    socket.on("new emoticon", (newEmoticonReceived) => {
-        var chat = newEmoticonReceived.chat;
-        if (!chat.users) {
-            console.log("No users in chat");
-        }
-
-        chat.users.forEach((user) => {
-            if (user._id == newEmoticonReceived.sender._id) return;
-            socket.in(user._id).emit("emoticon received", newEmoticonReceived);
-        });
-    });
-
     socket.off("setup", (userData) => {
         console.log("USER DISCONNECTED");
         socket.leave(userData._id);
@@ -165,9 +150,9 @@ io.on("connection", (socket) => {
 
 // ---------------DEPLOYMENT--------------------
 
-app.use(express.static(path.join(__dirname, 'build'), { maxAge: 31557600000 }));
+app.use(express.static(path.join(__dirname, 'build'), { maxAge: 31557600 }));
 
-app.get('*', (req, res) => {
+app.get('*', (_, res) => {
     res.sendFile(path.join(__dirname, 'build', 'index.html'))
     res.setHeader('Cache-Control', 'public, max-age=31557600');
 });
