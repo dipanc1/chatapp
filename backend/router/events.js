@@ -161,7 +161,7 @@ router.get("/:chatId", protect, asyncHandler(async (req, res) => {
 
 
 // get all events with pagination
-router.get("/all/:page", protect, asyncHandler(async (req, res) => {
+router.get("/all/:page", asyncHandler(async (req, res) => {
     const { page } = req.params;
     const limit = LIMIT;
     const skip = (page - 1) * limit;

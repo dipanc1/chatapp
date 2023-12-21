@@ -307,7 +307,7 @@ router.get("/admin/:page", protect, async (req, res) => {
 
 
 // get all group chats with pagination
-router.get("/all/:page", protect, asyncHandler(async (req, res) => {
+router.get("/all/:page", asyncHandler(async (req, res) => {
     const { page } = req.params;
     const limit = 5;
     const skip = (page - 1) * limit;
