@@ -206,7 +206,7 @@ router.get("/group-chats/:page", protect, asyncHandler(async (req, res) => {
 // get all group chats of user with pagination
 router.get("/my/:page", protect, async (req, res) => {
     const { page } = req.params;
-    const limit = 5;
+    const limit = LIMIT;
     const skip = (page - 1) * limit;
 
     try {
@@ -259,7 +259,7 @@ router.get("/my/:page", protect, async (req, res) => {
 // get all chats where user is admin
 router.get("/admin/:page", protect, async (req, res) => {
     const { page } = req.params;
-    const limit = 5;
+    const limit = LIMIT;
     const skip = (page - 1) * limit;
 
     try {
@@ -309,7 +309,7 @@ router.get("/admin/:page", protect, async (req, res) => {
 // get all group chats with pagination
 router.get("/all/:page", asyncHandler(async (req, res) => {
     const { page } = req.params;
-    const limit = 5;
+    const limit = LIMIT;
     const skip = (page - 1) * limit;
 
     let groups = await Chat.find({ isGroupChat: true, isSuspended: false })

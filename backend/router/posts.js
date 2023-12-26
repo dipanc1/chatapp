@@ -151,6 +151,43 @@ router.get("/all/:page", protect, asyncHandler(async (req, res) => {
 
 }));
 
+// get all posts of a group
+router.get("/group/:chatId/:page", protect, asyncHandler(async (req, res) => {
+    const { chatId, page } = req.params;
+    const limit = LIMIT;
+    const skip = (page - 1) * limit;
+
+    try {
+        const posts = await Post.find({
+            chat: chatId
+        }).skip(skip).limit(limit).sort({ createdAt: -1 });
+        const totalCount = await Post.countDocuments({ chat: chatId });
+        const currentCount = posts.length;
+        const totalPages = Math.ceil(totalCount / limit);
+        const currentPage = parseInt(page);
+        const hasNextPage = currentPage < totalPages;
+        const hasPrevPage = currentPage > 1;
+
+        if (!posts) {
+            return res.status(404).send("No posts found")
+        }
+
+        res.status(200).json({
+            posts,
+            totalCount,
+            totalPages,
+            currentPage,
+            hasNextPage,
+            hasPrevPage,
+            currentCount
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(error)
+    }
+
+}));
+
 
 
 module.exports = router;

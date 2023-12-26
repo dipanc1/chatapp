@@ -19,7 +19,8 @@ const User = require("../models/User");
 const EventTable = require("../models/EventTable");
 
 let refreshTokens = [];
-const LIMIT = 5;
+
+const LIMIT = process.env.LIMIT;
 
 // suspend a user
 router.put("/suspend/:id", protect, async (req, res) => {

@@ -4,7 +4,8 @@ const Chat = require("../models/Chat");
 const Message = require("../models/Message");
 const User = require("../models/User");
 
-const LIMIT = 8;
+const LIMIT = process.env.MESSAGE_LIMIT;
+
 
 // add
 router.post("/", async (req, res) => {
