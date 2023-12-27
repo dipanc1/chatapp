@@ -55,7 +55,7 @@ app.use("/message", protect, messageRoute);
 app.use("/meetings", meetingRoute);
 app.use("/checkout", checkoutRoute);
 app.use("/upload", uploadRoute);
-app.use("/donations", protect, donationRoute);
+app.use("/donations", donationRoute);
 
 const PORT = process.env.PORT || "8000";
 const server = app.listen(PORT, () => {

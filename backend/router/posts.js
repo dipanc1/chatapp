@@ -152,9 +152,8 @@ router.get("/all/:page", protect, asyncHandler(async (req, res) => {
 }));
 
 // get all posts of a group
-router.get("/group/:chatId/:page", protect, asyncHandler(async (req, res) => {
-    const { chatId, page } = req.params;
-    const limit = LIMIT;
+router.get("/group/:chatId/:page/:limit", protect, asyncHandler(async (req, res) => {
+    const { chatId, page, limit } = req.params;
     const skip = (page - 1) * limit;
 
     try {

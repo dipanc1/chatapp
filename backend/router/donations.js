@@ -1,11 +1,13 @@
 const router = require('express').Router();
 const asyncHandler = require('express-async-handler');
 
+const { protect } = require("../middleware/authMiddleware");
+
 const Donation = require('../models/Donations');
 const EventTable = require('../models/EventTable');
 
 // GET all donations
-router.get('/', asyncHandler(async (req, res) => {
+router.get('/', protect, asyncHandler(async (req, res) => {
     try {
         const donations = await Donation.find().populate('donatedByAndAmount.user').populate('event');
 
@@ -17,7 +19,7 @@ router.get('/', asyncHandler(async (req, res) => {
 }));
 
 // GET a donation
-router.get('/:id', asyncHandler(async (req, res) => {
+router.get('/:id', protect, asyncHandler(async (req, res) => {
     try {
         const donation = await Donation.findById(req.params.id).populate('donatedByAndAmount.user').populate('event');
 
@@ -32,7 +34,7 @@ router.get('/:id', asyncHandler(async (req, res) => {
 }));
 
 // GET donation of an event
-router.get('/event/:id', asyncHandler(async (req, res) => {
+router.get('/event/:id', protect, asyncHandler(async (req, res) => {
     try {
         const donation = await Donation.find({ event: req.params.id }).populate('donatedByAndAmount.user').populate('event');
 
@@ -58,7 +60,7 @@ router.get('/group/:id', asyncHandler(async (req, res) => {
 }));
 
 // POST start a donation
-router.post('/', asyncHandler(async (req, res) => {
+router.post('/', protect, asyncHandler(async (req, res) => {
     const { targetAmount, event, name } = req.body;
     parseInt(targetAmount);
 
@@ -90,7 +92,7 @@ router.post('/', asyncHandler(async (req, res) => {
 ));
 
 // PUT donate to a donation
-router.put('/:id', asyncHandler(async (req, res) => {
+router.put('/:id', protect, asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { amount } = req.body;
     parseInt(amount);
@@ -128,7 +130,7 @@ router.put('/:id', asyncHandler(async (req, res) => {
 ));
 
 // DELETE a donation
-router.delete('/:id', asyncHandler(async (req, res) => {
+router.delete('/:id', protect, asyncHandler(async (req, res) => {
     const { id } = req.params;
 
     try {
