@@ -78,9 +78,13 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
     const [contributeAmount, setContributeAmount] = React.useState('');
     const [donationId, setDonationId] = React.useState('');
     const [clientSecret, setClientSecret] = React.useState("");
+
     const [id, setId] = React.useState(localStorage.getItem("roomId"));
 
-    const { selectedChat, dispatch, fullScreen, eventInfo } = useContext(AppContext);
+    const { selectedChat,
+        dispatch,
+        fullScreen,
+        eventInfo } = useContext(AppContext);
 
     const stopButton = useRef(null);
 
@@ -106,7 +110,6 @@ const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
         clientSecret,
         appearance,
     };
-
 
     const {
         ws,
