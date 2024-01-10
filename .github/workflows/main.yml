@@ -24,7 +24,7 @@ jobs:
 
     - name: Install dependencies and run tests
       run: |
-        npm ci
+        npm install
         npm test
       env:
         CI: true
@@ -44,5 +44,5 @@ jobs:
         script: |
           cd ../../var/www/backend
           git pull origin dev
-          npm ci
+          npm install
           pm2 restart server.js
