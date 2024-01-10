@@ -1,19 +1,2 @@
 node_modules
-chat arch1.jpg
-chat arch2.png
-chat arch3.jpg
-gitignore
-youtube-chat-app
-socket-server
-webrtc-socket-io
-mern-chat-app-master
-agora
-agora_test_react
-API-Examples-Web-main
-videosdk-rtc-react-sdk-example
-videosdk-rtc-react-native-sdk-example
-hosted
-webrtc-react-master
-useful-material
-fundsdome-frontend
-phone-app-expo
+.env
