@@ -42,7 +42,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.SSH_PORT }}
         script: |
-          cd ~/backend
+          cd ../../var/www/backend
           git pull origin dev
           npm ci
           pm2 restart server.js
