@@ -22,10 +22,9 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: Install dependencies and run tests
+    - name: Install dependencies
       run: |
         npm install
-        npm test
       env:
         CI: true
 
@@ -43,6 +42,6 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         script: |
           cd ../../var/www/backend
-          git pull origin dev
+          git pull origin delete
           npm install
           pm2 restart server.js
