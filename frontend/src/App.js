@@ -24,6 +24,7 @@ import GroupsList from './pages/GroupsList';
 import Dashboard from './pages/Dashboard';
 import EventsList from './pages/EventsList';
 import Posts from './pages/Posts';
+import Contribute from './pages/Contribute';
 
 //TODO: delete console statements
 
@@ -66,6 +67,7 @@ function App() {
               <Route path="search" element={<Search />} />
               <Route path="subscribed-successfully" element={<SubscribedSuccessfully />} />
               <Route path="error-subscribing" element={<ErrorSubscribing />} />
+              <Route path="contribute" element={<Contribute />} />
               <Route path="join-group/:groupId" >
                 <Route index={true} element={<JoinGroup />} />
                 <Route path="login" element={<Login />} />
