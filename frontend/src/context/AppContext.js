@@ -1,9 +1,12 @@
-import axios from "axios";
 import { createContext, useEffect, useReducer, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+
+import axios from "axios";
+import { useToast } from "@chakra-ui/react";
+import Cookies from "universal-cookie";
+
 import { backend_url } from "../utils";
 import AppReducer from "../reducers/AppReducer";
-import { useToast } from "@chakra-ui/react";
 
 
 const INITIAL_STATE = {
@@ -26,7 +29,8 @@ const INITIAL_STATE = {
 export const AppContext = createContext(INITIAL_STATE);
 
 export const AppContextProvider = ({ children }) => {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const cookies = new Cookies();
+  const user = JSON.parse(localStorage.getItem("user")) || cookies.get("auth_token");
   const toast = useToast();
 
   const navigate = useNavigate();
