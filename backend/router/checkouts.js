@@ -28,11 +28,12 @@ router.post('/create-checkout-session', async (req, res) => {
 });
 
 router.post("/create-payment-intent", async (req, res) => {
-  const { amount } = req.body;
+  const { amount, donationId } = req.body;
 
   const paymentIntent = await stripe.paymentIntents.create({
     amount: amount * 100,
     currency: "usd",
+    description: donationId,
     automatic_payment_methods: {
       enabled: true,
     },
