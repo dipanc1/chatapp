@@ -30,6 +30,7 @@ function Groups() {
   const [fetchAgain, setFetchAgain] = useState(false);
 
   const [groupsList, setGroupsList] = useState([]);
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -39,6 +40,7 @@ function Groups() {
   const [hasPrevPage, setHasPrevPage] = useState(false);
 
   const [groupConversations, setGroupConversations] = React.useState([]);
+  const [upcomingEventsMyChats, setUpcomingEventsMyChats] = useState([]);
   const [loadingMyChats, setLoadingMyChats] = useState(false);
   const [totalCountMyChats, setTotalCountMyChats] = useState(0);
   const [currentPageMyChats, setCurrentPageMyChats] = useState(1);
@@ -48,6 +50,7 @@ function Groups() {
   const [hasPrevPageMyChats, setHasPrevPageMyChats] = useState(false);
 
   const [groupConversationsAdmin, setGroupConversationsAdmin] = React.useState([]);
+  const [upcomingEventsMyChatsAdmin, setUpcomingEventsMyChatsAdmin] = useState([]);
   const [loadingMyChatsAdmin, setLoadingMyChatsAdmin] = useState(false);
   const [totalCountMyChatsAdmin, setTotalCountMyChatsAdmin] = useState(0);
   const [currentPageMyChatsAdmin, setCurrentPageMyChatsAdmin] = useState(1);
@@ -75,6 +78,7 @@ function Groups() {
         setGroupConversations(
           data.chats.filter((friend) => friend.isGroupChat && friend.chatName)
         );
+        setUpcomingEventsMyChats(data.upcomingEvents);
         setTotalCountMyChats(data.totalCount);
         setCurrentPageMyChats(data.currentPage);
         setTotalPagesMyChats(data.totalPages);
@@ -108,6 +112,7 @@ function Groups() {
         };
         const { data } = await conversationApi.fetchGroupWhereAdmin(ONE, config);
         setGroupConversationsAdmin(data.chats);
+        setUpcomingEventsMyChatsAdmin(data.upcomingEvents);
         setTotalCountMyChatsAdmin(data.totalCount);
         setCurrentPageMyChatsAdmin(data.currentPage);
         setTotalPagesMyChatsAdmin(data.totalPages);
@@ -140,6 +145,7 @@ function Groups() {
       await conversationApi.fetchGroups(ONE, config).then(
         (response) => {
           setGroupsList(response.data.groups);
+          setUpcomingEvents(response.data.upcomingEvents);
           setTotalCount(response.data.totalCount);
           setCurrentPage(response.data.currentPage);
           setTotalPages(response.data.totalPages);
@@ -178,6 +184,7 @@ function Groups() {
     await conversationApi.fetchGroups(page, config).then(
       (response) => {
         setGroupsList(response.data.groups);
+        setUpcomingEvents(response.data.upcomingEvents);
         setTotalCount(response.data.totalCount);
         setCurrentPage(response.data.currentPage);
         setTotalPages(response.data.totalPages);
@@ -204,6 +211,7 @@ function Groups() {
       setGroupConversations(
         data.chats.filter((friend) => friend.isGroupChat && friend.chatName)
       );
+      setUpcomingEventsMyChats(data.upcomingEvents);
       setTotalCountMyChats(data.totalCount);
       setCurrentPageMyChats(data.currentPage);
       setTotalPagesMyChats(data.totalPages);
@@ -236,6 +244,7 @@ function Groups() {
       };
       const { data } = await conversationApi.fetchGroupWhereAdmin(page, config);
       setGroupConversationsAdmin(data.chats);
+      setUpcomingEventsMyChatsAdmin(data.upcomingEvents);
       setTotalCountMyChatsAdmin(data.totalCount);
       setCurrentPageMyChatsAdmin(data.currentPage);
       setTotalPagesMyChatsAdmin(data.totalPages);
@@ -309,7 +318,7 @@ function Groups() {
                     name={groupItem.chatName}
                     members={groupItem.users}
                     admin={groupItem.groupAdmin}
-                    upcomingEvents={groupItem.events}
+                    upcomingEvents={upcomingEvents}
                     isAdmin={userInfo._id === groupItem.groupAdmin._id}
                     fetchAgain={fetchAgain}
                     setFetchAgain={setFetchAgain}
@@ -341,7 +350,7 @@ function Groups() {
                     chatId={groupItem._id}
                     name={groupItem.chatName}
                     members={groupItem.users}
-                    upcomingEvents={groupItem.events}
+                    upcomingEvents={upcomingEventsMyChats}
                     isAdmin={userInfo._id === groupItem.groupAdmin._id}
                     admin={groupItem.groupAdmin}
                     fetchAgain={fetchAgain}
@@ -374,7 +383,7 @@ function Groups() {
                     chatId={groupItem._id}
                     name={groupItem.chatName}
                     members={groupItem.users}
-                    upcomingEvents={groupItem.events}
+                    upcomingEvents={upcomingEventsMyChatsAdmin}
                     isAdmin={userInfo._id === groupItem.groupAdmin._id}
                     admin={groupItem.groupAdmin}
                     fetchAgain={fetchAgain}

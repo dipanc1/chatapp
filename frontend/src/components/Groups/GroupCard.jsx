@@ -450,7 +450,7 @@ const GroupCard = ({
         </Box>
         <Box textAlign="right">
           <Text color={colorMode === 'dark' ? '#805AD5' : "#032E2B"} fontWeight="600" as="h3">Upcoming Events</Text>
-          <Text color="#737373">{upcomingEvents.length}</Text>
+          <Text color="#737373">{upcomingEvents.find(event => event.chatId === chatId) ? upcomingEvents.find(event => event.chatId === chatId).name : 'No Upcoming Events Yet'} </Text>
         </Box>
       </Flex>
       <GroupSettingsModal

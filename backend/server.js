@@ -27,7 +27,7 @@ const app = express();
 app.use(
     cors({
         origin: [
-            process.env.CLIENT_URL, 'https://fundsdome.com'
+            'https://www.fundsdome.com', 'https://app.fundsdome.com', 'http://localhost:3000'
         ]
     })
 );

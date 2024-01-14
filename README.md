@@ -12,5 +12,6 @@
 #### update cors peer server
 #### add logs in node server txt file
 #### give node engine in node server
+#### check end to end functionality
 
 ## Phone App

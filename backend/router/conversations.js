@@ -239,8 +239,12 @@ router.get("/my/:page", protect, async (req, res) => {
             path: "latestMessage.sender",
             select: "username number pic"
         });
+        const upcomingEvents = await EventTable.find({
+            isDisabled: false, chatId: { $in: chats }, date: { $gte: new Date() }
+        });
         res.status(200).json({
             chats,
+            upcomingEvents,
             totalCount,
             totalPages,
             currentPage,
@@ -289,8 +293,12 @@ router.get("/admin/:page", protect, async (req, res) => {
             path: "latestMessage.sender",
             select: "username number pic"
         });
+        const upcomingEvents = await EventTable.find({
+            isDisabled: false, chatId: { $in: chats }, date: { $gte: new Date() }
+        });
         res.status(200).json({
             chats,
+            upcomingEvents,
             totalCount,
             totalPages,
             currentPage,
@@ -318,6 +326,9 @@ router.get("/all/:page", asyncHandler(async (req, res) => {
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit);
+    const upcomingEvents = await EventTable.find({
+        isDisabled: false, chatId: { $in: groups }, date: { $gte: new Date() }
+    });
     const totalCount = await Chat.countDocuments({ isGroupChat: true, isSuspended: false });
     const currentCount = groups.length;
     const totalPages = Math.ceil(totalCount / limit);
@@ -331,6 +342,7 @@ router.get("/all/:page", asyncHandler(async (req, res) => {
 
     res.status(200).json({
         groups,
+        upcomingEvents,
         totalCount,
         totalPages,
         currentPage,
