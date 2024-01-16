@@ -20,12 +20,15 @@ import GroupCard from '../components/Groups/GroupCard';
 import { AppContext } from '../context/AppContext';
 import GroupChatModal from '../components/UserModals/GroupChatModal';
 import Pagination from '../components/Miscellaneous/Pagination';
+import Cookies from "universal-cookie";
+
 import conversationApi from '../services/apis/conversationApi';
 import { ONE } from '../constants';
 import NothingToShowMessage from '../components/Miscellaneous/NothingToShowMessage';
 
 function Groups() {
-  const user = JSON.parse(localStorage.getItem('user'));
+  const cookies = new Cookies();
+  const user = JSON.parse(localStorage.getItem('user')) || cookies.get("auth_token", { domain: ".fundsdome.com" });
   const [activeTab, setActiveTab] = useState(1);
   const [fetchAgain, setFetchAgain] = useState(false);
 

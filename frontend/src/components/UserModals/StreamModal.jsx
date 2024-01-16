@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
+import Cookies from "universal-cookie";
 import { AppContext } from '../../context/AppContext';
 import { AiOutlineVideoCamera } from 'react-icons/ai'
 import {
@@ -21,7 +22,8 @@ import animationData from '../../animations/red-dot.json';
 
 
 const StreamModal = ({ children, getMeetingAndToken, admin }) => {
-    const user = JSON.parse(localStorage.getItem('user'));
+    const cookies = new Cookies();
+    const user = JSON.parse(localStorage.getItem('user')) || cookies.get("auth_token", { domain: ".fundsdome.com" });
 
     const { isOpen, onOpen, onClose } = useDisclosure();
 

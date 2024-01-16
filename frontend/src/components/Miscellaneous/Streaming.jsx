@@ -9,6 +9,7 @@ import { AppContext } from '../../context/AppContext';
 import { backend_url } from '../../utils';
 import useSound from 'use-sound';
 import joinSound from '../../sounds/join.mp3';
+import Cookies from "universal-cookie";
 import leaveSound from '../../sounds/leave.mp3';
 import { MembersComponent } from '../UserChat/Members';
 import EndLeaveModal from '../UserModals/EndLeaveModal';
@@ -343,7 +344,8 @@ function Controls({ admin, user, selectedChat, toast }) {
 const Streaming = ({ admin, meetingId, setFetchAgain, fetchAgain, token }) => {
     // console.warn("Streaming which is container", meetingId);
 
-    const user = JSON.parse(localStorage.getItem('user'));
+    const cookies = new Cookies();
+    const user = JSON.parse(localStorage.getItem('user')) || cookies.get("auth_token", { domain: ".fundsdome.com" });
     const { selectedChat, fullScreen } = useContext(AppContext);
 
     const [joined, setJoined] = React.useState(false);
@@ -410,7 +412,7 @@ const Streaming = ({ admin, meetingId, setFetchAgain, fetchAgain, token }) => {
             });
         }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

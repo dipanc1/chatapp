@@ -7,6 +7,7 @@ import UserCard from '../components/UserItems/UserCard';
 import { NotAllowedIcon, StarIcon } from '@chakra-ui/icons';
 import conversationApi from '../services/apis/conversationApi';
 import eventsApi from '../services/apis/eventsApi';
+import Cookies from "universal-cookie";
 
 const GroupsList = () => {
   const [userData, setUserData] = useState()
@@ -22,7 +23,8 @@ const GroupsList = () => {
   const [searching, setSearching] = useState(false);
 
   const toast = useToast();
-  const user = JSON.parse(localStorage.getItem("user"));
+  const cookies = new Cookies();
+  const user = JSON.parse(localStorage.getItem('user')) || cookies.get("auth_token", { domain: ".fundsdome.com" });
 
   React.useEffect(() => {
     fetchUsers();

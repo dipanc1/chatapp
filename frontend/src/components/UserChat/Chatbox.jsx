@@ -20,6 +20,8 @@ import DocumentAttachmentModal from '../UserModals/DocumentAttachmentModal'
 import messageApi from '../../services/apis/messageApi'
 import conversationApi from '../../services/apis/conversationApi'
 import donationApi from '../../services/apis/donationApi'
+import Cookies from "universal-cookie";
+
 
 var selectedChatCompare;
 
@@ -435,7 +437,8 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
   const [currentAmount, setCurrentAmount] = React.useState('');
   const [peopleContributed, setPeopleContributed] = React.useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const user = JSON.parse(localStorage.getItem('user'));
+  const cookies = new Cookies();
+  const user = JSON.parse(localStorage.getItem('user')) || cookies.get("auth_token", { domain: ".fundsdome.com" });
   const cancelRef = React.useRef()
   const { isOpen: isConfirmOpen, onOpen: onConfirmOpen, onClose: onConfirmClose } = useDisclosure()
   const [online, setOnline] = React.useState(false);

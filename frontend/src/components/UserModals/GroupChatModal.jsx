@@ -24,6 +24,7 @@ import {
 import {
     ViewIcon
 } from '@chakra-ui/icons'
+import Cookies from "universal-cookie";
 import UserBadgeItem from '../UserItems/UserBadgeItem';
 import UserListItem from '../UserItems/UserListItem';
 import conversationApi from '../../services/apis/conversationApi';
@@ -31,7 +32,8 @@ import conversationApi from '../../services/apis/conversationApi';
 
 const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const user = JSON.parse(localStorage.getItem('user'))
+    const cookies = new Cookies();
+    const user = JSON.parse(localStorage.getItem('user')) || cookies.get("auth_token", { domain: ".fundsdome.com" })
     const { dispatch, chats } = useContext(AppContext);
     const toast = useToast();
     const [groupChatName, setGroupChatName] = useState("");

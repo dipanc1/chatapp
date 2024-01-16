@@ -30,7 +30,7 @@ export const AppContext = createContext(INITIAL_STATE);
 
 export const AppContextProvider = ({ children }) => {
   const cookies = new Cookies();
-  const user = JSON.parse(localStorage.getItem("user")) || cookies.get("auth_token");
+  const user = JSON.parse(localStorage.getItem('user')) || cookies.get("auth_token", { domain: ".fundsdome.com" });
   const toast = useToast();
 
   const navigate = useNavigate();

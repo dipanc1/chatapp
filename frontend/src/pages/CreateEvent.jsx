@@ -20,10 +20,13 @@ import { AppContext } from '../context/AppContext';
 import { useNavigate } from 'react-router-dom';
 import { FiUpload } from 'react-icons/fi';
 import eventsApi from '../services/apis/eventsApi';
+import Cookies from "universal-cookie";
+
 
 const CreateEvent = () => {
 	const { selectedChat, userInfo, timestamp, signature, getCloudinarySignature } = useContext(AppContext);
-	const user = JSON.parse(localStorage.getItem("user"));
+	const cookies = new Cookies();
+	const user = JSON.parse(localStorage.getItem('user')) || cookies.get("auth_token", { domain: ".fundsdome.com" });
 	const [name, setEventName] = useState("");
 	const [description, setDescription] = useState("");
 	const [date, setDate] = useState(new Date());

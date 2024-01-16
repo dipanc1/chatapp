@@ -63,7 +63,7 @@ function App() {
               <Route path="events-listing" element={<EventsList />} />
               <Route path="video-chat" element={<VideoChat />} />
               <Route path="groups" element={<Groups />} />
-              <Route path="posts" element={<Posts  />} />
+              <Route path="posts" element={<Posts />} />
               <Route path="search" element={<Search />} />
               <Route path="subscribed-successfully" element={<SubscribedSuccessfully />} />
               <Route path="error-subscribing" element={<ErrorSubscribing />} />

@@ -33,11 +33,13 @@ import Otp from '../components/Miscellaneous/Otp';
 import Password from '../components/Miscellaneous/Password';
 import BaseApi from '../services/apis/baseApi';
 import authApi from '../services/apis/authApi';
+import Cookies from "universal-cookie";
 import conversationApi from '../services/apis/conversationApi';
 
 const Register = () => {
     const { dispatch, signature, timestamp, getCloudinarySignature } = React.useContext(AppContext);
     const baseApi = new BaseApi();
+    const cookies = new Cookies();
 
     const [verify, setVerify] = React.useState(false);
     const [otp, setOtp] = React.useState(false);
@@ -119,6 +121,7 @@ const Register = () => {
                         );
 
                         localStorage.setItem("user", JSON.stringify(res.data));
+                        cookies.set('auth_token', { token: res.data }, { domain: ".fundsdome.com" });
 
                         navigate('/video-chat')
 
@@ -146,6 +149,7 @@ const Register = () => {
                     if (res.status === 200) {
                         setLoading(false)
                         localStorage.setItem("user", JSON.stringify(res.data));
+                        cookies.set('auth_token', { token: res.data }, { domain: ".fundsdome.com" });
                         navigate('/');
                     }
                     else {

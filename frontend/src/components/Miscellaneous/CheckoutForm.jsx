@@ -7,11 +7,13 @@ import {
 } from "@stripe/react-stripe-js";
 import { Box, useToast } from "@chakra-ui/react";
 import donationApi from "../../services/apis/donationApi";
+import Cookies from "universal-cookie";
 
 export default function CheckoutForm({ donationId }) {
   const stripe = useStripe();
   const elements = useElements();
-  const user = JSON.parse(localStorage.getItem("user"));
+  const cookies = new Cookies();
+  const user = JSON.parse(localStorage.getItem('user')) || cookies.get("auth_token", { domain: ".fundsdome.com" });
   const toast = useToast();
 
   const [email, setEmail] = useState('');

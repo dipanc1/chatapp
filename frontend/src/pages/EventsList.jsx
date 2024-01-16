@@ -4,12 +4,15 @@ import axios from 'axios';
 import { backend_url } from '../utils';
 import { Button, Flex, Heading, Image, Table, TableContainer, Tbody, Td, Th, Thead, Tr, Text, Spinner, Box } from '@chakra-ui/react';
 import eventsApi from '../services/apis/eventsApi';
+import Cookies from "universal-cookie";
+
 
 const EventsList = () => {
   const [userData, setUserData] = useState()
   const [pageState, setPageState] = useState({ "page": 1, isLoading: true })
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const cookies = new Cookies();
+  const user = JSON.parse(localStorage.getItem('user')) || cookies.get("auth_token", { domain: ".fundsdome.com" });
 
   React.useEffect(() => {
     fetchEvents();

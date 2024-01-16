@@ -23,6 +23,8 @@ import EventModal from '../UserModals/EventModal';
 import StreamModalPeer from '../UserModals/StreamModalPeer';
 import conversationApi from '../../services/apis/conversationApi';
 import donationApi from '../../services/apis/donationApi';
+import Cookies from "universal-cookie";
+
 import eventsApi from '../../services/apis/eventsApi';
 
 const EventCard = ({
@@ -40,7 +42,8 @@ const EventCard = ({
   setFetchAgain,
   eventsPage
 }) => {
-  const user = JSON.parse(localStorage.getItem('user'));
+  const cookies = new Cookies();
+  const user = JSON.parse(localStorage.getItem('user')) || cookies.get("auth_token", { domain: ".fundsdome.com" });
 
   const { selectedChat, userInfo, getCloudinarySignature, signature, timestamp, dispatch, events } = useContext(AppContext);
 

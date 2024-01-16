@@ -4,6 +4,7 @@ import { Flex, Heading } from '@chakra-ui/react'
 import axios from 'axios'
 import { backend_url } from '../utils'
 // import Highcharts from 'highcharts'
+import Cookies from "universal-cookie";
 // import HighchartsReact from 'highcharts-react-official'
 
 const options = {
@@ -19,7 +20,8 @@ const options = {
 const Dashboard = () => {
   const [userData, setUserData] = React.useState()
   const [pageState, setPageState] = React.useState({ "page": 1, isLoading: true })
-  const user = JSON.parse(localStorage.getItem("user"));
+  const cookies = new Cookies();
+  const user = JSON.parse(localStorage.getItem('user')) || cookies.get("auth_token", { domain: ".fundsdome.com" });
 
   React.useEffect(() => {
     fetchUsers();

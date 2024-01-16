@@ -27,6 +27,7 @@ import {
     BsRecordCircle,
     BsRecordCircleFill,
 } from "react-icons/bs";
+import Cookies from "universal-cookie";
 import { AppContext } from "../../context/AppContext";
 import { MembersComponent } from "../UserChat/Members";
 import { RoomContext } from "../../context/RoomContext";
@@ -66,7 +67,8 @@ const IconButtonGeneric = ({
 };
 
 const StreamingPeer = ({ setToggleChat, admin, fetchAgain, setFetchAgain }) => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const cookies = new Cookies();
+    const user = JSON.parse(localStorage.getItem('user')) || cookies.get("auth_token", { domain: ".fundsdome.com" });
 
     const [recording, setRecording] = React.useState(false);
     const [toggleDonation, setToggleDonation] = React.useState(false);

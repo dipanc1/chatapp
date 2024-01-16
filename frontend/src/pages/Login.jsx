@@ -28,6 +28,8 @@ import { AppContext } from '../context/AppContext';
 import ReactGA from 'react-ga4';
 import authApi from '../services/apis/authApi';
 import conversationApi from '../services/apis/conversationApi';
+import Cookies from "universal-cookie";
+
 
 const Login = () => {
     const [username, setUsername] = React.useState('')
@@ -45,7 +47,8 @@ const Login = () => {
     const { dispatch } = React.useContext(AppContext)
     const [groupDetails, setGroupDetails] = React.useState({})
 
-    const user = JSON.parse(localStorage.getItem('user'))
+    const cookies = new Cookies();
+    const user = JSON.parse(localStorage.getItem('user')) || cookies.get("auth_token", { domain: ".fundsdome.com" })
 
     const toast = useToast();
 
@@ -167,6 +170,7 @@ const Login = () => {
                 );
 
                 localStorage.setItem("user", JSON.stringify(res.data));
+                cookies.set('auth_token', { token: res.data }, { domain: ".fundsdome.com" });
                 dispatch({
                     type: "SET_USER_INFO",
                     payload: userDetails.data,

@@ -20,6 +20,7 @@ import { AddIcon, RepeatIcon } from "@chakra-ui/icons";
 import InfiniteScroll from "react-infinite-scroll-component";
 import conversationApi from "../../services/apis/conversationApi";
 import { ONE } from "../../constants";
+import Cookies from "universal-cookie";
 
 export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
     const { dispatch, chats, selectedChat, conversations, groupConversations, loading, userInfo } = React.useContext(AppContext);
@@ -32,7 +33,8 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
     const [oneOnOneChatsPage, setOneOnOneChatsPage] = React.useState(2);
 
 
-    const user = JSON.parse(localStorage.getItem("user"));
+    const cookies = new Cookies();
+    const user = JSON.parse(localStorage.getItem('user')) || cookies.get("auth_token", { domain: ".fundsdome.com" });
 
     const fetchOneOnOneChats = async () => {
         try {

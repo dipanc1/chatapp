@@ -30,9 +30,12 @@ import { FiUpload } from 'react-icons/fi';
 import { AppContext } from '../context/AppContext';
 // import FullScreenLoader from '../components/common/FullScreenLoader';
 import SendEmailModal from '../components/UserModals/SendEmailModal';
+import Cookies from "universal-cookie";
+
 
 const Settings = () => {
-    const user = JSON.parse(localStorage.getItem('user'));
+    const cookies = new Cookies();
+    const user = JSON.parse(localStorage.getItem('user')) || cookies.get("auth_token", { domain: ".fundsdome.com" });
 
     const toast = useToast();
     const { colorMode } = useColorMode();

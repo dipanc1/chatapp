@@ -2,13 +2,16 @@ import React from 'react'
 import Static from '../components/common/Static'
 import axios from 'axios';
 import { backend_url } from '../utils';
+import Cookies from "universal-cookie";
+
 import { Button, Flex, Heading, Image, Table, TableContainer, Tbody, Td, Th, Thead, Tr, Text, Spinner, Box } from '@chakra-ui/react';
 
 const UsersList = () => {
   const [userData, setUserData] = React.useState()
   const [pageState, setPageState] = React.useState({ "page": 1, isLoading: true })
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const cookies = new Cookies();
+    const user = JSON.parse(localStorage.getItem('user')) || cookies.get("auth_token", { domain: ".fundsdome.com" });
 
   React.useEffect(() => {
     fetchUsers();

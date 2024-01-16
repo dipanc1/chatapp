@@ -5,6 +5,7 @@ import {
   useElements
 } from "@stripe/react-stripe-js";
 import { Box, useToast } from "@chakra-ui/react";
+import Cookies from "universal-cookie";
 import donationApi from "../../services/apis/donationApi";
 
 export default function PaymentModule() {
@@ -12,7 +13,8 @@ export default function PaymentModule() {
   const elements = useElements();
   const toast = useToast();
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const cookies = new Cookies();
+  const user = JSON.parse(localStorage.getItem('user')) || cookies.get("auth_token", { domain: ".fundsdome.com" });
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -103,11 +105,11 @@ export default function PaymentModule() {
     <form id="payment-form" onSubmit={handleSubmit}>
       <PaymentElement id="payment-element" options={paymentElementOptions} />
       <Box textAlign="right" mt="20px">
-          <button className="btn btn-primary" disabled={isLoading || !stripe || !elements} id="submit">
-              <span id="button-text">
-              {isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
-              </span>
-          </button>
+        <button className="btn btn-primary" disabled={isLoading || !stripe || !elements} id="submit">
+          <span id="button-text">
+            {isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
+          </span>
+        </button>
       </Box>
       {message && <div id="payment-message">{message}</div>}
     </form>

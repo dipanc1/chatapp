@@ -12,6 +12,7 @@ import { useContext } from 'react';
 import { useRef } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
+import Cookies from "universal-cookie";
 import conversationApi from '../../services/apis/conversationApi';
 
 
@@ -19,7 +20,8 @@ const JoinGroupModal = ({ isOpenJoinEvent, onCloseJoinEvent, chatId, chatName })
     const cancelRef = useRef();
     const navigate = useNavigate();
     const { dispatch, userInfo } = useContext(AppContext);
-    const user = JSON.parse(localStorage.getItem('user'));
+    const cookies = new Cookies();
+    const user = JSON.parse(localStorage.getItem('user')) || cookies.get("auth_token", { domain: ".fundsdome.com" });
 
     const handleJoinGroup = async () => {
         const config = {

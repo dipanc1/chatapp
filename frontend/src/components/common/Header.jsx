@@ -27,9 +27,12 @@ import UserCard from '../UserItems/UserCard';
 import conversationApi from '../../services/apis/conversationApi';
 import authApi from '../../services/apis/authApi';
 import PostModal from '../UserModals/PostModal';
+import Cookies from "universal-cookie";
+
 
 const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) => {
-  const user = JSON.parse(localStorage.getItem('user'));
+  const cookies = new Cookies();
+  const user = JSON.parse(localStorage.getItem('user')) || cookies.get("auth_token", { domain: ".fundsdome.com" });
   const { dispatch, loading, notification, pushNotification, userInfo, selectedChat } = useContext(AppContext);
 
   const [toggleProfiledd, setToggleProfiledd] = useState(false)
@@ -54,6 +57,7 @@ const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) 
   const handleLogout = () => {
     localStorage.removeItem('user');
     dispatch({ type: "SET_USER", payload: null });
+    cookies.set('auth_token', { token: null }, { domain: ".fundsdome.com" });
     navigate('/');
     window.location.reload();
   }

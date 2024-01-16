@@ -10,6 +10,7 @@ import conversationApi from '../../services/apis/conversationApi';
 import authApi from '../../services/apis/authApi';
 import donationApi from '../../services/apis/donationApi';
 import eventsApi from '../../services/apis/eventsApi';
+import Cookies from "universal-cookie";
 
 const GroupCard = ({
   chatId,
@@ -21,7 +22,8 @@ const GroupCard = ({
   setFetchAgain,
   admin
 }) => {
-  const user = JSON.parse(localStorage.getItem('user'));
+  const cookies = new Cookies();
+  const user = JSON.parse(localStorage.getItem('user')) || cookies.get("auth_token", { domain: ".fundsdome.com" });
   const [toggleGroupMenu, setToggleGroupMenu] = useState(false);
   const [groupChatName, setGroupChatName] = React.useState('');
   const [loading, setLoading] = React.useState(false);

@@ -10,10 +10,13 @@ import postApi from '../services/apis/postApi'
 import { AppContext } from '../context/AppContext'
 import { api_key, folder, pictureUpload } from '../utils'
 import axios from 'axios'
+import Cookies from "universal-cookie";
+
 
 
 const Posts = () => {
-    const user = JSON.parse(localStorage.getItem('user'))
+    const cookies = new Cookies();
+    const user = JSON.parse(localStorage.getItem('user')) || cookies.get("auth_token", { domain: ".fundsdome.com" })
 
     const { timestamp, signature } = useContext(AppContext)
 

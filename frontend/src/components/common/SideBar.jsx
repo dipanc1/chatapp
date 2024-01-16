@@ -4,6 +4,7 @@ import { Box, Text, Flex, List, ListItem, Image, Button, useColorMode } from "@c
 import "./style.css";
 import { AppContext } from "../../context/AppContext";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
+import Cookies from 'universal-cookie';
 
 const SideBar = ({
   toggleSidebar
@@ -11,6 +12,7 @@ const SideBar = ({
   const { dispatch, stream, selectedChat, userInfo } = useContext(AppContext);
   const navigate = useNavigate();
   const { colorMode, toggleColorMode } = useColorMode();
+  const cookies = new Cookies();
 
   const CDN_IMAGES = "https://ik.imagekit.io/sahildhingra";
   const userMenu = [
@@ -79,6 +81,7 @@ const SideBar = ({
   const handleLogout = () => {
     localStorage.removeItem('user');
     dispatch({ type: "SET_USER", payload: null });
+    cookies.set('auth_token', { token: null }, { domain: ".fundsdome.com" });
     navigate('/');
     window.location.reload();
   }

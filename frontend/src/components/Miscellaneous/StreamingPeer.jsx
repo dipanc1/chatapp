@@ -10,6 +10,7 @@ import { AppContext } from '../../context/AppContext';
 import { backend_url } from '../../utils';
 import { MembersComponent } from '../UserChat/Members';
 import EndLeaveModal from '../UserModals/EndLeaveModal';
+import Cookies from "universal-cookie";
 import { RoomContext } from '../../context/RoomContext';
 import Videoplayer from './Videoplayer';
 import { useCallback } from 'react';
@@ -32,7 +33,8 @@ const IconButtonGeneric = ({ icon, onClick, color, size, display, disable }) => 
 }
 
 const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
-    const user = JSON.parse(localStorage.getItem('user'));
+    const cookies = new Cookies();
+    const user = JSON.parse(localStorage.getItem('user')) || cookies.get("auth_token", { domain: ".fundsdome.com" });
     const [recording, setRecording] = React.useState(false);
     const stopButton = useRef(null);
 
@@ -258,11 +260,11 @@ const StreamingPeer = ({ admin, fetchAgain, setFetchAgain }) => {
 
                         {
                             adminVideo.length > 0 ?
-                            adminVideo.map((peer) => (
-                                <div key={peer?.peerId}>
-                                    <Videoplayer width={'400px'} peerstream={peer?.stream} />
-                                </div>
-                            ))
+                                adminVideo.map((peer) => (
+                                    <div key={peer?.peerId}>
+                                        <Videoplayer width={'400px'} peerstream={peer?.stream} />
+                                    </div>
+                                ))
                                 :
                                 !admin &&
                                 <div>

@@ -5,6 +5,7 @@ import ChatOnline from '../Miscellaneous/ChatOnline'
 import { AppContext } from '../../context/AppContext'
 import axios from 'axios'
 import { api_key, backend_url, pictureUpload, folder } from '../../utils'
+import Cookies from "universal-cookie";
 import { HiUserRemove } from 'react-icons/hi'
 import {
   Accordion, Avatar,
@@ -25,7 +26,8 @@ import { useEffect } from 'react'
 import eventsApi from '../../services/apis/eventsApi'
 
 export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, setFetchAgain, admin }) => {
-  const user = JSON.parse(localStorage.getItem('user'));
+  const cookies = new Cookies();
+  const user = JSON.parse(localStorage.getItem('user')) || cookies.get("auth_token", { domain: ".fundsdome.com" });
 
   const { selectedChat, dispatch, stream, fullScreen, userInfo, signature, timestamp, getCloudinarySignature, events } = React.useContext(AppContext);
 

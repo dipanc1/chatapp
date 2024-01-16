@@ -2,6 +2,7 @@ import { useContext, useEffect } from 'react';
 import { AppContext } from '../../context/AppContext';
 
 import { format } from 'timeago.js'
+import Cookies from "universal-cookie";
 import { Avatar, Box, Button, Flex, Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useColorMode, useDisclosure } from '@chakra-ui/react';
 
 import { checkFileExtension } from '../../utils';
@@ -64,7 +65,8 @@ const Message = ({ messages, own, sameSender, sameTime }) => {
 
     const [imageHover, setImageHover] = useState(false)
 
-    const user = JSON.parse(localStorage.getItem('user'))
+    const cookies = new Cookies();
+    const user = JSON.parse(localStorage.getItem('user')) || cookies.get("auth_token", { domain: ".fundsdome.com" })
 
     useEffect(() => {
         const readLastMessage = async () => {

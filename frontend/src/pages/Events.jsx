@@ -16,6 +16,7 @@ import {
 import Static from "../components/common/Static"
 import EventCard from '../components/Events/EventCard';
 import { useContext } from 'react';
+import Cookies from "universal-cookie";
 import { AppContext } from '../context/AppContext';
 import JoinGroupModal from '../components/UserModals/JoinGroupModal';
 import Pagination from '../components/Miscellaneous/Pagination';
@@ -62,7 +63,8 @@ function Events() {
   const { dispatch, userInfo } = useContext(AppContext);
   const { isOpen: isOpenJoinEvent, onOpen: onOpenJoinEvent, onClose: onCloseJoinEvent } = useDisclosure();
 
-  const user = JSON.parse(localStorage.getItem('user'));
+  const cookies = new Cookies();
+  const user = JSON.parse(localStorage.getItem('user')) || cookies.get("auth_token", { domain: ".fundsdome.com" });
 
   useEffect(() => {
     const fetchAllEvents = async () => {

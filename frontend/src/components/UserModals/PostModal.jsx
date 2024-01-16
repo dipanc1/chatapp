@@ -9,11 +9,13 @@ import postApi from '../../services/apis/postApi';
 import { AppContext } from '../../context/AppContext';
 
 import { api_key, folder, pictureUpload } from '../../utils';
+import Cookies from "universal-cookie";
 
 import FullScreenLoader from '../common/FullScreenLoader';
 
 const PostModal = ({ children, post, deletePost, editPost, loading, setLoading }) => {
-    const user = JSON.parse(localStorage.getItem('user'));
+    const cookies = new Cookies();
+    const user = JSON.parse(localStorage.getItem('user')) || cookies.get("auth_token", { domain: ".fundsdome.com" });
 
     const { isOpen, onOpen, onClose } = useDisclosure()
 
