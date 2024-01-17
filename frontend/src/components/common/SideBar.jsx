@@ -81,7 +81,7 @@ const SideBar = ({
   const handleLogout = () => {
     localStorage.removeItem('user');
     dispatch({ type: "SET_USER", payload: null });
-    cookies.set('auth_token', { token: null }, { domain: ".fundsdome.com" });
+    cookies.remove("auth_token", { domain: ".fundsdome.com" });
     navigate('/');
     window.location.reload();
   }

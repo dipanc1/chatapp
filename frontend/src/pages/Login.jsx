@@ -170,7 +170,7 @@ const Login = () => {
                 );
 
                 localStorage.setItem("user", JSON.stringify(res.data));
-                cookies.set('auth_token', { token: res.data }, { domain: ".fundsdome.com" });
+                cookies.set('auth_token', data.token);
                 dispatch({
                     type: "SET_USER_INFO",
                     payload: userDetails.data,
@@ -204,7 +204,7 @@ const Login = () => {
             const { data } = response;
             if (response.status === 200) {
                 localStorage.setItem("user", JSON.stringify(data));
-
+                cookies.set('auth_token', data.token);
                 ReactGA.event({
                     category: 'User',
                     action: 'User Logged In',

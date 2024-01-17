@@ -121,7 +121,7 @@ const Register = () => {
                         );
 
                         localStorage.setItem("user", JSON.stringify(res.data));
-                        cookies.set('auth_token', { token: res.data }, { domain: ".fundsdome.com" });
+                        cookies.set('auth_token', data.token);
 
                         navigate('/video-chat')
 
@@ -149,7 +149,7 @@ const Register = () => {
                     if (res.status === 200) {
                         setLoading(false)
                         localStorage.setItem("user", JSON.stringify(res.data));
-                        cookies.set('auth_token', { token: res.data }, { domain: ".fundsdome.com" });
+                        cookies.set('auth_token', res.token);
                         navigate('/');
                     }
                     else {
