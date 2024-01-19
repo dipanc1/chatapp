@@ -6,7 +6,6 @@ import {
     AlertDialogContent,
     AlertDialogOverlay,
     Button,
-    AlertDialogCloseButton,
 } from '@chakra-ui/react'
 import { useContext } from 'react';
 import { useRef } from 'react'
@@ -56,7 +55,6 @@ const JoinGroupModal = ({ isOpenJoinEvent, onCloseJoinEvent, chatId, chatName })
 
                 <AlertDialogContent>
                     <AlertDialogHeader>You have to join {chatName} group to join this event?</AlertDialogHeader>
-                    <AlertDialogCloseButton />
                     <AlertDialogBody>
                         Are you sure you want to join this group? You can always leave later.
                     </AlertDialogBody>

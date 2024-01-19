@@ -55,7 +55,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                     (chat) => chat._id === data.chats.map((datas) => datas._id)
                 )
             ) {
-                dispatch({ type: "SET_CHATS", payload: data });
+                dispatch({ type: "SET_CHATS", payload: data.chats });
             }
 
         } catch (error) {
@@ -82,7 +82,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                     (chat) => chat._id === data.groups.map((datas) => datas._id)
                 )
             ) {
-                dispatch({ type: "SET_CHATS", payload: data });
+                dispatch({ type: "SET_CHATS", payload: data.groups });
             }
 
         } catch (error) {
@@ -114,7 +114,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                     (chat) => chat._id === data.chats.map((datas) => datas._id)
                 )
             ) {
-                dispatch({ type: "SET_CHATS", payload: data });
+                dispatch({ type: "SET_CHATS", payload: data.chats });
             }
         } catch (error) {
             console.log(error)
@@ -145,7 +145,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                     (chat) => chat._id === data.groups.map((datas) => datas._id)
                 )
             ) {
-                dispatch({ type: "SET_CHATS", payload: data });
+                dispatch({ type: "SET_CHATS", payload: data.groups });
             }
         } catch (error) {
             console.log(error)

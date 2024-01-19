@@ -175,6 +175,7 @@ function Events() {
   }, [toast, user.token, fetchAgain, activeTab]);
 
   const selectEvent = async (chatId) => {
+    activeTab === 1 ? setLoading(true) : activeTab === 2 ? setLoadingUpcoming(true) : setLoadingPast(true);
     try {
       const config = {
         headers: {
@@ -187,14 +188,17 @@ function Events() {
       setChatName(data.chatName);
 
       if (!data.users.map((u) => u._id === userInfo._id).includes(true)) {
+        activeTab === 1 ? setLoading(false) : activeTab === 2 ? setLoadingUpcoming(false) : setLoadingPast(false);
         onOpenJoinEvent();
       } else {
+        activeTab === 1 ? setLoading(false) : activeTab === 2 ? setLoadingUpcoming(false) : setLoadingPast(false);
         dispatch({ type: "SET_SELECTED_CHAT", payload: data });
         navigate(`/video-chat`);
       }
 
     } catch (error) {
       // console.log(error)
+      activeTab === 1 ? setLoading(false) : activeTab === 2 ? setLoadingUpcoming(false) : setLoadingPast(false);
       toast({
         title: "Error Occured!",
         description: "Failed to Load the Events",

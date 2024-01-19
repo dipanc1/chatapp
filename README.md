@@ -10,9 +10,7 @@
 #### need twilio replacement for sending sms -- twilio
 
 #### update cors peer server
-#### add logs in node server txt file
 #### give node engine in node server
 #### check end to end functionality
-#### common function to read cookies
 
 ## Phone App

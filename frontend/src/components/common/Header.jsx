@@ -56,8 +56,8 @@ const Header = ({ toggleSidebar, setToggleSidebar, fetchAgain, setFetchAgain }) 
 
   const handleLogout = () => {
     localStorage.removeItem('user');
+    cookies.remove("auth_token", { domain: ".fundsdome.com" || "localhost" });
     dispatch({ type: "SET_USER", payload: null });
-    cookies.remove("auth_token", { domain: ".fundsdome.com" });
     navigate('/');
     window.location.reload();
   }

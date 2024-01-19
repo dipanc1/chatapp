@@ -120,7 +120,7 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
             setSearchResults([]);
             toast({
                 title: "Failed to Create the Chat!",
-                description: error.response.data,
+                description: "Please Try Again Later",
                 status: "error",
                 duration: 5000,
                 isClosable: true,
