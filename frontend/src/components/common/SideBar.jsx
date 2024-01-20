@@ -116,6 +116,19 @@ const SideBar = ({
             />
           </Box>
           <List flex={["unset"]} display={["block"]}>
+            <ListItem flex={["unset"]} py={"4px"} fontWeight={"600"}>
+              <NavLink to="http://fundsdome.com" target="_blank">
+                <Image
+                  src={
+                    CDN_IMAGES +
+                    "/external-link"+
+                    ".png"
+                  }
+                  alt="home"
+                />
+                <Text>Home</Text>
+              </NavLink>
+            </ListItem>
             {
               userInfo?.isSuperAdmin ? (
                 adminMenu.map((navitem) => (
