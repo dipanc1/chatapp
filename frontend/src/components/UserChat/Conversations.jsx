@@ -183,7 +183,6 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                 display={"flex"}
                                 alignItems={"center"}
                                 justifyContent={"center"}
-                                my={"2"}
                             >
                                 <Spinner
                                     thickness="4px"
@@ -203,7 +202,6 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                         display={"flex"}
                                         alignItems={"center"}
                                         justifyContent={"center"}
-                                        my={"2"}
                                     >
                                         <Spinner
                                             thickness="4px"
@@ -331,7 +329,6 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                         display={"flex"}
                                         alignItems={"center"}
                                         justifyContent={"center"}
-                                        my={"2"}
                                     >
                                         <Spinner
                                             thickness="4px"

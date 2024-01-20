@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Box, Text, Flex, List, ListItem, Image, Button, useColorMode } from "@chakra-ui/react";
 import "./style.css";
 import { AppContext } from "../../context/AppContext";
@@ -161,11 +161,19 @@ const SideBar = ({
           </List>
           <Box mt={["auto"]} py={["auto"]}>
             <List>
+              <ListItem background={'ButtonHighlight'} borderRadius={'lg'}>
+                <Link to={"https://fundsdome.com"} target="_blank">
+                  <Text fontSize={'md'} mr={'3'}>FundsDome.com</Text>
+                  <Image
+                    src={CDN_IMAGES + "/external-link.png"}
+                    height={'5'}
+                  />
+                </Link>
+              </ListItem>
               <ListItem>
                 <Flex alignItems="center">
                   <Button w="100%" justifyContent="flex-start"
-                    //  bg={colorMode === 'dark' ? '#805AD5' : '#FAF5FF'} 
-                    bg="transparent"
+                    bg={'transparent'}
                     onClick={toggleColorMode}
                   >
                     {colorMode === 'light' ? <MoonIcon w="22px" /> : <SunIcon w="22px" color="red.500" />}

@@ -34,7 +34,7 @@ router.get('/:id', protect, asyncHandler(async (req, res) => {
 }));
 
 // GET donation of an event
-router.get('/event/:id', protect, asyncHandler(async (req, res) => {
+router.get('/event/:id', asyncHandler(async (req, res) => {
     try {
         const donation = await Donation.find({ event: req.params.id }).populate('donatedByAndAmount.user').populate('event');
 

@@ -170,7 +170,7 @@ router.get("/all/:page", asyncHandler(async (req, res) => {
         const events = await EventTable.find({
             isDisabled: false,
             date: { $gte: new Date() }
-        }).skip(skip).limit(limit).sort({ createdAt: -1 });
+        }).skip(skip).limit(limit).sort({ createdAt: -1 }).populate("chatId");
         const totalCount = await EventTable.countDocuments({
             isDisabled: false,
             date: {
