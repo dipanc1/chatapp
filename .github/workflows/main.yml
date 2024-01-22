@@ -24,7 +24,7 @@ jobs:
 
     - name: Install dependencies and run tests
       run: |
-        cd chatapp/backend/backend
+        cd ./chatapp/backend/backend
         npm install
         npm test
       env:
