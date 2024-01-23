@@ -204,7 +204,7 @@ export const MembersComponent = ({ setToggleChat, token, meetingId, fetchAgain, 
             description,
             date,
             time,
-            thumbnail: res.data.url
+            thumbnail: res.data.secure_url
           }, config)
             .then(async (r) => {
               let eventId = r.data._id;

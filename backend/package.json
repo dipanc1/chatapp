@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
+  "engines": {
+    "node": "20.10.0",
+    "npm": "7.24.0"
+  },
   "scripts": {
     "start": "node server",
     "dev": "nodemon server"
@@ -26,5 +30,8 @@
     "socket.io": "^4.4.1",
     "stripe": "^12.2.0",
     "twilio": "^3.59.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
   }
 }

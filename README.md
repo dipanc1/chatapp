@@ -9,8 +9,10 @@
 #### need to add abhishek's id to send emails -- emailjs
 #### need twilio replacement for sending sms -- twilio
 
-#### update cors peer server
-#### give node engine in node server
-#### check end to end functionality
+#### decouple settings page from tabs and add loader 
+#### change folder name for each user OR functionality 
+#### add image while creating a group
+#### Setup CI/CD
+
 
 ## Phone App

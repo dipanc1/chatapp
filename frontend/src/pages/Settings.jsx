@@ -54,8 +54,6 @@ const Settings = () => {
     // const [subscribeData, setSubscribeData] = useState({});
     // const [paymentLoading, setPaymentLoading] = useState(false)
 
-    // TODO: Disable button and tabs while making API calls and other checks
-
     useEffect(() => {
         const currentUserDetails = async () => {
             try {
@@ -222,7 +220,7 @@ const Settings = () => {
                         data = await axios.put(
                             `${backend_url}/users/update-user-info`, {
                             username,
-                            pic: res.data.url,
+                            pic: res.data.secure_url,
                         },
                             config
                         ))

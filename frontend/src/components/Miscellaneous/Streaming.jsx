@@ -117,7 +117,6 @@ function Controls({ admin, user, selectedChat, toast }) {
     const [webcamOn, setWebcamOn] = React.useState(false);
     const [fullscreenOn, setFullscreenOn] = React.useState(false);
     const [startRecordingState, setStartRecordingState] = React.useState(false);
-    // TODO: in readme problem is mentioned
     const [adminLeft, setAdminLeft] = React.useState([]);
 
     const [play] = useSound(joinSound);

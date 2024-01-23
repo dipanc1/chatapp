@@ -180,7 +180,7 @@ const GroupCard = ({
             description,
             date,
             time,
-            thumbnail: res.data.url
+            thumbnail: res.data.secure_url
           }, config)
             .then(async (res) => {
               const eventId = res.data._id;

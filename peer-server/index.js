@@ -12,7 +12,9 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: "*",
+        origin: [
+            'https://www.fundsdome.com', 'https://app.fundsdome.com', 'http://localhost:3000'
+        ],
         methods: ["GET", "POST"],
     },
 });

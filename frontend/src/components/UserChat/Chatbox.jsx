@@ -225,7 +225,6 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
       const formData = new FormData();
       formData.append('api_key', api_key)
       formData.append('file', selectedImage);
-      // TODO: change folder name for each user
       formData.append('folder', folder)
       formData.append('timestamp', timestamp)
       formData.append('signature', signature)
@@ -247,7 +246,6 @@ export const ChatBoxComponent = ({ setToggleChat, stream, flex, height, selected
       const formData = new FormData();
       formData.append('api_key', api_key)
       formData.append('file', selectedFile);
-      // TODO: change folder name for each user
       formData.append('folder', folder)
       formData.append('timestamp', timestamp)
       formData.append('signature', signature)

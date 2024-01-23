@@ -160,7 +160,7 @@ const Posts = () => {
 
             await axios.put(pictureUpload, formData)
                 .then(async (res) => {
-                    await postApi.editPost(postId, chatId, { title, description, image: res.data.url }, config)
+                    await postApi.editPost(postId, chatId, { title, description, image: res.data.secure_url }, config)
                     fetchMorePosts(currentPage)
                     toast({
                         title: 'Success',

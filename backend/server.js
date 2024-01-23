@@ -35,10 +35,7 @@ app.use(
 const MONGO_URL = process.env.MONGO_STAGING_URI;
 
 mongoose.connect(
-    MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-},
+    MONGO_URL,
     async () => {
         console.log("Connected to MongoDB");
     }, 600000

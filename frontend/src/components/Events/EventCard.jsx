@@ -181,7 +181,7 @@ const EventCard = ({
                 event.description = descriptiond;
                 event.date = dated;
                 event.time = timed;
-                event.thumbnail = res.data.url;
+                event.thumbnail = res.data.secure_url;
                 return event;
               } else {
                 return event;
@@ -237,7 +237,7 @@ const EventCard = ({
             description: descriptiond,
             date: dated,
             time: timed,
-            thumbnail: res.data.url,
+            thumbnail: res.data.secure_url,
             chatId: selectedChat._id
           }, config)
             .then(async (res) => {
@@ -256,7 +256,7 @@ const EventCard = ({
                     event.description = descriptiond;
                     event.date = dated;
                     event.time = timed;
-                    event.thumbnail = res.data.url;
+                    event.thumbnail = res.data.secure_url;
                     return event;
                   } else {
                     return event;

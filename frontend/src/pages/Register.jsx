@@ -177,7 +177,7 @@ const Register = () => {
                                 number1: number1,
                                 username: username,
                                 password: password,
-                                pic: res.data.url
+                                pic: res.data.secure_url
                             });
                             if (response.data) {
                                 setLoading(false)
@@ -221,7 +221,7 @@ const Register = () => {
                                 number1: number1,
                                 username: username,
                                 password: password,
-                                pic: res.data.url
+                                pic: res.data.secure_url
                             });
                             if (response.data) {
                                 setLoading(false)

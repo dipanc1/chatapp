@@ -40,7 +40,6 @@ const GroupChat = ({ chat }) => {
             variants={list}
             onClick={() => setRead(false)}
         >
-            {/* TODO : will add image later */}
             <Avatar size={['sm', 'md']} me={['10px', '15px']} variants={item} />
             {chat && <VStack alignItems={'flex-start'}>
                 <Heading  textTransform="capitalize" variants={item} fontSize='md'>{chat.chatName}</Heading>

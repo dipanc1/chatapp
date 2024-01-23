@@ -97,7 +97,7 @@ const CreateEvent = () => {
 						description,
 						date,
 						time,
-						thumbnail: res.data.url
+						thumbnail: res.data.secure_url
 					}, config)
 						.then((res) => {
 							navigate(`/video-chat`);

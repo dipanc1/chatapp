@@ -26,8 +26,6 @@ import EventsList from './pages/EventsList';
 import Posts from './pages/Posts';
 import Contribute from './pages/Contribute';
 
-//TODO: delete console statements
-
 function App() {
   let isChrome = navigator.userAgentData?.brands?.some(b => b.brand === 'Google Chrome');
   const { cameraPermission } = useContext(RoomContext);

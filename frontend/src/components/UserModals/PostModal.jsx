@@ -61,7 +61,7 @@ const PostModal = ({ children, post, deletePost, editPost, loading, setLoading }
     }
 
     const handleCreatePost = async (e) => {
-        setLoading(true);
+        loading !== undefined && setLoading(true);
         const { title, description, selectedImage } = userInfo;
         if (title === '' || description === '' || selectedImage === null) {
             toast({
@@ -71,7 +71,7 @@ const PostModal = ({ children, post, deletePost, editPost, loading, setLoading }
                 duration: 9000,
                 isClosable: true,
             });
-            setLoading(false);
+            loading !== undefined && setLoading(false);
             return;
         }
 
@@ -94,7 +94,7 @@ const PostModal = ({ children, post, deletePost, editPost, loading, setLoading }
                 await postApi.createPost(selectedChat._id, {
                     title,
                     description,
-                    image: res.data.url,
+                    image: res.data.secure_url,
                 }, config)
 
                 toast({
@@ -118,7 +118,7 @@ const PostModal = ({ children, post, deletePost, editPost, loading, setLoading }
                 });
             });
         setUserInfo({ ...userInfo, title: '', description: '', selectedImage: null });
-        setLoading(false);
+        loading !== undefined && setLoading(false);
         onClose();
     }
 
