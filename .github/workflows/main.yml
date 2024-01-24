@@ -42,7 +42,4 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.SSH_PORT }}
         script: |
-          cd /var/www/backend
-          git pull origin dev
-          npm install
           pm2 restart server.js
