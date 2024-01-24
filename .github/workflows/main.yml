@@ -36,4 +36,4 @@ jobs:
     steps:
     - name: SSH and deploy node app
       run: |
-        ssh -o StrictHostKeyChecking=no -p 3002 ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} 'cd /var/www/backend && git pull origin dev && npm install && pm2 restart server.js'
+        ssh -o StrictHostKeyChecking=no -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} 'cd /var/www/backend && git pull origin dev && npm install && pm2 restart server.js'
