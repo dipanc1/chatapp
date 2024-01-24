@@ -10,9 +10,10 @@
 #### need twilio replacement for sending sms -- twilio
 
 #### decouple settings page from tabs and add loader 
-#### change folder name for each user OR functionality 
 #### add image while creating a group
+#### change folder name for each user OR functionality 
 #### Setup CI/CD
 
 
 ## Phone App
+#### have to check all functionalities
