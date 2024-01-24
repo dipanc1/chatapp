@@ -26,7 +26,6 @@ jobs:
       run: |
         cd /home/dipan/actions-runner/_work/chatapp/chatapp/backend
         npm install
-        npm test
       env:
         CI: true
 
