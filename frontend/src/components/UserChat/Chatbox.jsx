@@ -627,7 +627,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
 
     donation();
 
-  }, [admin, selectedChat, user.token, fetchGroupDonations])
+  }, [admin, selectedChat, user?.token, fetchGroupDonations])
 
 
   const variants = {

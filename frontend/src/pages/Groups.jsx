@@ -174,7 +174,7 @@ function Groups() {
         break;
     }
 
-  }, [toast, user.token, fetchAgain, activeTab])
+  }, [toast, user?.token, fetchAgain, activeTab])
 
   const listMoreGroups = async (page) => {
     setLoading(true);

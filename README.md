@@ -11,7 +11,9 @@
 
 #### decouple settings page from tabs and add loader 
 #### add image while creating a group
-#### change folder name for each user OR functionality 
+
+#### change folder name for each functionality
+
 #### Setup CI/CD
 
 

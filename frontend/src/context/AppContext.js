@@ -83,8 +83,9 @@ export const AppContextProvider = ({ children }) => {
             duration: 5000,
             isClosable: true,
           });
-          navigate("/");
           localStorage.removeItem("user");
+          cookies.remove("auth_token", { domain: ".fundsdome.com" || "localhost" });
+          navigate("/");
         });
     };
     getUserInfo();

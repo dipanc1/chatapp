@@ -39,7 +39,7 @@ const Chat = () => {
   };
 
   React.useEffect(() => {
-    if (!user || !user.token) {
+    if (!user || !user?.token) {
       navigate('/');
     }
   }, [navigate, user]);
@@ -105,7 +105,7 @@ const Chat = () => {
           :
           <>
             <Box width={['100%', '100%', 'auto']} display="flex" flex={['1', '1', '2', '3']}>
-              {user.token && <Conversations fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+              <Conversations fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
             </Box>
             <Box
               transform={selectedChat === null ? ["translateX(100%)", "translateX(100%)", 'unset'] : ["translateX(0)", "translateX(0)", 'unset']}
@@ -116,7 +116,7 @@ const Chat = () => {
               top={['0', '0', 'unset']}
               transition="all 0.25s ease-in-out"
             >
-              {user.token && <Chatbox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} getMeetingAndToken={getMeetingAndToken} />}
+              <Chatbox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} getMeetingAndToken={getMeetingAndToken} />
             </Box>
           </>
         }
@@ -135,7 +135,7 @@ const Chat = () => {
               transition='all 0.25s ease-in-out'
             // height={['70%', 'auto']}
             >
-              {user.token && <Members setToggleChat={setToggleChat} admin={admin} token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+              <Members setToggleChat={setToggleChat} admin={admin} token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
             </Box>
           )
         }

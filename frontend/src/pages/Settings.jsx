@@ -74,7 +74,7 @@ const Settings = () => {
         }
 
         currentUserDetails();
-    }, [user.token])
+    }, [user?.token])
 
     // const handlePlanSelection = (id, name, amount) => {
     //     const newSubscribeData = {

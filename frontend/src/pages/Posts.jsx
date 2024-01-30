@@ -34,11 +34,14 @@ const Posts = () => {
     const config = {
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${user.token}`
+            'Authorization': `Bearer ${user?.token}`
         }
     };
 
     useEffect(() => {
+        if (!user?.token) {
+            return;
+        }
         const fetchPosts = async () => {
             try {
                 setLoading(true)
@@ -65,7 +68,7 @@ const Posts = () => {
 
         fetchPosts()
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user.token])
+    }, [user?.token])
 
     const fetchMorePosts = async (page) => {
         setLoading(true);
