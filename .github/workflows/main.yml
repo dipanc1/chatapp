@@ -36,9 +36,9 @@ jobs:
     steps:
     - name: SSH and deploy node app
       env:
-        SSH_PORT: ${{ secrets.SSH_PORT }}
-        SSH_KEY: ${{ secrets.SSH_KEY }}
-        SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
-        SSH_HOST: ${{ secrets.SSH_HOST }}
+        SSH_PORT: '${{ secrets.SSH_PORT }}'
+        SSH_KEY: '${{ secrets.SSH_KEY }}'
+        SSH_USERNAME: '${{ secrets.SSH_USERNAME }}'
+        SSH_HOST: '${{ secrets.SSH_HOST }}'
       run: |
         ssh -p "$env:SSH_PORT" -i "$env:SSH_KEY" "$env:SSH_USERNAME"@"$env:SSH_HOST" 'cd /var/www/backend && git pull origin dev && npm install && pm2 restart server.js'
