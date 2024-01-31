@@ -9,7 +9,7 @@
 #### need to add abhishek's id to send emails -- emailjs
 #### need twilio replacement for sending sms -- twilio
 
-#### decouple settings page from tabs and add loader 
+#### Fill constants file with all the constants -> texts, colors, images, urls, etc 
 #### add image while creating a group
 
 #### change folder name for each functionality
