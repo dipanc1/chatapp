@@ -17,6 +17,7 @@ const client = require("twilio")(accountSID, authToken);
 const Chat = require("../models/Chat");
 const User = require("../models/User");
 const EventTable = require("../models/EventTable");
+const Post = require("../models/Post");
 
 let refreshTokens = [];
 
@@ -246,7 +247,7 @@ router.get("/check-online/:id", protect, async (req, res) => {
     }
 });
 
-// search query for users and groups excluding user logged in
+// search query for users and groups excluding user logged in, events and posts
 router.get("/", protect, async (req, res) => {
     const query = req.query.search;
     const limit = LIMIT;
@@ -265,10 +266,15 @@ router.get("/", protect, async (req, res) => {
             $or: [{ name: { $regex: query, $options: "i" } }]
         }).limit(limit);
 
+        const posts = await Post.find({
+            $or: [{ title: { $regex: query, $options: "i" } }]
+        }).limit(limit);
+
         res.status(200).json({
-            users: users,
-            groups: groups,
-            events: events
+            users,
+            groups,
+            events,
+            posts
         });
 
     } catch (err) {
