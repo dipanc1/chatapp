@@ -13,7 +13,7 @@ const JoinGroup = () => {
       const getGroupDetails = async () => {
         const { data } = await conversationApi.getConversationDetailWithEncryptedUrl(groupId)
 
-        setGroupDetails(data)
+        setGroupDetails(data.chat)
 
       };
       getGroupDetails();

@@ -5,7 +5,7 @@ import axios from 'axios';
 import { AppContext } from '../context/AppContext';
 import { Link, useMatch } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
-import { api_key, backend_url, pictureUpload, folder } from '../utils';
+import { api_key, pictureUpload, folder } from '../utils';
 import {
     Flex,
     Box,
@@ -189,7 +189,7 @@ const Register = () => {
                                         Authorization: `Bearer ${response.data.token}`,
                                     },
                                 };
-                                const userDetails = await axios.get(`${backend_url}/users/user-info`, config);
+                                const userDetails = await authApi.userInfo(config);
 
                                 const { data } = await conversationApi.addToGroup(
                                     { userId: userDetails.data._id, chatId: groupDetails.data._id },

@@ -339,7 +339,7 @@ function Events() {
                 eventsList?.map((eventItem, index) => {
                   return (
                     <div key={index}>
-                      <EventCard key={eventItem._id} selectEvent={selectEvent} chatId={eventItem.chatId} index={index} id={eventItem._id} date={eventItem.date} time={eventItem.time} title={eventItem.name} description={eventItem.description} imageUrl={eventItem?.thumbnail} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} eventsPage={true} />
+                      <EventCard key={eventItem._id} selectEvent={selectEvent} chatId={eventItem.chatId._id} index={index} id={eventItem._id} date={eventItem.date} time={eventItem.time} title={eventItem.name} description={eventItem.description} imageUrl={eventItem?.thumbnail} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} eventsPage={true} />
                     </div>
                   )
                 })

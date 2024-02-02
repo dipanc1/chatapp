@@ -189,5 +189,40 @@ router.get("/group/:chatId/:page/:limit", asyncHandler(async (req, res) => {
 }));
 
 
+// get all posts 
+router.get("/all/:page/:limit", asyncHandler(async (req, res) => {
+    const { page, limit } = req.params;
+    const skip = (page - 1) * limit;
+
+    try {
+        const posts = await Post.find().skip(skip).limit(limit).sort({ createdAt: -1 });
+        const totalCount = await Post.countDocuments();
+        const currentCount = posts.length;
+        const totalPages = Math.ceil(totalCount / limit);
+        const currentPage = parseInt(page);
+        const hasNextPage = currentPage < totalPages;
+        const hasPrevPage = currentPage > 1;
+
+        if (!posts) {
+            return res.status(404).send("No posts found")
+        }
+
+        res.status(200).json({
+            posts,
+            totalCount,
+            totalPages,
+            currentPage,
+            hasNextPage,
+            hasPrevPage,
+            currentCount
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(error)
+    }
+
+}));
+
+
 
 module.exports = router;

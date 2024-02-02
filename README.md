@@ -7,9 +7,9 @@
 
 #### cloudinary only whitelist our domain -- cloudinary
 #### need to add abhishek's id to send emails -- emailjs
-#### need twilio replacement for sending sms -- twilio
 
 #### Fill constants file with all the constants -> texts, colors, images, urls, etc 
+#### eslint and prettier setup
 #### add image while creating a group
 
 #### change folder name for each functionality

@@ -5,19 +5,18 @@ import {
     Spinner
 } from '@chakra-ui/react';
 
-import axios from 'axios';
 import Cookies from "universal-cookie";
 
 import Static from '../components/common/Static'
 import "./Settings.css"
 
-import { backend_url } from '../utils';
 import { SETTINGS_TABS } from '../constants';
 
 import MyDetails from '../components/Settings/MyDetails';
 import ChangePassword from '../components/Settings/ChangePassword';
 import Notifications from '../components/Settings/Notifications';
 import Help from '../components/Settings/Help';
+import authApi from '../services/apis/authApi';
 
 
 const Settings = () => {
@@ -31,7 +30,7 @@ const Settings = () => {
     const [number, setNumber] = useState("");
     const [pic, setPic] = useState("");
 
-    // Removing unused code can be found in commit -
+    // Removing unused code can be found in commit - 20057408402cc0d140c7b85efbde807d02b7a951
 
     useEffect(() => {
         const currentUserDetails = async () => {
@@ -43,7 +42,7 @@ const Settings = () => {
                         Authorization: `Bearer ${user.token}`,
                     },
                 };
-                const { data } = await axios.get(`${backend_url}/users/user-info`, config);
+                const { data } = await authApi.userInfo(config);
                 // console.log(data);
                 setUsername(data.username);
                 setNumber(data.number);

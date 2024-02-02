@@ -8,6 +8,7 @@ import { NotAllowedIcon, StarIcon } from '@chakra-ui/icons';
 import conversationApi from '../services/apis/conversationApi';
 import eventsApi from '../services/apis/eventsApi';
 import Cookies from "universal-cookie";
+import authApi from '../services/apis/authApi';
 
 const GroupsList = () => {
   const [userData, setUserData] = useState()
@@ -47,10 +48,7 @@ const GroupsList = () => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.get(
-        `${backend_url}/users?search=${e.target.value}`,
-        config
-      );
+      const { data } = await authApi.searchUser(search, config);
       setSearchResultsUsers(data.users);
       setSearching(false);
 
