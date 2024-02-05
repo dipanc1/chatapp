@@ -47,8 +47,10 @@ const PostsCard = ({ post, deletePost, editPost, loading, setLoading }) => {
                 />
             </Box>
             <Stack pt={10} align={'center'}>
-                <Heading fontSize={'2xl'} fontFamily={'body'} fontWeight={500}>
-                    {post.title.slice(0, 20)}
+                <Heading fontSize={
+                    post.title.length > 20 ? 'sm' : 'lg'
+                } fontFamily={'body'} fontWeight={500}>
+                    {post.title.slice(0, 30)}{post.title.length > 30 ? '...' : ''}
                 </Heading>
                 <Text fontWeight={800} fontSize={'md'}>
                     {post.description.slice(0, 30)}{post.description.length > 30 ? '...' : ''}
