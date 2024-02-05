@@ -36,7 +36,8 @@ router.get('/:id', protect, asyncHandler(async (req, res) => {
 // GET donation of an event
 router.get('/event/:id', asyncHandler(async (req, res) => {
     try {
-        const donation = await Donation.find({ event: req.params.id }).populate('donatedByAndAmount.user').populate('event');
+        Donation.collection.createIndex({ event: 1 });
+        const donation = await Donation.find({ event: req.params.id });
 
         res.status(200).json(donation);
     } catch (error) {
@@ -47,9 +48,11 @@ router.get('/event/:id', asyncHandler(async (req, res) => {
 // GET donation of a group
 router.get('/group/:id', asyncHandler(async (req, res) => {
     try {
+        EventTable.collection.createIndex({ chatId: 1 });
+        Donation.collection.createIndex({ event: 1 });
         const event = await EventTable.find({ chatId: req.params.id });
 
-        const donation = await Donation.find({ event: event }).populate('donatedByAndAmount.user').populate('event');
+        const donation = await Donation.find({ event: event });
 
         res.status(200).json(donation);
 

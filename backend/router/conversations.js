@@ -320,6 +320,7 @@ router.get("/all/:page", asyncHandler(async (req, res) => {
     const limit = LIMIT;
     const skip = (page - 1) * limit;
 
+    Chat.collection.createIndex({ isGroupChat: 1, isSuspended: 1, createdAt: -1 });
     let groups = await Chat.find({ isGroupChat: true, isSuspended: false })
         .populate("users", "-password")
         .populate("groupAdmin", "-password")

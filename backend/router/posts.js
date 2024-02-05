@@ -158,6 +158,7 @@ router.get("/group/:chatId/:page/:limit", asyncHandler(async (req, res) => {
     const skip = (page - 1) * limit;
 
     try {
+        Post.collection.createIndex({ chat: 1 });
         const posts = await Post.find({
             chat: chatId
         }).skip(skip).limit(limit).sort({ createdAt: -1 });
