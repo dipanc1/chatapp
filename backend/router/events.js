@@ -167,7 +167,6 @@ router.get("/all/:page", asyncHandler(async (req, res) => {
     const skip = (page - 1) * limit;
 
     try {
-        EventTable.collection.createIndex({ date: 1, isDisabled: 1 });
         const events = await EventTable.find({
             isDisabled: false,
             date: { $gte: new Date() }
