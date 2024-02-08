@@ -612,12 +612,12 @@ const Chatbox = ({ fetchAgain, setFetchAgain, getMeetingAndToken, meetingId }) =
     const donation = async () => {
       const { data } = await donationApi.getDonationOfAGroup(selectedChat?._id, config);
       if (data.length > 0) {
+        const peopleContributedId = new Set(data.flatMap(s => s.donatedByAndAmount.map(u => u.user)));
         const targetAmount = data.reduce((a, b) => a + b.targetAmount, 0);
         const currentAmount = data.reduce((a, b) => a + b.currentAmount, 0);
-        const peopleContributed = data.reduce((a, b) => a + b.donatedByAndAmount.length, 0);
         setTargetAmount(targetAmount);
         setCurrentAmount(currentAmount);
-        setPeopleContributed(peopleContributed);
+        setPeopleContributed(peopleContributedId.size);
       } else {
         setTargetAmount(0);
         setCurrentAmount(0);
