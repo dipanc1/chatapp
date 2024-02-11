@@ -52,7 +52,7 @@ router.get('/group/:id', asyncHandler(async (req, res) => {
         Donation.collection.createIndex({ event: 1 });
         const event = await EventTable.find({ chatId: req.params.id });
 
-        const donation = await Donation.find({ event: event });
+        const donation = await Donation.find({ event: event }).populate('event');
 
         res.status(200).json(donation);
 

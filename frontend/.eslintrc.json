@@ -5,7 +5,7 @@
     },
     "extends": [
         "airbnb",
-        "prettier"
+        "./prettierrc"
     ],
     "parserOptions": {
         "ecmaVersion": "latest",

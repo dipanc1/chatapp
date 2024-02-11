@@ -9,7 +9,6 @@
 #### need to add abhishek's id to send emails -- emailjs
 
 #### Fill constants file with all the constants -> texts, colors, images, urls, etc 
-#### eslint and prettier setup
 #### add image while creating a group
 
 #### change folder name for each functionality
