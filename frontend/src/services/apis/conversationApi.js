@@ -1,16 +1,15 @@
-import BaseApi from "./baseApi";
+import BaseApi from './baseApi';
 
 class ConversationApi extends BaseApi {
     constructor() {
         super();
-        this.baseURL += "/conversation";
+        this.baseURL += '/conversation';
     }
 
     getOneOnOne(data, config) {
         try {
             return this.get(`/one-on-one/${data}`, config);
-        }
-        catch (error) {
+        } catch (error) {
             console.log(error);
         }
     }
@@ -18,8 +17,7 @@ class ConversationApi extends BaseApi {
     getGroupChats(data, config) {
         try {
             return this.get(`/group-chats/${data}`, config);
-        }
-        catch (error) {
+        } catch (error) {
             console.log(error);
         }
     }
@@ -27,8 +25,7 @@ class ConversationApi extends BaseApi {
     getEncryptedChatUrl(data, config) {
         try {
             return this.get(`/encrypted/${data}`, config);
-        }
-        catch (error) {
+        } catch (error) {
             console.log(error);
         }
     }
@@ -36,15 +33,14 @@ class ConversationApi extends BaseApi {
     getConversationDetailWithEncryptedUrl(data) {
         try {
             return this.getWithoutAuth(`/encrypted/chat/${data}`);
-        }
-        catch (error) {
+        } catch (error) {
             console.log(error);
         }
     }
 
     accessConversation(data, config) {
         try {
-            return this.post("", data, config);
+            return this.post('', data, config);
         } catch (error) {
             console.log(error);
         }
@@ -60,7 +56,7 @@ class ConversationApi extends BaseApi {
 
     renameConversation(data, config) {
         try {
-            return this.put("/rename", data, config);
+            return this.put('/rename', data, config);
         } catch (error) {
             console.log(error);
         }
@@ -68,7 +64,7 @@ class ConversationApi extends BaseApi {
 
     createAGroup(data, config) {
         try {
-            return this.post("/group", data, config);
+            return this.post('/group', data, config);
         } catch (error) {
             console.log(error);
         }
@@ -76,7 +72,7 @@ class ConversationApi extends BaseApi {
 
     addToGroup(data, config) {
         try {
-            return this.put("/groupadd", data, config);
+            return this.put('/groupadd', data, config);
         } catch (error) {
             console.log(error);
         }
@@ -84,7 +80,7 @@ class ConversationApi extends BaseApi {
 
     removeFromGroup(data, config) {
         try {
-            return this.put("/groupremove", data, config);
+            return this.put('/groupremove', data, config);
         } catch (error) {
             console.log(error);
         }
@@ -92,7 +88,7 @@ class ConversationApi extends BaseApi {
 
     changeGroupAdmin(data, config) {
         try {
-            return this.put("/groupmakeadmin", data, config);
+            return this.put('/groupmakeadmin', data, config);
         } catch (error) {
             console.log(error);
         }
@@ -100,7 +96,7 @@ class ConversationApi extends BaseApi {
 
     suspendGroup(data, config) {
         try {
-            return this.put("/groupsuspend", data, config);
+            return this.put('/groupsuspend', data, config);
         } catch (error) {
             console.log(error);
         }
@@ -153,9 +149,7 @@ class ConversationApi extends BaseApi {
             console.log(error);
         }
     }
-
 }
-
 
 const conversationApi = new ConversationApi();
 

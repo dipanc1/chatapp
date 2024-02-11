@@ -1,8 +1,8 @@
-import React from "react";
-import { AppContext } from "../../context/AppContext";
-import Conversation from "../Miscellaneous/Conversation";
-import GroupChat from "../Miscellaneous/GroupChat";
-import GroupChatModal from "../UserModals/GroupChatModal";
+import React from 'react';
+import { AppContext } from '../../context/AppContext';
+import Conversation from '../Miscellaneous/Conversation';
+import GroupChat from '../Miscellaneous/GroupChat';
+import GroupChatModal from '../UserModals/GroupChatModal';
 import {
     Text,
     Spinner,
@@ -15,51 +15,64 @@ import {
     TabPanels,
     TabPanel,
     useColorMode,
-} from "@chakra-ui/react";
-import { AddIcon, RepeatIcon } from "@chakra-ui/icons";
-import InfiniteScroll from "react-infinite-scroll-component";
-import conversationApi from "../../services/apis/conversationApi";
-import { ONE } from "../../constants";
-import Cookies from "universal-cookie";
+} from '@chakra-ui/react';
+import { AddIcon, RepeatIcon } from '@chakra-ui/icons';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import conversationApi from '../../services/apis/conversationApi';
+import { ONE } from '../../constants';
+import Cookies from 'universal-cookie';
 
 export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
-    const { dispatch, chats, selectedChat, conversations, groupConversations, loading, userInfo } = React.useContext(AppContext);
+    const {
+        dispatch,
+        chats,
+        selectedChat,
+        conversations,
+        groupConversations,
+        loading,
+        userInfo,
+    } = React.useContext(AppContext);
 
     const [hasMoreGroupChats, setHasMoreGroupChats] = React.useState(true);
     const [groupChatsPage, setGroupChatsPage] = React.useState(2);
     const { colorMode } = useColorMode();
 
-    const [hasMoreOneOnOneChats, setHasMoreOneOnOneChats] = React.useState(true);
+    const [hasMoreOneOnOneChats, setHasMoreOneOnOneChats] =
+        React.useState(true);
     const [oneOnOneChatsPage, setOneOnOneChatsPage] = React.useState(2);
 
-
     const cookies = new Cookies();
-    const user = JSON.parse(localStorage.getItem('user')) || cookies.get("auth_token", { domain: ".fundsdome.com" });
+    const user =
+        JSON.parse(localStorage.getItem('user')) ||
+        cookies.get(
+            'auth_token',
+            { domain: '.fundsdome.com' || 'localhost' },
+            { path: '/' },
+        );
 
     const fetchOneOnOneChats = async () => {
         try {
             const config = {
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                     Authorization: `Bearer ${user.token}`,
                 },
             };
 
-            const { data } = await conversationApi.getOneOnOne(ONE, config)
+            const { data } = await conversationApi.getOneOnOne(ONE, config);
 
-            dispatch({ type: "SET_CONVERSATIONS", payload: data.chats });
+            dispatch({ type: 'SET_CONVERSATIONS', payload: data.chats });
             setHasMoreOneOnOneChats(data.hasMore);
 
             if (
                 !chats.find(
-                    (chat) => chat._id === data.chats.map((datas) => datas._id)
+                    (chat) => chat._id === data.chats.map((datas) => datas._id),
                 )
             ) {
-                dispatch({ type: "SET_CHATS", payload: data.chats });
+                dispatch({ type: 'SET_CHATS', payload: data.chats });
             }
-
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
     };
 
@@ -67,26 +80,26 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
         try {
             const config = {
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                     Authorization: `Bearer ${user.token}`,
                 },
             };
 
-            const { data } = await conversationApi.getGroupChats(ONE, config)
+            const { data } = await conversationApi.getGroupChats(ONE, config);
 
-            dispatch({ type: "SET_GROUP_CONVERSATIONS", payload: data.groups });
+            dispatch({ type: 'SET_GROUP_CONVERSATIONS', payload: data.groups });
             setHasMoreGroupChats(data.hasMore);
 
             if (
                 !chats.find(
-                    (chat) => chat._id === data.groups.map((datas) => datas._id)
+                    (chat) =>
+                        chat._id === data.groups.map((datas) => datas._id),
                 )
             ) {
-                dispatch({ type: "SET_CHATS", payload: data.groups });
+                dispatch({ type: 'SET_CHATS', payload: data.groups });
             }
-
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
     };
 
@@ -95,29 +108,31 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
         try {
             const config = {
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                     Authorization: `Bearer ${user.token}`,
                 },
             };
 
-            const { data } = await conversationApi.getOneOnOne(oneOnOneChatsPage, config);
+            const { data } = await conversationApi.getOneOnOne(
+                oneOnOneChatsPage,
+                config,
+            );
 
             dispatch({
-                type: "SET_CONVERSATIONS", payload:
-                    [...conversations, ...data.chats]
+                type: 'SET_CONVERSATIONS',
+                payload: [...conversations, ...data.chats],
             });
             setHasMoreOneOnOneChats(data.hasMore);
 
-
             if (
                 !chats.find(
-                    (chat) => chat._id === data.chats.map((datas) => datas._id)
+                    (chat) => chat._id === data.chats.map((datas) => datas._id),
                 )
             ) {
-                dispatch({ type: "SET_CHATS", payload: data.chats });
+                dispatch({ type: 'SET_CHATS', payload: data.chats });
             }
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
     };
 
@@ -126,34 +141,36 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
         try {
             const config = {
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                     Authorization: `Bearer ${user.token}`,
                 },
             };
 
-            const { data } = await conversationApi.getGroupChats(groupChatsPage, config);
+            const { data } = await conversationApi.getGroupChats(
+                groupChatsPage,
+                config,
+            );
 
             dispatch({
-                type: "SET_GROUP_CONVERSATIONS", payload:
-                    [...groupConversations, ...data.groups]
+                type: 'SET_GROUP_CONVERSATIONS',
+                payload: [...groupConversations, ...data.groups],
             });
             setHasMoreGroupChats(data.hasMore);
 
-
             if (
                 !chats.find(
-                    (chat) => chat._id === data.groups.map((datas) => datas._id)
+                    (chat) =>
+                        chat._id === data.groups.map((datas) => datas._id),
                 )
             ) {
-                dispatch({ type: "SET_CHATS", payload: data.groups });
+                dispatch({ type: 'SET_CHATS', payload: data.groups });
             }
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
     };
 
     React.useEffect(() => {
-
         fetchGroupChats();
         fetchOneOnOneChats();
         setOneOnOneChatsPage(2);
@@ -169,90 +186,105 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
 
     return (
         <>
-
-            <Tabs width="100%" display="flex" flexDirection="column">
+            <Tabs width='100%' display='flex' flexDirection='column'>
                 <TabList>
-                    <Tab flex="1" fontWeight="500">Users</Tab>
-                    <Tab flex="1" fontWeight="500">Groups</Tab>
+                    <Tab flex='1' fontWeight='500'>
+                        Users
+                    </Tab>
+                    <Tab flex='1' fontWeight='500'>
+                        Groups
+                    </Tab>
                 </TabList>
 
-                <TabPanels flex="1" overflow="auto">
-                    <TabPanel p="0">
+                <TabPanels flex='1' overflow='auto'>
+                    <TabPanel p='0'>
                         {loading ? (
                             <Box
-                                display={"flex"}
-                                alignItems={"center"}
-                                justifyContent={"center"}
+                                display={'flex'}
+                                alignItems={'center'}
+                                justifyContent={'center'}
                             >
                                 <Spinner
-                                    thickness="4px"
-                                    speed="0.45s"
-                                    emptyColor="gray.200"
-                                    color="buttonPrimaryColor"
-                                    size="xl"
+                                    thickness='4px'
+                                    speed='0.45s'
+                                    emptyColor='gray.200'
+                                    color='buttonPrimaryColor'
+                                    size='xl'
                                 />
                             </Box>
                         ) : (
-                            <Box pt="10px" id="scrollableDiv" style={{ height: "100%" }}>
+                            <Box
+                                pt='10px'
+                                id='scrollableDiv'
+                                style={{ height: '100%' }}
+                            >
                                 <InfiniteScroll
                                     dataLength={conversations.length}
                                     next={fetchMoreOneOnOneChats}
                                     hasMore={hasMoreOneOnOneChats}
-                                    loader={<Box
-                                        display={"flex"}
-                                        alignItems={"center"}
-                                        justifyContent={"center"}
-                                    >
-                                        <Spinner
-                                            thickness="4px"
-                                            speed="0.65s"
-                                            emptyColor="gray.200"
-                                            color="buttonPrimaryColor"
-                                            size="xl"
-                                        />
-                                    </Box>}
+                                    loader={
+                                        <Box
+                                            display={'flex'}
+                                            alignItems={'center'}
+                                            justifyContent={'center'}
+                                        >
+                                            <Spinner
+                                                thickness='4px'
+                                                speed='0.65s'
+                                                emptyColor='gray.200'
+                                                color='buttonPrimaryColor'
+                                                size='xl'
+                                            />
+                                        </Box>
+                                    }
                                     scrollThreshold={0.9}
-                                    height="100%"
+                                    height='100%'
                                     endMessage={
                                         <Box
-                                            display={"flex"}
-                                            alignItems={"center"}
-                                            justifyContent={"center"}
+                                            display={'flex'}
+                                            alignItems={'center'}
+                                            justifyContent={'center'}
                                         >
                                             <Text
-                                                color={"buttonPrimaryColor"}
-                                                fontSize={"lg"}
+                                                color={'buttonPrimaryColor'}
+                                                fontSize={'lg'}
                                             >
                                                 No More Chats
                                             </Text>
                                         </Box>
                                     }
-                                    scrollableTarget="scrollableDiv"
+                                    scrollableTarget='scrollableDiv'
                                 >
                                     {conversations.map((c) => (
                                         <Box
                                             _hover={{
-                                                background: `${colorMode === 'light' ? "selectPrimaryColor" : "#3f3f3f"}`,
+                                                background: `${colorMode === 'light' ? 'selectPrimaryColor' : '#3f3f3f'}`,
                                             }}
                                             bg={
                                                 selectedChat?._id === c._id
-                                                    ? `${colorMode === 'light' ? "selectPrimaryColor" : "#3f3f3f"}`
-                                                    : ""
+                                                    ? `${colorMode === 'light' ? 'selectPrimaryColor' : '#3f3f3f'}`
+                                                    : ''
                                             }
                                             p={2}
-                                            cursor={"pointer"}
-                                            borderBottom={colorMode === 'light' ? "1px solid #f5f5f7" : "1px solid #3b3b3b"}
+                                            cursor={'pointer'}
+                                            borderBottom={
+                                                colorMode === 'light'
+                                                    ? '1px solid #f5f5f7'
+                                                    : '1px solid #3b3b3b'
+                                            }
                                             maxW={'100%'}
-                                            m="0 10px"
+                                            m='0 10px'
                                             borderRadius='5px'
                                             overflowX={'hidden'}
                                             key={c._id}
-                                            _disabled={selectedChat?._id === c._id}
+                                            _disabled={
+                                                selectedChat?._id === c._id
+                                            }
                                             onClick={() => {
                                                 dispatch({
-                                                    type: "SET_SELECTED_CHAT",
+                                                    type: 'SET_SELECTED_CHAT',
                                                     payload: c,
-                                                })
+                                                });
                                             }}
                                         >
                                             <Conversation chat={c} />
@@ -260,28 +292,23 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                     ))}
                                 </InfiniteScroll>
                             </Box>
-                        )
-                        }
-                        {conversations.length === 0 &&
-                            !loading ? (
+                        )}
+                        {conversations.length === 0 && !loading ? (
                             <Box
-                                initial="hidden"
-                                animate="visible"
+                                initial='hidden'
+                                animate='visible'
                                 variants={variants1}
-                                display={"flex"}
-                                alignItems={"center"}
-                                justifyContent={"center"}
-                                flexDirection={"column"}
-                                my={"2"}
+                                display={'flex'}
+                                alignItems={'center'}
+                                justifyContent={'center'}
+                                flexDirection={'column'}
+                                my={'2'}
                             >
-                                <Image
-                                    src="./images/noconvo.png"
-                                    w={"28"}
-                                />
+                                <Image src='./images/noconvo.png' w={'28'} />
                                 <Text
-                                    cursor={"default"}
-                                    color={"buttonPrimaryColor"}
-                                    fontSize={"3xl"}
+                                    cursor={'default'}
+                                    color={'buttonPrimaryColor'}
+                                    fontSize={'3xl'}
                                 >
                                     No Conversations
                                 </Text>
@@ -289,12 +316,12 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                         ) : null}
                         <Box mt='20px' textAlign='center'>
                             <Button
-                                color={"#3CC4B7"}
+                                color={'#3CC4B7'}
                                 _hover={{ scale: 1.05 }}
-                                variant="outline"
-                                size={"xs"}
-                                cursor="pointer"
-                                mr={"2"}
+                                variant='outline'
+                                size={'xs'}
+                                cursor='pointer'
+                                mr={'2'}
                                 colorScheme='blue'
                                 onClick={() => {
                                     setFetchAgain(!fetchAgain);
@@ -307,78 +334,90 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                     <TabPanel p='0'>
                         {loading ? (
                             <Box
-                                display={"flex"}
-                                alignItems={"center"}
-                                justifyContent={"center"}
+                                display={'flex'}
+                                alignItems={'center'}
+                                justifyContent={'center'}
                             >
                                 <Spinner
-                                    thickness="4px"
-                                    speed="0.65s"
-                                    emptyColor="gray.200"
-                                    color="buttonPrimaryColor"
-                                    size="xl"
+                                    thickness='4px'
+                                    speed='0.65s'
+                                    emptyColor='gray.200'
+                                    color='buttonPrimaryColor'
+                                    size='xl'
                                 />
                             </Box>
                         ) : (
-                            <Box pt="10px" id="scrollableDiv" style={{ height: "100%" }}>
+                            <Box
+                                pt='10px'
+                                id='scrollableDiv'
+                                style={{ height: '100%' }}
+                            >
                                 <InfiniteScroll
                                     dataLength={groupConversations.length}
                                     next={fetchMoreGroupChats}
                                     hasMore={hasMoreGroupChats}
-                                    loader={<Box
-                                        display={"flex"}
-                                        alignItems={"center"}
-                                        justifyContent={"center"}
-                                    >
-                                        <Spinner
-                                            thickness="4px"
-                                            speed="0.65s"
-                                            emptyColor="gray.200"
-                                            color="buttonPrimaryColor"
-                                            size="xl"
-                                        />
-                                    </Box>}
+                                    loader={
+                                        <Box
+                                            display={'flex'}
+                                            alignItems={'center'}
+                                            justifyContent={'center'}
+                                        >
+                                            <Spinner
+                                                thickness='4px'
+                                                speed='0.65s'
+                                                emptyColor='gray.200'
+                                                color='buttonPrimaryColor'
+                                                size='xl'
+                                            />
+                                        </Box>
+                                    }
                                     scrollThreshold={0.9}
                                     height={300}
                                     endMessage={
                                         <Box
-                                            display={"flex"}
-                                            alignItems={"center"}
-                                            justifyContent={"center"}
+                                            display={'flex'}
+                                            alignItems={'center'}
+                                            justifyContent={'center'}
                                         >
                                             <Text
-                                                color={"buttonPrimaryColor"}
-                                                fontSize={"lg"}
+                                                color={'buttonPrimaryColor'}
+                                                fontSize={'lg'}
                                             >
                                                 No More Groups
                                             </Text>
                                         </Box>
                                     }
-                                    scrollableTarget="scrollableDiv"
+                                    scrollableTarget='scrollableDiv'
                                 >
                                     {groupConversations.map((c) => (
                                         <Box
                                             _hover={{
-                                                background: `${colorMode === 'light' ? "selectPrimaryColor" : "#3f3f3f"}`,
+                                                background: `${colorMode === 'light' ? 'selectPrimaryColor' : '#3f3f3f'}`,
                                             }}
                                             bg={
                                                 selectedChat?._id === c._id
-                                                    ? `${colorMode === 'light' ? "selectPrimaryColor" : "#3f3f3f"}`
-                                                    : ""
+                                                    ? `${colorMode === 'light' ? 'selectPrimaryColor' : '#3f3f3f'}`
+                                                    : ''
                                             }
                                             p={2}
-                                            cursor={"pointer"}
-                                            borderBottom={colorMode === 'light' ? "1px solid #f5f5f7" : "1px solid #3b3b3b"}
+                                            cursor={'pointer'}
+                                            borderBottom={
+                                                colorMode === 'light'
+                                                    ? '1px solid #f5f5f7'
+                                                    : '1px solid #3b3b3b'
+                                            }
                                             maxW={'100%'}
-                                            m="0 10px"
+                                            m='0 10px'
                                             borderRadius='5px'
                                             key={c._id}
-                                            _disabled={selectedChat?._id === c._id}
+                                            _disabled={
+                                                selectedChat?._id === c._id
+                                            }
                                             onClick={() => {
                                                 dispatch({
-                                                    type: "SET_SELECTED_CHAT",
+                                                    type: 'SET_SELECTED_CHAT',
                                                     payload: c,
-                                                })
+                                                });
                                             }}
                                         >
                                             <GroupChat chat={c} />
@@ -387,25 +426,21 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                 </InfiniteScroll>
                             </Box>
                         )}
-                        {groupConversations.length === 0 &&
-                            !loading ? (
+                        {groupConversations.length === 0 && !loading ? (
                             <Box
-                                initial="hidden"
-                                animate="visible"
+                                initial='hidden'
+                                animate='visible'
                                 variants={variants1}
-                                display={"flex"}
-                                alignItems={"center"}
-                                justifyContent={"center"}
-                                flexDirection={"column"}
+                                display={'flex'}
+                                alignItems={'center'}
+                                justifyContent={'center'}
+                                flexDirection={'column'}
                             >
-                                <Image
-                                    src="./images/groupchat.png"
-                                    w={"28"}
-                                />
+                                <Image src='./images/groupchat.png' w={'28'} />
                                 <Text
-                                    cursor={"default"}
-                                    color={"buttonPrimaryColor"}
-                                    fontSize={"3xl"}
+                                    cursor={'default'}
+                                    color={'buttonPrimaryColor'}
+                                    fontSize={'3xl'}
                                 >
                                     No Groups
                                 </Text>
@@ -415,14 +450,12 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                     setFetchAgain={setFetchAgain}
                                 >
                                     <Button
-                                        backgroundColor={
-                                            "buttonPrimaryColor"
-                                        }
-                                        color={"white"}
-                                        size={"lg"}
+                                        backgroundColor={'buttonPrimaryColor'}
+                                        color={'white'}
+                                        size={'lg'}
                                         _hover={{
-                                            bg: "backgroundColor",
-                                            color: "text",
+                                            bg: 'backgroundColor',
+                                            color: 'text',
                                         }}
                                     >
                                         Create
@@ -437,12 +470,12 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                                 setFetchAgain={setFetchAgain}
                             >
                                 <Button
-                                    color={"#3CC4B7"}
+                                    color={'#3CC4B7'}
                                     _hover={{ scale: 1.05 }}
-                                    variant="outline"
-                                    size={"xs"}
-                                    cursor="pointer"
-                                    mr={"2"}
+                                    variant='outline'
+                                    size={'xs'}
+                                    cursor='pointer'
+                                    mr={'2'}
                                     colorScheme='blue'
                                 >
                                     <AddIcon />
@@ -451,7 +484,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
                         </Box>
                     </TabPanel>
                 </TabPanels>
-            </Tabs >
+            </Tabs>
         </>
     );
 };
@@ -459,11 +492,7 @@ export const DrawerConversations = ({ fetchAgain, setFetchAgain }) => {
 const Conversations = ({ fetchAgain, setFetchAgain }) => {
     return (
         <>
-            <Box
-                bg={"whiteColor"}
-                display="flex"
-                width="100%"
-            >
+            <Box bg={'whiteColor'} display='flex' width='100%'>
                 <DrawerConversations
                     fetchAgain={fetchAgain}
                     setFetchAgain={setFetchAgain}

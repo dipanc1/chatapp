@@ -1,6 +1,14 @@
-import { Box, Button, Heading, Image, Stack, Text, useColorModeValue } from '@chakra-ui/react'
-import React from 'react'
-import PostModal from '../UserModals/PostModal'
+import {
+    Box,
+    Button,
+    Heading,
+    Image,
+    Stack,
+    Text,
+    useColorModeValue,
+} from '@chakra-ui/react';
+import React from 'react';
+import PostModal from '../UserModals/PostModal';
 
 const PostsCard = ({ post, deletePost, editPost, loading, setLoading }) => {
     return (
@@ -14,7 +22,8 @@ const PostsCard = ({ post, deletePost, editPost, loading, setLoading }) => {
             boxShadow={'2xl'}
             rounded={'lg'}
             pos={'relative'}
-            zIndex={1}>
+            zIndex={1}
+        >
             <Box
                 rounded={'lg'}
                 mt={-12}
@@ -36,27 +45,38 @@ const PostsCard = ({ post, deletePost, editPost, loading, setLoading }) => {
                     _after: {
                         filter: 'blur(20px)',
                     },
-                }}>
+                }}
+            >
                 <Image
                     rounded={'lg'}
                     height={230}
                     width={282}
                     objectFit={'cover'}
                     src={post.image}
-                    alt="#"
+                    alt='#'
                 />
             </Box>
             <Stack pt={10} align={'center'}>
-                <Heading fontSize={
-                    post.title.length > 20 ? 'sm' : 'lg'
-                } fontFamily={'body'} fontWeight={500}>
-                    {post.title.slice(0, 30)}{post.title.length > 30 ? '...' : ''}
+                <Heading
+                    fontSize={post.title.length > 20 ? 'sm' : 'lg'}
+                    fontFamily={'body'}
+                    fontWeight={500}
+                >
+                    {post.title.slice(0, 30)}
+                    {post.title.length > 30 ? '...' : ''}
                 </Heading>
                 <Text fontWeight={800} fontSize={'md'}>
-                    {post.description.slice(0, 30)}{post.description.length > 30 ? '...' : ''}
+                    {post.description.slice(0, 30)}
+                    {post.description.length > 30 ? '...' : ''}
                 </Text>
             </Stack>
-            <PostModal post={post} deletePost={deletePost} editPost={editPost} loading={loading} setLoading={setLoading}>
+            <PostModal
+                post={post}
+                deletePost={deletePost}
+                editPost={editPost}
+                loading={loading}
+                setLoading={setLoading}
+            >
                 <Button
                     w={'100%'}
                     mt={2}
@@ -66,12 +86,13 @@ const PostsCard = ({ post, deletePost, editPost, loading, setLoading }) => {
                     _hover={{
                         transform: 'translateY(-2px)',
                         boxShadow: 'lg',
-                    }}>
+                    }}
+                >
                     Edit
                 </Button>
             </PostModal>
         </Box>
-    )
-}
+    );
+};
 
-export default PostsCard
+export default PostsCard;

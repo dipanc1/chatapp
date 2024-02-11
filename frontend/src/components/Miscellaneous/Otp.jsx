@@ -1,8 +1,7 @@
-import { FormControl, PinInput, PinInputField } from '@chakra-ui/react'
-import React from 'react'
+import { FormControl, PinInput, PinInputField } from '@chakra-ui/react';
+import React from 'react';
 
 const Otp = ({ OTP, handleOtp }) => {
-
     return (
         <FormControl>
             <PinInput
@@ -18,7 +17,7 @@ const Otp = ({ OTP, handleOtp }) => {
                 <PinInputField />
             </PinInput>
         </FormControl>
-    )
-}
+    );
+};
 
-export default Otp
+export default Otp;

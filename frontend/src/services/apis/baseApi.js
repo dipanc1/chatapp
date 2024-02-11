@@ -1,7 +1,5 @@
-import axios from "axios";
-import { backend_url } from "../../utils";
-
-
+import axios from 'axios';
+import { backend_url } from '../../utils';
 
 export default class BaseApi {
     constructor() {
@@ -46,7 +44,7 @@ export default class BaseApi {
 
     sendOtpOnPhoneNumber(data) {
         try {
-            this.postWithoutAuth("/mobile", data);
+            this.postWithoutAuth('/mobile', data);
         } catch (error) {
             console.log(error);
         }
@@ -54,10 +52,9 @@ export default class BaseApi {
 
     verifyOtp(data) {
         try {
-            this.postWithoutAuth("/otp", data);
+            this.postWithoutAuth('/otp', data);
         } catch (error) {
             console.log(error);
         }
     }
-
-} 
+}

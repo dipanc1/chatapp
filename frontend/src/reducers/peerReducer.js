@@ -1,4 +1,8 @@
-import { ADD_PEER_STREAM, ADD_USER_ID, REMOVE_PEER_STREAM } from "./peerActions";
+import {
+    ADD_PEER_STREAM,
+    ADD_USER_ID,
+    REMOVE_PEER_STREAM,
+} from './peerActions';
 
 export const peerReducer = (state, action) => {
     switch (action.type) {
@@ -7,7 +11,7 @@ export const peerReducer = (state, action) => {
                 ...state,
                 [action.payload.peerId]: {
                     ...state[action.payload.peerId],
-                    stream: action.payload.stream
+                    stream: action.payload.stream,
                 },
             };
         case ADD_USER_ID:
@@ -15,7 +19,7 @@ export const peerReducer = (state, action) => {
                 ...state,
                 [action.payload.peerId]: {
                     ...state[action.payload.peerId],
-                    userId: action.payload.userId
+                    userId: action.payload.userId,
                 },
             };
         case REMOVE_PEER_STREAM:
@@ -23,7 +27,7 @@ export const peerReducer = (state, action) => {
                 ...state,
                 [action.payload.peerId]: {
                     ...state[action.payload.peerId],
-                    stream: undefined
+                    stream: undefined,
                 },
             };
         default:

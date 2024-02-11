@@ -1,10 +1,10 @@
-import React from 'react'
-import 'react-phone-number-input/style.css'
-import validator from 'validator'
+import React from 'react';
+import 'react-phone-number-input/style.css';
+import validator from 'validator';
 import axios from 'axios';
 import { AppContext } from '../context/AppContext';
 import { Link, useMatch } from 'react-router-dom';
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import { api_key, pictureUpload, folder } from '../utils';
 import {
     Flex,
@@ -27,34 +27,35 @@ import {
 } from '@chakra-ui/react';
 import { AiOutlineUser } from 'react-icons/ai';
 import { FiUpload } from 'react-icons/fi';
-import { ResendOTP } from "otp-input-react";
+import { ResendOTP } from 'otp-input-react';
 import PhoneNumber from '../components/Miscellaneous/PhoneNumber';
 import Otp from '../components/Miscellaneous/Otp';
 import Password from '../components/Miscellaneous/Password';
 import BaseApi from '../services/apis/baseApi';
 import authApi from '../services/apis/authApi';
-import Cookies from "universal-cookie";
+import Cookies from 'universal-cookie';
 import conversationApi from '../services/apis/conversationApi';
 
 const Register = () => {
-    const { dispatch, signature, timestamp, getCloudinarySignature } = React.useContext(AppContext);
+    const { dispatch, signature, timestamp, getCloudinarySignature } =
+        React.useContext(AppContext);
     const baseApi = new BaseApi();
     const cookies = new Cookies();
 
     const [verify, setVerify] = React.useState(false);
     const [otp, setOtp] = React.useState(false);
-    const [OTP, setOTP] = React.useState("");
+    const [OTP, setOTP] = React.useState('');
     const [username, setUsername] = React.useState('');
     const [number, setNumber] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [confirmPassword, setConfirmPassword] = React.useState('');
-    const [formhelpUsername, setFormhelpUsername] = React.useState('')
+    const [formhelpUsername, setFormhelpUsername] = React.useState('');
     const [selectedImage, setSelectedImage] = React.useState(null);
     const [loading, setLoading] = React.useState(false);
     const [matchPath, setMatchPath] = React.useState(false);
     const [groupDetails, setGroupDetails] = React.useState({});
 
-    let match = useMatch("/join-group/:groupId/register");
+    let match = useMatch('/join-group/:groupId/register');
 
     const number1 = React.useContext(AppContext);
     let navigate = useNavigate();
@@ -65,99 +66,107 @@ const Register = () => {
     const handleUsername = async (e) => {
         setUsername(e.target.value);
         if (e.target.value.length > 2 && e.target.value.length < 20) {
-            let response = await authApi.checkIfUserNameExists(e.target.value)
+            let response = await authApi.checkIfUserNameExists(e.target.value);
 
             if (response.data) {
-                setFormhelpUsername(response.data.message)
-            }
-            else {
-                setFormhelpUsername('')
+                setFormhelpUsername(response.data.message);
+            } else {
+                setFormhelpUsername('');
             }
         }
-
-    }
+    };
 
     const handlePassword = (e) => {
         setPassword(e.target.value);
-    }
+    };
 
     const handleConfirmPassword = (e) => {
         setConfirmPassword(e.target.value);
-    }
+    };
 
     const handleRegister = async (e) => {
         e.preventDefault();
-        setLoading(true)
+        setLoading(true);
         if (password !== confirmPassword) {
             toast({
-                title: "Error",
-                description: "Passwords do not match",
-                status: "error",
+                title: 'Error',
+                description: 'Passwords do not match',
+                status: 'error',
                 duration: 9000,
                 isClosable: true,
             });
-            return
+            return;
         } else {
             if (selectedImage === null) {
-                if (match && match.pattern.path === "/join-group/:groupId/register") {
+                if (
+                    match &&
+                    match.pattern.path === '/join-group/:groupId/register'
+                ) {
                     try {
                         const res = await authApi.register({
                             number1: number1,
                             username: username,
                             password: password,
-                            pic: null
+                            pic: null,
                         });
-                        const groupDetails = await conversationApi.getConversationDetailWithEncryptedUrl(match.params.groupId);
+                        const groupDetails =
+                            await conversationApi.getConversationDetailWithEncryptedUrl(
+                                match.params.groupId,
+                            );
 
                         const config = {
                             headers: {
-                                "Content-Type": "application/json",
+                                'Content-Type': 'application/json',
                                 Authorization: `Bearer ${res.data.token}`,
                             },
                         };
                         const { data } = await conversationApi.addToGroup(
-                            { userId: res.data._id, chatId: groupDetails.data._id },
-                            config
+                            {
+                                userId: res.data._id,
+                                chatId: groupDetails.data._id,
+                            },
+                            config,
                         );
 
-                        localStorage.setItem("user", JSON.stringify(res.data));
-                        cookies.set('auth_token', data.token);
+                        localStorage.setItem('user', JSON.stringify(res.data));
+                        cookies.set('auth_token', data.token, {
+                            domain: '.fundsdome.com' || 'localhost',
+                            path: '/',
+                        });
 
-                        navigate('/video-chat')
+                        navigate('/video-chat');
 
-                        setLoading(false)
+                        setLoading(false);
 
-                        dispatch({ type: 'SET_SELECTED_CHAT', payload: data })
+                        dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
                     } catch (error) {
-                        setLoading(false)
+                        setLoading(false);
                         toast({
-                            title: "Error",
-                            description: "Please enter valid details",
-                            status: "error",
+                            title: 'Error',
+                            description: 'Please enter valid details',
+                            status: 'error',
                             duration: 9000,
                             isClosable: true,
                         });
                     }
-
                 } else {
                     const res = await authApi.register({
-                        number1: { number: "911234567890" },
+                        number1: { number: '911234567890' },
                         username: username,
                         password: password,
-                        pic: null
+                        pic: null,
                     });
                     if (res.status === 200) {
-                        setLoading(false)
-                        localStorage.setItem("user", JSON.stringify(res.data));
+                        setLoading(false);
+                        localStorage.setItem('user', JSON.stringify(res.data));
                         cookies.set('auth_token', res.token);
                         navigate('/');
-                    }
-                    else {
-                        setLoading(false)
+                    } else {
+                        setLoading(false);
                         toast({
-                            title: "Error",
-                            description: "Please enter valid details",
-                            status: "error",
+                            title: 'Error',
+                            description: 'Please enter valid details',
+                            status: 'error',
                             duration: 9000,
                             isClosable: true,
                         });
@@ -165,117 +174,154 @@ const Register = () => {
                 }
             } else {
                 const formData = new FormData();
-                formData.append('api_key', api_key)
+                formData.append('api_key', api_key);
                 formData.append('file', selectedImage);
-                formData.append('folder', folder)
-                formData.append('timestamp', timestamp)
-                formData.append('signature', signature)
-                if (match && match.pattern.path === "/join-group/:groupId/register") {
-                    await axios.post(pictureUpload, formData)
-                        .then(async res => {
+                formData.append('folder', folder);
+                formData.append('timestamp', timestamp);
+                formData.append('signature', signature);
+                if (
+                    match &&
+                    match.pattern.path === '/join-group/:groupId/register'
+                ) {
+                    await axios
+                        .post(pictureUpload, formData)
+                        .then(async (res) => {
                             const response = await authApi.register({
                                 number1: number1,
                                 username: username,
                                 password: password,
-                                pic: res.data.secure_url
+                                pic: res.data.secure_url,
                             });
                             if (response.data) {
-                                setLoading(false)
-                                const groupDetails = await conversationApi.getConversationDetailWithEncryptedUrl(match.params.groupId);
+                                setLoading(false);
+                                const groupDetails =
+                                    await conversationApi.getConversationDetailWithEncryptedUrl(
+                                        match.params.groupId,
+                                    );
 
                                 const config = {
                                     headers: {
-                                        "Content-Type": "application/json",
+                                        'Content-Type': 'application/json',
                                         Authorization: `Bearer ${response.data.token}`,
                                     },
                                 };
-                                const userDetails = await authApi.userInfo(config);
+                                const userDetails =
+                                    await authApi.userInfo(config);
 
-                                const { data } = await conversationApi.addToGroup(
-                                    { userId: userDetails.data._id, chatId: groupDetails.data._id },
-                                    config
+                                const { data } =
+                                    await conversationApi.addToGroup(
+                                        {
+                                            userId: userDetails.data._id,
+                                            chatId: groupDetails.data._id,
+                                        },
+                                        config,
+                                    );
+
+                                localStorage.setItem(
+                                    'user',
+                                    JSON.stringify(response.data),
                                 );
 
-                                localStorage.setItem("user", JSON.stringify(response.data));
+                                navigate('/video-chat');
 
-                                navigate('/video-chat')
-
-                                dispatch({ type: 'SET_SELECTED_CHAT', payload: data })
-                            }
-                            else {
-                                setLoading(false)
+                                dispatch({
+                                    type: 'SET_SELECTED_CHAT',
+                                    payload: data,
+                                });
+                            } else {
+                                setLoading(false);
                                 toast({
-                                    title: "Error",
-                                    description: "Please enter valid details",
-                                    status: "error",
+                                    title: 'Error',
+                                    description: 'Please enter valid details',
+                                    status: 'error',
                                     duration: 9000,
                                     isClosable: true,
                                 });
                             }
-                        })
-
+                        });
                 } else {
-                    await axios.post(pictureUpload, formData)
-                        .then(async res => {
+                    await axios
+                        .post(pictureUpload, formData)
+                        .then(async (res) => {
                             const response = await authApi.register({
                                 number1: number1,
                                 username: username,
                                 password: password,
-                                pic: res.data.secure_url
+                                pic: res.data.secure_url,
                             });
                             if (response.data) {
-                                setLoading(false)
-                                localStorage.setItem("user", JSON.stringify(response.data));
+                                setLoading(false);
+                                localStorage.setItem(
+                                    'user',
+                                    JSON.stringify(response.data),
+                                );
                                 navigate('/video-chat');
-                            }
-                            else {
-                                setLoading(false)
+                            } else {
+                                setLoading(false);
                                 toast({
-                                    title: "Error",
-                                    description: "Please enter valid details",
-                                    status: "error",
+                                    title: 'Error',
+                                    description: 'Please enter valid details',
+                                    status: 'error',
                                     duration: 9000,
                                     isClosable: true,
                                 });
                             }
                         })
-                        .catch(err => {
+                        .catch((err) => {
                             toast({
-                                title: "Error",
-                                description: "Server error",
-                                status: "error",
+                                title: 'Error',
+                                description: 'Server error',
+                                status: 'error',
                                 duration: 9000,
                                 isClosable: true,
                             });
-                        })
+                        });
                 }
             }
         }
-    }
+    };
 
     const imageChange = async (e) => {
         await getCloudinarySignature();
-        if (e.target.files && e.target.files.length > 0 && (e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/png')) {
+        if (
+            e.target.files &&
+            e.target.files.length > 0 &&
+            (e.target.files[0].type === 'image/jpeg' ||
+                e.target.files[0].type === 'image/png')
+        ) {
             setSelectedImage(e.target.files[0]);
         } else {
             toast({
-                title: "Error",
-                description: "Please select a valid image",
-                status: "error",
+                title: 'Error',
+                description: 'Please select a valid image',
+                status: 'error',
                 duration: 9000,
                 isClosable: true,
             });
         }
-    }
+    };
 
     const renderButton = (buttonProps) => {
-        return <Button mt={'3'} size="lg"
-            bg={'buttonPrimaryColor'}
-            color={'white'}
-            _hover={{
-                bg: 'backgroundColor',
-                color: 'text'
-            }} style={{ cursor: buttonProps.remainingTime !== 0 && 'not-allowed' }} {...buttonProps}>{buttonProps.remainingTime !== 0 ? `${buttonProps.remainingTime} seconds remaining` : "Resend"}</Button>;
+        return (
+            <Button
+                mt={'3'}
+                size='lg'
+                bg={'buttonPrimaryColor'}
+                color={'white'}
+                _hover={{
+                    bg: 'backgroundColor',
+                    color: 'text',
+                }}
+                style={{
+                    cursor: buttonProps.remainingTime !== 0 && 'not-allowed',
+                }}
+                {...buttonProps}
+            >
+                {buttonProps.remainingTime !== 0
+                    ? `${buttonProps.remainingTime} seconds remaining`
+                    : 'Resend'}
+            </Button>
+        );
     };
 
     const renderTime = () => React.Fragment;
@@ -283,42 +329,40 @@ const Register = () => {
     const handleVerify = async () => {
         if (number === '') {
             toast({
-                title: "Error",
-                description: "Please enter a valid phone number",
-                status: "error",
+                title: 'Error',
+                description: 'Please enter a valid phone number',
+                status: 'error',
                 duration: 9000,
                 isClosable: true,
             });
-            return
+            return;
         }
-        dispatch({ type: "SET_NUMBER", payload: number });
-        const isValidPhoneNumber = validator.isMobilePhone(number)
+        dispatch({ type: 'SET_NUMBER', payload: number });
+        const isValidPhoneNumber = validator.isMobilePhone(number);
         if (isValidPhoneNumber) {
             const response = baseApi.sendOtpOnPhoneNumber({ number });
             if (response !== undefined && response.data) {
                 setVerify(false);
-                setNumber("");
-            }
-            else {
+                setNumber('');
+            } else {
                 toast({
-                    title: "Error",
-                    description: "Please enter valid phone number",
-                    status: "error",
+                    title: 'Error',
+                    description: 'Please enter valid phone number',
+                    status: 'error',
                     duration: 9000,
                     isClosable: true,
                 });
             }
-        }
-        else {
+        } else {
             toast({
-                title: "Error",
-                description: "Please enter valid phone number",
-                status: "error",
+                title: 'Error',
+                description: 'Please enter valid phone number',
+                status: 'error',
                 duration: 9000,
                 isClosable: true,
             });
         }
-    }
+    };
 
     const handleOtp = (OTP) => {
         setOTP(OTP);
@@ -327,45 +371,48 @@ const Register = () => {
             setTimeout(async () => {
                 const response = baseApi.verifyOtp({ OTP, number1 });
                 // console.log(res)
-                if (response.data.message === "Welcome") {
-                    setOtp(false)
+                if (response.data.message === 'Welcome') {
+                    setOtp(false);
                 } else {
                     setOtp(true);
                     toast({
-                        title: "Error",
-                        description: "Please enter valid OTP",
-                        status: "error",
+                        title: 'Error',
+                        description: 'Please enter valid OTP',
+                        status: 'error',
                         duration: 9000,
                         isClosable: true,
                     });
                 }
             }, 1000);
         }
-    }
+    };
 
     React.useEffect(() => {
-        if (match && match.pattern.path === "/join-group/:groupId/register") {
+        if (match && match.pattern.path === '/join-group/:groupId/register') {
             setMatchPath(true);
             try {
                 const getGroupDetails = async () => {
-                    const { data } = await conversationApi.getConversationDetailWithEncryptedUrl(match.params.groupId);
+                    const { data } =
+                        await conversationApi.getConversationDetailWithEncryptedUrl(
+                            match.params.groupId,
+                        );
 
-                    setGroupDetails(data)
-
+                    setGroupDetails(data);
                 };
                 getGroupDetails();
             } catch (error) {
                 console.log(error);
             }
         }
-    }, [match, match?.pattern.path])
+    }, [match, match?.pattern.path]);
 
     return (
         <Flex
             minH={'100vh'}
             align={'center'}
             justify={'center'}
-            bg={'backgroundColor'}>
+            bg={'backgroundColor'}
+        >
             <Box
                 display={'flex'}
                 maxW='800px'
@@ -385,29 +432,36 @@ const Register = () => {
                     flexShrink={'0'}
                 >
                     <Image
-                        src={'https://ik.imagekit.io/sahildhingra/new-user-vector.png'}
+                        src={
+                            'https://ik.imagekit.io/sahildhingra/new-user-vector.png'
+                        }
                     />
                 </Box>
-                <Box
-                    p='5'
-                    px='10'
-                    flex={'1'}
-                >
-                    {matchPath ? <Stack align={'center'}>
-                        <Heading fontSize={'4xl'}>{groupDetails?.groupAdmin?.username} invited you</Heading>
-                        <Text textAlign='center' pt='2' color={'greyTextColor'}>
-                            to join {groupDetails?.chatName}
-                        </Text>
-                        <Text pt='2' color={'greyTextColor'}>
-                            Enter phone number to create an account
-                        </Text>
-                    </Stack> :
+                <Box p='5' px='10' flex={'1'}>
+                    {matchPath ? (
+                        <Stack align={'center'}>
+                            <Heading fontSize={'4xl'}>
+                                {groupDetails?.groupAdmin?.username} invited you
+                            </Heading>
+                            <Text
+                                textAlign='center'
+                                pt='2'
+                                color={'greyTextColor'}
+                            >
+                                to join {groupDetails?.chatName}
+                            </Text>
+                            <Text pt='2' color={'greyTextColor'}>
+                                Enter phone number to create an account
+                            </Text>
+                        </Stack>
+                    ) : (
                         <Stack align={'center'}>
                             <Heading fontSize={'4xl'}>Get Started Now!</Heading>
                             <Text pt='2' color={'greyTextColor'}>
                                 Enter phone number to create an account
                             </Text>
-                        </Stack>}
+                        </Stack>
+                    )}
                     <Box
                         rounded={'lg'}
                         display={'flex'}
@@ -428,33 +482,49 @@ const Register = () => {
                             px='0'
                             w='100%'
                         >
-                            <Stack
-                                width='100%'
-                                spacing={10}>
+                            <Stack width='100%' spacing={10}>
                                 <form className='w-100'>
-                                    {verify &&
-                                        <PhoneNumber number={number} setNumber={setNumber} />
-                                    }
-                                    {!otp &&
-                                        <Flex justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
-
-                                            <Flex justifyContent={''} alignItems={'flex-end'} flexDirection={'row'}>
+                                    {verify && (
+                                        <PhoneNumber
+                                            number={number}
+                                            setNumber={setNumber}
+                                        />
+                                    )}
+                                    {!otp && (
+                                        <Flex
+                                            justifyContent={'center'}
+                                            alignItems={'center'}
+                                            flexDirection={'column'}
+                                        >
+                                            <Flex
+                                                justifyContent={''}
+                                                alignItems={'flex-end'}
+                                                flexDirection={'row'}
+                                            >
                                                 <Avatar
                                                     size={'xl'}
-                                                    src={selectedImage ? URL.createObjectURL(selectedImage) : ''}
+                                                    src={
+                                                        selectedImage
+                                                            ? URL.createObjectURL(
+                                                                  selectedImage,
+                                                              )
+                                                            : ''
+                                                    }
                                                     alt={'Avatar Alt'}
                                                 />
                                                 <IconButton
-                                                    aria-label="upload picture"
+                                                    aria-label='upload picture'
                                                     icon={<FiUpload />}
-                                                    onClick={() => fileInputRef.current.click()}
-                                                    size="xs"
-                                                    colorScheme="teal"
-                                                    variant="outline"
+                                                    onClick={() =>
+                                                        fileInputRef.current.click()
+                                                    }
+                                                    size='xs'
+                                                    colorScheme='teal'
+                                                    variant='outline'
                                                     mt={'3'}
                                                 />
                                                 <input
-                                                    type="file"
+                                                    type='file'
                                                     ref={fileInputRef}
                                                     onChange={imageChange}
                                                     style={{ display: 'none' }}
@@ -462,86 +532,140 @@ const Register = () => {
                                                 />
                                             </Flex>
 
-
-                                            <FormControl id="username" isRequired>
+                                            <FormControl
+                                                id='username'
+                                                isRequired
+                                            >
                                                 <FormLabel>User Name</FormLabel>
                                                 <InputGroup>
                                                     <InputLeftElement
                                                         pointerEvents='none'
-                                                        children={<AiOutlineUser color='greyTextColor' />}
+                                                        children={
+                                                            <AiOutlineUser color='greyTextColor' />
+                                                        }
                                                     />
                                                     <Input
-                                                        focusBorderColor={(username.length > 2 && formhelpUsername === "Username not available") ? '#FF4343' : '#9F85F7'}
-                                                        type="text" id="username"
+                                                        focusBorderColor={
+                                                            username.length >
+                                                                2 &&
+                                                            formhelpUsername ===
+                                                                'Username not available'
+                                                                ? '#FF4343'
+                                                                : '#9F85F7'
+                                                        }
+                                                        type='text'
+                                                        id='username'
                                                         name='username'
                                                         value={username}
                                                         placeholder='Enter User Name'
                                                         maxLength={20}
                                                         minLength={2}
-                                                        onChange={handleUsername}
+                                                        onChange={
+                                                            handleUsername
+                                                        }
                                                     />
                                                 </InputGroup>
-                                                {username.length > 2 && <FormHelperText>{formhelpUsername}</FormHelperText>}
+                                                {username.length > 2 && (
+                                                    <FormHelperText>
+                                                        {formhelpUsername}
+                                                    </FormHelperText>
+                                                )}
                                             </FormControl>
 
-                                            <Password password={password} confirmPassword={confirmPassword} handleConfirmPassword={handleConfirmPassword} handlePassword={handlePassword} />
-
+                                            <Password
+                                                password={password}
+                                                confirmPassword={
+                                                    confirmPassword
+                                                }
+                                                handleConfirmPassword={
+                                                    handleConfirmPassword
+                                                }
+                                                handlePassword={handlePassword}
+                                            />
                                         </Flex>
-                                    }
-                                    {(!verify && otp) &&
+                                    )}
+                                    {!verify && otp && (
                                         <>
-                                            <Otp OTP={OTP} handleOtp={handleOtp} />
-                                            <ResendOTP renderButton={renderButton} renderTime={renderTime} maxTime={120} onClick={handleVerify} />
-                                        </>
-
-                                    }
-                                    <Stack spacing={10} pt={8}>
-                                        {verify &&
-                                            <Button
-                                                type="submit"
+                                            <Otp
+                                                OTP={OTP}
+                                                handleOtp={handleOtp}
+                                            />
+                                            <ResendOTP
+                                                renderButton={renderButton}
+                                                renderTime={renderTime}
+                                                maxTime={120}
                                                 onClick={handleVerify}
-                                                loadingText={loading && "Submitting"}
-                                                size="lg"
-                                                bg={'buttonPrimaryColor'}
-                                                color={'white'}
-                                                _hover={{
-                                                    bg: 'backgroundColor',
-                                                    color: 'text'
-                                                }}>
-                                                Verify Phone Number
-                                            </Button>}
-
-                                        {!otp ?
+                                            />
+                                        </>
+                                    )}
+                                    <Stack spacing={10} pt={8}>
+                                        {verify && (
                                             <Button
-                                                type="submit"
-                                                onClick={handleRegister}
-                                                isDisabled={!(password === confirmPassword && username.length !== 0 && password.length >= 8) || loading}
-                                                isLoading={loading}
-                                                loadingText={"Registering"}
-                                                size="lg"
+                                                type='submit'
+                                                onClick={handleVerify}
+                                                loadingText={
+                                                    loading && 'Submitting'
+                                                }
+                                                size='lg'
                                                 bg={'buttonPrimaryColor'}
                                                 color={'white'}
                                                 _hover={{
                                                     bg: 'backgroundColor',
-                                                    color: 'text'
-                                                }}>
+                                                    color: 'text',
+                                                }}
+                                            >
+                                                Verify Phone Number
+                                            </Button>
+                                        )}
+
+                                        {!otp ? (
+                                            <Button
+                                                type='submit'
+                                                onClick={handleRegister}
+                                                isDisabled={
+                                                    !(
+                                                        password ===
+                                                            confirmPassword &&
+                                                        username.length !== 0 &&
+                                                        password.length >= 8
+                                                    ) || loading
+                                                }
+                                                isLoading={loading}
+                                                loadingText={'Registering'}
+                                                size='lg'
+                                                bg={'buttonPrimaryColor'}
+                                                color={'white'}
+                                                _hover={{
+                                                    bg: 'backgroundColor',
+                                                    color: 'text',
+                                                }}
+                                            >
                                                 Register
-                                            </Button> : null}
+                                            </Button>
+                                        ) : null}
                                     </Stack>
                                 </form>
                             </Stack>
                             <Stack direction={'row'} pt={10}>
                                 <Text>Already a user?</Text>
-                                <Link to={matchPath ? `/join-group/${match?.params.groupId}/login` : '/'}>
-                                    <Text color={'buttonPrimaryColor'}>Login</Text>
+                                <Link
+                                    to={
+                                        matchPath
+                                            ? `/join-group/${match?.params.groupId}/login`
+                                            : '/'
+                                    }
+                                >
+                                    <Text color={'buttonPrimaryColor'}>
+                                        Login
+                                    </Text>
                                 </Link>
                             </Stack>
                         </Box>
                     </Box>
                 </Box>
             </Box>
-        </Flex >
-    )
-}
+        </Flex>
+    );
+};
 
-export default Register
+export default Register;

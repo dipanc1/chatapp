@@ -1,15 +1,35 @@
-import { Box, Button, Divider, Flex, Heading, IconButton, Text, useDisclosure, useToast, VStack } from '@chakra-ui/react';
+import {
+    Box,
+    Button,
+    Divider,
+    Flex,
+    Heading,
+    IconButton,
+    Text,
+    useDisclosure,
+    useToast,
+    VStack,
+} from '@chakra-ui/react';
 import { useMeeting, useParticipant } from '@videosdk.live/react-sdk';
 import axios from 'axios';
-import React, { useContext, useEffect, useMemo, useRef } from 'react'
+import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import { AiOutlineCloseSquare } from 'react-icons/ai';
-import { BsCameraVideo, BsCameraVideoOff, BsFullscreen, BsFullscreenExit, BsMic, BsMicMute, BsRecordCircle, BsRecordCircleFill } from 'react-icons/bs';
+import {
+    BsCameraVideo,
+    BsCameraVideoOff,
+    BsFullscreen,
+    BsFullscreenExit,
+    BsMic,
+    BsMicMute,
+    BsRecordCircle,
+    BsRecordCircleFill,
+} from 'react-icons/bs';
 import ReactPlayer from 'react-player';
 import { AppContext } from '../../context/AppContext';
 import { backend_url } from '../../utils';
 import useSound from 'use-sound';
 import joinSound from '../../sounds/join.mp3';
-import Cookies from "universal-cookie";
+import Cookies from 'universal-cookie';
 import leaveSound from '../../sounds/leave.mp3';
 import { MembersComponent } from '../UserChat/Members';
 import EndLeaveModal from '../UserModals/EndLeaveModal';
@@ -36,23 +56,23 @@ const IconButtonGeneric = ({ icon, onClick, color, size, display }) => {
             size={size}
             display={display}
         />
-    )
-}
+    );
+};
 
 function VideoComponent(props) {
     const { fullScreen } = useContext(AppContext);
     // console.log("Participants ID ::: >>>", props.participantId);
     const micRef = useRef(null);
 
-    const { isLocal, webcamStream, micStream, webcamOn, micOn } = useParticipant(
-        props.participantId, {
-        onStreamEnabled: (stream) => {
-            // console.log('stream enabled', stream);
-        },
-        onStreamDisabled: (stream) => {
-            // console.log('stream disabled', stream);
-        }
-    });
+    const { isLocal, webcamStream, micStream, webcamOn, micOn } =
+        useParticipant(props.participantId, {
+            onStreamEnabled: (stream) => {
+                // console.log('stream enabled', stream);
+            },
+            onStreamDisabled: (stream) => {
+                // console.log('stream disabled', stream);
+            },
+        });
 
     const videoStream = useMemo(() => {
         if (webcamOn) {
@@ -72,7 +92,7 @@ function VideoComponent(props) {
                 micRef.current
                     .play()
                     .catch((error) =>
-                        console.error("videoElem.current.play() failed", error)
+                        console.error('videoElem.current.play() failed', error),
                     );
             } else {
                 micRef.current.srcObject = null;
@@ -83,7 +103,9 @@ function VideoComponent(props) {
     return (
         <div key={props.participantId}>
             <Box>
-                {micOn && micRef && <audio ref={micRef} autoPlay muted={isLocal} />}
+                {micOn && micRef && (
+                    <audio ref={micRef} autoPlay muted={isLocal} />
+                )}
                 {webcamOn && (
                     <ReactPlayer
                         playsinline // very very imp prop
@@ -93,11 +115,11 @@ function VideoComponent(props) {
                         muted={true}
                         playing={true}
                         url={videoStream}
-                        height={fullScreen ? "70vh" : '30vh'}
-                        width={"100%"}
+                        height={fullScreen ? '70vh' : '30vh'}
+                        width={'100%'}
                         style={videoPlayerStyle}
                         onError={(err) => {
-                            console.log("participant video error");
+                            console.log('participant video error');
                         }}
                     />
                 )}
@@ -110,8 +132,8 @@ function Controls({ admin, user, selectedChat, toast }) {
     let timeOutId;
     const { dispatch, fullScreen } = useContext(AppContext);
 
-    const { isOpen, onOpen, onClose } = useDisclosure()
-    const cancelRef = React.useRef()
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const cancelRef = React.useRef();
 
     const [micOn, setMicOn] = React.useState(true);
     const [webcamOn, setWebcamOn] = React.useState(false);
@@ -122,13 +144,20 @@ function Controls({ admin, user, selectedChat, toast }) {
     const [play] = useSound(joinSound);
     const [playLeave] = useSound(leaveSound);
 
-    const { leave, toggleMic, toggleWebcam, end, startRecording, stopRecording } = useMeeting({
+    const {
+        leave,
+        toggleMic,
+        toggleWebcam,
+        end,
+        startRecording,
+        stopRecording,
+    } = useMeeting({
         onParticipantJoined: (participant) => {
             play();
             toast({
-                title: "Participant Joined",
-                description: participant.displayName + " joined the meeting",
-                status: "success",
+                title: 'Participant Joined',
+                description: participant.displayName + ' joined the meeting',
+                status: 'success',
                 duration: 3000,
                 isClosable: true,
             });
@@ -141,9 +170,9 @@ function Controls({ admin, user, selectedChat, toast }) {
         onParticipantLeft: (participant) => {
             playLeave();
             toast({
-                title: "Participant Left",
-                description: participant.displayName + " left the meeting",
-                status: "error",
+                title: 'Participant Left',
+                description: participant.displayName + ' left the meeting',
+                status: 'error',
                 duration: 3000,
                 isClosable: true,
             });
@@ -154,42 +183,41 @@ function Controls({ admin, user, selectedChat, toast }) {
                     endStream();
                 }, 600000);
             }
-
         },
         onRecordingStarted: () => {
             toast({
-                title: "Recording Started",
-                description: "Recording has been started",
-                status: "success",
+                title: 'Recording Started',
+                description: 'Recording has been started',
+                status: 'success',
                 duration: 3000,
                 isClosable: true,
             });
         },
         onRecordingStopped: () => {
             toast({
-                title: "Recording Stopped",
-                description: "Recording has been stopped",
-                status: "error",
+                title: 'Recording Stopped',
+                description: 'Recording has been stopped',
+                status: 'error',
                 duration: 3000,
                 isClosable: true,
             });
-        }
+        },
     });
 
     const micToggle = () => {
         toggleMic();
         setMicOn(!micOn);
-    }
+    };
 
     const webcamToggle = () => {
         toggleWebcam();
         setWebcamOn(!webcamOn);
-    }
+    };
 
     const fullscreenToggle = () => {
         setFullscreenOn(!fullscreenOn);
-        dispatch({ type: "SET_FULLSCREEN" });
-    }
+        dispatch({ type: 'SET_FULLSCREEN' });
+    };
 
     const endStream = async () => {
         end();
@@ -198,60 +226,66 @@ function Controls({ admin, user, selectedChat, toast }) {
             const config = {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user.token}`
-                }
-            }
+                    Authorization: `Bearer ${user.token}`,
+                },
+            };
             const data = {
-                chatId: selectedChat._id
-            }
-            const result = await axios.put(`${backend_url}/conversation/stop-stream`, { data }, config);
+                chatId: selectedChat._id,
+            };
+            const result = await axios.put(
+                `${backend_url}/conversation/stop-stream`,
+                { data },
+                config,
+            );
             // console.warn(result, "result");
             if (result) {
-                dispatch({ type: "SET_STREAM", payload: false });
+                dispatch({ type: 'SET_STREAM', payload: false });
                 window.location.reload();
             } else {
                 toast({
-                    title: "Error",
-                    description: "Something went wrong",
-                    status: "error",
+                    title: 'Error',
+                    description: 'Something went wrong',
+                    status: 'error',
                     duration: 3000,
                     isClosable: true,
                 });
             }
-
         } catch (error) {
             toast({
-                title: "Error",
-                description: "Something went wrong",
-                status: "error",
+                title: 'Error',
+                description: 'Something went wrong',
+                status: 'error',
                 duration: 3000,
                 isClosable: true,
             });
         }
-    }
+    };
 
     const leaveStream = () => {
         leave();
-        dispatch({ type: "SET_STREAM", payload: false });
+        dispatch({ type: 'SET_STREAM', payload: false });
         window.location.reload();
-    }
+    };
 
     const recordingStart = () => {
         startRecording();
         setStartRecordingState(true);
-    }
+    };
 
     const recordingStop = () => {
         stopRecording();
         setStartRecordingState(false);
-    }
-
+    };
 
     return (
-        <Flex width={'100%'} justify={'space-between'} pt={'5'} flexDirection={'row'}>
+        <Flex
+            width={'100%'}
+            justify={'space-between'}
+            pt={'5'}
+            flexDirection={'row'}
+        >
             <Flex width={'45%'} justify={'space-between'} flexDirection={'row'}>
-                {admin
-                    &&
+                {admin && (
                     <VStack>
                         <IconButtonGeneric
                             onClick={micToggle}
@@ -260,22 +294,33 @@ function Controls({ admin, user, selectedChat, toast }) {
                             size={'md'}
                             display={'flex'}
                         />
-                        <Text>
-                            {micOn ? 'Mic On' : 'Mic Off'}
-                        </Text>
-                    </VStack>}
+                        <Text>{micOn ? 'Mic On' : 'Mic Off'}</Text>
+                    </VStack>
+                )}
                 <VStack>
                     {admin ? (
                         <>
                             <IconButtonGeneric
-                                onClick={startRecordingState ? recordingStop : recordingStart}
+                                onClick={
+                                    startRecordingState
+                                        ? recordingStop
+                                        : recordingStart
+                                }
                                 color={'tomato'}
-                                icon={startRecordingState ? <BsRecordCircle /> : <BsRecordCircleFill />}
+                                icon={
+                                    startRecordingState ? (
+                                        <BsRecordCircle />
+                                    ) : (
+                                        <BsRecordCircleFill />
+                                    )
+                                }
                                 size={'md'}
                                 display={'flex'}
                             />
                             <Text>
-                                {startRecordingState ? 'Stop Recording' : 'Start Recording'}
+                                {startRecordingState
+                                    ? 'Stop Recording'
+                                    : 'Start Recording'}
                             </Text>
                         </>
                     ) : (
@@ -283,11 +328,20 @@ function Controls({ admin, user, selectedChat, toast }) {
                             <IconButtonGeneric
                                 onClick={fullscreenToggle}
                                 color={'tomato'}
-                                icon={fullscreenOn ? <BsFullscreen /> : <BsFullscreenExit />}
+                                icon={
+                                    fullscreenOn ? (
+                                        <BsFullscreen />
+                                    ) : (
+                                        <BsFullscreenExit />
+                                    )
+                                }
                                 size={fullScreen ? 'md' : 'sm'}
                                 display={['flex', 'none', 'none', 'none']}
                             />
-                            <Text display={['block', 'none', 'none', 'none']} fontSize={fullScreen ? '15' : '7'}>
+                            <Text
+                                display={['block', 'none', 'none', 'none']}
+                                fontSize={fullScreen ? '15' : '7'}
+                            >
                                 {fullscreenOn ? 'Full Screen' : 'Fit Screen'}
                             </Text>
                         </>
@@ -295,20 +349,24 @@ function Controls({ admin, user, selectedChat, toast }) {
                 </VStack>
             </Flex>
             <Flex width={'45%'} justify={'space-between'} flexDirection={'row'}>
-                {admin
-                    &&
+                {admin && (
                     <VStack>
                         <IconButtonGeneric
                             onClick={webcamToggle}
                             color={'buttonPrimaryColor'}
-                            icon={webcamOn ? <BsCameraVideo /> : <BsCameraVideoOff />}
+                            icon={
+                                webcamOn ? (
+                                    <BsCameraVideo />
+                                ) : (
+                                    <BsCameraVideoOff />
+                                )
+                            }
                             size={'md'}
                             display={'flex'}
                         />
-                        <Text>
-                            {webcamOn ? 'Webcam On' : 'Webcam Off'}
-                        </Text>
-                    </VStack>}
+                        <Text>{webcamOn ? 'Webcam On' : 'Webcam Off'}</Text>
+                    </VStack>
+                )}
                 <VStack>
                     <IconButtonGeneric
                         onClick={admin ? onOpen : leaveStream}
@@ -321,7 +379,6 @@ function Controls({ admin, user, selectedChat, toast }) {
                         {admin ? 'End' : 'Leave'}
                     </Text>
                 </VStack>
-
             </Flex>
 
             <EndLeaveModal
@@ -344,7 +401,13 @@ const Streaming = ({ admin, meetingId, setFetchAgain, fetchAgain, token }) => {
     // console.warn("Streaming which is container", meetingId);
 
     const cookies = new Cookies();
-    const user = JSON.parse(localStorage.getItem('user')) || cookies.get("auth_token", { domain: ".fundsdome.com" });
+    const user =
+        JSON.parse(localStorage.getItem('user')) ||
+        cookies.get(
+            'auth_token',
+            { domain: '.fundsdome.com' || 'localhost' },
+            { path: '/' },
+        );
     const { selectedChat, fullScreen } = useContext(AppContext);
 
     const [joined, setJoined] = React.useState(false);
@@ -360,24 +423,28 @@ const Streaming = ({ admin, meetingId, setFetchAgain, fetchAgain, token }) => {
 
         const data = {
             meetingId: meetingId,
-            chatId: selectedChat._id
-        }
+            chatId: selectedChat._id,
+        };
 
         try {
             const config = {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user.token}`
-                }
-            }
-            await axios.put(`${backend_url}/conversation/stream`, { data }, config);
+                    Authorization: `Bearer ${user.token}`,
+                },
+            };
+            await axios.put(
+                `${backend_url}/conversation/stream`,
+                { data },
+                config,
+            );
             // console.log(result);
         } catch (error) {
             // console.log(error);
             toast({
-                title: "Error",
-                description: "Something went wrong",
-                status: "error",
+                title: 'Error',
+                description: 'Something went wrong',
+                status: 'error',
                 duration: 3000,
                 isClosable: true,
             });
@@ -390,22 +457,25 @@ const Streaming = ({ admin, meetingId, setFetchAgain, fetchAgain, token }) => {
                 const config = {
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${user.token}`
-                    }
-                }
-                const { data } = await axios.get(`${backend_url}/conversation/streaming/${selectedChat._id}`, config);
+                        Authorization: `Bearer ${user.token}`,
+                    },
+                };
+                const { data } = await axios.get(
+                    `${backend_url}/conversation/streaming/${selectedChat._id}`,
+                    config,
+                );
                 if (data) {
-                    setMeetingIdExists(true)
+                    setMeetingIdExists(true);
                 } else {
                     setMeetingIdExists(false);
                 }
-            }
+            };
             checkStream();
         } catch (error) {
             toast({
-                title: "Error",
-                description: "Something went wrong",
-                status: "error",
+                title: 'Error',
+                description: 'Something went wrong',
+                status: 'error',
                 duration: 3000,
                 isClosable: true,
             });
@@ -430,64 +500,116 @@ const Streaming = ({ admin, meetingId, setFetchAgain, fetchAgain, token }) => {
                     bg={joined ? '' : 'whiteColor'}
                 >
                     {joined ? (
-                        <Box display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
+                        <Box
+                            display={'flex'}
+                            justifyContent={'center'}
+                            alignItems={'center'}
+                            flexDirection={'column'}
+                        >
                             <VStack>
-                                <Text>Group Name: {selectedChat?.chatName.toUpperCase()}</Text>
-                                <Text>Host: {selectedChat?.groupAdmin?.username}</Text>
+                                <Text>
+                                    Group Name:{' '}
+                                    {selectedChat?.chatName.toUpperCase()}
+                                </Text>
+                                <Text>
+                                    Host: {selectedChat?.groupAdmin?.username}
+                                </Text>
                             </VStack>
                             <Divider orientation='horizontal' />
                             {[...participants.keys()].map((participantId) => {
                                 return (
-                                    <VideoComponent admin={admin} participantId={participantId} />
-                                )
+                                    <VideoComponent
+                                        admin={admin}
+                                        participantId={participantId}
+                                    />
+                                );
                             })}
                             <Divider orientation='horizontal' />
-                            <Controls toast={toast} admin={admin} user={user} selectedChat={selectedChat} />
-                            {!fullScreen && <Box
-                                width={'100%'}
-                                bg={'whiteColor'}
-                                p={'1.5'}
-                                my={'5'}
-                                borderRadius={'xl'}
-                                display={['flex', 'none', 'none', 'none']}
-                                boxShadow={'dark-lg'}>
-
-                                <MembersComponent token={token} meetingId={meetingId} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
-
-                            </Box>}
+                            <Controls
+                                toast={toast}
+                                admin={admin}
+                                user={user}
+                                selectedChat={selectedChat}
+                            />
+                            {!fullScreen && (
+                                <Box
+                                    width={'100%'}
+                                    bg={'whiteColor'}
+                                    p={'1.5'}
+                                    my={'5'}
+                                    borderRadius={'xl'}
+                                    display={['flex', 'none', 'none', 'none']}
+                                    boxShadow={'dark-lg'}
+                                >
+                                    <MembersComponent
+                                        token={token}
+                                        meetingId={meetingId}
+                                        fetchAgain={fetchAgain}
+                                        setFetchAgain={setFetchAgain}
+                                    />
+                                </Box>
+                            )}
                         </Box>
                     ) : (
-                        <Box display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
-                            {(admin || meetingIdExists) ? (
+                        <Box
+                            display={'flex'}
+                            justifyContent={'center'}
+                            alignItems={'center'}
+                            flexDirection={'column'}
+                        >
+                            {admin || meetingIdExists ? (
                                 <>
                                     <Heading my={'5'}>
-                                        {!meetingIdExists ? 'Create the meeting for the Others to join' : 'Join the already going on meeting'}
+                                        {!meetingIdExists
+                                            ? 'Create the meeting for the Others to join'
+                                            : 'Join the already going on meeting'}
                                     </Heading>
-                                    <Button my={'5'} color={'whiteColor'} bg={'buttonPrimaryColor'} onClick={joinMeeting}>{!meetingIdExists ? 'Create Meeting' : 'Join Meeting'}</Button>
-                                    <Button color={'whiteColor'} bg={'errorColor'} onClick={() => {
-                                        window.location.reload();
-                                        setFetchAgain(true);
-                                    }}>Go to Home Page</Button>
+                                    <Button
+                                        my={'5'}
+                                        color={'whiteColor'}
+                                        bg={'buttonPrimaryColor'}
+                                        onClick={joinMeeting}
+                                    >
+                                        {!meetingIdExists
+                                            ? 'Create Meeting'
+                                            : 'Join Meeting'}
+                                    </Button>
+                                    <Button
+                                        color={'whiteColor'}
+                                        bg={'errorColor'}
+                                        onClick={() => {
+                                            window.location.reload();
+                                            setFetchAgain(true);
+                                        }}
+                                    >
+                                        Go to Home Page
+                                    </Button>
                                 </>
                             ) : (
                                 <>
                                     <Heading my={'5'}>
-                                        Waiting for the host to start the meeting
+                                        Waiting for the host to start the
+                                        meeting
                                     </Heading>
 
-                                    <Button color={'whiteColor'} bg={'errorColor'} onClick={() => {
-                                        window.location.reload();
-                                        setFetchAgain(true);
-                                    }}>Leave</Button>
+                                    <Button
+                                        color={'whiteColor'}
+                                        bg={'errorColor'}
+                                        onClick={() => {
+                                            window.location.reload();
+                                            setFetchAgain(true);
+                                        }}
+                                    >
+                                        Leave
+                                    </Button>
                                 </>
                             )}
-
-                        </Box>)
-                    }
+                        </Box>
+                    )}
                 </Box>
             </Box>
         </>
-    )
-}
+    );
+};
 
-export default Streaming
+export default Streaming;

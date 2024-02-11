@@ -1,9 +1,9 @@
-import BaseApi from "./baseApi";
+import BaseApi from './baseApi';
 
 class EventsApi extends BaseApi {
     constructor() {
         super();
-        this.baseURL += "/events";
+        this.baseURL += '/events';
     }
 
     editEvent(id, data, config) {
@@ -69,9 +69,7 @@ class EventsApi extends BaseApi {
             console.log(error);
         }
     }
-
 }
-
 
 const eventsApi = new EventsApi();
 

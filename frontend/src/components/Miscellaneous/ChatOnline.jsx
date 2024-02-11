@@ -1,5 +1,16 @@
 import { DeleteIcon } from '@chakra-ui/icons';
-import { AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Avatar, Box, Divider, Flex, Text, useDisclosure } from '@chakra-ui/react';
+import {
+    AccordionButton,
+    AccordionIcon,
+    AccordionItem,
+    AccordionPanel,
+    Avatar,
+    Box,
+    Divider,
+    Flex,
+    Text,
+    useDisclosure,
+} from '@chakra-ui/react';
 import { useContext, useRef } from 'react';
 import { BsPerson, BsTelephone } from 'react-icons/bs';
 import EndLeaveModal from '../UserModals/EndLeaveModal';
@@ -10,7 +21,11 @@ const ChatOnline = ({ stream, id, user1, handleFunction, admin }) => {
 
     const removeRef = useRef();
 
-    const { isOpen: isRemoveOpen, onOpen: onRemoveOpen, onClose: onRemoveClose } = useDisclosure();
+    const {
+        isOpen: isRemoveOpen,
+        onOpen: onRemoveOpen,
+        onClose: onRemoveClose,
+    } = useDisclosure();
 
     return (
         <>
@@ -20,13 +35,13 @@ const ChatOnline = ({ stream, id, user1, handleFunction, admin }) => {
                         backgroundColor={''}
                         borderTopRadius={'md'}
                         _expanded={{ bg: 'selectPrimaryColor' }}
-                        _hover={
-                            {
-                                backgroundColor: 'selectPrimaryColor',
-                                color: '#000',
-                                borderColor: '#000',
-                                cursor: 'pointer',
-                            }}>
+                        _hover={{
+                            backgroundColor: 'selectPrimaryColor',
+                            color: '#000',
+                            borderColor: '#000',
+                            cursor: 'pointer',
+                        }}
+                    >
                         <Box flex='1' textAlign='left'>
                             <Flex align={'center'}>
                                 <Avatar
@@ -42,34 +57,41 @@ const ChatOnline = ({ stream, id, user1, handleFunction, admin }) => {
                         <AccordionIcon />
                     </AccordionButton>
                 </h2>
-                <AccordionPanel borderBottomRadius={'md'}
+                <AccordionPanel
+                    borderBottomRadius={'md'}
                     bg={'selectPrimaryColor'}
                     pb={4}
                 >
-                    <Flex flexDir={'column'} alignItems={stream ? 'center' : ''}>
+                    <Flex
+                        flexDir={'column'}
+                        alignItems={stream ? 'center' : ''}
+                    >
                         <BsPerson />
-                        <Text as='samp'>
-                            {user1.username}
-                        </Text>
-                        {!stream &&
+                        <Text as='samp'>{user1.username}</Text>
+                        {!stream && (
                             <>
-                                <BsTelephone /><Text as='samp'>
-                                    +{user1.number}
-                                </Text>
+                                <BsTelephone />
+                                <Text as='samp'>+{user1.number}</Text>
                             </>
-                        }
+                        )}
 
-                        <Divider orientation='horizontal' color={'#000000'}
+                        <Divider
+                            orientation='horizontal'
+                            color={'#000000'}
                             my={'2'}
                         />
-                        {
-                            ((admin && user1.username !== userInfo.username) &&
-                                <>
-                                    <Text cursor={'pointer'} color={'errorColor'} as='samp' onClick={onRemoveOpen}>
-                                        <DeleteIcon />  Remove from group
-                                    </Text>
-                                </>)
-                        }
+                        {admin && user1.username !== userInfo.username && (
+                            <>
+                                <Text
+                                    cursor={'pointer'}
+                                    color={'errorColor'}
+                                    as='samp'
+                                    onClick={onRemoveOpen}
+                                >
+                                    <DeleteIcon /> Remove from group
+                                </Text>
+                            </>
+                        )}
                     </Flex>
                 </AccordionPanel>
             </AccordionItem>
@@ -88,7 +110,7 @@ const ChatOnline = ({ stream, id, user1, handleFunction, admin }) => {
                 isOpen={isRemoveOpen}
             />
         </>
-    )
-}
+    );
+};
 
-export default ChatOnline
+export default ChatOnline;

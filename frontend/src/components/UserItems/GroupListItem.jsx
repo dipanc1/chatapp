@@ -1,5 +1,5 @@
-import { Box, Text } from '@chakra-ui/react'
-import React from 'react'
+import { Box, Text } from '@chakra-ui/react';
+import React from 'react';
 
 const GroupListItem = ({ group }) => {
     return (
@@ -13,7 +13,7 @@ const GroupListItem = ({ group }) => {
             {/* will add image later */}
             <Text>{group.chatName}</Text>
         </Box>
-    )
-}
+    );
+};
 
-export default GroupListItem
+export default GroupListItem;

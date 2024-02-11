@@ -1,9 +1,9 @@
-import BaseApi from "./baseApi";
+import BaseApi from './baseApi';
 
 class PostApi extends BaseApi {
     constructor() {
         super();
-        this.baseURL += "/posts";
+        this.baseURL += '/posts';
     }
 
     createPost(chatId, data, config) {
@@ -37,9 +37,7 @@ class PostApi extends BaseApi {
             console.log(error);
         }
     }
-
 }
-
 
 const postApi = new PostApi();
 

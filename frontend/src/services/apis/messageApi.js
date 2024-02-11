@@ -1,15 +1,14 @@
-import BaseApi from "./baseApi";
+import BaseApi from './baseApi';
 
 class MessageApi extends BaseApi {
     constructor() {
         super();
-        this.baseURL += "/message";
+        this.baseURL += '/message';
     }
-
 
     sendMessage(data, config) {
         try {
-            return this.post("", data, config);
+            return this.post('', data, config);
         } catch (error) {
             console.log(error);
         }
@@ -38,9 +37,7 @@ class MessageApi extends BaseApi {
             console.log(error);
         }
     }
-
 }
-
 
 const messageApi = new MessageApi();
 

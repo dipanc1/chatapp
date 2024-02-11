@@ -1,6 +1,4 @@
-import {
-    ViewIcon
-} from '@chakra-ui/icons'
+import { ViewIcon } from '@chakra-ui/icons';
 import {
     IconButton,
     Modal,
@@ -13,22 +11,26 @@ import {
     useDisclosure,
     Image,
     Text,
-    Avatar
-} from '@chakra-ui/react'
+    Avatar,
+} from '@chakra-ui/react';
 import { useContext } from 'react';
-import { NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
 
 const ProfileModal = ({ children }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const { userInfo } = useContext(AppContext)
+    const { userInfo } = useContext(AppContext);
 
     return (
         <>
             {children ? (
                 <span onClick={onOpen}>{children}</span>
             ) : (
-                <IconButton d={{ base: "flex" }} icon={<ViewIcon />} onClick={onOpen} />
+                <IconButton
+                    d={{ base: 'flex' }}
+                    icon={<ViewIcon />}
+                    onClick={onOpen}
+                />
             )}
             <Modal
                 size={['xs', 'md', 'md', 'md']}
@@ -48,9 +50,9 @@ const ProfileModal = ({ children }) => {
                     boxShadow={'lg'}
                 >
                     <ModalHeader
-                        fontSize="30px"
-                        d="flex"
-                        justifyContent="center"
+                        fontSize='30px'
+                        d='flex'
+                        justifyContent='center'
                     >
                         {userInfo?.username}
                     </ModalHeader>
@@ -63,8 +65,8 @@ const ProfileModal = ({ children }) => {
                     >
                         {userInfo?.pic ? (
                             <Image
-                                borderRadius="full"
-                                boxSize="250px"
+                                borderRadius='full'
+                                boxSize='250px'
                                 objectFit='cover'
                                 src={userInfo?.pic}
                                 alt={userInfo?.name}
@@ -76,23 +78,25 @@ const ProfileModal = ({ children }) => {
                                 src={''}
                             />
                         )}
-                        <Text
-                            fontSize={{ md: "20px" }}
-                            mt={4}
-                        >
+                        <Text fontSize={{ md: '20px' }} mt={4}>
                             Phone Number: +{userInfo?.number}
                         </Text>
                     </ModalBody>
                     <ModalFooter>
-                        <NavLink className='btn btn-primary btn-sm' to='/settings' color={'white'} backgroundColor={'buttonPrimaryColor'} mr={3}>
+                        <NavLink
+                            className='btn btn-primary btn-sm'
+                            to='/settings'
+                            color={'white'}
+                            backgroundColor={'buttonPrimaryColor'}
+                            mr={3}
+                        >
                             Edit Profile
                         </NavLink>
                     </ModalFooter>
                 </ModalContent>
             </Modal>
-
         </>
-    )
-}
+    );
+};
 
-export default ProfileModal
+export default ProfileModal;

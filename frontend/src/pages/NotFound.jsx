@@ -3,17 +3,18 @@ import { Link } from 'react-router-dom';
 
 export default function NotFound() {
     return (
-        <Box textAlign="center" py={'56'}>
+        <Box textAlign='center' py={'56'}>
             <Heading
-                display="inline-block"
-                as="h2"
-                size="2xl"
+                display='inline-block'
+                as='h2'
+                size='2xl'
                 bg={'buttonPrimaryColor'}
                 color={'white'}
-                backgroundClip="text">
+                backgroundClip='text'
+            >
                 404
             </Heading>
-            <Text fontSize="18px" mt={3} mb={2}>
+            <Text fontSize='18px' mt={3} mb={2}>
                 Page Not Found
             </Text>
             <Text color={'gray.500'} mb={6}>
@@ -25,12 +26,11 @@ export default function NotFound() {
                 color={'white'}
                 _hover={{
                     bg: 'backgroundColor',
-                    color: 'text'
+                    color: 'text',
                 }}
-                variant="solid">
-                <Link to="/">
-                    Go to Home
-                </Link>
+                variant='solid'
+            >
+                <Link to='/'>Go to Home</Link>
             </Button>
         </Box>
     );

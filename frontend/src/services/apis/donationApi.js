@@ -1,15 +1,14 @@
-import BaseApi from "./baseApi";
+import BaseApi from './baseApi';
 
 class DonationApi extends BaseApi {
     constructor() {
         super();
-        this.baseURL += "/donations";
+        this.baseURL += '/donations';
     }
-
 
     startDonation(data, config) {
         try {
-            return this.post("", data, config);
+            return this.post('', data, config);
         } catch (error) {
             console.log(error);
         }
@@ -38,9 +37,7 @@ class DonationApi extends BaseApi {
             console.log(error);
         }
     }
-
 }
-
 
 const donationApi = new DonationApi();
 

@@ -1,74 +1,74 @@
 const AppReducer = (state, action) => {
     switch (action.type) {
-        case "SET_NUMBER":
+        case 'SET_NUMBER':
             return {
                 ...state,
-                number: action.payload
+                number: action.payload,
             };
-        case "SET_SELECTED_CHAT":
+        case 'SET_SELECTED_CHAT':
             return {
                 ...state,
-                selectedChat: action.payload
+                selectedChat: action.payload,
             };
-        case "SET_CHATS":
+        case 'SET_CHATS':
             return {
                 ...state,
-                chats: action.payload
+                chats: action.payload,
             };
-        case "SET_NOTIFICATION":
+        case 'SET_NOTIFICATION':
             return {
                 ...state,
-                notification: action.payload
+                notification: action.payload,
             };
-        case "SET_STREAM":
+        case 'SET_STREAM':
             return {
                 ...state,
-                stream: !state.stream
+                stream: !state.stream,
             };
-        case "SET_FULLSCREEN":
+        case 'SET_FULLSCREEN':
             return {
                 ...state,
-                fullScreen: !state.fullScreen
+                fullScreen: !state.fullScreen,
             };
-        case "SET_CONVERSATIONS":
+        case 'SET_CONVERSATIONS':
             return {
                 ...state,
-                conversations: action.payload
+                conversations: action.payload,
             };
-        case "SET_GROUP_CONVERSATIONS":
+        case 'SET_GROUP_CONVERSATIONS':
             return {
                 ...state,
-                groupConversations: action.payload
+                groupConversations: action.payload,
             };
-        case "SET_LOADING":
+        case 'SET_LOADING':
             return {
                 ...state,
-                loading: action.payload
+                loading: action.payload,
             };
-        case "SET_USER_INFO":
+        case 'SET_USER_INFO':
             return {
                 ...state,
-                userInfo: action.payload
+                userInfo: action.payload,
             };
-        case "SET_PUSH_NOTIFICATION":
+        case 'SET_PUSH_NOTIFICATION':
             return {
                 ...state,
-                pushNotification: !state.pushNotification
+                pushNotification: !state.pushNotification,
             };
-        case "SET_EVENT_INFO":
+        case 'SET_EVENT_INFO':
             return {
                 ...state,
-                eventInfo: action.payload
+                eventInfo: action.payload,
             };
-        case "SET_FETCH_GROUP_DONATIONS":
+        case 'SET_FETCH_GROUP_DONATIONS':
             return {
                 ...state,
-                fetchGroupDonations: !state.fetchGroupDonations
+                fetchGroupDonations: !state.fetchGroupDonations,
             };
-        case "SET_EVENTS":                  
+        case 'SET_EVENTS':
             return {
                 ...state,
-                events: action.payload
+                events: action.payload,
             };
         default:
             return state;

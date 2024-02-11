@@ -1,6 +1,6 @@
-import React from 'react'
-import { Link, useMatch } from 'react-router-dom'
-import { useNavigate } from "react-router-dom";
+import React from 'react';
+import { Link, useMatch } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
     Flex,
     Box,
@@ -17,7 +17,7 @@ import {
     InputRightElement,
     InputGroup,
     InputLeftElement,
-    Image
+    Image,
 } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { AiOutlineLock, AiOutlineUser } from 'react-icons/ai';
@@ -28,15 +28,15 @@ import { AppContext } from '../context/AppContext';
 import ReactGA from 'react-ga4';
 import authApi from '../services/apis/authApi';
 import conversationApi from '../services/apis/conversationApi';
-import Cookies from "universal-cookie";
-
+import Cookies from 'universal-cookie';
 
 const Login = () => {
-    const [username, setUsername] = React.useState('')
-    const [password, setPassword] = React.useState('')
-    const [forgetPasswordValue, setForgetPasswordValue] = React.useState('')
-    const [forgetConfirmPasswordValue, setForgetConfirmPasswordValue] = React.useState('')
-    const [disable, setDisable] = React.useState(false)
+    const [username, setUsername] = React.useState('');
+    const [password, setPassword] = React.useState('');
+    const [forgetPasswordValue, setForgetPasswordValue] = React.useState('');
+    const [forgetConfirmPasswordValue, setForgetConfirmPasswordValue] =
+        React.useState('');
+    const [disable, setDisable] = React.useState(false);
     const [showPassword, setShowPassword] = React.useState(false);
     const [forgetPassword, setForgetPassword] = React.useState(false);
     const [number, setNumber] = React.useState('');
@@ -44,137 +44,152 @@ const Login = () => {
     const [otpSent, setOtpSent] = React.useState(false);
     const [matchPath, setMatchPath] = React.useState(false);
 
-    const { dispatch } = React.useContext(AppContext)
-    const [groupDetails, setGroupDetails] = React.useState({})
+    const { dispatch } = React.useContext(AppContext);
+    const [groupDetails, setGroupDetails] = React.useState({});
 
     const cookies = new Cookies();
-    const user = JSON.parse(localStorage.getItem('user')) || cookies.get("auth_token", { domain: ".fundsdome.com" })
+    const user =
+        JSON.parse(localStorage.getItem('user')) ||
+        cookies.get(
+            'auth_token',
+            { domain: '.fundsdome.com' || 'localhost' },
+            { path: '/' },
+        );
 
     const toast = useToast();
 
     let navigate = useNavigate();
-    let match = useMatch("/join-group/:groupId/login");
+    let match = useMatch('/join-group/:groupId/login');
 
     const handleName = (e) => {
-        setUsername(e.target.value)
-    }
+        setUsername(e.target.value);
+    };
 
     const handlePassword = (e) => {
-        setPassword(e.target.value)
-    }
+        setPassword(e.target.value);
+    };
 
     const handleForgetPassword = () => {
-        setForgetPassword(!forgetPassword)
-    }
+        setForgetPassword(!forgetPassword);
+    };
 
     const handleOtp = (e) => {
-        setOTP(e)
-    }
+        setOTP(e);
+    };
 
     const handleForgetPasswordValue = (e) => {
-        setForgetPasswordValue(e.target.value)
-    }
+        setForgetPasswordValue(e.target.value);
+    };
 
     const handleForgetConfirmPasswordValue = (e) => {
-        setForgetConfirmPasswordValue(e.target.value)
-    }
+        setForgetConfirmPasswordValue(e.target.value);
+    };
 
     const handleVerify = async () => {
         if (number.length >= 10) {
-            const response = await authApi.forgotPasswordCheckPassword({ number: number });
+            const response = await authApi.forgotPasswordCheckPassword({
+                number: number,
+            });
             const { data } = response;
             if (response.status === 200) {
-                setOtpSent(true)
-            }
-            else {
+                setOtpSent(true);
+            } else {
                 toast({
-                    title: "Error",
+                    title: 'Error',
                     description: data.message,
-                    status: "error",
+                    status: 'error',
                     duration: 9000,
                     isClosable: true,
-                })
+                });
             }
-        }
-        else {
+        } else {
             toast({
-                title: "Invalid Number",
-                description: "Please enter a valid number",
-                status: "error",
+                title: 'Invalid Number',
+                description: 'Please enter a valid number',
+                status: 'error',
                 duration: 9000,
                 isClosable: true,
-            })
+            });
         }
-    }
+    };
 
     const handleResetPassword = async () => {
         if (forgetPasswordValue.length >= 8) {
-            const response = await authApi.forgotPasswordCheckOtpChangePassword({ number: number, otp: OTP, password: forgetPasswordValue });
+            const response = await authApi.forgotPasswordCheckOtpChangePassword(
+                { number: number, otp: OTP, password: forgetPasswordValue },
+            );
             const { data } = response;
             if (response.status === 200) {
                 toast({
-                    title: "Success",
-                    description: "Password reset successfully",
-                    status: "success",
+                    title: 'Success',
+                    description: 'Password reset successfully',
+                    status: 'success',
                     duration: 9000,
                     isClosable: true,
-                })
-                setOtpSent(false)
-                setForgetPassword(false)
-            }
-            else {
+                });
+                setOtpSent(false);
+                setForgetPassword(false);
+            } else {
                 toast({
-                    title: "Error",
+                    title: 'Error',
                     description: data.message,
-                    status: "error",
+                    status: 'error',
                     duration: 9000,
                     isClosable: true,
-                })
+                });
             }
-        }
-        else {
+        } else {
             toast({
-                title: "Error",
-                description: "Password must be atleast 8 characters long",
-                status: "error",
+                title: 'Error',
+                description: 'Password must be atleast 8 characters long',
+                status: 'error',
                 duration: 9000,
                 isClosable: true,
-            })
+            });
         }
-    }
+    };
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
+        e.preventDefault();
         const user = {
             username: username,
-            password: password
-        }
-        setDisable(true)
-        if (match && match.pattern.path === "/join-group/:groupId/login") {
+            password: password,
+        };
+        setDisable(true);
+        if (match && match.pattern.path === '/join-group/:groupId/login') {
             try {
                 const res = await authApi.login(user);
 
-                const groupDetails = await conversationApi.getConversationDetailWithEncryptedUrl(match.params.groupId);
+                const groupDetails =
+                    await conversationApi.getConversationDetailWithEncryptedUrl(
+                        match.params.groupId,
+                    );
 
                 const config = {
                     headers: {
-                        "Content-Type": "application/json",
+                        'Content-Type': 'application/json',
                         Authorization: `Bearer ${res.data.token}`,
                     },
                 };
                 const userDetails = await authApi.userInfo(config);
 
                 const { data } = await conversationApi.addToGroup(
-                    { userId: userDetails.data._id, chatId: groupDetails.data._id },
-                    config
+                    {
+                        userId: userDetails.data._id,
+                        chatId: groupDetails.data._id,
+                    },
+                    config,
                 );
 
-                localStorage.setItem("user", JSON.stringify(res.data));
-                cookies.set('auth_token', data.token);
+                localStorage.setItem('user', JSON.stringify(res.data));
+                cookies.set('auth_token', data.token, {
+                    domain: '.fundsdome.com' || 'localhost',
+                    path: '/',
+                });
                 dispatch({
-                    type: "SET_USER_INFO",
+                    type: 'SET_USER_INFO',
                     payload: userDetails.data,
-                })
+                });
 
                 ReactGA.event({
                     category: 'User',
@@ -182,74 +197,76 @@ const Login = () => {
                     label: 'User Logged In',
                 });
 
-                navigate('/video-chat')
+                navigate('/video-chat');
 
-                dispatch({ type: 'SET_SELECTED_CHAT', payload: data })
-                setDisable(false)
-
+                dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
+                setDisable(false);
             } catch (error) {
                 // console.log(error);
                 toast({
-                    title: "Invalid username or password",
-                    description: "Please try again",
-                    status: "error",
+                    title: 'Invalid username or password',
+                    description: 'Please try again',
+                    status: 'error',
                     duration: 9000,
                     isClosable: true,
                 });
-                setDisable(false)
-
+                setDisable(false);
             }
         } else {
             const response = await authApi.login(user);
             const { data } = response;
             if (response.status === 200) {
-                localStorage.setItem("user", JSON.stringify(data));
-                cookies.set('auth_token', data.token);
+                localStorage.setItem('user', JSON.stringify(data));
+                cookies.set('auth_token', data.token, {
+                    domain: '.fundsdome.com' || 'localhost',
+                    path: '/',
+                });
                 ReactGA.event({
                     category: 'User',
                     action: 'User Logged In',
                     label: 'User Logged In',
                 });
 
-                navigate('/video-chat')
-                setDisable(false)
+                navigate('/video-chat');
+                setDisable(false);
             } else {
                 toast({
-                    title: "Invalid username or password",
-                    description: "Please try again",
-                    status: "error",
+                    title: 'Invalid username or password',
+                    description: 'Please try again',
+                    status: 'error',
                     duration: 9000,
                     isClosable: true,
                 });
-                setDisable(false)
+                setDisable(false);
             }
         }
-    }
+    };
 
     React.useEffect(() => {
         if (user) {
             if (user.isSuperAdmin) {
-                navigate('/dashboard')
+                navigate('/dashboard');
             } else {
-                navigate('/video-chat')
+                navigate('/video-chat');
             }
         }
-        if (match && match.pattern.path === "/join-group/:groupId/login") {
+        if (match && match.pattern.path === '/join-group/:groupId/login') {
             setMatchPath(true);
             try {
                 const getGroupDetails = async () => {
-                    const { data } = await conversationApi.getConversationDetailWithEncryptedUrl(match.params.groupId);
+                    const { data } =
+                        await conversationApi.getConversationDetailWithEncryptedUrl(
+                            match.params.groupId,
+                        );
 
-                    setGroupDetails(data)
-
+                    setGroupDetails(data);
                 };
                 getGroupDetails();
             } catch (error) {
                 console.log(error);
             }
         }
-    }, [match, match?.pattern.path, navigate, user])
-
+    }, [match, match?.pattern.path, navigate, user]);
 
     return (
         <Flex
@@ -295,34 +312,57 @@ const Login = () => {
                 >
                     {forgetPassword ? (
                         <Image
-                            src={'https://ik.imagekit.io/sahildhingra/forgot-password-vector.png'}
+                            src={
+                                'https://ik.imagekit.io/sahildhingra/forgot-password-vector.png'
+                            }
                         />
                     ) : (
                         <Image
-                            src={'https://ik.imagekit.io/sahildhingra/signup-vector.png'}
+                            src={
+                                'https://ik.imagekit.io/sahildhingra/signup-vector.png'
+                            }
                         />
-                    )
-                    }
+                    )}
                 </Box>
-                <Box
-                    p='5'
-                    px='10'
-                    flex={'1'}
-                >
-                    {matchPath ? <Stack align={'center'}>
-                        <Heading fontSize={'4xl'}>{groupDetails?.groupAdmin?.username} invited you</Heading>
-                        <Text textAlign='center' pt='2' color={'greyTextColor'}>
-                            to join {groupDetails?.chatName}
-                        </Text>
-                        <Text textAlign='center'>
-                            with {groupDetails?.users?.length} other members
-                        </Text>
-                    </Stack> : <Stack align={'center'}>
-                        <Heading fontSize={'4xl'}>{forgetPassword ? (otpSent ? 'Enter OTP' : 'Forgot Password?') : 'Welcome Back!'}</Heading>
-                        <Text textAlign='center' pt='2' color={'greyTextColor'}>
-                            {forgetPassword ? (otpSent ? 'Enter Otp and New Password to reset the password' : 'No worries, Enter your registered mobile number to reset password') : 'Login to get access to chats and live streams'}
-                        </Text>
-                    </Stack>}
+                <Box p='5' px='10' flex={'1'}>
+                    {matchPath ? (
+                        <Stack align={'center'}>
+                            <Heading fontSize={'4xl'}>
+                                {groupDetails?.groupAdmin?.username} invited you
+                            </Heading>
+                            <Text
+                                textAlign='center'
+                                pt='2'
+                                color={'greyTextColor'}
+                            >
+                                to join {groupDetails?.chatName}
+                            </Text>
+                            <Text textAlign='center'>
+                                with {groupDetails?.users?.length} other members
+                            </Text>
+                        </Stack>
+                    ) : (
+                        <Stack align={'center'}>
+                            <Heading fontSize={'4xl'}>
+                                {forgetPassword
+                                    ? otpSent
+                                        ? 'Enter OTP'
+                                        : 'Forgot Password?'
+                                    : 'Welcome Back!'}
+                            </Heading>
+                            <Text
+                                textAlign='center'
+                                pt='2'
+                                color={'greyTextColor'}
+                            >
+                                {forgetPassword
+                                    ? otpSent
+                                        ? 'Enter Otp and New Password to reset the password'
+                                        : 'No worries, Enter your registered mobile number to reset password'
+                                    : 'Login to get access to chats and live streams'}
+                            </Text>
+                        </Stack>
+                    )}
                     <Box
                         rounded={'lg'}
                         display={'flex'}
@@ -336,26 +376,43 @@ const Login = () => {
                         <form className='w-100' onSubmit={handleSubmit}>
                             <Stack spacing={4}>
                                 {forgetPassword ? (
-                                    otpSent ?
+                                    otpSent ? (
                                         <>
-                                            <Otp OTP={OTP} handleOtp={handleOtp} />
-                                            <Password password={forgetPasswordValue} handlePassword={handleForgetPasswordValue}
-                                                confirmPassword={forgetConfirmPasswordValue}
-                                                handleConfirmPassword={handleForgetConfirmPasswordValue}
+                                            <Otp
+                                                OTP={OTP}
+                                                handleOtp={handleOtp}
+                                            />
+                                            <Password
+                                                password={forgetPasswordValue}
+                                                handlePassword={
+                                                    handleForgetPasswordValue
+                                                }
+                                                confirmPassword={
+                                                    forgetConfirmPasswordValue
+                                                }
+                                                handleConfirmPassword={
+                                                    handleForgetConfirmPasswordValue
+                                                }
                                             />
                                         </>
-                                        :
+                                    ) : (
                                         <>
-                                            <PhoneNumber number={number} setNumber={setNumber} />
+                                            <PhoneNumber
+                                                number={number}
+                                                setNumber={setNumber}
+                                            />
                                         </>
+                                    )
                                 ) : (
                                     <>
-                                        <FormControl id="email">
+                                        <FormControl id='email'>
                                             <FormLabel>Username</FormLabel>
                                             <InputGroup>
                                                 <InputLeftElement
                                                     pointerEvents='none'
-                                                    children={<AiOutlineUser color='greyTextColor' />}
+                                                    children={
+                                                        <AiOutlineUser color='greyTextColor' />
+                                                    }
                                                 />
                                                 <Input
                                                     value={username}
@@ -363,28 +420,48 @@ const Login = () => {
                                                     placeholder='Enter Your Username'
                                                     focusBorderColor='#9F85F7'
                                                     required
-                                                    onChange={handleName} />
+                                                    onChange={handleName}
+                                                />
                                             </InputGroup>
                                         </FormControl>
-                                        <FormControl id="password">
+                                        <FormControl id='password'>
                                             <FormLabel>Password</FormLabel>
                                             <InputGroup>
                                                 <InputLeftElement
                                                     pointerEvents='none'
-                                                    children={<AiOutlineLock color='greyTextColor' />}
+                                                    children={
+                                                        <AiOutlineLock color='greyTextColor' />
+                                                    }
                                                 />
                                                 <Input
-                                                    value={password} placeholder='Enter Password' required
+                                                    value={password}
+                                                    placeholder='Enter Password'
+                                                    required
                                                     onChange={handlePassword}
                                                     focusBorderColor='#9F85F7'
-                                                    type={showPassword ? 'text' : 'password'} />
+                                                    type={
+                                                        showPassword
+                                                            ? 'text'
+                                                            : 'password'
+                                                    }
+                                                />
                                                 <InputRightElement h={'full'}>
                                                     <Button
                                                         variant={'ghost'}
                                                         onClick={() =>
-                                                            setShowPassword((showPassword) => !showPassword)
-                                                        }>
-                                                        {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                                                            setShowPassword(
+                                                                (
+                                                                    showPassword,
+                                                                ) =>
+                                                                    !showPassword,
+                                                            )
+                                                        }
+                                                    >
+                                                        {showPassword ? (
+                                                            <ViewIcon />
+                                                        ) : (
+                                                            <ViewOffIcon />
+                                                        )}
                                                     </Button>
                                                 </InputRightElement>
                                             </InputGroup>
@@ -392,41 +469,70 @@ const Login = () => {
                                     </>
                                 )}
                                 <Stack spacing={10}>
-                                    {!forgetPassword &&
+                                    {!forgetPassword && (
                                         <Stack
-                                            direction={{ base: 'column', sm: 'row' }}
+                                            direction={{
+                                                base: 'column',
+                                                sm: 'row',
+                                            }}
                                             align={'start'}
-                                            justify={'space-between'}>
-                                            <Text onClick={handleForgetPassword} color={'buttonPrimaryColor'}>
-                                                <Link to={"# "}>
+                                            justify={'space-between'}
+                                        >
+                                            <Text
+                                                onClick={handleForgetPassword}
+                                                color={'buttonPrimaryColor'}
+                                            >
+                                                <Link to={'# '}>
                                                     Forgot Password?
                                                 </Link>
                                             </Text>
-                                        </Stack>}
+                                        </Stack>
+                                    )}
                                     <Button
-                                        onClick={forgetPassword ? (otpSent ? handleResetPassword : handleVerify) : null}
-                                        type={forgetPassword ? 'button' : 'submit'}
-                                        isDisabled={forgetPassword ? (forgetPasswordValue !== forgetConfirmPasswordValue) : (username.length === 0 || password.length === 0 || disable)}
+                                        onClick={
+                                            forgetPassword
+                                                ? otpSent
+                                                    ? handleResetPassword
+                                                    : handleVerify
+                                                : null
+                                        }
+                                        type={
+                                            forgetPassword ? 'button' : 'submit'
+                                        }
+                                        isDisabled={
+                                            forgetPassword
+                                                ? forgetPasswordValue !==
+                                                  forgetConfirmPasswordValue
+                                                : username.length === 0 ||
+                                                  password.length === 0 ||
+                                                  disable
+                                        }
                                         bg={'buttonPrimaryColor'}
                                         color={'white'}
                                         _hover={{
                                             bg: 'backgroundColor',
-                                            color: 'text'
+                                            color: 'text',
                                         }}
                                     >
-                                        {forgetPassword ? (
-                                            otpSent ? 'Reset Password' : 'Send OTP'
-                                        ) : 'Sign in'}
+                                        {forgetPassword
+                                            ? otpSent
+                                                ? 'Reset Password'
+                                                : 'Send OTP'
+                                            : 'Sign in'}
                                     </Button>
                                 </Stack>
                             </Stack>
                         </form>
                         <HStack pt={10}>
-                            <Text>
-                                New User?{' '}
-                            </Text>
+                            <Text>New User? </Text>
                             <Text color={'buttonPrimaryColor'}>
-                                <Link to={matchPath ? `/join-group/${match?.params.groupId}/register` : '/register'}>
+                                <Link
+                                    to={
+                                        matchPath
+                                            ? `/join-group/${match?.params.groupId}/register`
+                                            : '/register'
+                                    }
+                                >
                                     Register
                                 </Link>
                             </Text>
@@ -435,7 +541,7 @@ const Login = () => {
                 </Box>
             </Box>
         </Flex>
-    )
-}
+    );
+};
 
-export default Login
+export default Login;
