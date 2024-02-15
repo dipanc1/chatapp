@@ -42,8 +42,8 @@ const Register = () => {
     const baseApi = new BaseApi();
     const cookies = new Cookies();
 
-    const [verify, setVerify] = React.useState(false);
-    const [otp, setOtp] = React.useState(false);
+    const [verify, setVerify] = React.useState(true);
+    const [otp, setOtp] = React.useState(true);
     const [OTP, setOTP] = React.useState('');
     const [username, setUsername] = React.useState('');
     const [number, setNumber] = React.useState('');

@@ -300,9 +300,17 @@ export const ChatBoxComponent = ({
                 })
                 .catch(
                     (err) => console.log(err),
-                    setLoadingWhileSendingImage(false),
+                    toast({
+                        title: 'Error Occured!',
+                        description: 'Failed to Send the Image',
+                        status: 'error',
+                        isClosable: true,
+                        position: 'top',
+                        duration: 5000,
+                    }),
                 );
         }
+        setLoadingWhileSendingImage(false)
     };
 
     const uploadFileAndSend = async (e) => {
@@ -326,9 +334,17 @@ export const ChatBoxComponent = ({
                 })
                 .catch(
                     (err) => console.log(err),
-                    setLoadingWhileSendingFile(false),
+                    toast({
+                        title: 'Error Occured!',
+                        description: 'Failed to Send the File',
+                        status: 'error',
+                        isClosable: true,
+                        position: 'top',
+                        duration: 5000,
+                    }),
                 );
         }
+        setLoadingWhileSendingFile(false)
     };
 
     return (
@@ -423,9 +439,9 @@ export const ChatBoxComponent = ({
                                             (messages[i + 1].sender._id !==
                                                 m.sender._id ||
                                                 messages[i + 1].sender._id ===
-                                                    undefined) &&
+                                                undefined) &&
                                             messages[i].sender._id !==
-                                                userInfo._id) ||
+                                            userInfo._id) ||
                                         (i === messages.length - 1 &&
                                             messages[messages.length - 1].sender
                                                 ._id !== userInfo._id &&
@@ -435,7 +451,7 @@ export const ChatBoxComponent = ({
                                     sameTime={
                                         i < messages.length - 1 &&
                                         format(messages[i].createdAt) ===
-                                            format(messages[i + 1].createdAt)
+                                        format(messages[i + 1].createdAt)
                                     }
                                 />
                             </Box>

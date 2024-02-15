@@ -32,7 +32,7 @@ app.use(
     })
 );
 
-const MONGO_URL = process.env.MONGO_STAGING_URI;
+const MONGO_URL = process.env.MONGO_DEV_URI;
 
 mongoose.connect(
     MONGO_URL,

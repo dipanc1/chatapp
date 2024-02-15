@@ -44,6 +44,7 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [search, setSearch] = useState('');
     const [searchResults, setSearchResults] = useState([]);
+    const [loadingSearch, setLoadingSearch] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const handleSearch = async (query) => {
@@ -52,7 +53,7 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
             return;
         }
         try {
-            setLoading(true);
+            setLoadingSearch(true);
             const config = {
                 headers: {
                     'Content-Type': 'application/json',
@@ -64,7 +65,6 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
                 config,
             );
             // console.log(data.users);
-            setLoading(false);
             setSearchResults(data.users);
         } catch (error) {
             toast({
@@ -76,6 +76,7 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
                 position: 'bottom-left',
             });
         }
+        setLoadingSearch(false);
     };
 
     const handleSubmit = async (e) => {
@@ -89,9 +90,9 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
             });
             return;
         }
+        setLoading(true);
         e.preventDefault();
         try {
-            setLoading(true);
             const config = {
                 headers: {
                     'Content-Type': 'application/json',
@@ -112,7 +113,6 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
             }
 
             setFetchAgain(!fetchAgain);
-            setLoading(false);
             setSearch('');
             onClose();
             setGroupChatName('');
@@ -127,7 +127,6 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
             });
         } catch (error) {
             setFetchAgain(!fetchAgain);
-            setLoading(false);
             setSearch('');
             setSelectedUsers([]);
             setSearchResults([]);
@@ -140,6 +139,7 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
                 position: 'bottom',
             });
         }
+        setLoading(false);
     };
 
     const handleGroup = (userToAdd) => {
@@ -173,6 +173,7 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
                     onClick={onOpen}
                 />
             )}
+
             <Modal
                 size={['xs', 'xs', 'xl', 'lg']}
                 onClose={onClose}
@@ -181,119 +182,138 @@ const GroupChatModal = ({ children, fetchAgain, setFetchAgain }) => {
             >
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader
-                        fontSize='35px'
-                        d='flex'
-                        justifyContent='center'
-                    >
-                        Create Group Chat
-                    </ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody d='flex' flexDir='column' alignItems='center'>
-                        <FormControl>
-                            <Input
-                                placeholder='Group Name'
-                                mb={3}
-                                onChange={(e) =>
-                                    setGroupChatName(e.target.value)
-                                }
-                                focusBorderColor='#9F85F7'
+                    {loading ? (
+                        <Box
+                            display={'flex'}
+                            alignItems={'center'}
+                            justifyContent={'center'}
+                        >
+                            <Spinner
+                                thickness='4px'
+                                speed='0.2s'
+                                emptyColor='gray.200'
+                                color='buttonPrimaryColor'
+                                size='xl'
                             />
-                        </FormControl>
-                        <FormControl>
-                            <Textarea
-                                placeholder='Group Description'
-                                mb={3}
-                                onChange={(e) =>
-                                    setGroupChatDescription(e.target.value)
-                                }
-                                focusBorderColor='#9F85F7'
-                                maxH={'100px'}
-                            />
-                        </FormControl>
-                        <FormControl>
-                            <Input
-                                placeholder='Add Users eg: Dipan, Abhishek, Vikram'
-                                mb={1}
-                                onChange={(e) => handleSearch(e.target.value)}
-                                focusBorderColor='#9F85F7'
-                            />
-                        </FormControl>
-                        <Box w='100%' d='flex' flexWrap='wrap'>
-                            {selectedUsers.map((u) => (
-                                <UserBadgeItem
-                                    key={u._id}
-                                    user={u}
-                                    handleFunction={() => handleDelete(u)}
-                                />
-                            ))}
                         </Box>
-                        {loading ? (
-                            <Box
-                                display={'flex'}
-                                alignItems={'center'}
-                                height={'48'}
-                                justifyContent={'center'}
+                    ) : (
+                        <>
+                            <ModalHeader
+                                fontSize='35px'
+                                d='flex'
+                                justifyContent='center'
                             >
-                                <Spinner
-                                    thickness='4px'
-                                    speed='0.65s'
-                                    emptyColor='gray.200'
-                                    color='buttonPrimaryColor'
-                                    size='xl'
-                                />
-                            </Box>
-                        ) : (
-                            <Box height={'48'} overflowY={'scroll'}>
-                                {searchResults.length > 0 ? (
-                                    searchResults.map((user) => (
-                                        <Box
-                                            _hover={{
-                                                background: '#b5cbfe',
-                                                color: 'white',
-                                            }}
-                                            bg={'#E8E8E8'}
-                                            p={2}
-                                            cursor={'pointer'}
-                                            my={'0.2rem'}
-                                            mx={'2rem'}
-                                            borderRadius='lg'
-                                            key={user._id}
-                                            onClick={() => handleGroup(user)}
-                                        >
-                                            <UserListItem user={user} />
-                                        </Box>
-                                    ))
-                                ) : (
+                                Create Group Chat
+                            </ModalHeader>
+                            <ModalCloseButton />
+                            <ModalBody d='flex' flexDir='column' alignItems='center'>
+                                <FormControl>
+                                    <Input
+                                        placeholder='Group Name'
+                                        mb={3}
+                                        onChange={(e) =>
+                                            setGroupChatName(e.target.value)
+                                        }
+                                        focusBorderColor='#9F85F7'
+                                    />
+                                </FormControl>
+                                <FormControl>
+                                    <Textarea
+                                        placeholder='Group Description'
+                                        mb={3}
+                                        onChange={(e) =>
+                                            setGroupChatDescription(e.target.value)
+                                        }
+                                        focusBorderColor='#9F85F7'
+                                        maxH={'100px'}
+                                    />
+                                </FormControl>
+                                <FormControl>
+                                    <Input
+                                        placeholder='Add Users eg: Dipan, Abhishek, Vikram'
+                                        mb={1}
+                                        onChange={(e) => handleSearch(e.target.value)}
+                                        focusBorderColor='#9F85F7'
+                                    />
+                                </FormControl>
+                                <Box w='100%' d='flex' flexWrap='wrap'>
+                                    {selectedUsers.map((u) => (
+                                        <UserBadgeItem
+                                            key={u._id}
+                                            user={u}
+                                            handleFunction={() => handleDelete(u)}
+                                        />
+                                    ))}
+                                </Box>
+                                {loadingSearch ? (
                                     <Box
                                         display={'flex'}
                                         alignItems={'center'}
+                                        height={'48'}
                                         justifyContent={'center'}
-                                        height={'100%'}
                                     >
-                                        <Text
-                                            fontSize={'x-large'}
-                                            fontWeight={'bold'}
-                                            color={'#9F85F7'}
-                                        >
-                                            No Results Found
-                                        </Text>
+                                        <Spinner
+                                            thickness='4px'
+                                            speed='0.65s'
+                                            emptyColor='gray.200'
+                                            color='buttonPrimaryColor'
+                                            size='xl'
+                                        />
+                                    </Box>
+                                ) : (
+                                    <Box height={'48'} overflowY={'scroll'}>
+                                        {searchResults.length > 0 ? (
+                                            searchResults.map((user) => (
+                                                <Box
+                                                    _hover={{
+                                                        background: '#b5cbfe',
+                                                        color: 'white',
+                                                    }}
+                                                    bg={'#E8E8E8'}
+                                                    p={2}
+                                                    cursor={'pointer'}
+                                                    my={'0.2rem'}
+                                                    mx={'2rem'}
+                                                    borderRadius='lg'
+                                                    key={user._id}
+                                                    onClick={() => handleGroup(user)}
+                                                >
+                                                    <UserListItem user={user} />
+                                                </Box>
+                                            ))
+                                        ) : (
+                                            <Box
+                                                display={'flex'}
+                                                alignItems={'center'}
+                                                justifyContent={'center'}
+                                                height={'100%'}
+                                            >
+                                                <Text
+                                                    fontSize={'x-large'}
+                                                    fontWeight={'bold'}
+                                                    color={'#9F85F7'}
+                                                >
+                                                    No Results Found
+                                                </Text>
+                                            </Box>
+                                        )}
                                     </Box>
                                 )}
-                            </Box>
-                        )}
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button
-                            onClick={handleSubmit}
-                            color={'white'}
-                            backgroundColor={'buttonPrimaryColor'}
-                        >
-                            Create Chat
-                        </Button>
-                    </ModalFooter>
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button
+                                    onClick={handleSubmit}
+                                    color={'white'}
+                                    backgroundColor={'buttonPrimaryColor'}
+                                >
+                                    Create Chat
+                                </Button>
+                            </ModalFooter>
+                        </>
+                    )}
                 </ModalContent>
             </Modal>
+
         </>
     );
 };

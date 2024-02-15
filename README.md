@@ -12,8 +12,14 @@
 #### add image while creating a group
 
 #### change folder name for each functionality
+#### need to change images hosted on sahil' image kit
 
 #### Setup CI/CD
+
+### Defects
+
+#### 1. Register -> Not getting OTP on phone number, have top check things happening afterwards !
+#### 2. Admin Dashboard -> Need to hit another API for events
 
 
 ## Phone App

@@ -211,6 +211,7 @@ const MyDetails = ({
                             type='text'
                             onChange={(e) => setUsername(e.target.value)}
                             value={username}
+                            focusBorderColor='#9F85F7'
                         />
                         <FormLabel>{FORM_LABELS.USERNAME}</FormLabel>
                     </FormControl>
@@ -224,6 +225,7 @@ const MyDetails = ({
                             type='text'
                             disabled
                             value={number}
+                            focusBorderColor='#9F85F7'
                         />
                         <FormLabel>{FORM_LABELS.NUMBER}</FormLabel>
                     </FormControl>

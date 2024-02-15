@@ -174,7 +174,8 @@ const EventModal = ({
                                 />
                             </FormControl>
                         </Flex>
-                        <Box>
+                        {/* Need to implement this */}
+                        {/* <Box>
                             <Checkbox
                                 position='relative!important'
                                 defaultChecked
@@ -185,7 +186,7 @@ const EventModal = ({
                             >
                                 Send Notification
                             </Checkbox>
-                        </Box>
+                        </Box> */}
                     </ModalBody>
                     <ModalFooter>
                         <button type='submit' className='btn btn-primary'>

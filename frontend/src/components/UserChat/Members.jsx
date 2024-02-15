@@ -106,6 +106,7 @@ export const MembersComponent = ({
 
     useEffect(() => {
         const fetchEvents = async () => {
+            setLoading(true);
             const config = {
                 headers: {
                     Authorization: `Bearer ${user.token}`,
@@ -120,6 +121,7 @@ export const MembersComponent = ({
                 .catch((err) => {
                     console.log(err);
                 });
+            setLoading(false);
         };
         fetchEvents();
     }, [dispatch, selectedChat, user.token]);
@@ -597,272 +599,289 @@ export const MembersComponent = ({
                         </>
                     </TabList>
                 )}
-                <TabPanels flex='1' h='80%'>
-                    {/* Chat Tab */}
-                    {stream && (
-                        <TabPanel
-                            p='0'
-                            h='100%'
-                            display='flex'
-                            flexDirection='column'
-                        >
-                            <ChatBoxComponent
-                                setToggleChat={setToggleChat}
-                                stream={stream}
-                                flex='1'
-                                height={fullScreen ? '65vh' : '20vh'}
-                                fetchAgain={fetchAgain}
-                                setFetchAgain={setFetchAgain}
-                                selectedChat={selectedChat}
-                                user={user}
-                                toast={toast}
-                            />
-                        </TabPanel>
-                    )}
-
-                    {/* Events Tab */}
-                    <TabPanel h='100%' p='0'>
-                        <Box
-                            display={'flex'}
-                            flexDirection={'column'}
-                            alignItems={'center'}
-                            height='100%'
-                        >
-                            <Box
-                                w='100%'
-                                h='50%'
-                                overflow='auto'
-                                flex='1'
-                                p='4'
+                {loading ? (
+                    <Box
+                        display={'flex'}
+                        alignItems={'center'}
+                        justifyContent={'center'}
+                        height={'100vh'}
+                    >
+                        <Spinner
+                            thickness='4px'
+                            speed='0.2s'
+                            emptyColor='gray.200'
+                            color='buttonPrimaryColor'
+                            size='xl'
+                        />
+                    </Box>
+                ) : (
+                    <TabPanels flex='1' h='80%'>
+                        {/* Chat Tab */}
+                        {stream && (
+                            <TabPanel
+                                p='0'
+                                h='100%'
+                                display='flex'
+                                flexDirection='column'
                             >
-                                {events.map((eventItem, index) => {
-                                    return (
-                                        <>
-                                            <Box
-                                                key={eventItem._id}
-                                                className='group-event'
-                                                mb='20px'
-                                            >
-                                                <EventCard
-                                                    index={index}
-                                                    id={eventItem?._id}
-                                                    date={eventItem?.date}
-                                                    time={eventItem?.time}
-                                                    title={eventItem?.name}
-                                                    description={
-                                                        eventItem?.description
-                                                    }
-                                                    imageUrl={
-                                                        eventItem?.thumbnail
-                                                    }
+                                <ChatBoxComponent
+                                    setToggleChat={setToggleChat}
+                                    stream={stream}
+                                    flex='1'
+                                    height={fullScreen ? '65vh' : '20vh'}
+                                    fetchAgain={fetchAgain}
+                                    setFetchAgain={setFetchAgain}
+                                    selectedChat={selectedChat}
+                                    user={user}
+                                    toast={toast}
+                                />
+                            </TabPanel>
+                        )}
+
+                        {/* Events Tab */}
+                        <TabPanel h='100%' p='0'>
+                            <Box
+                                display={'flex'}
+                                flexDirection={'column'}
+                                alignItems={'center'}
+                                height='100%'
+                            >
+                                <Box
+                                    w='100%'
+                                    h='50%'
+                                    overflow='auto'
+                                    flex='1'
+                                    p='4'
+                                >
+                                    {events.map((eventItem, index) => {
+                                        return (
+                                            <>
+                                                <Box
+                                                    key={eventItem._id}
+                                                    className='group-event'
+                                                    mb='20px'
+                                                >
+                                                    <EventCard
+                                                        index={index}
+                                                        id={eventItem?._id}
+                                                        date={eventItem?.date}
+                                                        time={eventItem?.time}
+                                                        title={eventItem?.name}
+                                                        description={
+                                                            eventItem?.description
+                                                        }
+                                                        imageUrl={
+                                                            eventItem?.thumbnail
+                                                        }
+                                                        admin={admin}
+                                                    />
+                                                </Box>
+                                            </>
+                                        );
+                                    })}
+                                </Box>
+                                {admin && (
+                                    <Box py='25px'>
+                                        <NavLink
+                                            className='btn btn-primary'
+                                            onClick={onOpenCreateEvent}
+                                        >
+                                            <Flex alignItems='center'>
+                                                <Image
+                                                    h='18px'
+                                                    pe='15px'
+                                                    src='https://ik.imagekit.io/sahildhingra/add.png?ik-sdk-version=javascript-1.4.3&updatedAt=1673025917620'
+                                                />
+                                                <Text>Create Event</Text>
+                                            </Flex>
+                                        </NavLink>
+                                    </Box>
+                                )}
+                            </Box>
+                        </TabPanel>
+
+                        {/* Participants/Members Tab */}
+                        <TabPanel h='100%' p='0'>
+                            <Box
+                                display={'flex'}
+                                flexDirection={'column'}
+                                height='100%'
+                            >
+                                <Box
+                                    h='50%'
+                                    overflow='auto'
+                                    flex='1'
+                                    p='4'
+                                    pt='0'
+                                    px='0'
+                                >
+                                    <Accordion allowToggle>
+                                        {selectedChat?.users.map((u) => (
+                                            <Box key={u._id}>
+                                                <ChatOnline
                                                     admin={admin}
+                                                    stream={stream}
+                                                    key={u._id}
+                                                    user1={u}
+                                                    handleFunction={() =>
+                                                        handleRemove(u)
+                                                    }
                                                 />
                                             </Box>
-                                        </>
-                                    );
-                                })}
-                            </Box>
-                            {admin && (
-                                <Box py='25px'>
-                                    <NavLink
-                                        className='btn btn-primary'
-                                        onClick={onOpenCreateEvent}
-                                    >
-                                        <Flex alignItems='center'>
-                                            <Image
-                                                h='18px'
-                                                pe='15px'
-                                                src='https://ik.imagekit.io/sahildhingra/add.png?ik-sdk-version=javascript-1.4.3&updatedAt=1673025917620'
-                                            />
-                                            <Text>Create Event</Text>
-                                        </Flex>
-                                    </NavLink>
+                                        ))}
+                                    </Accordion>
                                 </Box>
-                            )}
-                        </Box>
-                    </TabPanel>
 
-                    {/* Participants/Members Tab */}
-                    <TabPanel h='100%' p='0'>
-                        <Box
-                            display={'flex'}
-                            flexDirection={'column'}
-                            height='100%'
-                        >
+                                {admin && (
+                                    <Box py='25px' textAlign='center'>
+                                        <NavLink
+                                            onClick={openMembersModal}
+                                            className='btn btn-primary'
+                                        >
+                                            <Flex alignItems='center'>
+                                                <Image
+                                                    h='18px'
+                                                    pe='15px'
+                                                    src='https://ik.imagekit.io/sahildhingra/add.png?ik-sdk-version=javascript-1.4.3&updatedAt=1673025917620'
+                                                />
+                                                <Text>Add Member</Text>
+                                            </Flex>
+                                        </NavLink>
+                                    </Box>
+                                )}
+                            </Box>
+
+                            {/* Create Event Modal */}
+                            <EventModal
+                                type={'Create'}
+                                createEventLoading={createEventLoading}
+                                isOpenCreateEvent={isOpenCreateEvent}
+                                onCloseCreateEvent={onCloseCreateEvent}
+                                name={name}
+                                setEventName={setEventName}
+                                description={description}
+                                setDescription={setDescription}
+                                date={date}
+                                setDate={setDate}
+                                time={time}
+                                setTime={setTime}
+                                selectedImage={selectedImage}
+                                imageChange={imageChange}
+                                handleSubmit={handleCreateEvent}
+                                fileInputRef={fileInputRef}
+                                targetAmount={targetAmount}
+                                setTargetAmount={setTargetAmount}
+                            />
+
+                            {/* Add Member Modal */}
+                            <AddMembersModal
+                                chatIdValue={`${backend_url}/join-group/${chatIdValue}`}
+                                isAddOpen={isAddOpen}
+                                onAddClose={onAddClose}
+                                handleSearch={handleSearch}
+                                search={search}
+                                searchResults={searchResults}
+                                loading={loading}
+                                handleAddUser={handleAddUser}
+                                fullScreen={fullScreen}
+                            />
+                        </TabPanel>
+
+                        {/* Settings Tab */}
+                        <TabPanel>
                             <Box
-                                h='50%'
-                                overflow='auto'
-                                flex='1'
-                                p='4'
-                                pt='0'
-                                px='0'
+                                display={'flex'}
+                                flexDirection={'column'}
+                                alignItems={'center'}
+                                justifyContent={'flex-end'}
+                                minHeight={fullScreen ? '100%' : '20vh'}
                             >
-                                <Accordion allowToggle>
-                                    {selectedChat?.users.map((u) => (
-                                        <Box key={u._id}>
-                                            <ChatOnline
-                                                admin={admin}
-                                                stream={stream}
-                                                key={u._id}
-                                                user1={u}
-                                                handleFunction={() =>
-                                                    handleRemove(u)
-                                                }
-                                            />
-                                        </Box>
-                                    ))}
-                                </Accordion>
-                            </Box>
-
-                            {admin && (
-                                <Box py='25px' textAlign='center'>
-                                    <NavLink
-                                        onClick={openMembersModal}
-                                        className='btn btn-primary'
+                                {renameLoading ? (
+                                    <Box
+                                        display={'flex'}
+                                        alignItems={'center'}
+                                        justifyContent={'center'}
+                                        my={2}
                                     >
-                                        <Flex alignItems='center'>
-                                            <Image
-                                                h='18px'
-                                                pe='15px'
-                                                src='https://ik.imagekit.io/sahildhingra/add.png?ik-sdk-version=javascript-1.4.3&updatedAt=1673025917620'
-                                            />
-                                            <Text>Add Member</Text>
-                                        </Flex>
-                                    </NavLink>
-                                </Box>
-                            )}
-                        </Box>
+                                        <Spinner
+                                            thickness='4px'
+                                            speed='0.7s'
+                                            emptyColor='gray.200'
+                                            color='buttonPrimaryColor'
+                                            size='md'
+                                        />
+                                    </Box>
+                                ) : (
+                                    <Box
+                                        display={'flex'}
+                                        flexDirection={'column'}
+                                        mx={'2'}
+                                        mb={fullScreen ? '36' : '2'}
+                                    >
+                                        <Input
+                                            focusBorderColor='#9F85F7'
+                                            mr={'2'}
+                                            value={groupChatName}
+                                            placeholder={selectedChat?.chatName}
+                                            _placeholder={{ color: 'inherit' }}
+                                            onChange={(e) =>
+                                                setGroupChatName(e.target.value)
+                                            }
+                                        />
+                                        <Button
+                                            size={fullScreen ? 'md' : 'sm'}
+                                            mt={'4'}
+                                            color={'white'}
+                                            backgroundColor={'buttonPrimaryColor'}
+                                            onClick={handleRename}
+                                        >
+                                            Rename
+                                        </Button>
+                                    </Box>
+                                )}
 
-                        {/* Create Event Modal */}
-                        <EventModal
-                            type={'Create'}
-                            createEventLoading={createEventLoading}
-                            isOpenCreateEvent={isOpenCreateEvent}
-                            onCloseCreateEvent={onCloseCreateEvent}
-                            name={name}
-                            setEventName={setEventName}
-                            description={description}
-                            setDescription={setDescription}
-                            date={date}
-                            setDate={setDate}
-                            time={time}
-                            setTime={setTime}
-                            selectedImage={selectedImage}
-                            imageChange={imageChange}
-                            handleSubmit={handleCreateEvent}
-                            fileInputRef={fileInputRef}
-                            targetAmount={targetAmount}
-                            setTargetAmount={setTargetAmount}
-                        />
-
-                        {/* Add Member Modal */}
-                        <AddMembersModal
-                            chatIdValue={`${backend_url}/join-group/${chatIdValue}`}
-                            isAddOpen={isAddOpen}
-                            onAddClose={onAddClose}
-                            handleSearch={handleSearch}
-                            search={search}
-                            searchResults={searchResults}
-                            loading={loading}
-                            handleAddUser={handleAddUser}
-                            fullScreen={fullScreen}
-                        />
-                    </TabPanel>
-
-                    {/* Settings Tab */}
-                    <TabPanel>
-                        <Box
-                            display={'flex'}
-                            flexDirection={'column'}
-                            alignItems={'center'}
-                            justifyContent={'flex-end'}
-                            minHeight={fullScreen ? '100%' : '20vh'}
-                        >
-                            {renameLoading ? (
-                                <Box
-                                    display={'flex'}
-                                    alignItems={'center'}
-                                    justifyContent={'center'}
-                                    my={2}
-                                >
-                                    <Spinner
-                                        thickness='4px'
-                                        speed='0.7s'
-                                        emptyColor='gray.200'
-                                        color='buttonPrimaryColor'
-                                        size='md'
-                                    />
-                                </Box>
-                            ) : (
-                                <Box
-                                    display={'flex'}
-                                    flexDirection={'column'}
-                                    mx={'2'}
-                                    mb={fullScreen ? '36' : '2'}
-                                >
-                                    <Input
-                                        focusBorderColor='#9F85F7'
-                                        mr={'2'}
-                                        value={groupChatName}
-                                        placeholder={selectedChat?.chatName}
-                                        _placeholder={{ color: 'inherit' }}
-                                        onChange={(e) =>
-                                            setGroupChatName(e.target.value)
-                                        }
-                                    />
+                                <Box my={'2'}>
                                     <Button
                                         size={fullScreen ? 'md' : 'sm'}
-                                        mt={'4'}
-                                        color={'white'}
-                                        backgroundColor={'buttonPrimaryColor'}
-                                        onClick={handleRename}
+                                        onClick={onAddOpen}
+                                        rightIcon={<GrUserAdd />}
+                                        color={'buttonPrimaryColor'}
+                                        variant='outline'
                                     >
-                                        Rename
+                                        Add Member
+                                    </Button>
+
+                                    <EndLeaveModal
+                                        leastDestructiveRef={cancelRef}
+                                        onClose={onConfirmClose}
+                                        header={'Leave Group'}
+                                        body={
+                                            'Are you sure you want to leave this group?'
+                                        }
+                                        confirmButton={'Leave'}
+                                        confirmFunction={() => {
+                                            handleRemove(userInfo);
+                                            onConfirmClose();
+                                        }}
+                                        isOpen={isConfirmOpen}
+                                    />
+                                </Box>
+
+                                <Box my={fullScreen ? '2' : '0'}>
+                                    <Button
+                                        size={fullScreen ? 'md' : 'sm'}
+                                        onClick={onConfirmOpen}
+                                        rightIcon={<HiUserRemove />}
+                                        colorScheme='red'
+                                        variant='outline'
+                                    >
+                                        Leave Group
                                     </Button>
                                 </Box>
-                            )}
-
-                            <Box my={'2'}>
-                                <Button
-                                    size={fullScreen ? 'md' : 'sm'}
-                                    onClick={onAddOpen}
-                                    rightIcon={<GrUserAdd />}
-                                    color={'buttonPrimaryColor'}
-                                    variant='outline'
-                                >
-                                    Add Member
-                                </Button>
-
-                                <EndLeaveModal
-                                    leastDestructiveRef={cancelRef}
-                                    onClose={onConfirmClose}
-                                    header={'Leave Group'}
-                                    body={
-                                        'Are you sure you want to leave this group?'
-                                    }
-                                    confirmButton={'Leave'}
-                                    confirmFunction={() => {
-                                        handleRemove(userInfo);
-                                        onConfirmClose();
-                                    }}
-                                    isOpen={isConfirmOpen}
-                                />
                             </Box>
-
-                            <Box my={fullScreen ? '2' : '0'}>
-                                <Button
-                                    size={fullScreen ? 'md' : 'sm'}
-                                    onClick={onConfirmOpen}
-                                    rightIcon={<HiUserRemove />}
-                                    colorScheme='red'
-                                    variant='outline'
-                                >
-                                    Leave Group
-                                </Button>
-                            </Box>
-                        </Box>
-                    </TabPanel>
-                </TabPanels>
+                        </TabPanel>
+                    </TabPanels>
+                )}
             </Tabs>
         ) : (
             <>

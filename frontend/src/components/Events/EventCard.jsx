@@ -218,7 +218,7 @@ const EventCard = ({
                                 event.description = descriptiond;
                                 event.date = dated;
                                 event.time = timed;
-                                event.thumbnail = res.data.secure_url;
+                                event.thumbnail = imageUrl;
                                 return event;
                             } else {
                                 return event;
@@ -499,7 +499,7 @@ const EventCard = ({
                         )}
                     </Box>
                     <Image
-                        onClick={() => selectEvent(chatId)}
+                        onClick={() => selectEvent && selectEvent(chatId)}
                         src={
                             imageUrl ??
                             'https://ik.imagekit.io/sahildhingra/default-no-image-wide.jpg'

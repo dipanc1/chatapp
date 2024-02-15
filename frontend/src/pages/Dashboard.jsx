@@ -53,7 +53,7 @@ const Dashboard = () => {
                 },
             };
             const { data } = await axios.get(
-                `${backend_url}/users/list?page=${pageState.page}`,
+                `${backend_url}/users/list/5?page=${pageState.page}`,
                 config,
             );
             pageState['page'] = data?.page;

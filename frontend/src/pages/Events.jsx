@@ -20,6 +20,7 @@ import Pagination from '../components/Miscellaneous/Pagination';
 import conversationApi from '../services/apis/conversationApi';
 import { ONE } from '../constants';
 import eventsApi from '../services/apis/eventsApi';
+import NothingToShowMessage from '../components/Miscellaneous/NothingToShowMessage';
 
 function Events() {
     const [activeTab, setActiveTab] = useState(1);
@@ -185,8 +186,8 @@ function Events() {
         activeTab === 1
             ? setLoading(true)
             : activeTab === 2
-              ? setLoadingUpcoming(true)
-              : setLoadingPast(true);
+                ? setLoadingUpcoming(true)
+                : setLoadingPast(true);
         try {
             const config = {
                 headers: {
@@ -205,15 +206,15 @@ function Events() {
                 activeTab === 1
                     ? setLoading(false)
                     : activeTab === 2
-                      ? setLoadingUpcoming(false)
-                      : setLoadingPast(false);
+                        ? setLoadingUpcoming(false)
+                        : setLoadingPast(false);
                 onOpenJoinEvent();
             } else {
                 activeTab === 1
                     ? setLoading(false)
                     : activeTab === 2
-                      ? setLoadingUpcoming(false)
-                      : setLoadingPast(false);
+                        ? setLoadingUpcoming(false)
+                        : setLoadingPast(false);
                 dispatch({ type: 'SET_SELECTED_CHAT', payload: data });
                 navigate(`/video-chat`);
             }
@@ -222,8 +223,8 @@ function Events() {
             activeTab === 1
                 ? setLoading(false)
                 : activeTab === 2
-                  ? setLoadingUpcoming(false)
-                  : setLoadingPast(false);
+                    ? setLoadingUpcoming(false)
+                    : setLoadingPast(false);
             toast({
                 title: 'Error Occured!',
                 description: 'Failed to Load the Events',
@@ -423,7 +424,7 @@ function Events() {
                                     );
                                 })}
                             </Grid>
-                            <Pagination
+                            {eventsList.length > 0 ? (<Pagination
                                 paginateFunction={fetchMoreEvents}
                                 currentPage={currentPage}
                                 totalPages={totalPages}
@@ -432,6 +433,11 @@ function Events() {
                                 hasNextPage={hasNextPage}
                                 hasPrevPage={hasPrevPage}
                             />
+                            ) : (
+                                <NothingToShowMessage>
+                                    Events
+                                </NothingToShowMessage>
+                            )}
                         </div>
                     )}
 
@@ -490,7 +496,7 @@ function Events() {
                                     );
                                 })}
                             </Grid>
-                            <Pagination
+                            {upcomingEventsList.length > 0 ? (<Pagination
                                 paginateFunction={fetchAllUpcomingEvents}
                                 currentPage={currentUpcomingPage}
                                 totalPages={totalUpcomingPages}
@@ -499,6 +505,11 @@ function Events() {
                                 hasNextPage={hasNextUpcomingPage}
                                 hasPrevPage={hasPrevUpcomingPage}
                             />
+                            ) : (
+                                <NothingToShowMessage>
+                                    Events
+                                </NothingToShowMessage>
+                            )}
                         </div>
                     )}
 
@@ -557,7 +568,7 @@ function Events() {
                                     );
                                 })}
                             </Grid>
-                            <Pagination
+                            {pastEventsList.length > 0 ? (<Pagination
                                 paginateFunction={fetchAllPastEvents}
                                 currentPage={currentPastPage}
                                 totalPages={totalPastPages}
@@ -566,6 +577,11 @@ function Events() {
                                 hasNextPage={hasNextPastPage}
                                 hasPrevPage={hasPrevPastPage}
                             />
+                            ) : (
+                                <NothingToShowMessage>
+                                    Events
+                                </NothingToShowMessage>
+                            )}
                         </div>
                     )}
                 </div>

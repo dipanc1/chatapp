@@ -116,6 +116,7 @@ const ChangePassword = ({ setLoading }) => {
                 <GridItem w='100%'>
                     <FormControl className={'filled'}>
                         <Input
+                            focusBorderColor='#9F85F7'
                             autoComplete='current-password'
                             type='password'
                             value={currentPassword}
@@ -136,6 +137,7 @@ const ChangePassword = ({ setLoading }) => {
                 <GridItem w='100%'>
                     <FormControl className={'filled'}>
                         <Input
+                            focusBorderColor='#9F85F7'
                             autoComplete='new-password'
                             type='password'
                             value={newPassword}
@@ -147,6 +149,7 @@ const ChangePassword = ({ setLoading }) => {
                 <GridItem w='100%'>
                     <FormControl className={'filled'}>
                         <Input
+                            focusBorderColor='#9F85F7'
                             autoComplete='confirm-password'
                             type='password'
                             value={confirmPassword}

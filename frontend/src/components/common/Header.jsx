@@ -25,6 +25,7 @@ import conversationApi from '../../services/apis/conversationApi';
 import authApi from '../../services/apis/authApi';
 import PostModal from '../UserModals/PostModal';
 import Cookies from 'universal-cookie';
+import FullScreenLoader from './FullScreenLoader';
 
 const Header = ({
     toggleSidebar,
@@ -52,6 +53,7 @@ const Header = ({
     const [toggleProfiledd, setToggleProfiledd] = useState(false);
     const [toggleSearch, setToggleSearch] = useState(false);
     const [search, setSearch] = useState('');
+    const [dummyLoader, setDummyLoader] = useState(false);
     const [searching, setSearching] = useState(false);
     const [searchResultsUsers, setSearchResultsUsers] = useState([]);
     const [searchResultsGroups, setSearchResultsGroups] = useState([]);
@@ -329,8 +331,8 @@ const Header = ({
                             zIndex='1'
                         >
                             {searchResultsUsers?.length ||
-                            searchResultsGroups?.length ||
-                            searchResultsEvents?.length ? (
+                                searchResultsGroups?.length ||
+                                searchResultsEvents?.length ? (
                                 <>
                                     <UnorderedList
                                         ms='0'
@@ -580,7 +582,7 @@ const Header = ({
                                             objectFit='cover'
                                             boxSize={['30px', '40px']}
                                             src={userInfo.pic}
-                                            alt='Profile Pic'
+                                            alt='Pic'
                                         />
                                         <Text
                                             textTransform='capitalize'
@@ -639,7 +641,7 @@ const Header = ({
                                             </ListItem>
                                             {admin && (
                                                 <ListItem ps='0'>
-                                                    <PostModal>
+                                                    <PostModal loading={dummyLoader} setLoading={setDummyLoader}>
                                                         <Link
                                                             display='block'
                                                             p='5px 25px'

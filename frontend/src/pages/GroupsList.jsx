@@ -372,7 +372,8 @@ const GroupsList = () => {
                                                         />
                                                     </Flex>
                                                 </Td>
-                                                <Td
+                                                {/* TODO: Need to hit another API for events */}
+                                                {/* <Td
                                                     cursor='pointer'
                                                     onClick={() =>
                                                         expandEventsInfo(index)
@@ -388,7 +389,7 @@ const GroupsList = () => {
                                                             src='https://ik.imagekit.io/sahildhingra/down-arrow.png'
                                                         />
                                                     </Flex>
-                                                </Td>
+                                                </Td> */}
                                                 <Td>
                                                     {user.isOnline
                                                         ? 'Yes'
