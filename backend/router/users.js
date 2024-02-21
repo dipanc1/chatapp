@@ -2,6 +2,8 @@ const router = require("express").Router();
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
+
 
 const { generateToken, generateRefreshToken } = require("../config/generateToken");
 const { protect } = require("../middleware/authMiddleware");
@@ -12,12 +14,43 @@ const accountSID = process.env.OTP_ACCOUNT_SID;
 const authToken = process.env.OTP_AUTH_TOKEN;
 const serviceSID = process.env.OTP_SERVICE_SID;
 
+const service = process.env.NODEMAILER_SERVICE;
+const host = process.env.NODEMAILER_HOST;
+const user_email = process.env.NODEMAILER_EMAIL;
+const pass = process.env.NODEMAILER_PASS;
+
 const client = require("twilio")(accountSID, authToken);
 
 const Chat = require("../models/Chat");
 const User = require("../models/User");
 const EventTable = require("../models/EventTable");
 const Post = require("../models/Post");
+const Otp = require("../models/Otp");
+
+const transporter = nodemailer.createTransport({
+    service,
+    host,
+    port: 465,
+    secure: true,
+    auth: {
+        user: user_email,
+        pass,
+    },
+    tls: {
+        rejectUnauthorized: false
+    }
+});
+
+const generateOtp = (email) => {
+    let otp = Math.floor(10000 + Math.random() * 90000);
+
+    new Otp({
+        email,
+        otp,
+    }).save();
+
+    return otp;
+}
 
 let refreshTokens = [];
 
@@ -140,6 +173,13 @@ router.post("/token", (req, res) => {
 // register
 router.post("/register", async (req, res) => {
     try {
+        // check if the user is already in the database
+        const emailExist = await User.findOne({ email: req.body.email })
+
+        if (emailExist) {
+            return res.status(400).json("Email already exists")
+        }
+
         // generate  new password
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(req.body.password, salt)
@@ -147,7 +187,8 @@ router.post("/register", async (req, res) => {
         //create new user
         const newUser = new User({
             username: req.body.username,
-            number: req.body.number1.number,
+            // number: req.body.number1.number,
+            email: req.body.email,
             password: hashedPassword,
             pic: req.body.pic
         })
@@ -164,7 +205,7 @@ router.post("/register", async (req, res) => {
         res.status(200).json({
             // _id: user._id,
             // username: user.username,
-            // number: user.number,
+            // email: user.email,
             // isAdmin: user.isAdmin,
             // pic: user.pic,
             token: accessToken,
@@ -212,7 +253,7 @@ router.post("/login", async (req, res) => {
         res.status(200).json({
             // _id: user._id,
             // username: user.username,
-            // number: user.number,
+            // email: user.email,
             // pic: user.pic,
             token: accessToken,
             refreshToken: refreshToken
@@ -311,41 +352,72 @@ router.post("/forget-password-check-number", async (req, res) => {
     }
 });
 
-// forget password check otp and change password
-router.post("/forget-password-check-otp-change-password", async (req, res) => {
+// forget password check email and send otp
+router.post("/forget-password-check-email", async (req, res) => {
+    let email = req.body.email;
     try {
-        const user = await User.findOne({ number: `${req.body.number}` })
+        const user = await User.findOne({ email })
         if (!user) {
             return res.status(400).json({
                 message: "User not found"
             })
         }
-        client.verify
-            .services(serviceSID)
-            .verificationChecks.create({
-                to: `${req.body.number}`,
-                code: req.body.otp,
+
+        const mailOptions = {
+            from: user_email,
+            to: email,
+            subject: "OTP for Password Reset",
+            text: `Your OTP for password reset is ${generateOtp(email)}`,
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                res.status(500).json({
+                    message: "Error sending OTP",
+                });
+            } else {
+                res.status(200).json({
+                    message: `OTP sent successfully`,
+                });
+            }
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            message: "Something went wrong",
+        })
+        console.log(err)
+    }
+});
+
+// forget password check otp and change password
+router.post("/forget-password-check-otp-change-password", async (req, res) => {
+    try {
+        const email = req.body.email;
+        const otp = req.body.otp;
+        const user = await User.findOne({ email })
+        if (!user) {
+            return res.status(400).json({
+                message: "User not found"
             })
-            .then(async (data) => {
-                if (data.valid) {
-                    const salt = await bcrypt.genSalt(10)
-                    const hashedPassword = await bcrypt.hash(req.body.password, salt)
-                    user.password = hashedPassword
-                    await user.save()
-                    res.status(200).json({
-                        message: "Password changed",
-                    })
-                } else {
-                    res.status(400).json({
-                        message: "OTP not valid",
-                    })
-                }
+        }
+
+        let otpData = await Otp.findOne({ email, otp });
+
+        if (otpData) {
+            const salt = await bcrypt.genSalt(10)
+            const hashedPassword = await bcrypt.hash(req.body.password, salt)
+            user.password = hashedPassword
+            await user.save()
+            await Otp.deleteOne({ email, otp });
+            res.status(200).json({
+                message: "Password changed",
             })
-            .catch((err) => {
-                res.status(400).json({
-                    message: "OTP not valid",
-                })
+        } else {
+            res.status(400).json({
+                message: "OTP not valid",
             })
+        }
     } catch (err) {
         res.status(500).json({
             message: "Something went wrong",
@@ -388,7 +460,7 @@ router.get("/user-info", protect, async (req, res) => {
             res.status(200).json({
                 _id: user._id,
                 username: user.username,
-                number: user.number,
+                email: user.email,
                 pic: user.pic,
                 isSuperAdmin: user.isSuperAdmin,
             })
@@ -470,7 +542,7 @@ router.put("/update-user-info", protect, async (req, res) => {
                 message: message,
                 _id: user._id,
                 username: user.username,
-                number: user.number,
+                email: user.email,
                 pic: user.pic,
             });
         })

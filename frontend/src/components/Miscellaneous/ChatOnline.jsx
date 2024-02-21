@@ -71,7 +71,7 @@ const ChatOnline = ({ stream, id, user1, handleFunction, admin }) => {
                         {!stream && (
                             <>
                                 <BsTelephone />
-                                <Text as='samp'>+{user1.number}</Text>
+                                <Text as='samp'>{user1.email}</Text>
                             </>
                         )}
 

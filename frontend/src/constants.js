@@ -19,6 +19,7 @@ const SETTINGS_TABS = {
 const FORM_LABELS = {
     USERNAME: 'USERNAME',
     NUMBER: 'NUMBER',
+    EMAIL: 'EMAIL',
     PROFILE_IMAGE: 'PROFILE IMAGE',
     CURRENT_PASSWORD: 'Current Password',
     NEW_PASSWORD: 'New Password',

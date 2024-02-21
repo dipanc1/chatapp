@@ -5,7 +5,7 @@ import axios from 'axios';
 import { AppContext } from '../context/AppContext';
 import { Link, useMatch } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { api_key, pictureUpload, folder } from '../utils';
+import { api_key, pictureUpload, folder, emailRegex } from '../utils';
 import {
     Flex,
     Box,
@@ -37,7 +37,7 @@ import Cookies from 'universal-cookie';
 import conversationApi from '../services/apis/conversationApi';
 
 const Register = () => {
-    const { dispatch, signature, timestamp, getCloudinarySignature } =
+    const { dispatch, signature, timestamp, getCloudinarySignature, email } =
         React.useContext(AppContext);
     const baseApi = new BaseApi();
     const cookies = new Cookies();
@@ -47,6 +47,7 @@ const Register = () => {
     const [OTP, setOTP] = React.useState('');
     const [username, setUsername] = React.useState('');
     const [number, setNumber] = React.useState('');
+    const [emailState, setEmailState] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [confirmPassword, setConfirmPassword] = React.useState('');
     const [formhelpUsername, setFormhelpUsername] = React.useState('');
@@ -104,9 +105,9 @@ const Register = () => {
                 ) {
                     try {
                         const res = await authApi.register({
-                            number1: number1,
-                            username: username,
-                            password: password,
+                            email,
+                            username,
+                            password,
                             pic: null,
                         });
                         const groupDetails =
@@ -151,9 +152,9 @@ const Register = () => {
                     }
                 } else {
                     const res = await authApi.register({
-                        number1: { number: '911234567890' },
-                        username: username,
-                        password: password,
+                        email,
+                        username,
+                        password,
                         pic: null,
                     });
                     if (res.status === 200) {
@@ -187,9 +188,9 @@ const Register = () => {
                         .post(pictureUpload, formData)
                         .then(async (res) => {
                             const response = await authApi.register({
-                                number1: number1,
-                                username: username,
-                                password: password,
+                                email,
+                                username,
+                                password,
                                 pic: res.data.secure_url,
                             });
                             if (response.data) {
@@ -244,9 +245,9 @@ const Register = () => {
                         .post(pictureUpload, formData)
                         .then(async (res) => {
                             const response = await authApi.register({
-                                number1: number1,
-                                username: username,
-                                password: password,
+                                email,
+                                username,
+                                password,
                                 pic: res.data.secure_url,
                             });
                             if (response.data) {
@@ -364,14 +365,40 @@ const Register = () => {
         }
     };
 
+    const handleVerifyEmail = async () => {
+        if (emailRegex.test(emailState) === false) {
+            toast({
+                title: 'Error',
+                description: 'Please enter a Valid Email',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+            });
+            return;
+        }
+        dispatch({ type: 'SET_EMAIL', payload: emailState });
+        const response = await baseApi.sendOtpOnEmail({ email: emailState });
+        if (response.status === 200 && response.data.message === 'OTP sent successfully') {
+            setVerify(false);
+            setEmailState('');
+        } else {
+            toast({
+                title: 'Error',
+                description: 'Please enter a valid email',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+            });
+        }
+    };
+
     const handleOtp = (OTP) => {
         setOTP(OTP);
         // console.log(OTP);
         if (OTP.length === 5) {
             setTimeout(async () => {
-                const response = baseApi.verifyOtp({ OTP, number1 });
-                // console.log(res)
-                if (response.data.message === 'Welcome') {
+                const response = await baseApi.verifyEmailOtp({ email, otp: OTP });
+                if (response.data.message === 'OTP verified successfully' && response.status === 200) {
                     setOtp(false);
                 } else {
                     setOtp(true);
@@ -451,14 +478,14 @@ const Register = () => {
                                 to join {groupDetails?.chatName}
                             </Text>
                             <Text pt='2' color={'greyTextColor'}>
-                                Enter phone number to create an account
+                                Enter email to create an account
                             </Text>
                         </Stack>
                     ) : (
                         <Stack align={'center'}>
                             <Heading fontSize={'4xl'}>Get Started Now!</Heading>
                             <Text pt='2' color={'greyTextColor'}>
-                                Enter phone number to create an account
+                                Enter email to create an account
                             </Text>
                         </Stack>
                     )}
@@ -485,10 +512,11 @@ const Register = () => {
                             <Stack width='100%' spacing={10}>
                                 <form className='w-100'>
                                     {verify && (
-                                        <PhoneNumber
-                                            number={number}
-                                            setNumber={setNumber}
-                                        />
+                                        // <PhoneNumber
+                                        //     number={number}
+                                        //     setNumber={setNumber}
+                                        // />
+                                        <Input type='email' focusBorderColor='#9F85F7' onChange={(e) => setEmailState(e.target.value)} placeholder='Enter Email' value={emailState} />
                                     )}
                                     {!otp && (
                                         <Flex
@@ -506,8 +534,8 @@ const Register = () => {
                                                     src={
                                                         selectedImage
                                                             ? URL.createObjectURL(
-                                                                  selectedImage,
-                                                              )
+                                                                selectedImage,
+                                                            )
                                                             : ''
                                                     }
                                                     alt={'Avatar Alt'}
@@ -548,7 +576,7 @@ const Register = () => {
                                                         focusBorderColor={
                                                             username.length >
                                                                 2 &&
-                                                            formhelpUsername ===
+                                                                formhelpUsername ===
                                                                 'Username not available'
                                                                 ? '#FF4343'
                                                                 : '#9F85F7'
@@ -601,8 +629,7 @@ const Register = () => {
                                     <Stack spacing={10} pt={8}>
                                         {verify && (
                                             <Button
-                                                type='submit'
-                                                onClick={handleVerify}
+                                                onClick={handleVerifyEmail}
                                                 loadingText={
                                                     loading && 'Submitting'
                                                 }
@@ -614,7 +641,7 @@ const Register = () => {
                                                     color: 'text',
                                                 }}
                                             >
-                                                Verify Phone Number
+                                                Verify Email
                                             </Button>
                                         )}
 
@@ -625,7 +652,7 @@ const Register = () => {
                                                 isDisabled={
                                                     !(
                                                         password ===
-                                                            confirmPassword &&
+                                                        confirmPassword &&
                                                         username.length !== 0 &&
                                                         password.length >= 8
                                                     ) || loading

@@ -8,10 +8,17 @@ const UserSchema = new mongoose.Schema({
         max: 20,
         unique: true
     },
-    number: {
-        type: Number,
+    // TODO: Will do it next phase
+    // number: {
+    //     type: Number,
+    //     required: true,
+    //     unique: true
+    // },
+    email: {
+        type: String,
         required: true,
-        unique: true
+        max: 50,
+        unique: true,
     },
     password: {
         type: String,

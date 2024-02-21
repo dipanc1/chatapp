@@ -28,6 +28,7 @@ const Settings = () => {
     const [loading, setLoading] = useState(false);
     const [username, setUsername] = useState('');
     const [number, setNumber] = useState('');
+    const [email, setEmail] = useState('');
     const [pic, setPic] = useState('');
 
     // Removing unused code can be found in commit - 20057408402cc0d140c7b85efbde807d02b7a951
@@ -45,7 +46,7 @@ const Settings = () => {
                 const { data } = await authApi.userInfo(config);
                 // console.log(data);
                 setUsername(data.username);
-                setNumber(data.number);
+                setEmail(data.email);
                 setPic(data.pic);
             } catch (error) {
                 console.log(error);
@@ -118,7 +119,7 @@ const Settings = () => {
                             >
                                 <MyDetails
                                     username={username}
-                                    number={number}
+                                    email={email}
                                     pic={pic}
                                     setPic={setPic}
                                     setUsername={setUsername}

@@ -553,7 +553,7 @@ const GroupsList = () => {
                                                                             Name
                                                                         </Th>
                                                                         <Th>
-                                                                            Number
+                                                                            Email
                                                                         </Th>
                                                                         <Th>
                                                                             Status
@@ -622,7 +622,7 @@ const GroupsList = () => {
                                                                                     </Td>
                                                                                     <Td>
                                                                                         {
-                                                                                            userInfo.number
+                                                                                            userInfo.email
                                                                                         }
                                                                                     </Td>
                                                                                     <Td>

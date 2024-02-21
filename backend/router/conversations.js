@@ -37,7 +37,7 @@ router.post("/", protect, asyncHandler(async (req, res) => {
 
     isChat = await User.populate(isChat, {
         path: "latestMessage.sender",
-        select: "username number pic"
+        select: "username email pic"
     });
 
     if (isChat.length > 0) {
@@ -76,7 +76,7 @@ router.get("/", protect, async (req, res) => {
             .then(async (results) => {
                 results = await User.populate(results, {
                     path: "latestMessage.sender",
-                    select: "username number pic"
+                    select: "username email pic"
                 });
                 res.status(200).json(results);
             })
@@ -125,7 +125,7 @@ router.get("/one-on-one/:page", protect, async (req, res) => {
             .then(async (results) => {
                 results = await User.populate(results, {
                     path: "latestMessage.sender",
-                    select: "username number pic"
+                    select: "username email pic"
                 });
 
                 return results;
@@ -174,7 +174,7 @@ router.get("/group-chats/:page", protect, asyncHandler(async (req, res) => {
             .then(async (results) => {
                 results = await User.populate(results, {
                     path: "latestMessage.sender",
-                    select: "username number pic"
+                    select: "username email pic"
                 });
                 return results;
             });
@@ -237,7 +237,7 @@ router.get("/my/:page", protect, async (req, res) => {
         });
         chats = await User.populate(chats, {
             path: "latestMessage.sender",
-            select: "username number pic"
+            select: "username email pic"
         });
         const upcomingEvents = await EventTable.find({
             isDisabled: false, chatId: { $in: chats }, date: { $gte: new Date() }
@@ -291,7 +291,7 @@ router.get("/admin/:page", protect, async (req, res) => {
         });
         chats = await User.populate(chats, {
             path: "latestMessage.sender",
-            select: "username number pic"
+            select: "username email pic"
         });
         const upcomingEvents = await EventTable.find({
             isDisabled: false, chatId: { $in: chats }, date: { $gte: new Date() }
@@ -684,7 +684,7 @@ router.get("/list/:limit", protect, asyncHandler(async (req, res) => {
             .then(async (results) => {
                 results = await User.populate(results, {
                     path: "latestMessage.sender",
-                    select: "username number pic"
+                    select: "username email pic"
                 });
 
                 return results;

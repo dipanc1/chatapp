@@ -41,6 +41,14 @@ class AuthApi extends BaseApi {
         }
     }
 
+    forgotPasswordCheckPasswordEmail(data) {
+        try {
+            return this.postWithoutAuth('/forget-password-check-email', data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     checkIfUserNameExists(data) {
         try {
             return this.getWithoutAuth(`/check-username/${data}`);

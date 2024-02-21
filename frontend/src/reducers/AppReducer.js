@@ -5,6 +5,11 @@ const AppReducer = (state, action) => {
                 ...state,
                 number: action.payload,
             };
+        case 'SET_EMAIL':
+            return {
+                ...state,
+                email: action.payload,
+            };
         case 'SET_SELECTED_CHAT':
             return {
                 ...state,

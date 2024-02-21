@@ -26,7 +26,7 @@ const MyDetails = ({
     setUsername,
     pic,
     setPic,
-    number,
+    email,
     setLoading,
 }) => {
     const cookies = new Cookies();
@@ -224,10 +224,10 @@ const MyDetails = ({
                             pb='20px'
                             type='text'
                             disabled
-                            value={number}
+                            value={email}
                             focusBorderColor='#9F85F7'
                         />
-                        <FormLabel>{FORM_LABELS.NUMBER}</FormLabel>
+                        <FormLabel>{FORM_LABELS.EMAIL}</FormLabel>
                     </FormControl>
                 </GridItem>
             </Grid>

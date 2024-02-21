@@ -10,6 +10,7 @@ import AppReducer from '../reducers/AppReducer';
 
 const INITIAL_STATE = {
     number: '',
+    email: '',
     fetchGroupDonations: false,
     selectedChat: null,
     events: [],
@@ -135,6 +136,7 @@ export const AppContextProvider = ({ children }) => {
         <AppContext.Provider
             value={{
                 number: state.number,
+                email: state.email,
                 selectedChat: state.selectedChat,
                 chats: state.chats,
                 notification: state.notification,

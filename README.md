@@ -18,8 +18,7 @@
 
 ### Defects
 
-#### 1. Register -> Not getting OTP on phone number, have top check things happening afterwards !
-#### 2. Admin Dashboard -> Need to hit another API for events
+#### 1. Admin Dashboard -> Need to hit another API for events
 
 
 ## Phone App

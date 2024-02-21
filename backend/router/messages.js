@@ -30,7 +30,7 @@ router.post("/", async (req, res) => {
         message = await message.populate("chat");
         message = await User.populate(message, {
             path: "chat.users",
-            select: "username pic number"
+            select: "username pic email"
         });
 
         await Chat.findByIdAndUpdate(req.body.chatId, {
@@ -58,7 +58,7 @@ router.get("/:chatId/:page", async (req, res) => {
             .sort({ createdAt: -1 })
             .skip((req.params.page - 1) * limit)
             .limit(limit)
-            .populate("sender", "username pic number")
+            .populate("sender", "username pic email")
             .populate("chat");
 
         res.status(200).json({

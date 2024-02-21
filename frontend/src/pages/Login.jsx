@@ -29,6 +29,7 @@ import ReactGA from 'react-ga4';
 import authApi from '../services/apis/authApi';
 import conversationApi from '../services/apis/conversationApi';
 import Cookies from 'universal-cookie';
+import { emailRegex } from '../utils';
 
 const Login = () => {
     const [username, setUsername] = React.useState('');
@@ -44,7 +45,7 @@ const Login = () => {
     const [otpSent, setOtpSent] = React.useState(false);
     const [matchPath, setMatchPath] = React.useState(false);
 
-    const { dispatch } = React.useContext(AppContext);
+    const { dispatch, email } = React.useContext(AppContext);
     const [groupDetails, setGroupDetails] = React.useState({});
 
     const cookies = new Cookies();
@@ -86,9 +87,9 @@ const Login = () => {
     };
 
     const handleVerify = async () => {
-        if (number.length >= 10) {
-            const response = await authApi.forgotPasswordCheckPassword({
-                number: number,
+        if (emailRegex.test(email)) {
+            const response = await authApi.forgotPasswordCheckPasswordEmail({
+                email,
             });
             const { data } = response;
             if (response.status === 200) {
@@ -105,7 +106,7 @@ const Login = () => {
         } else {
             toast({
                 title: 'Invalid Number',
-                description: 'Please enter a valid number',
+                description: 'Please enter a valid email',
                 status: 'error',
                 duration: 9000,
                 isClosable: true,
@@ -116,7 +117,7 @@ const Login = () => {
     const handleResetPassword = async () => {
         if (forgetPasswordValue.length >= 8) {
             const response = await authApi.forgotPasswordCheckOtpChangePassword(
-                { number: number, otp: OTP, password: forgetPasswordValue },
+                { email, otp: OTP, password: forgetPasswordValue },
             );
             const { data } = response;
             if (response.status === 200) {
@@ -357,8 +358,8 @@ const Login = () => {
                             >
                                 {forgetPassword
                                     ? otpSent
-                                        ? 'Enter Otp and New Password to reset the password'
-                                        : 'No worries, Enter your registered mobile number to reset password'
+                                        ? 'Check your email and enter Otp and New Password to reset the password'
+                                        : 'No worries, Enter your registered email to reset password'
                                     : 'Login to get access to chats and live streams'}
                             </Text>
                         </Stack>
@@ -396,12 +397,7 @@ const Login = () => {
                                             />
                                         </>
                                     ) : (
-                                        <>
-                                            <PhoneNumber
-                                                number={number}
-                                                setNumber={setNumber}
-                                            />
-                                        </>
+                                        <Input type='email' focusBorderColor='#9F85F7' onChange={(e) => dispatch({ type: 'SET_EMAIL', payload: e.target.value })} placeholder='Enter Email' value={email} />
                                     )
                                 ) : (
                                     <>
@@ -502,10 +498,10 @@ const Login = () => {
                                         isDisabled={
                                             forgetPassword
                                                 ? forgetPasswordValue !==
-                                                  forgetConfirmPasswordValue
+                                                forgetConfirmPasswordValue
                                                 : username.length === 0 ||
-                                                  password.length === 0 ||
-                                                  disable
+                                                password.length === 0 ||
+                                                disable
                                         }
                                         bg={'buttonPrimaryColor'}
                                         color={'white'}

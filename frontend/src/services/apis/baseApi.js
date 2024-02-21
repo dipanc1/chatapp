@@ -57,4 +57,20 @@ export default class BaseApi {
             console.log(error);
         }
     }
+
+    sendOtpOnEmail(data) {
+        try {
+            return this.postWithoutAuth('/email', data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    verifyEmailOtp(data) {
+        try {
+            return this.postWithoutAuth('/email/verify', data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
 }

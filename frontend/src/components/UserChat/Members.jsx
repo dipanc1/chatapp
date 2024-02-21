@@ -937,7 +937,7 @@ export const MembersComponent = ({
                         {
                             selectedChat?.users.find(
                                 (member) => member._id !== userInfo?._id,
-                            )?.number
+                            )?.email
                         }
                     </Text>
                 </Box>
