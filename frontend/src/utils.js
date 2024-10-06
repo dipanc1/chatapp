@@ -40,6 +40,8 @@ const emailjsUserId = 'user_V88xEHCgH913EFMNqxCRw';
 
 const trackingId = 'G-RQ7Z6QSMZF';
 
+const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
 const checkFileExtension = (url) => {
     if (url.includes('.png') || url.includes('.jpg') || url.includes('.jpeg')) {
         return IMAGE;
@@ -105,4 +107,5 @@ export {
     uploadFile,
     typeArray,
     peer_server_url,
+    emailRegex,
 };
